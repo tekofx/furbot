@@ -47,10 +47,8 @@ class roast(commands.Cog):
     async def garich(self, context):
         """Gala rich
         """
-        await context.channel.send(
-            "Gala rich porque compra Axe, tiene 5 Alexas, tiene una limpiadora que le regala cosas y tiene una tele 4k")
-
-
+        output="Gala rich porque compra Axe, tiene 5 Alexas, tiene una limpiadora que le regala cosas y tiene una tele 4k"
+        await context.channel.send(output)
 
     @commands.command()
     async def magnetputo(self, context):

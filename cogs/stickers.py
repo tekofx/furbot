@@ -5,6 +5,7 @@ from PIL import Image
 from discord.ext.commands.core import command
 from cogs.functions import *
 from pathlib import Path
+import logging
 
 stickersPath = 'stickers/'
 stickerSize = 500
@@ -24,12 +25,14 @@ class stickers(commands.Cog):
         """
 
         if not context.message.attachments:
+            logging.error("Image not provided")
             await context.channel.send("Falta el sticker a añadir")
 
         else:
             # Checks if a picture is correct
             sticker_extension = context.message.attachments[0].url.split(".")[-1]
             if check_sticker(arg1, sticker_extension) == 0:
+                logging.error("Name already in use")
                 await context.channel.send("El nombre de sticker ya existe")
                 return
 
@@ -69,8 +72,10 @@ class stickers(commands.Cog):
             stickerName += sticker
             stickerName += ".png"
             await context.channel.send(file=discord.File(stickerName))
+            logging.error("Sticker "+sticker+" sent")
         else:
             await context.channel.send("No existe el sticker "+sticker)
+            logging.error("Sticker "+sticker+" does not exist")
 
     @commands.command(name="rm")
     @commands.check(is_owner)
@@ -78,6 +83,7 @@ class stickers(commands.Cog):
         """ [ADMIN] Borra un sticker
         """
         os.system("rm "+stickersPath+sticker+'.png')
+        logging.info("Sticker "+sticker+" deleted")
         await context.channel.send("Sticker "+sticker+" eliminado")
 
 # Resize and image and save it as png

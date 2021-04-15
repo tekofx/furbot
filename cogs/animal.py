@@ -22,7 +22,6 @@ class Animal(commands.Cog):
 
             Envia una foto de r/foxes
         """
-        logging.info(str(context.author) + " used command fox")
 
         await context.channel.send(get_reddit_image('foxes', 'Pics!', None))
 
@@ -32,7 +31,6 @@ class Animal(commands.Cog):
 
             Envia una foto de r/wolves
         """
-        logging.info(str(context.author) + " used command wolf")
 
         await context.channel.send(get_reddit_image('wolves', 'Pics', None))
 
@@ -42,7 +40,6 @@ class Animal(commands.Cog):
 
             Envia una foto de r/fish
         """
-        logging.info(str(context.author) + " used command fish")
 
         await context.channel.send(get_reddit_image('fish', 'Pic', None))
 
@@ -52,7 +49,6 @@ class Animal(commands.Cog):
 
             Envia una foto de r/reptiles
         """
-        logging.info(str(context.author) + " used command reptile")
 
         await context.channel.send(get_reddit_image('reptiles', Flair=None,
                                                     Filter='is_self:0 NOT site:(500px.com OR abload.de OR deviantart.com OR deviantart.net OR fav.me OR fbcdn.net OR flickr.com OR forgifs.com OR giphy.com OR gfycat.com OR gifsoup.com OR gyazo.com OR imageshack.us OR imgclean.com OR imgur.com OR instagr.am OR instagram.com OR mediacru.sh OR media.tumblr.com OR min.us OR minus.com OR myimghost.com OR photobucket.com OR picsarus.com OR puu.sh OR staticflickr.com OR tinypic.com OR twitpic.com)'))
@@ -63,7 +59,6 @@ class Animal(commands.Cog):
 
             Envia una foto de r/Amphibians
         """
-        logging.info(str(context.author) + " used command amphibian")
 
         await context.channel.send(get_reddit_image('Amphibians', Flair=None,
                                                     Filter='is_self:0 NOT site:(500px.com OR abload.de OR deviantart.com OR deviantart.net OR fav.me OR fbcdn.net OR flickr.com OR forgifs.com OR giphy.com OR gfycat.com OR gifsoup.com OR gyazo.com OR imageshack.us OR imgclean.com OR imgur.com OR instagr.am OR instagram.com OR mediacru.sh OR media.tumblr.com OR min.us OR minus.com OR myimghost.com OR photobucket.com OR picsarus.com OR puu.sh OR staticflickr.com OR tinypic.com OR twitpic.com)'))
@@ -74,7 +69,6 @@ class Animal(commands.Cog):
 
             Envia una foto de r/birds
         """
-        logging.info(str(context.author) + " used command bird")
 
         await context.channel.send(get_reddit_image('birds', Flair=None,
                                                     Filter='is_self:0 NOT site:(500px.com OR abload.de OR deviantart.com OR deviantart.net OR fav.me OR fbcdn.net OR flickr.com OR forgifs.com OR giphy.com OR gfycat.com OR gifsoup.com OR gyazo.com OR imageshack.us OR imgclean.com OR imgur.com OR instagr.am OR instagram.com OR mediacru.sh OR media.tumblr.com OR min.us OR minus.com OR myimghost.com OR photobucket.com OR picsarus.com OR puu.sh OR staticflickr.com OR tinypic.com OR twitpic.com)'))
