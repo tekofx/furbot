@@ -4,7 +4,7 @@ import random
 import os
 import logging
 
-enanasPath = 'fun/enanas'
+enanasPath = 'fun/enanas/'
 
 
 class Fun(commands.Cog):
@@ -71,14 +71,13 @@ class Fun(commands.Cog):
                 fur enana <palabra> ---> Enana que contega palabra 
         """
         
-        # TODO
         if arg == None:
             output = random.choice(os.listdir(enanasPath))
             await context.channel.send(file=discord.File(enanasPath+ output))
 
         else:
             for filenames in os.listdir(enanasPath):
-                if arg in filenames.lower():
+                if arg.lower() in filenames.lower():
                     output = filenames
             await context.channel.send(file=discord.File(enanasPath + output))
 
