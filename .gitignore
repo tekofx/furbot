@@ -1,0 +1,7 @@
+fun/
+memes/
+stickers/
+cogs/__pycache__/
+.vscode/
+.env
+logs
