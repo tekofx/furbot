@@ -1,0 +1,77 @@
+import discord
+from discord import activity
+from discord.ext import commands
+from dotenv import load_dotenv
+import os
+import setproctitle
+from cogs.functions import setup_logs
+import logging
+
+# Get info from .env
+load_dotenv()
+token = os.getenv('DISCORD_TOKEN')
+creator=os.getenv('BOT_CREATOR')
+usr1=os.getenv('MAGNET')
+
+
+status = discord.Status.online
+activity = discord.Game('Conseguir la independencia de León')
+
+prefixes = ['fur ', 'Fur ', 'FUR ']
+bot = commands.Bot(command_prefix=prefixes, owner_id=int(creator))
+bot.remove_command('trauma')
+bot.remove_command('enana')
+setproctitle.setproctitle("furbot")  # <-- setting the process name
+
+
+# When the bot starts
+@bot.event
+async def on_ready():
+    print('We have logged in as {0.user}'.format(bot))
+    setup_logs()
+    await bot.change_presence(status=status, activity=activity)
+
+
+@bot.event
+async def on_command(ctx):
+    server = ctx.guild.name
+    user = str(ctx.author)
+    command = str(ctx.command)
+    logging.info(user+' used command '+command)
+
+@bot.event
+async def on_command_error(context, error):
+    if isinstance(error, commands.MissingRequiredArgument):
+        await context.send("Error: Faltan parámetros")
+    if isinstance(error,commands.CommandNotFound):
+        await context.send("Error: Comando no existente")
+
+# When a message is posted
+@bot.event
+async def on_message(message):
+    if message.content.lower() == 'owo':
+        await message.channel.send('OwO!')
+    if message.content.lower() == 'uwu':
+        await message.channel.send('UwU!')
+    if message.content.lower() == '7w7':
+        await message.channel.send(':eyes:')
+    if message.content.lower() == 'ewe':
+        await message.channel.send('EwE!')
+    if message.content.lower() == 'awa':
+        await message.channel.send('AwA!')
+    if 'jojo' in message.content.lower() or 'jojos' in message.content.lower():
+        creator = await bot.fetch_user(int(creator))
+        usr=await bot.fetch_user(int(usr1))   
+        string = str(message.author) + " habló de jojos en este mensaje: " + message.jump_url
+        await creator.send(string)
+        await usr.send(string)
+
+    await bot.process_commands(message)
+
+
+# Add extensions
+extensions = ["administration", "animal", "fun", "memes", "roast", "stickers", "utilities"]
+for extension in extensions:
+    bot.load_extension("cogs." + extension)
+
+bot.run(token)
