@@ -103,6 +103,12 @@ class roast(commands.Cog):
         await context.channel.send("Zaffy puto")
 
     @commands.command()
+    async def crackergei(self, context):
+        """cracker gei
+        """
+        await context.channel.send(file=discord.File('/home/teko/bots/furbot/stickers/cracker.png'))
+
+    @commands.command()
     async def insult(self, context, *, user: discord.Member = None):
         """Insulta gente 7w7
 
