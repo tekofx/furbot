@@ -7,12 +7,14 @@ import setproctitle
 from cogs.functions import *
 import logging
 from discord.ext import tasks
+import datetime
+
 
 # Get info from .env
 load_dotenv()
 token = os.getenv('DISCORD_TOKEN')
-creator=os.getenv('BOT_CREATOR')
-usr1=os.getenv('MAGNET')
+creator_id=os.getenv('BOT_CREATOR')
+usr1_id=os.getenv('MAGNET')
 
 
 status = discord.Status.online
@@ -49,11 +51,13 @@ async def on_command_error(context, error):
     if isinstance(error,commands.CommandNotFound):
         await context.send("Error: Comando no existente")
 
-@tasks.loop(hours=1)
+@tasks.loop(seconds=45)
 async def dankmemes():
-    channel = bot.get_channel(int(os.getenv("DANKMEMES_CHANNEL")))
-    logging.info("Dankmeme sent")
-    await channel.send(get_top_reddit_image("dankmemes", 3))
+    now = datetime.datetime.now()
+    if now.minute==1:
+        channel = bot.get_channel(int(os.getenv("DANKMEMES_CHANNEL")))
+        logging.info("Dankmeme sent")
+        await channel.send(get_top_reddit_image("dankmemes", 3))
 
 # When a message is posted
 @bot.event
@@ -68,9 +72,9 @@ async def on_message(message):
         await message.channel.send('EwE!')
     if message.content.lower() == 'awa':
         await message.channel.send('AwA!')
-    if 'jojo' in message.content.lower() or 'jojos' in message.content.lower():
-        creator = await bot.fetch_user(int(creator))
-        usr=await bot.fetch_user(int(usr1))   
+    if ('jojo' in message.content.lower() or 'jojos' in message.content.lower()) and message.author!=bot.user:
+        creator = await bot.fetch_user(int(creator_id))
+        usr=await bot.fetch_user(int(usr1_id))   
         string = str(message.author) + " habló de jojos en este mensaje: " + message.jump_url
         await creator.send(string)
         await usr.send(string)
