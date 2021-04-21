@@ -8,6 +8,10 @@ import logging, coloredlogs
 import wget
 import time
 from dotenv import load_dotenv
+import praw
+import random
+
+
 
 
 memeTemplatesPath = "memes_templates/"
@@ -18,6 +22,9 @@ token = os.getenv('DISCORD_TOKEN')
 villa_furrense = os.getenv('VILLA_FURRENSE')
 creator=os.getenv('BOT_CREATOR')
 
+reddit = praw.Reddit(client_id=os.getenv("REDDIT_CLIENT_ID"),
+                     client_secret=os.getenv("REDDIT_CLIENT_SECRET"),
+                     user_agent=os.getenv("REDDIT_USER_AGENT"))
 
 def setup_logs():
     """ logger = init_logger(__name__, testing_mode=False)
@@ -51,7 +58,6 @@ def get_user_avatar(user: discord.Member):
     #os.remove('wget-log*') # Remove logs
     os.system('rm wget-log*')
     logging.info("Saved avatar with url " + avatarUrl + " in " + memeTemplatesPath)
-
 
 def convert_pic(picture: str, imgName: str, imgSize: str):
     """Converts an image to PNG with a differents size
@@ -197,4 +203,48 @@ def get_user_roles(user: discord.Member, rangos):
 
 # checks if message author is owner of the bot
 def is_owner(context):
-    return context.author.id==int(creator)
+    if context.author.id==int(creator):
+        return True
+    else: 
+        #await context.channel.send("No tienes permisos para usar este comando")
+        return False
+
+
+
+
+
+def get_reddit_image(Subreddit: str, Flair: str, Filter: str):
+    """Gets a random Reddit image
+
+    Args:
+        Subreddit (str): [subreddit to get the photo from]
+        Flair (str): [flair to filter by]
+        Filter (str): [filter to search by]
+
+    Returns:
+        [str]: [url from a reddit image]
+    """
+    try:
+        var = True
+        while var:
+            if Flair == None:
+                memes_submissions = reddit.subreddit(Subreddit).search(
+                    Filter)  # Gets a random images from r/foxes with flair Pics!
+            else:
+                memes_submissions = reddit.subreddit(Subreddit).search(
+                    'Flair:' + Flair)  # Gets a random images from r/foxes with flair Pics!
+            post_to_pick = random.randint(1, 10)
+            for i in range(0, post_to_pick):
+                submission = next(x for x in memes_submissions if not x.stickied)
+            if submission.url.endswith('jpg'):
+                var = False
+    except:
+        logging.error("Error at getting images from reddit")
+
+    return submission.url
+
+def get_top_reddit_image(Subreddit:str):
+    print('awa')
+    output=random.choice([x for x in reddit.subreddit(Subreddit).top("all", limit=20)])
+    print('Aceptada petición de reddit')
+    return output.url

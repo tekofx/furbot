@@ -42,7 +42,6 @@ class memes(commands.Cog):
                     count=count+1
 
         count=str(count)
-        print(count)
 
         if count=='0':
             meme_name=arg1
@@ -62,12 +61,11 @@ class memes(commands.Cog):
             os.remove(memePath+meme_name+'.png')
         
         old=memePath +meme_name+meme_extension
-        new=memePath+meme_name.replace('_',' ')+meme_extension
+        newname=meme_name.replace('_',' ')
+        new=memePath+newname+meme_extension
         os.rename(old,new)
-        log("info","Meme "+arg1+" added by"+ str(context.author))
+        logging.info("Meme "+newname+" added by"+ str(context.author))
         await context.channel.send("Meme " + arg1 + " añadido")
-
-        
 
 
     @commands.command()
@@ -91,6 +89,7 @@ class memes(commands.Cog):
         # Delete user avatar and output
         delete_files(('01.webp', 'output.png', '01.png'))
 
+
     @commands.command()
     async def horny(self, context, *, user: discord.Member = None):
         """Mucho horny
@@ -110,6 +109,7 @@ class memes(commands.Cog):
         # Delete user avatar and output
         delete_files(('01.webp', 'output.png', '01.png'))
 
+
     @commands.command()
     async def patada(self, context, *, user: discord.Member = None):
         """Te vas a comer mi pie
@@ -128,6 +128,7 @@ class memes(commands.Cog):
 
         # Delete user avatar and output
         delete_files(('01.webp', 'output.png', '01.png'))
+
 
     @commands.command()
     async def cringe(self, context, *, user: discord.Member = None):
@@ -149,6 +150,7 @@ class memes(commands.Cog):
         # Delete user avatar and output
         delete_files(('01.webp', 'output.png', '01.png'))
 
+
     @commands.command()
     async def españa(self, context, *, user: discord.Member = None):
         """Arriba España!!!
@@ -164,6 +166,7 @@ class memes(commands.Cog):
 
         # Delete output
         delete_files(['output.mp4'])
+
 
     @commands.command()
     async def burn(self, context, *, user: discord.Member = None):
@@ -185,6 +188,7 @@ class memes(commands.Cog):
         # Delete user avatar and output
         delete_files(('01.webp', 'output.png', '01.png'))
 
+
     @commands.command()
     async def shef(self, context, *, user: discord.Member = None):
         """shef"""
@@ -200,6 +204,7 @@ class memes(commands.Cog):
 
         # Delete user avatar and output
         delete_files(('01.webp', 'output.png', '01.png'))
+
 
     @commands.command()
     async def betis(self, context, *, user: discord.Member = None):
@@ -217,6 +222,7 @@ class memes(commands.Cog):
         # Delete output
         delete_files(['output.mp4'])
 
+
     @commands.command()
     async def communist(self, context, *, user: discord.Member = None):
         """Viva el proletariado"""
@@ -229,6 +235,7 @@ class memes(commands.Cog):
 
         # Delete output
         delete_files(['output.mp4'])
+
 
     @commands.command()
     async def falange(self, context, *, user: discord.Member = None):
@@ -245,6 +252,7 @@ class memes(commands.Cog):
 
         # Delete output
         delete_files(['output.mp4'])
+
 
     @commands.command()
     async def quote(self, context, quote: str, title: str, *, user: discord.Member = None):
@@ -355,6 +363,7 @@ class memes(commands.Cog):
         time.sleep(1)
         delete_files(('01.webp', 'output.png', '01.png'))
 
+
     @commands.command()
     async def smash(self, context, *, user: discord.Member = None):
         """Has sido invitado a Smash :0"""
@@ -422,6 +431,7 @@ class memes(commands.Cog):
 
         delete_files(('01.webp', 'output.png', '01.png'))
 
+
     @commands.command()
     async def impostor(self, context, *, user: discord.Member = None):
         """Quién es el impostor?
@@ -438,6 +448,7 @@ class memes(commands.Cog):
         # Delete user avatar and output
         delete_files(('01.webp', 'output.png', '01.png'))
 
+
     @commands.command()
     async def stonks(self, context, *, user: discord.Member = None):
         """Stonks"""
@@ -452,6 +463,7 @@ class memes(commands.Cog):
 
         # Delete user avatar and output
         delete_files(('01.webp', 'output.png', '01.png'))
+
 
     @commands.command()
     async def jojo(self, context, *, user: discord.Member):
@@ -473,6 +485,7 @@ class memes(commands.Cog):
         # Delete user avatar and output
         delete_files(('01.webp', 'output.png', '01.png', '02.png', '02.webp'))
 
+
     @commands.command()
     async def cute(self, context, *, user: discord.Member = None):
         """You are cute"""
@@ -488,6 +501,7 @@ class memes(commands.Cog):
 
         # Delete user avatar and output
         delete_files(('01.webp', 'output.png', '01.png'))
+
 
     @commands.command()
     async def meme(self, context, arg: str = None, *, user: discord.Member = None):
@@ -515,6 +529,7 @@ class memes(commands.Cog):
                 await context.channel.send(file=discord.File(memePath + output))
         log("info","Meme sent")
 
+
     @commands.command()
     async def aragon(self, context, *, user: discord.Member = None):
         """Viva Aragón! (pero menos que León)"""
@@ -529,6 +544,7 @@ class memes(commands.Cog):
 
         # Delete output
         delete_files(['output.mp4'])
+
 
     @commands.command()
     async def leon(self, context, *, user: discord.Member = None):
@@ -545,7 +561,6 @@ class memes(commands.Cog):
 
         # Delete output
         delete_files(['output.mp4'])
-
 
 
     @commands.command()
@@ -581,6 +596,7 @@ class memes(commands.Cog):
         # Delete user avatar and output
         delete_files(('01.webp', 'output.png', '01.png'))
 
+
     @commands.command()
     async def unsee(self, context, *, user: discord.Member = None):
         """No por favor"""
@@ -615,8 +631,6 @@ class memes(commands.Cog):
 
         # Delete user avatar and output
         delete_files(('01.webp', 'output.png', '01.png'))
-
-
 
 
     @commands.command()
@@ -663,8 +677,6 @@ class memes(commands.Cog):
         time.sleep(1)
         delete_files(('01.webp', 'output.png', '01.png','output2.png'))
 
-
-
     
     @commands.command()
     async def cojones(self, context, *, user: discord.Member):
@@ -685,6 +697,14 @@ class memes(commands.Cog):
 
         # Delete user avatar and output
         delete_files(('01.webp', 'output.png', '01.png', '02.png', '02.webp'))
+        
+
+    @commands.command()
+    async def dankmeme(self, context):
+        """Top memes de r/dankmemes"""
+        await context.channel.send("buscando dankmeme")
+        await context.channel.send(get_top_reddit_image("dankmemes"))
+
 
 def setup(bot):
     bot.add_cog(memes(bot))

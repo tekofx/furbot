@@ -3,10 +3,7 @@ import discord
 from discord.ext import commands
 import random
 import praw
-
-reddit = praw.Reddit(client_id='pK48pKmt7MTGtA',
-                     client_secret='UrsuDb6JQqyrppNb1KA0ezTX5SqDrA',
-                     user_agent='prawuwu')
+from cogs.functions import *  
 
 
 class Animal(commands.Cog):
@@ -72,51 +69,6 @@ class Animal(commands.Cog):
         await context.channel.send(get_reddit_image('birds', Flair=None,
                                                     Filter='is_self:0 NOT site:(500px.com OR abload.de OR deviantart.com OR deviantart.net OR fav.me OR fbcdn.net OR flickr.com OR forgifs.com OR giphy.com OR gfycat.com OR gifsoup.com OR gyazo.com OR imageshack.us OR imgclean.com OR imgur.com OR instagr.am OR instagram.com OR mediacru.sh OR media.tumblr.com OR min.us OR minus.com OR myimghost.com OR photobucket.com OR picsarus.com OR puu.sh OR staticflickr.com OR tinypic.com OR twitpic.com)'))
 
-    """@commands.command()
-    async def dankmeme(self,context):
-        await context.channel.send("buscando dank meme")
-        await context.channel.send(get_reddit_image('dankmemes', Flair=None,
-                                                    Filter='is_self:0 NOT site:(500px.com OR abload.de OR deviantart.com OR deviantart.net OR fav.me OR fbcdn.net OR flickr.com OR forgifs.com OR giphy.com OR gfycat.com OR gifsoup.com OR gyazo.com OR imageshack.us OR imgclean.com OR imgur.com OR instagr.am OR instagram.com OR mediacru.sh OR media.tumblr.com OR min.us OR minus.com OR myimghost.com OR photobucket.com OR picsarus.com OR puu.sh OR staticflickr.com OR tinypic.com OR twitpic.com)'))
-"""
-
-    @commands.command()
-    async def dankmeme(self, context):
-        await context.channel.send("buscando dankmeme")
-        await context.channel.send(get_top_reddit_image("dankmemes"))
-
-def get_reddit_image(Subreddit: str, Flair: str, Filter: str):
-    """Gets a random Reddit image
-
-    Args:
-        Subreddit (str): [subreddit to get the photo from]
-        Flair (str): [flair to filter by]
-        Filter (str): [filter to search by]
-
-    Returns:
-        [str]: [url from a reddit image]
-    """
-    try:
-        var = True
-        while var:
-            if Flair == None:
-                memes_submissions = reddit.subreddit(Subreddit).search(
-                    Filter)  # Gets a random images from r/foxes with flair Pics!
-            else:
-                memes_submissions = reddit.subreddit(Subreddit).search(
-                    'Flair:' + Flair)  # Gets a random images from r/foxes with flair Pics!
-            post_to_pick = random.randint(1, 10)
-            for i in range(0, post_to_pick):
-                submission = next(x for x in memes_submissions if not x.stickied)
-            if submission.url.endswith('jpg'):
-                var = False
-    except:
-        logging.error("Error at getting images from reddit")
-
-    return submission.url
-
-def get_top_reddit_image(Subreddit:str):
-    output=random.choice([x for x in reddit.subreddit(Subreddit).top("all", limit=20)])
-    return output.url
 
 def setup(bot):
     bot.add_cog(Animal(bot))
