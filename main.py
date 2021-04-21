@@ -4,8 +4,9 @@ from discord.ext import commands
 from dotenv import load_dotenv
 import os
 import setproctitle
-from cogs.functions import setup_logs
+from cogs.functions import *
 import logging
+from discord.ext import tasks
 
 # Get info from .env
 load_dotenv()
@@ -21,6 +22,7 @@ prefixes = ['fur ', 'Fur ', 'FUR ']
 bot = commands.Bot(command_prefix=prefixes, owner_id=int(creator))
 bot.remove_command('trauma')
 bot.remove_command('enana')
+bot.remove_command('avatar')
 setproctitle.setproctitle("furbot")  # <-- setting the process name
 
 
@@ -29,6 +31,7 @@ setproctitle.setproctitle("furbot")  # <-- setting the process name
 async def on_ready():
     print('We have logged in as {0.user}'.format(bot))
     setup_logs()
+    dankmemes.start()
     await bot.change_presence(status=status, activity=activity)
 
 
@@ -45,6 +48,12 @@ async def on_command_error(context, error):
         await context.send("Error: Faltan parámetros")
     if isinstance(error,commands.CommandNotFound):
         await context.send("Error: Comando no existente")
+
+@tasks.loop(hours=1)
+async def dankmemes():
+    channel = bot.get_channel(int(os.getenv("DANKMEMES_CHANNEL")))
+    logging.info("Dankmeme sent")
+    await channel.send(get_top_reddit_image("dankmemes", 3))
 
 # When a message is posted
 @bot.event
@@ -69,9 +78,13 @@ async def on_message(message):
     await bot.process_commands(message)
 
 
+
+
+
 # Add extensions
 extensions = ["administration", "animal", "fun", "memes", "roast", "stickers", "utilities"]
 for extension in extensions:
     bot.load_extension("cogs." + extension)
+
 
 bot.run(token)

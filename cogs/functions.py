@@ -243,8 +243,6 @@ def get_reddit_image(Subreddit: str, Flair: str, Filter: str):
 
     return submission.url
 
-def get_top_reddit_image(Subreddit:str):
-    print('awa')
-    output=random.choice([x for x in reddit.subreddit(Subreddit).top("all", limit=20)])
-    print('Aceptada petición de reddit')
+def get_top_reddit_image(Subreddit:str, Limit:int):
+    output=random.choice([x for x in reddit.subreddit(Subreddit).top("all", limit=Limit)])
     return output.url
