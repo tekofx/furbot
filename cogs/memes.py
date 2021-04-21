@@ -703,7 +703,7 @@ class memes(commands.Cog):
     async def dankmeme(self, context):
         """Top memes de r/dankmemes"""
         await context.channel.send("buscando dankmeme")
-        await context.channel.send(get_top_reddit_image("dankmemes"))
+        await context.channel.send(get_top_reddit_image("dankmemes",20))
 
 
 def setup(bot):

@@ -4,8 +4,10 @@ import discord
 from discord.ext import commands
 import asyncio
 import random
-from cogs.functions import get_user_role, get_user_roles, get_user
+from cogs.functions import get_user_role, get_user_roles, get_user, get_user_avatar
+import wget
 
+memeTemplatesPath = "memes_templates/"
 
 
 class utilities(commands.Cog):
@@ -21,8 +23,6 @@ class utilities(commands.Cog):
             Uso: fur random                 ---> Genera un numero entre 1 y 100
                  fur random <min> <max>     ---> Genera un numero entre <min> y <max>
         """
-        logging.info(str(context.author)+" used command random")
-
 
         if min and max is not  None:
             num=str(random.randint(min,max))
@@ -40,7 +40,6 @@ class utilities(commands.Cog):
         await asyncio.sleep(0.2)
         await tmp.edit(content='Generando número aleatorio.....')
         await asyncio.sleep(0.2)
-
         await tmp.edit(content='Numero aletorio: '+num)
 
 
@@ -67,7 +66,19 @@ class utilities(commands.Cog):
         embed.add_field(name="Roles", value=roles, inline=False)
         await context.channel.send(embed=embed)
 
+    # FIXME: No funciona el comando
+    @commands.command()
+    async def uwu(self,context, *,user : discord.Member=None):
+        if user==None:
+            wget.download(context.author.avatar_url, memeTemplatesPath + '01.webp')
+            os.system('rm wget-log*')
+            print('a')
+            await context.channel.send(file=discord.File(memeTemplatesPath + "01.webp"))
+        else:
+            wget.download(user.avatar_url, memeTemplatesPath + '01.webp')
+            await context.channel.send(file=discord.File(memeTemplatesPath + "01.webp"))
 
+        print('s')
 
 
 

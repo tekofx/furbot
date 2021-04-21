@@ -6,7 +6,6 @@ import logging
 
 enanasPath = 'fun/enanas/'
 
-
 class Fun(commands.Cog):
     """Cosas random y divertidas"""
 
