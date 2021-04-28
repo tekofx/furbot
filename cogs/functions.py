@@ -12,7 +12,8 @@ import praw
 import random
 
 
-
+rank="Furrense " # key word to distinguish ranks from other roles
+separator="       " # key word to distinguish separator roles
 
 memeTemplatesPath = "memes_templates/"
 memePath = "memes/"
@@ -59,7 +60,7 @@ def get_user_avatar(user: discord.Member):
     os.system('rm wget-log*')
     logging.info("Saved avatar with url " + avatarUrl + " in " + memeTemplatesPath)
 
-def convert_pic(picture: str, imgName: str, imgSize: str):
+def convert_pic(picture: str, imgName: str, imgSize: str=None):
     """Converts an image to PNG with a differents size
 
     Args:
@@ -69,9 +70,10 @@ def convert_pic(picture: str, imgName: str, imgSize: str):
     """
     img = Image.open(picture)
 
-    wpercent = (imgSize / float(img.size[0]))
-    hsize = int((float(img.size[1]) * float(wpercent)))
-    img = img.resize((imgSize, hsize), Image.ANTIALIAS)
+    if imgSize is not None:
+        wpercent = (imgSize / float(img.size[0]))
+        hsize = int((float(img.size[1]) * float(wpercent)))
+        img = img.resize((imgSize, hsize), Image.ANTIALIAS)
 
     img.save(memeTemplatesPath + imgName + '.png')
 
@@ -182,19 +184,19 @@ def create_video_meme(meme: str, user: discord.Member):
     delete_files(('01' + '.webp', '01' + '.png'))
 
 
-def get_user_role(user: discord.Member, rangos):
-    output = None
+def get_user_ranks(user: discord.Member):
+    output = []
     for role in user.roles:
-        if str(role) in rangos:
-            output = role.mention
+        if rank in str(role):
+            output.append(role.mention)
+    b = ", ".join(output)
+    return str(b)
 
-    return str(output)
 
-
-def get_user_roles(user: discord.Member, rangos):
+def get_user_roles(user: discord.Member):
     mention = []
     for role in user.roles:
-        if role.name != "@everyone" and str(role) not in rangos:
+        if role.name != "@everyone" and rank not in str(role) and separator not in str(role):
             mention.append(role.mention)
 
     b = ", ".join(mention)

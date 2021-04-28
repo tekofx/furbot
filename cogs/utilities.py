@@ -1,11 +1,11 @@
 import logging
-
 import discord
 from discord.ext import commands
 import asyncio
 import random
-from cogs.functions import get_user_role, get_user_roles, get_user, get_user_avatar
+from cogs.functions import *
 import wget
+import os
 
 memeTemplatesPath = "memes_templates/"
 
@@ -47,16 +47,16 @@ class utilities(commands.Cog):
     async def carnet(self,context, *,user : discord.Member=None):
         """Muestra tu carnet como miembro de Villa Furrense
         """
-        logging.info(str(context.author)+" used command carnet")
 
-        rangos=['Furrense recién llegado','Furrense Nuevo', 'Furrense Viejo', 'Furrense Veterano','Furrense de Oro', 'Furrense VIP']
+        # Get user info
         usr=get_user(context, user)
         name=usr.display_name
-        rango=get_user_role(usr, rangos)
-        roles=get_user_roles(usr, rangos)
+        rango=get_user_ranks(usr)
+        roles=get_user_roles(usr)
         fecha=str(usr.joined_at)
         fecha=fecha.split()
         
+        # Add fields
         embed=discord.Embed(title="Carnet Villafurrense", color=0x0f8af5)
         embed.set_author(name=usr, icon_url=usr.avatar_url)
         embed.set_thumbnail(url=usr.avatar_url)
@@ -66,20 +66,16 @@ class utilities(commands.Cog):
         embed.add_field(name="Roles", value=roles, inline=False)
         await context.channel.send(embed=embed)
 
-    # FIXME: No funciona el comando
     @commands.command()
-    async def uwu(self,context, *,user : discord.Member=None):
-        if user==None:
-            wget.download(context.author.avatar_url, memeTemplatesPath + '01.webp')
-            os.system('rm wget-log*')
-            print('a')
-            await context.channel.send(file=discord.File(memeTemplatesPath + "01.webp"))
-        else:
-            wget.download(user.avatar_url, memeTemplatesPath + '01.webp')
-            await context.channel.send(file=discord.File(memeTemplatesPath + "01.webp"))
+    async def avatar(self,context, *,user : discord.Member=None):
+        """Obtén la imagen de perfil de alguien"""
 
-        print('s')
-
+        avatar_url=get_user(context, user).avatar_url
+        var="wget -O %s%s %s" % (memeTemplatesPath, "01.webp", avatar_url)
+        os.system(var)
+        convert_pic(memeTemplatesPath+'01.webp','01')
+        await context.channel.send(file=discord.File(memeTemplatesPath+'01.png'))
+        delete_files(('01.webp', '01.png'))
 
 
 def setup(bot):
