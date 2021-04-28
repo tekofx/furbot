@@ -23,12 +23,19 @@ class memes(commands.Cog):
         meme_extension = '.'+context.message.attachments[0].url.split(".")[-1]
         count=1
 
-        # Replace spaces for _ and removed "
-        
+        # Remove "
         arg1=arg1.replace('"',"")
-        print(arg1)
-        
 
+        # Order names in case they are not in order
+        names = arg1.split()  
+        names.sort()
+        arg1= ' '.join(names)
+
+        # Capitalize all names
+        arg1.lower()
+        arg1=arg1.title()
+
+        # Count the number to add to the name
         if meme_extension=='.png' or meme_extension=='.jpg':
             for x in os.listdir(memePath):
                 aux2=x.split(" (", 1)
@@ -42,11 +49,11 @@ class memes(commands.Cog):
                     count=count+1
 
         count=str(count)
-
         if count=='0':
             meme_name=arg1
         else:
             meme_name = arg1 + ' ('+count+')'
+
 
         meme_name=meme_name.replace(' ',"_") 
         meme_url=context.message.attachments[0].url
@@ -464,7 +471,6 @@ class memes(commands.Cog):
                 await context.channel.send(file=discord.File(memePath + output))
         log("info","Meme sent")
 
-
    
     @commands.command()
     async def suicidio(self, context, *, user: discord.Member = None):
@@ -484,8 +490,7 @@ class memes(commands.Cog):
 
 
     @commands.command()
-    async def coding(self, context, *, user: discord.Member = None):
-        """sudo rm -rf * /"""
+    async def coding(self, context):
 
         # Get user avatar
         avatarUrl = get_user(context, user).avatar_url
