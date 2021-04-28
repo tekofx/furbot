@@ -18,7 +18,7 @@ usr1_id=os.getenv('MAGNET')
 
 
 status = discord.Status.online
-activity = discord.Game('Conseguir la independencia de León')
+activity = discord.Game("owo what's this")
 
 prefixes = ['fur ', 'Fur ', 'FUR ']
 bot = commands.Bot(command_prefix=prefixes, owner_id=int(creator))
@@ -33,7 +33,7 @@ setproctitle.setproctitle("furbot")  # <-- setting the process name
 async def on_ready():
     print('We have logged in as {0.user}'.format(bot))
     setup_logs()
-    dankmemes.start()
+    #dankmemes.start()
     await bot.change_presence(status=status, activity=activity)
 
 
@@ -80,8 +80,6 @@ async def on_message(message):
         await usr.send(string)
 
     await bot.process_commands(message)
-
-
 
 
 

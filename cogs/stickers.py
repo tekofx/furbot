@@ -72,7 +72,7 @@ class stickers(commands.Cog):
             stickerName += sticker
             stickerName += ".png"
             await context.channel.send(file=discord.File(stickerName))
-            logging.error("Sticker "+sticker+" sent")
+            logging.info("Sticker "+sticker+" sent")
         else:
             await context.channel.send("No existe el sticker "+sticker)
             logging.error("Sticker "+sticker+" does not exist")
