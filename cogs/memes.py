@@ -490,7 +490,7 @@ class memes(commands.Cog):
 
 
     @commands.command()
-    async def coding(self, context):
+    async def coding(self, context, *, user: discord.Member = None):
 
         # Get user avatar
         avatarUrl = get_user(context, user).avatar_url
