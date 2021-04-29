@@ -629,8 +629,9 @@ class memes(commands.Cog):
     @commands.command()
     async def dankmeme(self, context):
         """Top memes de r/dankmemes"""
-        await context.channel.send("buscando dankmeme")
-        await context.channel.send(get_top_reddit_image("dankmemes",200))
+        message=await context.channel.send("buscando dankmeme")
+        await context.channel.send(get_top_reddit_image("dankmemes",10))
+        await message.delete()
 
 
 def setup(bot):

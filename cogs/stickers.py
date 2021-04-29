@@ -7,8 +7,7 @@ from cogs.functions import *
 from pathlib import Path
 import logging
 
-stickersPath = 'stickers/'
-stickerSize = 500
+
 
 class stickers(commands.Cog):
     """Discord es una kk y no tiene stickers pero yo si :)"""
