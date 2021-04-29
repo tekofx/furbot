@@ -33,7 +33,7 @@ setproctitle.setproctitle("furbot")  # <-- setting the process name
 async def on_ready():
     print('We have logged in as {0.user}'.format(bot))
     setup_logs()
-    #dankmemes.start()
+    dankmemes.start()
     es_viernes.start()
     await bot.change_presence(status=status, activity=activity)
 
@@ -55,8 +55,8 @@ async def on_command_error(context, error):
 @tasks.loop(seconds=45)
 async def dankmemes():
     now = datetime.datetime.now()
-    if now.minute==1:
-        channel = bot.get_channel(int(os.getenv("DANKMEMES_CHANNEL")))
+    if now.minute==0:
+        channel = bot.get_channel(int(os.getenv("MEMES_CHANNEL")))
         logging.info("Dankmeme sent")
         await channel.send(get_top_reddit_image("dankmemes", 3))
 

@@ -11,16 +11,21 @@ from dotenv import load_dotenv
 import praw
 import random
 
-
+# Variables
 rank="Furrense " # key word to distinguish ranks from other roles
 separator="       " # key word to distinguish separator roles
 
+work_directory="/home/teko/bots/furbot/"
+stickersPath = 'stickers/'
 memeTemplatesPath = "memes_templates/"
 memePath = "memes/"
 
+stickerSize = 500
+
+
+# .env data
+
 load_dotenv()
-token = os.getenv('DISCORD_TOKEN')
-villa_furrense = os.getenv('VILLA_FURRENSE')
 creator=os.getenv('BOT_CREATOR')
 
 reddit = praw.Reddit(client_id=os.getenv("REDDIT_CLIENT_ID"),
@@ -106,9 +111,6 @@ def delete_files(elements: list):
         if os.path.isfile(memeTemplatesPath+x):
             os.system('rm '+memeTemplatesPath + x)
     logging.info("Removed dependencies")
-
-
-
 
 
 def create_meme(pictures: list, avatar_url: str, avatar_size: int, position: list, invert: bool):
@@ -246,5 +248,5 @@ def get_reddit_image(Subreddit: str, Flair: str, Filter: str):
     return submission.url
 
 def get_top_reddit_image(Subreddit:str, Limit:int):
-    output=random.choice([x for x in reddit.subreddit(Subreddit).top("all", limit=Limit)])
+    output=random.choice([x for x in reddit.subreddit(Subreddit).hot(limit=Limit)])
     return output.url
