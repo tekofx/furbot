@@ -34,6 +34,7 @@ async def on_ready():
     print('We have logged in as {0.user}'.format(bot))
     setup_logs()
     #dankmemes.start()
+    es_viernes.start()
     await bot.change_presence(status=status, activity=activity)
 
 
@@ -58,6 +59,15 @@ async def dankmemes():
         channel = bot.get_channel(int(os.getenv("DANKMEMES_CHANNEL")))
         logging.info("Dankmeme sent")
         await channel.send(get_top_reddit_image("dankmemes", 3))
+
+
+@tasks.loop(seconds=45)
+async def es_viernes():
+    
+    if datetime.datetime.today().weekday()==4 and datetime.datetime.now().time().hour==9 and datetime.datetime.now().time().minute==00:
+        channel = bot.get_channel(int(os.getenv("GENERAL_CHANNEL")))
+        logging.info("Es viernes sent")
+        await channel.send(file=discord.File("es_viernes.mp4"))
 
 # When a message is posted
 @bot.event
