@@ -76,14 +76,7 @@ class stickers(commands.Cog):
             await context.channel.send("No existe el sticker "+sticker)
             logging.error("Sticker "+sticker+" does not exist")
 
-    @commands.command(name="rm")
-    @commands.check(is_owner)
-    async def remove_sticker(self, context, sticker):
-        """ [ADMIN] Borra un sticker
-        """
-        os.system("rm "+stickersPath+sticker+'.png')
-        logging.info("Sticker "+sticker+" deleted")
-        await context.channel.send("Sticker "+sticker+" eliminado")
+    
 
 # Resize and image and save it as png
 def convert_pic(picture: str, stickerName: str):
