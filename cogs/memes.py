@@ -498,7 +498,7 @@ class memes(commands.Cog):
         # Get user avatar
         avatarUrl = context.author.avatar_url
 
-        create_meme(('suicidio', '01'), avatarUrl, 53, (0, 0, 172, 181), True)
+        create_meme(('suicidio', '01'), avatarUrl, 54, (0, 0, 172, 182), True)
 
         # Send meme
         await context.channel.send(file=discord.File(memeTemplatesPath + "output.png"))
