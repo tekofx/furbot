@@ -63,18 +63,21 @@ async def dankmemes():
 
 
 
-@tasks.loop(hours=1)
+@tasks.loop(seconds=2)
 async def cumpleaños():
     channel = bot.get_channel(general_channel)
     now = datetime.datetime.now()
+    hour=str(now.hour)
+    second=str(now.second)
     now=str(now)[:-16]
     now=now[-5:]
     file1 = open('cumpleaños.txt', 'r')
     Lines = file1.readlines()
     for line in Lines:
         aux=line.split()
-        if now==str(aux[0]):
-            await channel.send("Es el cumple de "+ aux[1])
+        if now==str(aux[0]) and hour=='09' and second=='00':
+            await channel.send("Es el cumple de "+ aux[1]+'. Felicidades!!!!!!!!!')
+
 
         
 
