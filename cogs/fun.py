@@ -3,7 +3,7 @@ from discord.ext import commands
 import random
 import os
 import logging
-from cogs.functions import cracker_id, creator
+from cogs.functions import cracker_id, creator, magnet_id
 
 enanasPath = 'fun/enanas/'
 
@@ -58,15 +58,29 @@ class Fun(commands.Cog):
         num = random.randint(0, 100)
         output = '{} es {}% gay'
         if user == None:
-            usuario = str(context.author)[:-5]
-        elif user.id==cracker_id or context.author.id==cracker_id:
-            num=100
-            usuario='Cracker'
-        elif user.id==creator or context.author.id==creator:
-            num=100
-            usuario='Teko'
+            if context.author.id==cracker_id:
+                num=100
+                usuario='Cracker'
+            elif context.author.id==creator:
+                num=100
+                usuario='Teko'
+            elif context.author.id==magnet_id :
+                num=100
+                usuario='Magnet'
+            else:
+                usuario = str(context.user)[:-5]
         else:
-            usuario = str(user)[:-5]
+            if user.id==cracker_id:
+                num=100
+                usuario='Cracker'
+            elif user.id==magnet_id :
+                num=100
+                usuario='Magnet'
+            else:
+                usuario = str(user)[:-5]
+
+
+            
         await context.channel.send(output.format(usuario, num))
 
 
@@ -78,15 +92,27 @@ class Fun(commands.Cog):
         num = random.randint(0, 100)
         output = '{} es {}% hetero'
         if user == None:
-            usuario = str(context.author)[:-5]
-        elif user.id==cracker_id or context.author.id==cracker_id:
-            num=0
-            usuario='Cracker'
-        elif user.id==creator or context.author.id==creator:
-            num=0
-            usuario='Teko'
+            if context.author.id==cracker_id:
+                num=0
+                usuario='Cracker'
+            elif context.author.id==creator:
+                num=0
+                usuario='Teko'
+            elif context.author.id==magnet_id :
+                num=0
+                usuario='Magnet'
+            else:
+                usuario = str(context.user)[:-5]
         else:
-            usuario = str(user)[:-5]
+            if user.id==cracker_id:
+                num=0
+                usuario='Cracker'
+            elif user.id==magnet_id :
+                num=0
+                usuario='Magnet'
+            else:
+                usuario = str(user)[:-5]
+
         await context.channel.send(output.format(usuario, num))
 
 
