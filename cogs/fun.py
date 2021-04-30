@@ -48,6 +48,20 @@ class Fun(commands.Cog):
             usuario = user.mention
         await context.channel.send(output.format(usuario, num))
 
+
+    @commands.command()
+    async def gay(self, context, *, user: discord.Member = None):
+        """Maricon el ultimo
+        """
+
+        num = random.randint(0, 100)
+        output = '{} es {}% gay'
+        if user == None:
+            usuario = context.author.mention
+        else:
+            usuario = user.mention
+        await context.channel.send(output.format(usuario, num))
+
     @commands.command()
     async def capitalist(self, context, *, user: discord.Member = None):
         """Serás capitalista y te convertirás en el nuevo lobo de Wall Street?
