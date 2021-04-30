@@ -74,7 +74,53 @@ class memes(commands.Cog):
         logging.info("Meme "+newname+" added by"+ str(context.author))
         await context.channel.send("Meme " + arg1 + " añadido")
 
+    """
+    type: can be video or image
+    """
+    @commands.command()
+    async def meme(self, context, name: str = None, type:str =None, *, user: discord.Member = None):
+        """Meme random de los nuestros
+            Uso:
+                fur meme-->Meme random
+                fur meme <nombre>-->Meme random de <nombre>
+        """
+        if name == None:
+            output = random.choice(os.listdir(memePath))
+            await context.channel.send(file=discord.File(memePath + output))
 
+        else:
+            uwu = []
+            for filenames in os.listdir(memePath):
+                if name.lower() in filenames.lower():
+                    uwu.append(filenames)
+            # check if exists a meme with the filters 
+            if len(uwu)==0:
+                await context.channel.send("No hay memes con "+name)
+                return
+            if type=="video" and  any(".mp4" in s for s in uwu) or type=="imagen" and  any(".png" in s for s in uwu):
+                await context.channel.send("No hay memes de "+type+' que sean de '+name )
+                return
+
+            if type is not None:
+                if type=='video':
+                    output='0'
+                    while '.mp4' not in output:
+                        output = random.choice(uwu)
+                if type=='imagen':
+                    output='0'
+                    while '.jpg' not in output:
+                        output = random.choice(uwu)
+
+            else:
+                output = random.choice(uwu)
+            
+            # Check if there are any memes with the name
+            
+           
+        await context.channel.send(file=discord.File(memePath + output))
+        log("info","Meme sent")
+
+   
     @commands.command()
     async def trauma(self, context, *, user: discord.Member = None):
 
@@ -444,53 +490,7 @@ class memes(commands.Cog):
         # Delete user avatar and output
         delete_files(('01.webp', 'output.png', '01.png'))
 
-    """
-    type: can be video or image
-    """
-    @commands.command()
-    async def meme(self, context, name: str = None, type:str =None, *, user: discord.Member = None):
-        """Meme random de los nuestros
-            Uso:
-                fur meme-->Meme random
-                fur meme <nombre>-->Meme random de <nombre>
-        """
-        if name == None:
-            output = random.choice(os.listdir(memePath))
-            await context.channel.send(file=discord.File(memePath + output))
-
-        else:
-            uwu = []
-            for filenames in os.listdir(memePath):
-                if name.lower() in filenames.lower():
-                    uwu.append(filenames)
-            # check if exists a meme with the filters 
-            if len(uwu)==0:
-                await context.channel.send("No hay memes con "+name)
-                return
-            if type is not None and type not in uwu:
-                await context.channel.send("No hay memes de "+type+' que sean de '+name )
-                return
-
-            if type is not None:
-                if type=='video':
-                    output='0'
-                    while '.mp4' not in output:
-                        output = random.choice(uwu)
-                if type=='imagen':
-                    output='0'
-                    while '.jpg' not in output:
-                        output = random.choice(uwu)
-
-            else:
-                output = random.choice(uwu)
-            
-            # Check if there are any memes with the name
-            
-           
-        await context.channel.send(file=discord.File(memePath + output))
-        log("info","Meme sent")
-
-   
+    
     @commands.command()
     async def suicidio(self, context, *, user: discord.Member = None):
         """Es hora del suisidio"""
