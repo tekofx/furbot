@@ -35,5 +35,15 @@ class Administration(commands.Cog):
         logging.info("Sticker "+sticker+" deleted")
         await context.channel.send("Sticker "+sticker+" eliminado")
 
+
+    @commands.command(name="edit")
+    @commands.check(is_owner)
+    async def edit_sticker(self, context, sticker_before, sticker_after):
+        """ [ADMIN] Cambia nombre a un sticker
+        """
+        os.system("mv "+stickersPath+sticker_before+'.png '+stickersPath+sticker_after+'.png')
+        logging.info("Sticker "+sticker_before+" edited")
+        await context.channel.send("Cambiado nombre del sticker "+sticker_before+" a "+sticker_after)
+
 def setup(bot):
     bot.add_cog(Administration(bot))
