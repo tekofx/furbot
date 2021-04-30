@@ -26,7 +26,8 @@ stickerSize = 500
 # .env data
 
 load_dotenv()
-creator=os.getenv('BOT_CREATOR')
+creator=int(os.getenv('BOT_CREATOR'))
+cracker_id=int(os.getenv('CRACKER'))
 
 reddit = praw.Reddit(client_id=os.getenv("REDDIT_CLIENT_ID"),
                      client_secret=os.getenv("REDDIT_CLIENT_SECRET"),
