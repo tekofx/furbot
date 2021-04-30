@@ -79,10 +79,10 @@ class roast(commands.Cog):
         await context.channel.send(output.format(usuario))
 
     @commands.command()
-    async def sliputo(self, context):
+    async def sliputa(self, context):
         """Sliva puto
         """
-        await context.channel.send("Sliva puto")
+        await context.channel.send("Sliva puta")
 
     @commands.command()
     async def steputo(self, context):
