@@ -3,7 +3,7 @@ from discord.ext import commands
 import random
 import os
 import logging
-from cogs.functions import cracker_id
+from cogs.functions import cracker_id, creator
 
 enanasPath = 'fun/enanas/'
 
@@ -62,8 +62,7 @@ class Fun(commands.Cog):
         elif user.id==cracker_id or context.author.id==cracker_id:
             num=100
             usuario='Cracker'
-
-        elif user.id==creator:
+        elif user.id==creator or context.author.id==creator:
             num=100
             usuario='Teko'
         else:
@@ -83,7 +82,7 @@ class Fun(commands.Cog):
         elif user.id==cracker_id or context.author.id==cracker_id:
             num=0
             usuario='Cracker'
-        elif user.id==creator:
+        elif user.id==creator or context.author.id==creator:
             num=0
             usuario='Teko'
         else:
