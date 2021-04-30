@@ -97,7 +97,7 @@ class memes(commands.Cog):
             if len(uwu)==0:
                 await context.channel.send("No hay memes con "+name)
                 return
-            if type=="video" and  any(".mp4" in s for s in uwu) or type=="imagen" and  any(".png" in s for s in uwu):
+            if (type=="video" and not  any(".mp4" in s for s in uwu)) or( type=="imagen" and not any(".png" in s for s in uwu)):
                 await context.channel.send("No hay memes de "+type+' que sean de '+name )
                 return
 
