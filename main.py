@@ -35,6 +35,7 @@ async def on_ready():
     setup_logs()
     dankmemes.start()
     es_viernes.start()
+    cumpleaños.start()
     await bot.change_presence(status=status, activity=activity)
 
 
@@ -60,6 +61,22 @@ async def dankmemes():
         logging.info("Dankmeme sent")
         await channel.send(get_top_reddit_image("dankmemes", 3))
 
+
+
+@tasks.loop(hours=1)
+async def cumpleaños():
+    channel = bot.get_channel(general_channel)
+    now = datetime.datetime.now()
+    now=str(now)[:-16]
+    now=now[-5:]
+    file1 = open('cumpleaños.txt', 'r')
+    Lines = file1.readlines()
+    for line in Lines:
+        aux=line.split()
+        if now==str(aux[0]):
+            await channel.send("Es el cumple de "+ aux[1])
+
+        
 
 @tasks.loop(seconds=45)
 async def es_viernes():
