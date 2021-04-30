@@ -3,6 +3,7 @@ from discord.ext import commands
 import random
 import os
 import logging
+from cogs.functions import cracker_id
 
 enanasPath = 'fun/enanas/'
 
@@ -25,9 +26,9 @@ class Fun(commands.Cog):
         num = random.randint(1, 15)
         output = 'El pene de {}\n'
         if user == None:
-            usuario = context.author.mention
+            usuario = str(context.author)[:-5]
         else:
-            usuario = user.mention
+            usuario = str(user)[:-5]
 
         output += '8'
         for x in range(num):
@@ -43,9 +44,9 @@ class Fun(commands.Cog):
         num = random.randint(0, 100)
         output = '{} es {}% comunista'
         if user == None:
-            usuario = context.author.mention
+            usuario = str(context.author)[:-5]
         else:
-            usuario = user.mention
+            usuario = str(user)[:-5]
         await context.channel.send(output.format(usuario, num))
 
 
@@ -57,10 +58,38 @@ class Fun(commands.Cog):
         num = random.randint(0, 100)
         output = '{} es {}% gay'
         if user == None:
-            usuario = context.author.mention
+            usuario = str(context.author)[:-5]
+        elif user.id==cracker_id or context.author.id==cracker_id:
+            num=100
+            usuario='Cracker'
+
+        elif user.id==creator:
+            num=100
+            usuario='Teko'
         else:
-            usuario = user.mention
+            usuario = str(user)[:-5]
         await context.channel.send(output.format(usuario, num))
+
+
+    @commands.command()
+    async def str8(self, context, *, user: discord.Member = None):
+        """Super str8 el ultimo
+        """
+
+        num = random.randint(0, 100)
+        output = '{} es {}% hetero'
+        if user == None:
+            usuario = str(context.author)[:-5]
+        elif user.id==cracker_id or context.author.id==cracker_id:
+            num=0
+            usuario='Cracker'
+        elif user.id==creator:
+            num=0
+            usuario='Teko'
+        else:
+            usuario = str(user)[:-5]
+        await context.channel.send(output.format(usuario, num))
+
 
     @commands.command()
     async def capitalist(self, context, *, user: discord.Member = None):
@@ -70,9 +99,9 @@ class Fun(commands.Cog):
         num = random.randint(0, 100)
         output = '{} es {}% capitalista'
         if user == None:
-            usuario = context.author.mention
+            usuario = str(context.author)[:-5]
         else:
-            usuario = user.mention
+            usuario = str(user)[:-5]
         await context.channel.send(output.format(usuario, num))
 
     @commands.command()
