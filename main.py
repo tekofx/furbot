@@ -48,9 +48,9 @@ async def on_command(ctx):
 @bot.event
 async def on_command_error(context, error):
     if isinstance(error, commands.MissingRequiredArgument):
-        await context.send("Error: Faltan parámetros")
+        await context.send("Error: Faltan parámetros, escribe `fur help <comando>` para ver ayuda sobre ese comando")
     if isinstance(error,commands.CommandNotFound):
-        await context.send("Error: Comando no existente")
+        await context.send("Error: Comando no existente, escribe `fur help` para ver los comandos disponibles")
 
 @tasks.loop(seconds=45)
 async def dankmemes():
