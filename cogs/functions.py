@@ -28,6 +28,8 @@ stickerSize = 500
 load_dotenv()
 creator=int(os.getenv('BOT_CREATOR'))
 cracker_id=int(os.getenv('CRACKER'))
+general_channel=int(os.getenv('GENERAL_CHANNEL'))
+magnet_id=int(os.getenv('MAGNET'))
 
 reddit = praw.Reddit(client_id=os.getenv("REDDIT_CLIENT_ID"),
                      client_secret=os.getenv("REDDIT_CLIENT_SECRET"),
@@ -248,6 +250,24 @@ def get_reddit_image(Subreddit: str, Flair: str, Filter: str):
 
     return submission.url
 
-def get_top_reddit_image(Subreddit:str, Limit:int):
+
+def get_hot_subreddit_image(Subreddit:str, Limit:int):
     output=random.choice([x for x in reddit.subreddit(Subreddit).hot(limit=Limit)])
+
+    while check_if_string_in_file('reddit_memes_history.txt',output.url):
+        output=random.choice([x for x in reddit.subreddit(Subreddit).hot(limit=Limit)])
+
+    var='echo "'+output.url+' " >> reddit_memes_history.txt'
+    os.system(var)
+    
     return output.url
+
+
+""" checks if string exists as a line of file_name
+"""
+def check_if_string_in_file(file_name, string):
+    with open(file_name, 'r') as file:
+        for line in file:
+            if string in line:
+                return True
+    return False

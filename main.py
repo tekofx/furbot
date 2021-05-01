@@ -8,6 +8,7 @@ from cogs.functions import *
 import logging
 from discord.ext import tasks
 import datetime
+import asyncio
 
 
 # Get info from .env
@@ -59,24 +60,25 @@ async def dankmemes():
     if now.minute==0:
         channel = bot.get_channel(int(os.getenv("MEMES_CHANNEL")))
         logging.info("Dankmeme sent")
-        await channel.send(get_top_reddit_image("dankmemes", 3))
+        await channel.send(get_hot_subreddit_image(("dankmemes"), 10))
 
 
 
-@tasks.loop(seconds=2)
+@tasks.loop(seconds=1)
 async def cumpleaños():
-    channel = bot.get_channel(general_channel)
     now = datetime.datetime.now()
     hour=str(now.hour)
     second=str(now.second)
     now=str(now)[:-16]
     now=now[-5:]
-    file1 = open('cumpleaños.txt', 'r')
-    Lines = file1.readlines()
-    for line in Lines:
-        aux=line.split()
-        if now==str(aux[0]) and hour=='09' and second=='00':
-            await channel.send("Es el cumple de "+ aux[1]+'. Felicidades!!!!!!!!!')
+    if hour=='09' and second=='00':
+        channel = bot.get_channel(general_channel)
+        file1 = open('cumpleaños.txt', 'r')
+        Lines = file1.readlines()
+        for line in Lines:
+            aux=line.split()
+            if now==str(aux[0]) :
+                await channel.send("Es el cumple de "+ aux[1]+'. Felicidades!!!!!!!!!')
 
 
         
