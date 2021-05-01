@@ -48,6 +48,12 @@ def setup_logs():
 
 
 def log(type : str, message : str):
+    """
+
+    Args:
+        type (str): [description]
+        message (str): [description]
+    """
     if type=='info':
         logging.info(message)
     if type=='error':
@@ -190,6 +196,14 @@ def create_video_meme(meme: str, user: discord.Member):
 
 
 def get_user_ranks(user: discord.Member):
+    """Get ranks from a user
+
+    Args:
+        user (discord.Member): [user to search for roles]
+
+    Returns:
+        [str]: [String containing all ranks]
+    """
     output = []
     for role in user.roles:
         if rank in str(role):
@@ -199,6 +213,14 @@ def get_user_ranks(user: discord.Member):
 
 
 def get_user_roles(user: discord.Member):
+    """ Get user roles that are not ranks
+
+    Args:
+        user (discord.Member): [user to search for roles]
+
+    Returns:
+        [str]: [String containing roles]
+    """
     mention = []
     for role in user.roles:
         if role.name != "@everyone" and rank not in str(role) and separator not in str(role):
@@ -252,6 +274,15 @@ def get_reddit_image(Subreddit: str, Flair: str, Filter: str):
 
 
 def get_hot_subreddit_image(Subreddit:str, Limit:int):
+    """Get an image from a subreddit in hot
+
+    Args:
+        Subreddit (str): [Subreddit to search for]
+        Limit (int): [Limit to search in subreddit]
+
+    Returns:
+        [str]: [link to image]
+    """
     output=random.choice([x for x in reddit.subreddit(Subreddit).hot(limit=Limit)])
 
     while check_if_string_in_file('reddit_memes_history.txt',output.url):
@@ -263,9 +294,16 @@ def get_hot_subreddit_image(Subreddit:str, Limit:int):
     return output.url
 
 
-""" checks if string exists as a line of file_name
-"""
-def check_if_string_in_file(file_name, string):
+def check_if_string_in_file(file_name:str, string:str):
+    """Checks if string is contained as line in file_name
+
+    Args:
+        file_name ([str]): [file to check]
+        string ([str]): [string to search]
+
+    Returns:
+        [bool]: [True if string is in file_name, False if not]
+    """
     with open(file_name, 'r') as file:
         for line in file:
             if string in line:
