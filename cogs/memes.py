@@ -118,7 +118,7 @@ class memes(commands.Cog):
             
            
         await context.channel.send(file=discord.File(memePath + output))
-        log("info","Meme sent")
+        logging.info("Meme sent")
 
    
     @commands.command()
@@ -137,7 +137,7 @@ class memes(commands.Cog):
 
         # Send meme
         await context.channel.send(file=discord.File(memeTemplatesPath + "output.png"))
-        log("info","Meme sent")
+        logging.info("Meme sent")
 
         # Delete user avatar and output
         delete_files(('01.webp', 'output.png', '01.png'))
@@ -198,7 +198,7 @@ class memes(commands.Cog):
 
         # Send meme
         await context.channel.send(file=discord.File(memeTemplatesPath + "output.png"))
-        log("info","Meme sent")
+        logging.info("Meme sent")
 
         # Delete user avatar and output
         delete_files(('01.webp', 'output.png', '01.png'))
@@ -219,7 +219,7 @@ class memes(commands.Cog):
 
         # Send meme
         await context.channel.send(file=discord.File(memeTemplatesPath + "output.png"))
-        log("info","Meme sent")
+        logging.info("Meme sent")
 
         # Delete user avatar and output
         delete_files(('01.webp', 'output.png', '01.png'))
@@ -236,7 +236,7 @@ class memes(commands.Cog):
 
         # Send meme
         await context.channel.send(file=discord.File(memeTemplatesPath + "output.png"))
-        log("info","Meme sent")
+        logging.info("Meme sent")
 
         # Delete user avatar and output
         delete_files(('01.webp', 'output.png', '01.png'))
@@ -347,7 +347,7 @@ class memes(commands.Cog):
         pic.save(memeTemplatesPath + "output.png", "PNG")
 
         await context.channel.send(file=discord.File(memeTemplatesPath + "output.png"))
-        log("info","Meme sent")
+        logging.info("Meme sent")
         time.sleep(1)
         delete_files(('01.webp', 'output.png', '01.png'))
 
@@ -415,7 +415,7 @@ class memes(commands.Cog):
         output.save(memeTemplatesPath + 'output.png')
 
         await context.channel.send(file=discord.File(memeTemplatesPath + "output.png"))
-        log("info","Meme sent")
+        logging.info("Meme sent")
 
         delete_files(('01.webp', 'output.png', '01.png'))
 
@@ -431,7 +431,7 @@ class memes(commands.Cog):
 
         # Send meme
         await context.channel.send(file=discord.File(memeTemplatesPath + "output.png"))
-        log("info","Meme sent")
+        logging.info("Meme sent")
 
         # Delete user avatar and output
         delete_files(('01.webp', 'output.png', '01.png'))
@@ -447,7 +447,7 @@ class memes(commands.Cog):
 
         # Send meme
         await context.channel.send(file=discord.File(memeTemplatesPath + "output.png"))
-        log("info","Meme sent")
+        logging.info("Meme sent")
 
         # Delete user avatar and output
         delete_files(('01.webp', 'output.png', '01.png'))
@@ -468,7 +468,7 @@ class memes(commands.Cog):
 
         # Send meme
         await context.channel.send(file=discord.File(memeTemplatesPath + "output.png"))
-        log("info","Meme sent")
+        logging.info("Meme sent")
 
         # Delete user avatar and output
         delete_files(('01.webp', 'output.png', '01.png', '02.png', '02.webp'))
@@ -485,7 +485,7 @@ class memes(commands.Cog):
 
         # Send meme
         await context.channel.send(file=discord.File(memeTemplatesPath + "output.png"))
-        log("info","Meme sent")
+        logging.info("Meme sent")
 
         # Delete user avatar and output
         delete_files(('01.webp', 'output.png', '01.png'))
@@ -502,7 +502,7 @@ class memes(commands.Cog):
 
         # Send meme
         await context.channel.send(file=discord.File(memeTemplatesPath + "output.png"))
-        log("info","Meme sent")
+        logging.info("Meme sent")
 
         # Delete user avatar and output
         delete_files(('01.webp', 'output.png', '01.png'))
@@ -518,7 +518,7 @@ class memes(commands.Cog):
 
         # Send meme
         await context.channel.send(file=discord.File(memeTemplatesPath + "output.png"))
-        log("info","Meme sent")
+        logging.info("Meme sent")
 
         # Delete user avatar and output
         delete_files(('01.webp', 'output.png', '01.png'))
@@ -535,7 +535,7 @@ class memes(commands.Cog):
 
         # Send meme
         await context.channel.send(file=discord.File(memeTemplatesPath + "output.png"))
-        log("info","Meme sent")
+        logging.info("Meme sent")
 
 
         # Delete user avatar and output
@@ -553,7 +553,7 @@ class memes(commands.Cog):
 
         # Send meme
         await context.channel.send(file=discord.File(memeTemplatesPath + "output.png"))
-        log("info","Meme sent")
+        logging.info("Meme sent")
 
 
         # Delete user avatar and output
@@ -597,7 +597,7 @@ class memes(commands.Cog):
        
         # Send meme
         await context.channel.send(file=discord.File(memeTemplatesPath + "output2.png"))
-        log("info","Meme sent")
+        logging.info("Meme sent")
 
 
         # Delete user avatar and output
@@ -620,7 +620,7 @@ class memes(commands.Cog):
 
         # Send meme
         await context.channel.send(file=discord.File(memeTemplatesPath + "output.png"))
-        log("info","Meme sent")
+        logging.info("Meme sent")
 
         # Delete user avatar and output
         delete_files(('01.webp', 'output.png', '01.png', '02.png', '02.webp'))

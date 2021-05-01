@@ -29,7 +29,7 @@ class video_memes(commands.Cog):
 
         # Send meme
         await context.channel.send(file=discord.File(memeTemplatesPath + "output.mp4"))
-        log("info","Meme sent")
+        logging.info("Meme sent")
 
         # Delete output
         delete_files(['output.mp4'])
@@ -41,12 +41,12 @@ class video_memes(commands.Cog):
 
         """
         await context.channel.send('Procesando video')
-        log("info","Meme sent")
+        logging.info("Meme sent")
         create_video_meme("betis", get_user(context, user))
 
         # Send meme
         await context.channel.send(file=discord.File(memeTemplatesPath + "output.mp4"))
-        log("info","Meme sent")
+        logging.info("Meme sent")
 
         # Delete output
         delete_files(['output.mp4'])
@@ -60,7 +60,7 @@ class video_memes(commands.Cog):
 
         # Send meme
         await context.channel.send(file=discord.File(memeTemplatesPath + "output.mp4"))
-        log("info","Meme sent")
+        logging.info("Meme sent")
 
         # Delete output
         delete_files(['output.mp4'])
@@ -77,7 +77,7 @@ class video_memes(commands.Cog):
 
         # Send meme
         await context.channel.send(file=discord.File(memeTemplatesPath + "output.mp4"))
-        log("info","Meme sent")
+        logging.info("Meme sent")
 
         # Delete output
         delete_files(['output.mp4'])
@@ -92,7 +92,7 @@ class video_memes(commands.Cog):
 
         # Send meme
         await context.channel.send(file=discord.File(memeTemplatesPath + "output.mp4"))
-        log("info","Meme sent")
+        logging.info("Meme sent")
 
 
         # Delete output
@@ -104,12 +104,12 @@ class video_memes(commands.Cog):
         """Viva León!"""
 
         await context.channel.send('Procesando video')
-        log("info","Meme sent")
+        logging.info("Meme sent")
         create_video_meme("leon", get_user(context, user))
 
         # Send meme
         await context.channel.send(file=discord.File(memeTemplatesPath + "output.mp4"))
-        log("info","Meme sent")
+        logging.info("Meme sent")
 
 
         # Delete output
