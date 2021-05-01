@@ -4,7 +4,7 @@ from discord.ext import commands
 from dotenv import load_dotenv
 import os
 import setproctitle
-from cogs.functions import *
+from cogs.functions import get_hot_subreddit_image, creator, setup_logs, general_channel
 import logging
 from discord.ext import tasks
 import datetime
@@ -17,21 +17,28 @@ token = os.getenv('DISCORD_TOKEN')
 creator_id=os.getenv('BOT_CREATOR')
 usr1_id=os.getenv('MAGNET')
 
-
+# Activity for the bot
 status = discord.Status.online
 activity = discord.Game("owo what's this")
 
+# Set prefixes for bot commands
 prefixes = ['fur ', 'Fur ', 'FUR ']
 bot = commands.Bot(command_prefix=prefixes, owner_id=int(creator))
+
+# Remove some commands to use their names
 bot.remove_command('trauma')
 bot.remove_command('enana')
 bot.remove_command('avatar')
-setproctitle.setproctitle("furbot")  # <-- setting the process name
+
+# Set process name
+setproctitle.setproctitle("furbot") 
 
 
 # When the bot starts
 @bot.event
 async def on_ready():
+    """ Performs an action when the bot is ready
+    """
     print('We have logged in as {0.user}'.format(bot))
     setup_logs()
     dankmemes.start()
@@ -42,6 +49,11 @@ async def on_ready():
 
 @bot.event
 async def on_command(ctx):
+    """ Performs an action when a command is used
+
+    Args:
+        ctx ([type]): [Context of the used command]
+    """
     server = ctx.guild.name
     user = str(ctx.author)
     command = str(ctx.command)
@@ -49,12 +61,18 @@ async def on_command(ctx):
 
 @bot.event
 async def on_command_error(context, error):
+    """Checks error on commands
+
+    Args:
+        context ([type]): [Where the command was used]
+        error ([type]): [Error of the command]
+    """
     if isinstance(error, commands.MissingRequiredArgument):
         await context.send("Error: Faltan parámetros, escribe `fur help <comando>` para ver ayuda sobre ese comando")
     if isinstance(error,commands.CommandNotFound):
         await context.send("Error: Comando no existente, escribe `fur help` para ver los comandos disponibles")
 
-@tasks.loop(seconds=45)
+@tasks.loop(seconds=55)
 async def dankmemes():
     now = datetime.datetime.now()
     if now.minute==0:
@@ -68,10 +86,12 @@ async def dankmemes():
 async def cumpleaños():
     now = datetime.datetime.now()
     hour=str(now.hour)
+    minute=str(now.minute)
     second=str(now.second)
     now=str(now)[:-16]
     now=now[-5:]
-    if hour=='09' and second=='00':
+
+    if hour=='09' and minute=='0' and second=='0':
         channel = bot.get_channel(general_channel)
         file1 = open('cumpleaños.txt', 'r')
         Lines = file1.readlines()
@@ -79,9 +99,8 @@ async def cumpleaños():
             aux=line.split()
             if now==str(aux[0]) :
                 await channel.send("Es el cumple de "+ aux[1]+'. Felicidades!!!!!!!!!')
+                logging.info('Birthday of '+aux[1])
 
-
-        
 
 @tasks.loop(seconds=45)
 async def es_viernes():
@@ -104,6 +123,8 @@ async def on_message(message):
         await message.channel.send('EwE!')
     if message.content.lower() == 'awa':
         await message.channel.send('AwA!')
+    if 'jojo' in message.content.lower():
+        await message.channel.send('Kono DIO da!')
     if ('jojo' in message.content.lower() or 'jojos' in message.content.lower()) and message.author!=bot.user:
         creator = await bot.fetch_user(int(creator_id))
         usr=await bot.fetch_user(int(usr1_id))   
