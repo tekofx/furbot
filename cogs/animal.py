@@ -1,5 +1,5 @@
 from discord.ext import commands
-from cogs.functions import *  
+from cogs.functions import get_reddit_image
 
 
 class Animal(commands.Cog):

@@ -12,13 +12,20 @@ import praw
 import random
 
 # Variables
-rank="Furrense " # key word to distinguish ranks from other roles
-separator="       " # key word to distinguish separator roles
+rank = "Furrense "  # key word to distinguish ranks from other roles
+separator = "       "  # key word to distinguish separator roles
 
-work_directory="/home/teko/bots/furbot/"
-stickersPath = 'stickers/'
+work_directory = "/home/teko/bots/furbot/"
+stickersPath = "stickers/"
 memeTemplatesPath = "memes_templates/"
 memePath = "memes/"
+enanasPath = 'fun/enanas/'
+
+
+help_txt = "help.txt"
+insults_txt = "insults.txt"
+cumpleaños_txt = "cumpleaños.txt"
+reddit_memes_history_txt = "reddit_memes_history.txt"
 
 stickerSize = 500
 
@@ -26,38 +33,31 @@ stickerSize = 500
 # .env data
 
 load_dotenv()
-creator=int(os.getenv('BOT_CREATOR'))
-cracker_id=int(os.getenv('CRACKER'))
-general_channel=int(os.getenv('GENERAL_CHANNEL'))
-magnet_id=int(os.getenv('MAGNET'))
+creator = int(os.getenv("BOT_CREATOR"))
+cracker_id = int(os.getenv("CRACKER"))
+general_channel = int(os.getenv("GENERAL_CHANNEL"))
+magnet_id = int(os.getenv("MAGNET"))
 
-reddit = praw.Reddit(client_id=os.getenv("REDDIT_CLIENT_ID"),
-                     client_secret=os.getenv("REDDIT_CLIENT_SECRET"),
-                     user_agent=os.getenv("REDDIT_USER_AGENT"))
+reddit = praw.Reddit(
+    client_id=os.getenv("REDDIT_CLIENT_ID"),
+    client_secret=os.getenv("REDDIT_CLIENT_SECRET"),
+    user_agent=os.getenv("REDDIT_USER_AGENT"),
+)
+
 
 def setup_logs():
-    """ logger = init_logger(__name__, testing_mode=False)
-    logger.debug('Testing mode = True') """
+    """logger = init_logger(__name__, testing_mode=False)
+    logger.debug('Testing mode = True')"""
     # os.system("rm "+path+"logs")
-    logging.basicConfig(filename="logs",
-                        filemode='a',
-                        format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
-                        datefmt='%H:%M:%S',
-                        level=logging.INFO)
+    logging.basicConfig(
+        filename="logs",
+        filemode="a",
+        format="%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s",
+        datefmt="%H:%M:%S",
+        level=logging.INFO,
+    )
     logging.info("\n\n\nStarted furbot")
 
-
-def log(type : str, message : str):
-    """
-
-    Args:
-        type (str): [description]
-        message (str): [description]
-    """
-    if type=='info':
-        logging.info(message)
-    if type=='error':
-        logging.error(message)
 
 def get_user_avatar(user: discord.Member):
     """Downloads the avatar of a user
@@ -67,14 +67,12 @@ def get_user_avatar(user: discord.Member):
     """
     avatarUrl = user.avatar_url
 
-    # var="wget -O %s%s %s"%(memeTemplatesPath,'01.webp', avatarUrl)
-    # os.system(var)
-    wget.download(avatarUrl, memeTemplatesPath + '01.webp')
-    #os.remove('wget-log*') # Remove logs
-    os.system('rm wget-log*')
+    wget.download(avatarUrl, memeTemplatesPath + "01.webp")
+    os.system("rm wget-log*")
     logging.info("Saved avatar with url " + avatarUrl + " in " + memeTemplatesPath)
 
-def convert_pic(picture: str, imgName: str, imgSize: str=None):
+
+def convert_pic(picture: str, imgName: str, imgSize: str = None):
     """Converts an image to PNG with a differents size
 
     Args:
@@ -85,11 +83,11 @@ def convert_pic(picture: str, imgName: str, imgSize: str=None):
     img = Image.open(picture)
 
     if imgSize is not None:
-        wpercent = (imgSize / float(img.size[0]))
+        wpercent = imgSize / float(img.size[0])
         hsize = int((float(img.size[1]) * float(wpercent)))
         img = img.resize((imgSize, hsize), Image.ANTIALIAS)
 
-    img.save(memeTemplatesPath + imgName + '.png')
+    img.save(memeTemplatesPath + imgName + ".png")
 
 
 def get_user(context, user: discord.Member = None):
@@ -111,19 +109,21 @@ def get_user(context, user: discord.Member = None):
 
 
 def delete_files(elements: list):
-    """ Delete files needed to create a meme
+    """Delete files needed to create a meme
 
     Args:
         elements (list): [files used in a meme]
     """
     for x in elements:
-        if os.path.isfile(memeTemplatesPath+x):
-            os.system('rm '+memeTemplatesPath + x)
+        if os.path.isfile(memeTemplatesPath + x):
+            os.system("rm " + memeTemplatesPath + x)
     logging.info("Removed dependencies")
 
 
-def create_meme(pictures: list, avatar_url: str, avatar_size: int, position: list, invert: bool):
-    """ Crea un meme
+def create_meme(
+    pictures: list, avatar_url: str, avatar_size: int, position: list, invert: bool
+):
+    """Crea un meme
 
     Args:
         pictures (list): [lista de imagenes, siendo pictures[0] el meme y el resto avatares]
@@ -136,26 +136,29 @@ def create_meme(pictures: list, avatar_url: str, avatar_size: int, position: lis
     var = "wget -O %s%s %s" % (memeTemplatesPath, "01.webp", avatar_url)
     os.system(var)
 
-    # urllib.request.urlretrieve(avatar_url, memeTemplatesPath+'01.webp')
-    # wget.download(str(avatar_url),memeTemplatesPath+"01.webp")
-
     # Convert avatar
     convert_pic(memeTemplatesPath + "01.webp", "01", avatar_size)
 
     if not invert:  # burn
         canvas = pictures[1]
-        width, height = Image.open(memeTemplatesPath + canvas + '.png').convert("RGBA").size
+        width, height = (
+            Image.open(memeTemplatesPath + canvas + ".png").convert("RGBA").size
+        )
     else:  # cringe
         canvas = pictures[0]
-        width, height = Image.open(memeTemplatesPath + canvas + '.png').convert("RGBA").size
+        width, height = (
+            Image.open(memeTemplatesPath + canvas + ".png").convert("RGBA").size
+        )
 
     output = Image.new("RGBA", (width, height))  # Create picture
-    meme = Image.open(memeTemplatesPath + pictures[0] + '.png').convert("RGBA")  # Open meme picture
+    meme = Image.open(memeTemplatesPath + pictures[0] + ".png").convert(
+        "RGBA"
+    )  # Open meme picture
 
     # Add avatar pictures
     i = 2
     for x in pictures[1:]:
-        img = Image.open(memeTemplatesPath + x + '.png').convert("RGBA")
+        img = Image.open(memeTemplatesPath + x + ".png").convert("RGBA")
         output.paste(img, (position[i], position[i + 1]), img)
         i += 2
 
@@ -174,25 +177,26 @@ def create_video_meme(meme: str, user: discord.Member):
         user (discord.Member): user to put in the video
     """
     get_user_avatar(user)
-    convert_pic(picture=memeTemplatesPath + '01.webp', imgName='01', imgSize=1000)
+    convert_pic(picture=memeTemplatesPath + "01.webp", imgName="01", imgSize=1000)
 
     # Create video
-    memeVideo = (mp.VideoFileClip(memeTemplatesPath + meme + ".mp4")
-                 .set_opacity(.5)
-                 .set_pos(('center', 'center'))
+    memeVideo = (
+        mp.VideoFileClip(memeTemplatesPath + meme + ".mp4")
+        .set_opacity(0.5)
+        .set_pos(("center", "center"))
+    )
 
-                 )
-
-    avatar = (mp.ImageClip(memeTemplatesPath + '01' + '.png')
-              .set_duration(memeVideo.duration)
-              .resize(height=360)
-              .set_pos(('center', 'center'))
-              )
+    avatar = (
+        mp.ImageClip(memeTemplatesPath + "01" + ".png")
+        .set_duration(memeVideo.duration)
+        .resize(height=360)
+        .set_pos(("center", "center"))
+    )
 
     final_video = mp.CompositeVideoClip([avatar, memeVideo])
     final_video.write_videofile(memeTemplatesPath + "output.mp4")
     final_video.close()
-    delete_files(('01' + '.webp', '01' + '.png'))
+    delete_files(("01" + ".webp", "01" + ".png"))
 
 
 def get_user_ranks(user: discord.Member):
@@ -213,7 +217,7 @@ def get_user_ranks(user: discord.Member):
 
 
 def get_user_roles(user: discord.Member):
-    """ Get user roles that are not ranks
+    """Get user roles that are not ranks
 
     Args:
         user (discord.Member): [user to search for roles]
@@ -223,7 +227,11 @@ def get_user_roles(user: discord.Member):
     """
     mention = []
     for role in user.roles:
-        if role.name != "@everyone" and rank not in str(role) and separator not in str(role):
+        if (
+            role.name != "@everyone"
+            and rank not in str(role)
+            and separator not in str(role)
+        ):
             mention.append(role.mention)
 
     b = ", ".join(mention)
@@ -232,14 +240,10 @@ def get_user_roles(user: discord.Member):
 
 # checks if message author is owner of the bot
 def is_owner(context):
-    if context.author.id==int(creator):
+    if context.author.id == int(creator):
         return True
-    else: 
-        #await context.channel.send("No tienes permisos para usar este comando")
+    else:
         return False
-
-
-
 
 
 def get_reddit_image(Subreddit: str, Flair: str, Filter: str):
@@ -258,14 +262,16 @@ def get_reddit_image(Subreddit: str, Flair: str, Filter: str):
         while var:
             if Flair == None:
                 memes_submissions = reddit.subreddit(Subreddit).search(
-                    Filter)  # Gets a random images from r/foxes with flair Pics!
+                    Filter
+                )  # Gets a random images from r/foxes with flair Pics!
             else:
                 memes_submissions = reddit.subreddit(Subreddit).search(
-                    'Flair:' + Flair)  # Gets a random images from r/foxes with flair Pics!
+                    "Flair:" + Flair
+                )  # Gets a random images from r/foxes with flair Pics!
             post_to_pick = random.randint(1, 10)
             for i in range(0, post_to_pick):
                 submission = next(x for x in memes_submissions if not x.stickied)
-            if submission.url.endswith('jpg'):
+            if submission.url.endswith("jpg"):
                 var = False
     except:
         logging.error("Error at getting images from reddit")
@@ -273,7 +279,7 @@ def get_reddit_image(Subreddit: str, Flair: str, Filter: str):
     return submission.url
 
 
-def get_hot_subreddit_image(Subreddit:str, Limit:int):
+def get_hot_subreddit_image(Subreddit: str, Limit: int):
     """Get an image from a subreddit in hot
 
     Args:
@@ -283,18 +289,20 @@ def get_hot_subreddit_image(Subreddit:str, Limit:int):
     Returns:
         [str]: [link to image]
     """
-    output=random.choice([x for x in reddit.subreddit(Subreddit).hot(limit=Limit)])
+    output = random.choice([x for x in reddit.subreddit(Subreddit).hot(limit=Limit)])
 
-    while check_if_string_in_file('reddit_memes_history.txt',output.url):
-        output=random.choice([x for x in reddit.subreddit(Subreddit).hot(limit=Limit)])
+    while check_if_string_in_file("reddit_memes_history.txt", output.url):
+        output = random.choice(
+            [x for x in reddit.subreddit(Subreddit).hot(limit=Limit)]
+        )
 
-    var='echo "'+output.url+' " >> reddit_memes_history.txt'
+    var = 'echo "' + output.url + ' " >> reddit_memes_history.txt'
     os.system(var)
-    
+
     return output.url
 
 
-def check_if_string_in_file(file_name:str, string:str):
+def check_if_string_in_file(file_name: str, string: str):
     """Checks if string is contained as line in file_name
 
     Args:
@@ -304,7 +312,7 @@ def check_if_string_in_file(file_name:str, string:str):
     Returns:
         [bool]: [True if string is in file_name, False if not]
     """
-    with open(file_name, 'r') as file:
+    with open(file_name, "r") as file:
         for line in file:
             if string in line:
                 return True

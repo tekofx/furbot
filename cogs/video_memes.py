@@ -4,11 +4,9 @@ import time
 import wget
 from PIL import ImageFont, ImageDraw
 from sympy import symbols, solve
-from cogs.functions import *
+from cogs.functions import memeTemplatesPath,memePath
 import discord
 
-memeTemplatesPath = "memes_templates/"
-memePath = "memes/"
 
 
 class video_memes(commands.Cog):

@@ -8,19 +8,18 @@ from pathlib import Path
 import logging
 
 
-
 class stickers(commands.Cog):
     """Discord es una kk y no tiene stickers pero yo si :)"""
 
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name='addsticker')
+    @commands.command(name="addsticker")
     async def add_sticker(self, context, arg1):
-        """ Añade un sticker 
+        """Añade un sticker
 
-             Uso: seleccionar una imagen y en el cuadro de "añadir comentario"
-             poner fur add <nombre_sticker>
+        Uso: seleccionar una imagen y en el cuadro de "añadir comentario"
+        poner fur add <nombre_sticker>
         """
 
         if not context.message.attachments:
@@ -35,7 +34,7 @@ class stickers(commands.Cog):
                 await context.channel.send("El nombre de sticker ya existe")
                 return
 
-            if sticker_extension == 'jpg':
+            if sticker_extension == "jpg":
                 sticker_fileName = arg1 + ".jpg"
             else:
                 sticker_fileName = arg1 + ".png"
@@ -46,37 +45,36 @@ class stickers(commands.Cog):
             os.system(var)
             convert_pic(stickerPath, arg1)
 
-            if sticker_extension == 'jpg':
+            if sticker_extension == "jpg":
                 var2 = "rm " + stickerPath
                 os.system(var2)
             await context.channel.send("Sticker " + arg1 + " añadido")
 
     @commands.command()
     async def list(self, context):
-        """ Nombre de los stickers añadidos"""
+        """Nombre de los stickers añadidos"""
         output = os.listdir(stickersPath)
         output.sort()
-        output[:] = [s.replace('.png', '') for s in output]
-        output=', '.join(output)
+        output[:] = [s.replace(".png", "") for s in output]
+        output = ", ".join(output)
         await context.channel.send(output)
 
-    @commands.command(name='s')
+    @commands.command(name="s")
     async def use_sticker(self, context, sticker):
-        """ Usar un sticker
+        """Usar un sticker
 
-            Uso: fur s <nombre_sticker>
+        Uso: fur s <nombre_sticker>
         """
-        if Path(stickersPath+sticker+'.png').is_file():
+        if Path(stickersPath + sticker + ".png").is_file():
             stickerName = stickersPath
             stickerName += sticker
             stickerName += ".png"
             await context.channel.send(file=discord.File(stickerName))
-            logging.info("Sticker "+sticker+" sent")
+            logging.info("Sticker " + sticker + " sent")
         else:
-            await context.channel.send("No existe el sticker "+sticker)
-            logging.error("Sticker "+sticker+" does not exist")
+            await context.channel.send("No existe el sticker " + sticker)
+            logging.error("Sticker " + sticker + " does not exist")
 
-    
 
 # Resize and image and save it as png
 def convert_pic(picture: str, stickerName: str):
@@ -88,14 +86,14 @@ def convert_pic(picture: str, stickerName: str):
     """
 
     img = Image.open(picture)
-    wpercent = (stickerSize / float(img.size[0]))
+    wpercent = stickerSize / float(img.size[0])
     hsize = int((float(img.size[1]) * float(wpercent)))
     img = img.resize((stickerSize, hsize), Image.ANTIALIAS)
-    img.save(stickersPath + stickerName + '.png')
+    img.save(stickersPath + stickerName + ".png")
 
 
 def check_sticker(stickerName: str, stickerExtension: str):
-    """ checks if a sticker already exists and if file extension is correct
+    """checks if a sticker already exists and if file extension is correct
 
     Args:
         stickerName ([String]): [Name of sticker to add]
@@ -106,11 +104,11 @@ def check_sticker(stickerName: str, stickerExtension: str):
         [1]: [if file extension is correct, must be jpg or png]
     """
     str = os.listdir(stickersPath)
-    str[:] = [s.replace('.png', '') for s in str]
-    str[:] = [s.replace("'", '') for s in str]
+    str[:] = [s.replace(".png", "") for s in str]
+    str[:] = [s.replace("'", "") for s in str]
     if stickerName in str:
         return 0
-    if stickerExtension in ['jpg', 'png']:
+    if stickerExtension in ["jpg", "png"]:
         return 1
 
 

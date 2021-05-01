@@ -6,8 +6,8 @@ import random
 from cogs.functions import *
 import wget
 import os
+from cogs.functions import memeTemplatesPath
 
-memeTemplatesPath = "memes_templates/"
 
 
 class utilities(commands.Cog):

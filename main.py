@@ -84,6 +84,8 @@ async def dankmemes():
 
 @tasks.loop(seconds=1)
 async def cumpleaños():
+    """ Sends a felicitation for birthday
+    """
     now = datetime.datetime.now()
     hour=str(now.hour)
     minute=str(now.minute)
@@ -104,7 +106,8 @@ async def cumpleaños():
 
 @tasks.loop(seconds=45)
 async def es_viernes():
-    
+    """ Sends es_viernes.mp4 every friday at 9:00
+    """
     if datetime.datetime.today().weekday()==4 and datetime.datetime.now().time().hour==9 and datetime.datetime.now().time().minute==00:
         channel = bot.get_channel(int(os.getenv("GENERAL_CHANNEL")))
         logging.info("Es viernes sent")
@@ -113,6 +116,11 @@ async def es_viernes():
 # When a message is posted
 @bot.event
 async def on_message(message):
+    """ Action performed for every message in channels/DM's
+
+    Args:
+        message ([discord.Message]): Message to check
+    """
     if message.content.lower() == 'owo':
         await message.channel.send('OwO!')
     if message.content.lower() == 'uwu':
@@ -141,5 +149,5 @@ extensions = ["administration", "animal", "fun", "memes", "roast", "stickers", "
 for extension in extensions:
     bot.load_extension("cogs." + extension)
 
-
+# Runs bot
 bot.run(token)
