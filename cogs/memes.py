@@ -4,8 +4,9 @@ import time
 import wget
 from PIL import ImageFont, ImageDraw
 from sympy import symbols, solve
-from cogs.functions import *
+from cogs.functions import *    
 import discord
+import logging
 
 memeTemplatesPath = "memes_templates/"
 memePath = "memes/"
@@ -173,7 +174,7 @@ class memes(commands.Cog):
 
         # Send meme
         await context.channel.send(file=discord.File(memeTemplatesPath + "output.png"))
-        log("info", "Meme sent")
+        logging.info("Meme sent")
 
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
@@ -194,7 +195,7 @@ class memes(commands.Cog):
 
         # Send meme
         await context.channel.send(file=discord.File(memeTemplatesPath + "output.png"))
-        log("info", "Meme sent")
+        logging.info("Meme sent")
 
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))

@@ -15,13 +15,14 @@ import random
 rank = "Furrense "  # key word to distinguish ranks from other roles
 separator = "       "  # key word to distinguish separator roles
 
+# Paths
 work_directory = "/home/teko/bots/furbot/"
 stickersPath = "stickers/"
 memeTemplatesPath = "memes_templates/"
 memePath = "memes/"
 enanasPath = 'fun/enanas/'
 
-
+# Data files
 help_txt = "help.txt"
 insults_txt = "insults.txt"
 cumpleaños_txt = "cumpleaños.txt"
