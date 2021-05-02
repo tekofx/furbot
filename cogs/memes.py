@@ -134,9 +134,9 @@ class memes(commands.Cog):
             else:
                 output = random.choice(uwu)
 
-            # Check if there are any memes with the name
+                # Check if there are any memes with the name
 
-        await context.channel.send(file=discord.File(memePath + output))
+                await context.channel.send(file=discord.File(memePath + output))
         logging.info("Meme sent")
 
     @commands.command()
