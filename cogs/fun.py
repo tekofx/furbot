@@ -64,7 +64,7 @@ class Fun(commands.Cog):
                 num = 100
                 usuario = "Magnet"
             else:
-                usuario = str(context.user)[:-5]
+                usuario = str(context.author)[:-5]
         else:
             if user.id == cracker_id:
                 num = 100
