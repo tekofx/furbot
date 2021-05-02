@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 import os
-from cogs.functions import is_owner, stickersPath, help_txt, last_meme_added, memePath
+from cogs.functions import is_owner, stickersPath, help_txt
 import logging
 
 
