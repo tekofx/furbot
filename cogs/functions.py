@@ -1,26 +1,55 @@
 # Contains all functions that are not commands
 import discord
-from discord.ext import commands
 from PIL import Image
 import os
 import moviepy.editor as mp
-import logging, coloredlogs
+import logging
 import wget
-import time
 from dotenv import load_dotenv
 import praw
 import random
+from discord.ext import commands
+prefixes = ['fur ', 'Fur ', 'FUR ']
+
+# .env data
+
+load_dotenv()
+creator = int(os.getenv("BOT_CREATOR"))
+cracker_id = int(os.getenv("CRACKER"))
+general_channel = int(os.getenv("GENERAL_CHANNEL"))
+magnet_id = int(os.getenv("MAGNET"))
+tests_channel = int(os.getenv("TESTS_CHANNEL"))
+
+
+
+
 
 # Variables
 rank = "Furrense "  # key word to distinguish ranks from other roles
 separator = "       "  # key word to distinguish separator roles
+jojos = [
+    "Kono DIO da!",
+    "No one can deflect emerald splash",
+    "Wryyyyyyy",
+    "Let's kill da hoo, Beeeeetch!",
+    "Daga kotowaru",
+    "Gureto daze",
+    "Yare yare daze",
+    "Oh my God!",
+    "Nigerundayo!"
+]
+
+
+# Create bot
+bot = commands.Bot(command_prefix=prefixes, owner_id=int(creator))
+
 
 # Paths
 work_directory = "/home/teko/bots/furbot/"
 stickersPath = "stickers/"
 memeTemplatesPath = "memes_templates/"
 memePath = "memes/"
-enanasPath = 'fun/enanas/'
+enanasPath = "fun/enanas/"
 
 # Data files
 help_txt = "help.txt"
@@ -31,13 +60,7 @@ reddit_memes_history_txt = "reddit_memes_history.txt"
 stickerSize = 500
 
 
-# .env data
 
-load_dotenv()
-creator = int(os.getenv("BOT_CREATOR"))
-cracker_id = int(os.getenv("CRACKER"))
-general_channel = int(os.getenv("GENERAL_CHANNEL"))
-magnet_id = int(os.getenv("MAGNET"))
 
 reddit = praw.Reddit(
     client_id=os.getenv("REDDIT_CLIENT_ID"),
@@ -47,9 +70,6 @@ reddit = praw.Reddit(
 
 
 def setup_logs():
-    """logger = init_logger(__name__, testing_mode=False)
-    logger.debug('Testing mode = True')"""
-    # os.system("rm "+path+"logs")
     logging.basicConfig(
         filename="logs",
         filemode="a",
