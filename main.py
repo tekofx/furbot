@@ -4,11 +4,12 @@ from discord.ext import commands
 from dotenv import load_dotenv
 import os
 import setproctitle
-from cogs.functions import get_hot_subreddit_image, creator, setup_logs, general_channel
+from cogs.functions import get_hot_subreddit_image, creator, setup_logs, general_channel, tests_channel, jojos
 import logging
 from discord.ext import tasks
 import datetime
 import asyncio
+import random
 
 
 # Get info from .env
@@ -24,6 +25,7 @@ activity = discord.Game("owo what's this")
 # Set prefixes for bot commands
 prefixes = ['fur ', 'Fur ', 'FUR ']
 bot = commands.Bot(command_prefix=prefixes, owner_id=int(creator))
+
 
 # Remove some commands to use their names
 bot.remove_command('trauma')
@@ -77,8 +79,11 @@ async def dankmemes():
     now = datetime.datetime.now()
     if now.minute==0:
         channel = bot.get_channel(int(os.getenv("MEMES_CHANNEL")))
+        if now.hour%2==0:
+            await channel.send(get_hot_subreddit_image(("dankmemes"), 10))
+        else:
+            await channel.send(get_hot_subreddit_image(("memes"), 10))
         logging.info("Dankmeme sent")
-        await channel.send(get_hot_subreddit_image(("dankmemes"), 10))
 
 
 
@@ -93,7 +98,9 @@ async def cumpleaños():
     now=str(now)[:-16]
     now=now[-5:]
 
-    if hour=='09' and minute=='0' and second=='0':
+
+
+    if hour=='9' and minute=='0' and second=='0' :
         channel = bot.get_channel(general_channel)
         file1 = open('cumpleaños.txt', 'r')
         Lines = file1.readlines()
@@ -113,6 +120,7 @@ async def es_viernes():
         logging.info("Es viernes sent")
         await channel.send(file=discord.File("es_viernes.mp4"))
 
+
 # When a message is posted
 @bot.event
 async def on_message(message):
@@ -131,8 +139,11 @@ async def on_message(message):
         await message.channel.send('EwE!')
     if message.content.lower() == 'awa':
         await message.channel.send('AwA!')
-    if 'jojo' in message.content.lower():
-        await message.channel.send('Kono DIO da!')
+    if message.content.lower()=='ping':
+        await message.channel.send('Estoy online')
+    if 'jojo' in message.content.lower() and message.author!=bot.user:
+        output=random.choice(jojos)
+        await message.channel.send(output)
     if ('jojo' in message.content.lower() or 'jojos' in message.content.lower()) and message.author!=bot.user:
         creator = await bot.fetch_user(int(creator_id))
         usr=await bot.fetch_user(int(usr1_id))   
