@@ -72,6 +72,9 @@ class Fun(commands.Cog):
             elif user.id == magnet_id:
                 num = 100
                 usuario = "Magnet"
+            elif user.id == creator:
+                num = 100
+                usuario = "Teko"
             else:
                 usuario = str(user)[:-5]
 
@@ -102,6 +105,9 @@ class Fun(commands.Cog):
             elif user.id == magnet_id:
                 num = 0
                 usuario = "Magnet"
+            elif user.id == creator:
+                num = 0
+                usuario = "Teko"
             else:
                 usuario = str(user)[:-5]
 
