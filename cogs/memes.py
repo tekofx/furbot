@@ -91,7 +91,7 @@ class memes(commands.Cog):
         self,
         context,
         name: str = None,
-        type: str = None,
+        tipo: str = None,
         *,
         user: discord.Member = None,
     ):
@@ -113,30 +113,32 @@ class memes(commands.Cog):
             if len(uwu) == 0:
                 await context.channel.send("No hay memes con " + name)
                 return
-            if (type == "video" and not any(".mp4" in s for s in uwu)) or (
-                type == "imagen" and not any(".png" in s for s in uwu)
+            if (tipo == "video" and not any(".mp4" in s for s in uwu)) or (
+                tipo == "imagen" and not any(".jpg" in s for s in uwu)
             ):
                 await context.channel.send(
-                    "No hay memes de " + type + " que sean de " + name
+                    "No hay memes de " + tipo + " que sean de " + name
                 )
                 return
 
-            if type is not None:
-                if type == "video":
+            if tipo is not None:
+                if tipo == "video":
                     output = "0"
                     while ".mp4" not in output:
+                        
                         output = random.choice(uwu)
-                if type == "imagen":
+                if tipo == "imagen":
                     output = "0"
                     while ".jpg" not in output:
                         output = random.choice(uwu)
+                        print(output)
 
             else:
                 output = random.choice(uwu)
 
                 # Check if there are any memes with the name
 
-                await context.channel.send(file=discord.File(memePath + output))
+            await context.channel.send(file=discord.File(memePath + output))
         logging.info("Meme sent")
 
     @commands.command()
