@@ -59,9 +59,7 @@ reddit_memes_history_txt = "reddit_memes_history.txt"
 
 stickerSize = 500
 
-
-
-
+# Creation of reddit
 reddit = praw.Reddit(
     client_id=os.getenv("REDDIT_CLIENT_ID"),
     client_secret=os.getenv("REDDIT_CLIENT_SECRET"),
@@ -70,6 +68,8 @@ reddit = praw.Reddit(
 
 
 def setup_logs():
+    """Set up the logs 
+    """
     logging.basicConfig(
         filename="logs",
         filemode="a",
@@ -261,6 +261,14 @@ def get_user_roles(user: discord.Member):
 
 # checks if message author is owner of the bot
 def is_owner(context):
+    """Checks if user that calls a function is the bot creator
+
+    Args:
+        context ([discord.ext.commands.context.Context]): [context of the function]
+
+    Returns:
+        [bool]: [true if is owner, false if not]
+    """
     if context.author.id == int(creator):
         return True
     else:
