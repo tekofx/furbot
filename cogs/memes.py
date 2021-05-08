@@ -679,6 +679,28 @@ class memes(commands.Cog):
         delete_files(("01.webp", "output.png", "01.png"))
 
 
+    @commands.command()
+    async def palanca(self, context, *, user: discord.Member):
+        """Tehc"""
+
+        # Get author avatar url
+        author_avatar_url = context.author.avatar_url
+
+        # Get parameter user avatar
+        parameter_user_avatar_url=user.avatar_url
+        var = "wget -O %s%s %s" % (memeTemplatesPath, "02.webp", parameter_user_avatar_url)
+        os.system(var)
+        convert_pic(memeTemplatesPath + "02.webp", "02", 57)
+
+        create_meme(("palanca", "01", "02"), author_avatar_url, 62, (0, 0, 240, 79,137,176), True)
+
+        # Send meme
+        await context.channel.send(file=discord.File(memeTemplatesPath + "output.png"))
+        logging.info("Meme sent")
+
+        # Delete user avatar and output
+        delete_files(("01.webp", "output.png", "01.png", "02.png", "02.webp"))
+
 
 
     @commands.command()

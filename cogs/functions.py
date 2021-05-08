@@ -80,17 +80,18 @@ def setup_logs():
     logging.info("\n\n\nStarted furbot")
 
 
-def get_user_avatar(user: discord.Member):
+def get_user_avatar(user: discord.Member, name:str):
     """Downloads the avatar of a user
 
     Args:
         user (discord.Member): user to download avatar from
+        name (str): user to download avatar from
     """
-    avatarUrl = user.avatar_url
 
-    wget.download(avatarUrl, memeTemplatesPath + "01.webp")
-    os.system("rm wget-log*")
-    logging.info("Saved avatar with url " + avatarUrl + " in " + memeTemplatesPath)
+    var = "wget -O %s%s %s" % (memeTemplatesPath, name+".webp", user.avatar_url)
+    os.system(var)
+
+    logging.info("Saved avatar with url " + user.avatar_url + " in " + memeTemplatesPath)
 
 
 def convert_pic(picture: str, imgName: str, imgSize: str = None):
@@ -197,7 +198,7 @@ def create_video_meme(meme: str, user: discord.Member):
         meme (str): name of the video meme to put above
         user (discord.Member): user to put in the video
     """
-    get_user_avatar(user)
+    get_user_avatar(user,"01")
     convert_pic(picture=memeTemplatesPath + "01.webp", imgName="01", imgSize=1000)
 
     # Create video
