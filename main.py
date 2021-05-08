@@ -56,7 +56,6 @@ async def on_command(ctx):
     Args:
         ctx ([type]): [Context of the used command]
     """
-    server = ctx.guild.name
     user = str(ctx.author)
     command = str(ctx.command)
     logging.info(user+' used command '+command)
