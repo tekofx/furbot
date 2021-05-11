@@ -26,7 +26,8 @@ tests_channel = int(os.getenv("TESTS_CHANNEL"))
 
 # Variables
 species=['Protogen', 'Lobo', 'Turiano', 'Zorro','Ampwave','Skull','Erizo','Murciélago','Híbrido','Gato','Dragón','Tortuga','Cabra']
-rank = "Furrense "  # key word to distinguish ranks from other roles
+ranks=['Furrense Recien Llegado', 'Furrense Nuevo', 'Furresnse Viejo','Furrense Veterano', 'Furrense de Oro', 'Furrense VIP','Furrense Legendario']
+
 separator = "       "  # key word to distinguish separator roles
 jojos = [
     "Kono DIO da!",
@@ -233,7 +234,7 @@ def get_user_ranks(user: discord.Member):
     """
     output = []
     for role in user.roles:
-        if rank in str(role):
+        if str(role) in ranks:
             output.append(role.mention)
     b = ", ".join(output)
     return str(b)
@@ -252,7 +253,7 @@ def get_user_roles(user: discord.Member):
     for role in user.roles:
         if (
             role.name != "@everyone"
-            and rank not in str(role)
+            and str(role) not in ranks
             and separator not in str(role)
         ):
             mention.append(role.mention)
