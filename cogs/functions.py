@@ -25,7 +25,7 @@ tests_channel = int(os.getenv("TESTS_CHANNEL"))
 
 
 # Variables
-species=['Protogen', 'Lobo', 'Turiano', 'Zorro','Ampwave','Skull','Erizo','Murciélago','Híbrido','Gato','Dragón','Tortuga','Cabra']
+species=['Cordero', 'Protogen', 'Lobo', 'Turiano', 'Zorro','Ampwave','Skull','Erizo','Murciélago','Híbrido','Gato','Dragón','Tortuga','Cabra']
 ranks=['Furrense Recien Llegado', 'Furrense Nuevo', 'Furrense Viejo','Furrense Veterano', 'Furrense de Oro', 'Furrense VIP','Furrense Legendario']
 
 separator = "       "  # key word to distinguish separator roles
