@@ -25,6 +25,7 @@ tests_channel = int(os.getenv("TESTS_CHANNEL"))
 
 
 # Variables
+species=['Protogen', 'Lobo', 'Turiano', 'Zorro','Ampwave','Skull','Erizo','Murciélago','Híbrido','Gato','Dragón','Tortuga','Cabra']
 rank = "Furrense "  # key word to distinguish ranks from other roles
 separator = "       "  # key word to distinguish separator roles
 jojos = [
@@ -258,6 +259,27 @@ def get_user_roles(user: discord.Member):
 
     b = ", ".join(mention)
     return str(b)
+
+
+def get_user_species(user: discord.Member):
+    """Get user roles that are species
+
+    Args:
+        user (discord.Member): [user to search for roles]
+
+    Returns:
+        [str]: [String containing roles]
+    """
+    mention = []
+    for role in user.roles:
+        if (
+            role.name != "@everyone"
+            and str(role) in species
+        ):
+            mention.append(role.mention)
+
+    b = ", ".join(mention)
+    return b
 
 
 # checks if message author is owner of the bot

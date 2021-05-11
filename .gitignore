@@ -6,3 +6,5 @@ cogs/__pycache__/
 .env
 logs
 cumpleaños.txt
+reddit_memes_history.txt
+__pycache__/main.cpython-37.pyc
