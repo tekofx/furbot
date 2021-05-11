@@ -46,37 +46,34 @@ class utilities(commands.Cog):
         await tmp.edit(content='Numero aletorio: '+num)
 
 
+#     @commands.command()
+    # async def carnet(self,context, *,user : discord.Member=None):
+        # """Muestra tu carnet como miembro de Villa Furrense
+        # """
+
+        # # Get user info
+        # usr=get_user(context, user)
+        # name=usr.display_name
+        # rango=get_user_ranks(usr)
+        # roles=get_user_roles(usr)
+        # fecha=str(usr.joined_at)
+        # fecha=fecha.split()
+        
+        # # Add fields
+        # embed=discord.Embed(title="Carnet Villafurrense", color=0x0f8af5)
+        # embed.set_author(name=usr, icon_url=usr.avatar_url)
+        # embed.set_thumbnail(url=usr.avatar_url)
+        # embed.add_field(name="Nombre", value=name, inline=False)
+        # embed.add_field(name="Fecha de entrada", value=fecha[0], inline=False)
+        # embed.add_field(name="Rango", value=rango, inline=False)
+        # embed.add_field(name="Roles", value=roles, inline=False)
+        # await context.channel.send(embed=embed)
+
+
     @commands.command()
     async def carnet(self,context, *,user : discord.Member=None):
         """Muestra tu carnet como miembro de Villa Furrense
         """
-
-        # Get user info
-        usr=get_user(context, user)
-        name=usr.display_name
-        rango=get_user_ranks(usr)
-        roles=get_user_roles(usr)
-        fecha=str(usr.joined_at)
-        fecha=fecha.split()
-        
-        # Add fields
-        embed=discord.Embed(title="Carnet Villafurrense", color=0x0f8af5)
-        embed.set_author(name=usr, icon_url=usr.avatar_url)
-        embed.set_thumbnail(url=usr.avatar_url)
-        embed.add_field(name="Nombre", value=name, inline=False)
-        embed.add_field(name="Fecha de entrada", value=fecha[0], inline=False)
-        embed.add_field(name="Rango", value=rango, inline=False)
-        embed.add_field(name="Roles", value=roles, inline=False)
-        await context.channel.send(embed=embed)
-
-
-    @commands.command()
-    async def carne(self,context, *,user : discord.Member=None):
-        """Muestra tu carnet como miembro de Villa Furrense
-        """
-        # TODO: Add species
-        # TODO: If there's no rank, write 'admin'
-
         # Get user info
         usr=get_user(context, user)
         name=usr.display_name
