@@ -85,7 +85,8 @@ class utilities(commands.Cog):
         fecha=fecha.split()
 
         # Create qr code
-        img = qrcode.make(name+'\n'+species+'\n'+rango+'\n'+fecha[0]) 
+        qr_text='Nombre: '+name+'\n'+'Especie: '+species+'\n'+'Rango: '+rango+'\n'+'Fecha: '+fecha[0]
+        img = qrcode.make(qr_text) 
         img=img.resize((250,250))
 
 
@@ -99,26 +100,26 @@ class utilities(commands.Cog):
         # Open carnet to draw
         output = Image.open("carnet.png").convert("RGBA")
         draw = ImageDraw.Draw(output)
-        font = ImageFont.truetype(memeTemplatesPath + "Calibri.ttf", 45)
+        font = ImageFont.truetype(memeTemplatesPath + "segoe.ttf", 45)
 
         # Draw name
-        draw.text(((425,260)),name,font=font,fill=(0,0,0,255))
+        draw.text(((425,266)),name,font=font,fill=(0,0,0,255))
 
         # Draw species
-        draw.text(((425,384)),species,font=font,fill=(0,0,0,255))
+        draw.text(((425,388)),species,font=font,fill=(0,0,0,255))
 
         # Draw rank
         draw.text(((425,518)),rango,font=font,fill=(0,0,0,255))
 
         # Draw time in server
-        draw.text(((425,642)),fecha[0],font=font,fill=(0,0,0,255))
+        draw.text(((425,646)),fecha[0],font=font,fill=(0,0,0,255))
 
 
         # Add avatar
         output.paste(avatar, (50,250))
         
         # Add qrcode
-        output.paste(img, (1040,250))
+        output.paste(img, (1030,250))
 
         output.save(memeTemplatesPath+"output.png","PNG")
         await context.channel.send(file=discord.File(memeTemplatesPath+'output.png'))
