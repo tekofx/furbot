@@ -10,7 +10,7 @@ from cogs.functions import *
 from PIL import Image
 from PIL import ImageFont
 from PIL import ImageDraw 
-
+import qrcode
 
 
 class utilities(commands.Cog):
@@ -84,6 +84,10 @@ class utilities(commands.Cog):
         fecha=str(usr.joined_at)
         fecha=fecha.split()
 
+        # Create qr code
+        img = qrcode.make(name+'\n'+species+'\n'+rango+'\n'+fecha[0]) 
+        img=img.resize((250,250))
+
 
         var = "wget -O %s%s %s" % (memeTemplatesPath, '01'+".webp", usr.avatar_url)
         os.system(var)
@@ -111,7 +115,10 @@ class utilities(commands.Cog):
 
 
         # Add avatar
-        output.paste(avatar, (50,300))
+        output.paste(avatar, (50,250))
+        
+        # Add qrcode
+        output.paste(img, (1040,250))
 
         output.save(memeTemplatesPath+"output.png","PNG")
         await context.channel.send(file=discord.File(memeTemplatesPath+'output.png'))
