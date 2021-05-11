@@ -26,7 +26,7 @@ tests_channel = int(os.getenv("TESTS_CHANNEL"))
 
 # Variables
 species=['Protogen', 'Lobo', 'Turiano', 'Zorro','Ampwave','Skull','Erizo','Murciélago','Híbrido','Gato','Dragón','Tortuga','Cabra']
-ranks=['Furrense Recien Llegado', 'Furrense Nuevo', 'Furresnse Viejo','Furrense Veterano', 'Furrense de Oro', 'Furrense VIP','Furrense Legendario']
+ranks=['Furrense Recien Llegado', 'Furrense Nuevo', 'Furrense Viejo','Furrense Veterano', 'Furrense de Oro', 'Furrense VIP','Furrense Legendario']
 
 separator = "       "  # key word to distinguish separator roles
 jojos = [
@@ -235,8 +235,11 @@ def get_user_ranks(user: discord.Member):
     output = []
     for role in user.roles:
         if str(role) in ranks:
-            output.append(role.mention)
-    b = ", ".join(output)
+            output.append(role.name)
+    if output:
+        b = ", ".join(output)
+    else:
+        return "Admin"
     return str(b)
 
 
@@ -277,7 +280,7 @@ def get_user_species(user: discord.Member):
             role.name != "@everyone"
             and str(role) in species
         ):
-            mention.append(role.mention)
+            mention.append(role.name)
 
     b = ", ".join(mention)
     return b
