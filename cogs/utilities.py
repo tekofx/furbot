@@ -95,19 +95,19 @@ class utilities(commands.Cog):
         # Open carnet to draw
         output = Image.open("carnet.png").convert("RGBA")
         draw = ImageDraw.Draw(output)
-        font = ImageFont.truetype(memeTemplatesPath + "Calibri.ttf", 50)
+        font = ImageFont.truetype(memeTemplatesPath + "Calibri.ttf", 45)
 
         # Draw name
-        draw.text(((420,260)),name,font=font,fill=(0,0,0,255))
+        draw.text(((425,260)),name,font=font,fill=(0,0,0,255))
 
         # Draw species
-        draw.text(((420,384)),species,font=font,fill=(0,0,0,255))
+        draw.text(((425,384)),species,font=font,fill=(0,0,0,255))
 
         # Draw rank
-        draw.text(((420,518)),rango,font=font,fill=(0,0,0,255))
+        draw.text(((425,518)),rango,font=font,fill=(0,0,0,255))
 
         # Draw time in server
-        draw.text(((420,642)),fecha[0],font=font,fill=(0,0,0,255))
+        draw.text(((425,642)),fecha[0],font=font,fill=(0,0,0,255))
 
 
         # Add avatar
