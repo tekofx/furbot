@@ -4,11 +4,11 @@ import time
 import wget
 from PIL import ImageFont, ImageDraw
 from sympy import symbols, solve
-from cogs.functions import *    
+from cogs.functions import *
 import discord
 import logging
 
-memeTemplatesPath = "memes_templates/"
+meme_templates_path = "resources/memes/"
 memePath = "memes/"
 
 
@@ -125,7 +125,7 @@ class memes(commands.Cog):
                 if tipo == "video":
                     output = "0"
                     while ".mp4" not in output:
-                        
+
                         output = random.choice(uwu)
                 if tipo == "imagen":
                     output = "0"
@@ -156,7 +156,9 @@ class memes(commands.Cog):
         create_meme(("trauma", "01"), avatarUrl, 670, (0, 0, 39, 400), True)
 
         # Send meme
-        await context.channel.send(file=discord.File(memeTemplatesPath + "output.png"))
+        await context.channel.send(
+            file=discord.File(meme_templates_path + "output.png")
+        )
         logging.info("Meme sent")
 
         # Delete user avatar and output
@@ -175,7 +177,9 @@ class memes(commands.Cog):
         create_meme(("horny", "01"), avatarUrl, 300, (0, 0, 410, 180), True)
 
         # Send meme
-        await context.channel.send(file=discord.File(memeTemplatesPath + "output.png"))
+        await context.channel.send(
+            file=discord.File(meme_templates_path + "output.png")
+        )
         logging.info("Meme sent")
 
         # Delete user avatar and output
@@ -196,7 +200,9 @@ class memes(commands.Cog):
         )
 
         # Send meme
-        await context.channel.send(file=discord.File(memeTemplatesPath + "output.png"))
+        await context.channel.send(
+            file=discord.File(meme_templates_path + "output.png")
+        )
         logging.info("Meme sent")
 
         # Delete user avatar and output
@@ -216,7 +222,9 @@ class memes(commands.Cog):
         create_meme(("cringe", "01"), avatarUrl, 170, (0, 0, 370, 20), True)
 
         # Send meme
-        await context.channel.send(file=discord.File(memeTemplatesPath + "output.png"))
+        await context.channel.send(
+            file=discord.File(meme_templates_path + "output.png")
+        )
         logging.info("Meme sent")
 
         # Delete user avatar and output
@@ -236,7 +244,9 @@ class memes(commands.Cog):
         create_meme(("burn", "01"), avatarUrl, 300, (0, 0, 0, 0), False)
 
         # Send meme
-        await context.channel.send(file=discord.File(memeTemplatesPath + "output.png"))
+        await context.channel.send(
+            file=discord.File(meme_templates_path + "output.png")
+        )
         logging.info("Meme sent")
 
         # Delete user avatar and output
@@ -252,7 +262,9 @@ class memes(commands.Cog):
         create_meme(("shef", "01"), avatarUrl, 120, (0, 0, 280, 87), True)
 
         # Send meme
-        await context.channel.send(file=discord.File(memeTemplatesPath + "output.png"))
+        await context.channel.send(
+            file=discord.File(meme_templates_path + "output.png")
+        )
         logging.info("Meme sent")
 
         # Delete user avatar and output
@@ -290,20 +302,20 @@ class memes(commands.Cog):
             quote = quote.replace("'", '"')
         quote = '"' + quote + '"'
 
-        var = "wget -O %s%s %s" % (memeTemplatesPath, "01.webp", userName.avatar_url)
+        var = "wget -O %s%s %s" % (meme_templates_path, "01.webp", userName.avatar_url)
         print(userName.avatar_url)
         os.system(var)
 
-        convert_pic(memeTemplatesPath + "01.webp", "01", avatarSize)
+        convert_pic(meme_templates_path + "01.webp", "01", avatarSize)
 
         # Open images
         txtPic = Image.new("RGBA", (620, 500))
-        pic = Image.open(memeTemplatesPath + "quote.png").convert("RGBA")
-        avatar = Image.open(memeTemplatesPath + "01" + ".png").convert("L")
+        pic = Image.open(meme_templates_path + "quote.png").convert("RGBA")
+        avatar = Image.open(meme_templates_path + "01" + ".png").convert("L")
 
         # Set up fonts
-        fontQuote = ImageFont.truetype(memeTemplatesPath + "Sofia.ttf", txtSize)
-        fontTitle = ImageFont.truetype(memeTemplatesPath + "Calibri.ttf", txtSize - 5)
+        fontQuote = ImageFont.truetype(meme_templates_path + "Sofia.ttf", txtSize)
+        fontTitle = ImageFont.truetype(meme_templates_path + "Calibri.ttf", txtSize - 5)
         d = ImageDraw.Draw(txtPic)
 
         # Write quote
@@ -362,9 +374,11 @@ class memes(commands.Cog):
         pic.paste(txtPic, (textOffsetX, int(220 - 20 * cont)), txtPic)
 
         # Save picture
-        pic.save(memeTemplatesPath + "output.png", "PNG")
+        pic.save(meme_templates_path + "output.png", "PNG")
 
-        await context.channel.send(file=discord.File(memeTemplatesPath + "output.png"))
+        await context.channel.send(
+            file=discord.File(meme_templates_path + "output.png")
+        )
         logging.info("Meme sent")
         time.sleep(1)
         delete_files(("01.webp", "output.png", "01.png"))
@@ -373,9 +387,9 @@ class memes(commands.Cog):
     async def smash(self, context, *, user: discord.Member = None):
         """Has sido invitado a Smash :0"""
         avatarUrl = get_user(context, user).avatar_url
-        var = "wget -O %s%s %s" % (memeTemplatesPath, "01.webp", avatarUrl)
+        var = "wget -O %s%s %s" % (meme_templates_path, "01.webp", avatarUrl)
         os.system(var)
-        convert_pic(memeTemplatesPath + "01.webp", "01", 300)
+        convert_pic(meme_templates_path + "01.webp", "01", 300)
 
         # variables
         name = str(get_user(context, user))[:-5]  # remove #1234
@@ -426,15 +440,15 @@ class memes(commands.Cog):
         txtY = nameY + var[len(name)]
 
         # Requiremnts
-        output = Image.open(memeTemplatesPath + "smash" + ".png").convert("RGBA")
-        avatar = Image.open(memeTemplatesPath + "01" + ".png").convert("RGBA")
+        output = Image.open(meme_templates_path + "smash" + ".png").convert("RGBA")
+        avatar = Image.open(meme_templates_path + "01" + ".png").convert("RGBA")
 
         txtPic = Image.new("RGBA", (600, 300))
         nameFont = ImageFont.truetype(
-            memeTemplatesPath + "Haettenschweiler-Regular.ttf", txtSize
+            meme_templates_path + "Haettenschweiler-Regular.ttf", txtSize
         )
         txtFont = ImageFont.truetype(
-            memeTemplatesPath + "Haettenschweiler-Regular.ttf", 70
+            meme_templates_path + "Haettenschweiler-Regular.ttf", 70
         )
         d = ImageDraw.Draw(txtPic)
 
@@ -456,9 +470,11 @@ class memes(commands.Cog):
         output.paste(avatar, (avatarX, avatarY), avatar)
 
         # Save result
-        output.save(memeTemplatesPath + "output.png")
+        output.save(meme_templates_path + "output.png")
 
-        await context.channel.send(file=discord.File(memeTemplatesPath + "output.png"))
+        await context.channel.send(
+            file=discord.File(meme_templates_path + "output.png")
+        )
         logging.info("Meme sent")
 
         delete_files(("01.webp", "output.png", "01.png"))
@@ -471,7 +487,9 @@ class memes(commands.Cog):
         create_meme(("impostor", "01"), avatarUrl, 205, (0, 0, 323, 175), True)
 
         # Send meme
-        await context.channel.send(file=discord.File(memeTemplatesPath + "output.png"))
+        await context.channel.send(
+            file=discord.File(meme_templates_path + "output.png")
+        )
         logging.info("Meme sent")
 
         # Delete user avatar and output
@@ -486,7 +504,9 @@ class memes(commands.Cog):
         create_meme(("stonks", "01"), avatarUrl, 236, (0, 0, 63, 25), True)
 
         # Send meme
-        await context.channel.send(file=discord.File(memeTemplatesPath + "output.png"))
+        await context.channel.send(
+            file=discord.File(meme_templates_path + "output.png")
+        )
         logging.info("Meme sent")
 
         # Delete user avatar and output
@@ -500,19 +520,21 @@ class memes(commands.Cog):
         avatarUrl = get_user(context, user).avatar_url
 
         var = "wget -O %s%s %s" % (
-            memeTemplatesPath,
+            meme_templates_path,
             "02.webp",
             context.author.avatar_url,
         )
         os.system(var)
-        convert_pic(memeTemplatesPath + "02.webp", "02", 65)
+        convert_pic(meme_templates_path + "02.webp", "02", 65)
 
         create_meme(
             ("jojo", "01", "02"), avatarUrl, 65, (0, 0, 162, 19, 469, 130), True
         )
 
         # Send meme
-        await context.channel.send(file=discord.File(memeTemplatesPath + "output.png"))
+        await context.channel.send(
+            file=discord.File(meme_templates_path + "output.png")
+        )
         logging.info("Meme sent")
 
         # Delete user avatar and output
@@ -528,7 +550,9 @@ class memes(commands.Cog):
         create_meme(("cute", "01"), avatarUrl, 387, (0, 0, 210, 75), True)
 
         # Send meme
-        await context.channel.send(file=discord.File(memeTemplatesPath + "output.png"))
+        await context.channel.send(
+            file=discord.File(meme_templates_path + "output.png")
+        )
         logging.info("Meme sent")
 
         # Delete user avatar and output
@@ -544,7 +568,9 @@ class memes(commands.Cog):
         create_meme(("suicidio", "01"), avatarUrl, 54, (0, 0, 172, 182), True)
 
         # Send meme
-        await context.channel.send(file=discord.File(memeTemplatesPath + "output.png"))
+        await context.channel.send(
+            file=discord.File(meme_templates_path + "output.png")
+        )
         logging.info("Meme sent")
 
         # Delete user avatar and output
@@ -559,7 +585,9 @@ class memes(commands.Cog):
         create_meme(("coding", "01"), avatarUrl, 167, (0, 0, 218, 137), True)
 
         # Send meme
-        await context.channel.send(file=discord.File(memeTemplatesPath + "output.png"))
+        await context.channel.send(
+            file=discord.File(meme_templates_path + "output.png")
+        )
         logging.info("Meme sent")
 
         # Delete user avatar and output
@@ -575,7 +603,9 @@ class memes(commands.Cog):
         create_meme(("unsee", "01"), avatarUrl, 108, (0, 0, 256, 112), True)
 
         # Send meme
-        await context.channel.send(file=discord.File(memeTemplatesPath + "output.png"))
+        await context.channel.send(
+            file=discord.File(meme_templates_path + "output.png")
+        )
         logging.info("Meme sent")
 
         # Delete user avatar and output
@@ -591,7 +621,9 @@ class memes(commands.Cog):
         create_meme(("palomitas", "01"), avatarUrl, 125, (0, 0, 278, 67), True)
 
         # Send meme
-        await context.channel.send(file=discord.File(memeTemplatesPath + "output.png"))
+        await context.channel.send(
+            file=discord.File(meme_templates_path + "output.png")
+        )
         logging.info("Meme sent")
 
         # Delete user avatar and output
@@ -613,9 +645,9 @@ class memes(commands.Cog):
 
         create_meme(("quien", "01"), avatarUrl, 130, (0, 0, 210, 570), True)
         txtPic = Image.new("RGBA", (200, 200))
-        img = Image.open(memeTemplatesPath + "output" + ".png").convert("RGBA")
+        img = Image.open(meme_templates_path + "output" + ".png").convert("RGBA")
         draw = ImageDraw.Draw(txtPic)
-        font = ImageFont.truetype(memeTemplatesPath + "Calibri.ttf", 24)
+        font = ImageFont.truetype(meme_templates_path + "Calibri.ttf", 24)
         """ draw.text(((170, 30)), text, font=font, fill=(0,0,0,255))
         print('f') """
 
@@ -626,10 +658,12 @@ class memes(commands.Cog):
 
         draw.text(((170, 170)), text2, font=font, fill=(0, 0, 0, 255))
         img.paste(txtPic, (180, 10), txtPic)
-        img.save(memeTemplatesPath + "output2.png", "PNG")
+        img.save(meme_templates_path + "output2.png", "PNG")
 
         # Send meme
-        await context.channel.send(file=discord.File(memeTemplatesPath + "output2.png"))
+        await context.channel.send(
+            file=discord.File(meme_templates_path + "output2.png")
+        )
         logging.info("Meme sent")
 
         # Delete user avatar and output
@@ -644,19 +678,21 @@ class memes(commands.Cog):
         avatarUrl = get_user(context, user).avatar_url
 
         var = "wget -O %s%s %s" % (
-            memeTemplatesPath,
+            meme_templates_path,
             "02.webp",
             context.author.avatar_url,
         )
         os.system(var)
-        convert_pic(memeTemplatesPath + "02.webp", "02", 146)
+        convert_pic(meme_templates_path + "02.webp", "02", 146)
 
         create_meme(
             ("cojones", "01", "02"), avatarUrl, 175, (0, 0, 185, 431, 218, 6), True
         )
 
         # Send meme
-        await context.channel.send(file=discord.File(memeTemplatesPath + "output.png"))
+        await context.channel.send(
+            file=discord.File(meme_templates_path + "output.png")
+        )
         logging.info("Meme sent")
 
         # Delete user avatar and output
@@ -672,12 +708,13 @@ class memes(commands.Cog):
         create_meme(("tehc", "01"), avatarUrl, 140, (0, 0, 237, 7), True)
 
         # Send meme
-        await context.channel.send(file=discord.File(memeTemplatesPath + "output.png"))
+        await context.channel.send(
+            file=discord.File(meme_templates_path + "output.png")
+        )
         logging.info("Meme sent")
 
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
-
 
     @commands.command()
     async def palanca(self, context, *, user: discord.Member):
@@ -687,21 +724,31 @@ class memes(commands.Cog):
         author_avatar_url = context.author.avatar_url
 
         # Get parameter user avatar
-        parameter_user_avatar_url=user.avatar_url
-        var = "wget -O %s%s %s" % (memeTemplatesPath, "02.webp", parameter_user_avatar_url)
+        parameter_user_avatar_url = user.avatar_url
+        var = "wget -O %s%s %s" % (
+            meme_templates_path,
+            "02.webp",
+            parameter_user_avatar_url,
+        )
         os.system(var)
-        convert_pic(memeTemplatesPath + "02.webp", "02", 57)
+        convert_pic(meme_templates_path + "02.webp", "02", 57)
 
-        create_meme(("palanca", "01", "02"), author_avatar_url, 62, (0, 0, 240, 79,137,176), True)
+        create_meme(
+            ("palanca", "01", "02"),
+            author_avatar_url,
+            62,
+            (0, 0, 240, 79, 137, 176),
+            True,
+        )
 
         # Send meme
-        await context.channel.send(file=discord.File(memeTemplatesPath + "output.png"))
+        await context.channel.send(
+            file=discord.File(meme_templates_path + "output.png")
+        )
         logging.info("Meme sent")
 
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png", "02.png", "02.webp"))
-
-
 
     @commands.command()
     async def dankmeme(self, context):

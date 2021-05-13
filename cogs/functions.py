@@ -9,7 +9,8 @@ from dotenv import load_dotenv
 import praw
 import random
 from discord.ext import commands
-prefixes = ['fur ', 'Fur ', 'FUR ']
+
+prefixes = ["fur ", "Fur ", "FUR "]
 
 # .env data
 
@@ -21,12 +22,32 @@ magnet_id = int(os.getenv("MAGNET"))
 tests_channel = int(os.getenv("TESTS_CHANNEL"))
 
 
-
-
-
 # Variables
-species=['Cordero', 'Protogen', 'Lobo', 'Turiano', 'Zorro','Ampwave','Skull','Erizo','Murciélago','Híbrido','Gato','Dragón','Tortuga','Cabra']
-ranks=['Furrense Recien Llegado', 'Furrense Nuevo', 'Furrense Viejo','Furrense Veterano', 'Furrense de Oro', 'Furrense VIP','Furrense Legendario']
+species = [
+    "Cordero",
+    "Protogen",
+    "Lobo",
+    "Turiano",
+    "Zorro",
+    "Ampwave",
+    "Skull",
+    "Erizo",
+    "Murciélago",
+    "Híbrido",
+    "Gato",
+    "Dragón",
+    "Tortuga",
+    "Cabra",
+]
+ranks = [
+    "Furrense Recien Llegado",
+    "Furrense Nuevo",
+    "Furrense Viejo",
+    "Furrense Veterano",
+    "Furrense de Oro",
+    "Furrense VIP",
+    "Furrense Legendario",
+]
 
 separator = "       "  # key word to distinguish separator roles
 jojos = [
@@ -38,7 +59,7 @@ jojos = [
     "Gureto daze",
     "Yare yare daze",
     "Oh my God!",
-    "Nigerundayo!"
+    "Nigerundayo!",
 ]
 
 
@@ -49,15 +70,15 @@ bot = commands.Bot(command_prefix=prefixes, owner_id=int(creator))
 # Paths
 work_directory = "/home/teko/bots/furbot/"
 stickersPath = "stickers/"
-memeTemplatesPath = "memes_templates/"
+meme_templates_path = "resources/memes/"
 memePath = "memes/"
 enanasPath = "fun/enanas/"
 
 # Data files
-help_txt = "help.txt"
-insults_txt = "insults.txt"
-cumpleaños_txt = "cumpleaños.txt"
-reddit_memes_history_txt = "reddit_memes_history.txt"
+help_txt = "resources/help.txt"
+insults_txt = "resources/insults.txt"
+cumpleaños_txt = "resources/cumpleaños.txt"
+reddit_memes_history_txt = "resources/reddit_memes_history.txt"
 
 stickerSize = 500
 
@@ -70,8 +91,7 @@ reddit = praw.Reddit(
 
 
 def setup_logs():
-    """Set up the logs 
-    """
+    """Set up the logs"""
     logging.basicConfig(
         filename="logs",
         filemode="a",
@@ -82,7 +102,7 @@ def setup_logs():
     logging.info("\n\n\nStarted furbot")
 
 
-def get_user_avatar(user: discord.Member, name:str):
+def get_user_avatar(user: discord.Member, name: str):
     """Downloads the avatar of a user
 
     Args:
@@ -90,10 +110,12 @@ def get_user_avatar(user: discord.Member, name:str):
         name (str): user to download avatar from
     """
 
-    var = "wget -O %s%s %s" % (memeTemplatesPath, name+".webp", user.avatar_url)
+    var = "wget -O %s%s %s" % (meme_templates_path, name + ".webp", user.avatar_url)
     os.system(var)
 
-    logging.info("Saved avatar with url " + user.avatar_url + " in " + memeTemplatesPath)
+    logging.info(
+        "Saved avatar with url " + user.avatar_url + " in " + meme_templates_path
+    )
 
 
 def convert_pic(picture: str, imgName: str, imgSize: str = None):
@@ -111,7 +133,7 @@ def convert_pic(picture: str, imgName: str, imgSize: str = None):
         hsize = int((float(img.size[1]) * float(wpercent)))
         img = img.resize((imgSize, hsize), Image.ANTIALIAS)
 
-    img.save(memeTemplatesPath + imgName + ".png")
+    img.save(meme_templates_path + imgName + ".png")
 
 
 def get_user(context, user: discord.Member = None):
@@ -139,8 +161,8 @@ def delete_files(elements: list):
         elements (list): [files used in a meme]
     """
     for x in elements:
-        if os.path.isfile(memeTemplatesPath + x):
-            os.system("rm " + memeTemplatesPath + x)
+        if os.path.isfile(meme_templates_path + x):
+            os.system("rm " + meme_templates_path + x)
     logging.info("Removed dependencies")
 
 
@@ -157,32 +179,32 @@ def create_meme(
         invert (bool): [Si es True usa el meme como canvas, en caso contrario, usa el avatar]
     """
 
-    var = "wget -O %s%s %s" % (memeTemplatesPath, "01.webp", avatar_url)
+    var = "wget -O %s%s %s" % (meme_templates_path, "01.webp", avatar_url)
     os.system(var)
 
     # Convert avatar
-    convert_pic(memeTemplatesPath + "01.webp", "01", avatar_size)
+    convert_pic(meme_templates_path + "01.webp", "01", avatar_size)
 
     if not invert:  # burn
         canvas = pictures[1]
         width, height = (
-            Image.open(memeTemplatesPath + canvas + ".png").convert("RGBA").size
+            Image.open(meme_templates_path + canvas + ".png").convert("RGBA").size
         )
     else:  # cringe
         canvas = pictures[0]
         width, height = (
-            Image.open(memeTemplatesPath + canvas + ".png").convert("RGBA").size
+            Image.open(meme_templates_path + canvas + ".png").convert("RGBA").size
         )
 
     output = Image.new("RGBA", (width, height))  # Create picture
-    meme = Image.open(memeTemplatesPath + pictures[0] + ".png").convert(
+    meme = Image.open(meme_templates_path + pictures[0] + ".png").convert(
         "RGBA"
     )  # Open meme picture
 
     # Add avatar pictures
     i = 2
     for x in pictures[1:]:
-        img = Image.open(memeTemplatesPath + x + ".png").convert("RGBA")
+        img = Image.open(meme_templates_path + x + ".png").convert("RGBA")
         output.paste(img, (position[i], position[i + 1]), img)
         i += 2
 
@@ -190,7 +212,7 @@ def create_meme(
     output.paste(meme, (position[0], position[1]), meme)
 
     # Save final meme
-    output.save(memeTemplatesPath + "output.png", "PNG")
+    output.save(meme_templates_path + "output.png", "PNG")
 
 
 def create_video_meme(meme: str, user: discord.Member):
@@ -200,25 +222,25 @@ def create_video_meme(meme: str, user: discord.Member):
         meme (str): name of the video meme to put above
         user (discord.Member): user to put in the video
     """
-    get_user_avatar(user,"01")
-    convert_pic(picture=memeTemplatesPath + "01.webp", imgName="01", imgSize=1000)
+    get_user_avatar(user, "01")
+    convert_pic(picture=meme_templates_path + "01.webp", imgName="01", imgSize=1000)
 
     # Create video
     memeVideo = (
-        mp.VideoFileClip(memeTemplatesPath + meme + ".mp4")
+        mp.VideoFileClip(meme_templates_path + meme + ".mp4")
         .set_opacity(0.5)
         .set_pos(("center", "center"))
     )
 
     avatar = (
-        mp.ImageClip(memeTemplatesPath + "01" + ".png")
+        mp.ImageClip(meme_templates_path + "01" + ".png")
         .set_duration(memeVideo.duration)
         .resize(height=360)
         .set_pos(("center", "center"))
     )
 
     final_video = mp.CompositeVideoClip([avatar, memeVideo])
-    final_video.write_videofile(memeTemplatesPath + "output.mp4")
+    final_video.write_videofile(meme_templates_path + "output.mp4")
     final_video.close()
     delete_files(("01" + ".webp", "01" + ".png"))
 
@@ -276,10 +298,7 @@ def get_user_species(user: discord.Member):
     """
     mention = []
     for role in user.roles:
-        if (
-            role.name != "@everyone"
-            and str(role) in species
-        ):
+        if role.name != "@everyone" and str(role) in species:
             mention.append(role.name)
 
     b = ", ".join(mention)
@@ -347,12 +366,12 @@ def get_hot_subreddit_image(Subreddit: str, Limit: int):
     """
     output = random.choice([x for x in reddit.subreddit(Subreddit).hot(limit=Limit)])
 
-    while check_if_string_in_file("reddit_memes_history.txt", output.url):
+    while check_if_string_in_file(reddit_memes_history_txt, output.url):
         output = random.choice(
             [x for x in reddit.subreddit(Subreddit).hot(limit=Limit)]
         )
 
-    var = 'echo "' + output.url + ' " >> reddit_memes_history.txt'
+    var = 'echo "' + output.url + ' >> '+ reddit_memes_history_txt
     os.system(var)
 
     return output.url

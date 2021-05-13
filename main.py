@@ -4,13 +4,12 @@ from discord.ext import commands
 from dotenv import load_dotenv
 import os
 import setproctitle
-from cogs.functions import get_hot_subreddit_image, creator, setup_logs, general_channel, tests_channel, jojos
+from cogs.functions import get_hot_subreddit_image, creator, setup_logs, general_channel, tests_channel, jojos, cumpleaños_txt
 import logging
 from discord.ext import tasks
 import datetime
 import asyncio
 import random
-
 
 # Get info from .env
 load_dotenv()
@@ -73,7 +72,7 @@ async def on_command_error(context, error):
     if isinstance(error,commands.CommandNotFound):
         await context.send("Error: Comando no existente, escribe `fur help` para ver los comandos disponibles")
 
-@tasks.loop(seconds=55)
+@tasks.loop(minutes=1)
 async def dankmemes():
     now = datetime.datetime.now()
     if now.minute==0:
@@ -101,7 +100,7 @@ async def cumpleaños():
 
     if hour=='9' and minute=='0' and second=='0' :
         channel = bot.get_channel(general_channel)
-        file1 = open('cumpleaños.txt', 'r')
+        file1 = open(cumpleaños_txt, 'r')
         Lines = file1.readlines()
         for line in Lines:
             aux=line.split()
@@ -117,7 +116,7 @@ async def es_viernes():
     if datetime.datetime.today().weekday()==4 and datetime.datetime.now().time().hour==9 and datetime.datetime.now().time().minute==00:
         channel = bot.get_channel(int(os.getenv("GENERAL_CHANNEL")))
         logging.info("Es viernes sent")
-        await channel.send(file=discord.File("es_viernes.mp4"))
+        await channel.send(file=discord.File("resources/es_viernes.mp4"))
 
 
 # When a message is posted
@@ -128,16 +127,16 @@ async def on_message(message):
     Args:
         message ([discord.Message]): Message to check
     """
-    if message.content.lower() == 'owo':
-        await message.channel.send('OwO!')
-    if message.content.lower() == 'uwu':
-        await message.channel.send('UwU!')
-    if message.content.lower() == '7w7':
-        await message.channel.send(':eyes:')
-    if message.content.lower() == 'ewe':
-        await message.channel.send('EwE!')
-    if message.content.lower() == 'awa':
-        await message.channel.send('AwA!')
+#     if message.content.lower() == 'owo':
+        # await message.channel.send('OwO!')
+    # if message.content.lower() == 'uwu':
+        # await message.channel.send('UwU!')
+    # if message.content.lower() == '7w7':
+        # await message.channel.send(':eyes:')
+    # if message.content.lower() == 'ewe':
+        # await message.channel.send('EwE!')
+    # if message.content.lower() == 'awa':
+        # await message.channel.send('AwA!')
     if message.content.lower()=='ping':
         await message.channel.send('Estoy online')
     if 'jojo' in message.content.lower() and message.author!=bot.user:

@@ -3,8 +3,8 @@ import random
 import os
 from discord.ext import commands
 import logging
+from cogs.functions import insults_txt
 
-insultsPath = "insults.txt"
 
 
 class roast(commands.Cog):
@@ -107,7 +107,7 @@ class roast(commands.Cog):
         else:
             usuario = user.mention
         try:
-            with open(insultsPath) as f:
+            with open(insults_txt) as f:
                 insults = f.readlines()
 
             output = "{} %s " % (random.choice(insults))

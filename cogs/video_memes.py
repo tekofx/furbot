@@ -4,7 +4,7 @@ import time
 import wget
 from PIL import ImageFont, ImageDraw
 from sympy import symbols, solve
-from cogs.functions import memeTemplatesPath,memePath
+from cogs.functions import meme_templates_path,memePath
 import discord
 
 
@@ -26,7 +26,7 @@ class video_memes(commands.Cog):
         create_video_meme("españa", get_user(context, user))
 
         # Send meme
-        await context.channel.send(file=discord.File(memeTemplatesPath + "output.mp4"))
+        await context.channel.send(file=discord.File(meme_templates_path + "output.mp4"))
         logging.info("Meme sent")
 
         # Delete output
@@ -43,7 +43,7 @@ class video_memes(commands.Cog):
         create_video_meme("betis", get_user(context, user))
 
         # Send meme
-        await context.channel.send(file=discord.File(memeTemplatesPath + "output.mp4"))
+        await context.channel.send(file=discord.File(meme_templates_path + "output.mp4"))
         logging.info("Meme sent")
 
         # Delete output
@@ -57,7 +57,7 @@ class video_memes(commands.Cog):
         create_video_meme("communist", get_user(context, user))
 
         # Send meme
-        await context.channel.send(file=discord.File(memeTemplatesPath + "output.mp4"))
+        await context.channel.send(file=discord.File(meme_templates_path + "output.mp4"))
         logging.info("Meme sent")
 
         # Delete output
@@ -74,7 +74,7 @@ class video_memes(commands.Cog):
         create_video_meme("falange", get_user(context, user))
 
         # Send meme
-        await context.channel.send(file=discord.File(memeTemplatesPath + "output.mp4"))
+        await context.channel.send(file=discord.File(meme_templates_path + "output.mp4"))
         logging.info("Meme sent")
 
         # Delete output
@@ -89,7 +89,7 @@ class video_memes(commands.Cog):
         create_video_meme("aragon", get_user(context, user))
 
         # Send meme
-        await context.channel.send(file=discord.File(memeTemplatesPath + "output.mp4"))
+        await context.channel.send(file=discord.File(meme_templates_path + "output.mp4"))
         logging.info("Meme sent")
 
 
@@ -106,7 +106,7 @@ class video_memes(commands.Cog):
         create_video_meme("leon", get_user(context, user))
 
         # Send meme
-        await context.channel.send(file=discord.File(memeTemplatesPath + "output.mp4"))
+        await context.channel.send(file=discord.File(meme_templates_path + "output.mp4"))
         logging.info("Meme sent")
 
 
