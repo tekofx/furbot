@@ -126,7 +126,7 @@ class Fun(commands.Cog):
         await context.channel.send(output.format(usuario, num))
 
     @commands.command()
-    async def enana(self, context, arg: str = None, *, user: discord.Member = None):
+    async def enana(self, context, arg: str = None):
         """Elije una enana o consigue una aleatoria de forma totalmente gratuita
 
         Uso:
@@ -145,8 +145,9 @@ class Fun(commands.Cog):
             for filenames in os.listdir(enanasPath):
                 if arg.lower() in filenames.lower():
                     output = filenames
+                    break
                 
-                await context.channel.send(file=discord.File(enanasPath + output))
+            await context.channel.send(file=discord.File(enanasPath + output))
 
 
     @commands.command()
