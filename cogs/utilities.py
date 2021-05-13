@@ -151,9 +151,14 @@ class utilities(commands.Cog):
     @commands.command()
     async def rae(self, context, *, search: str):
         """Obtén la imagen de perfil de alguien"""
-        output=dle.search_by_word(search)
+        tmp = await context.channel.send("Buscando en la RAE")
 
-        await context.channel.send(output)
+        output=str(dle.search_by_word(search))
+
+        if '«Diccionario de la lengua española»' in output:
+            await tmp.edit(content='Termino no encontrado')
+        else:
+            await tmp.edit(content=output)
 
 
 def setup(bot):
