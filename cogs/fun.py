@@ -136,13 +136,18 @@ class Fun(commands.Cog):
 
         if arg == None:
             output = random.choice(os.listdir(enanasPath))
-            await context.channel.send(file=discord.File(enanasPath + output))
+            name=output.split('/')[-1] # Remove path
+            name=name[:-4] # Remove extension
+            
+            await context.channel.send(name, file=discord.File(enanasPath + output))
 
         else:
             for filenames in os.listdir(enanasPath):
                 if arg.lower() in filenames.lower():
                     output = filenames
-            await context.channel.send(file=discord.File(enanasPath + output))
+                
+                await context.channel.send(file=discord.File(enanasPath + output))
+
 
     @commands.command()
     async def enanalist(self, context):
