@@ -139,10 +139,10 @@ async def on_message(message):
         # await message.channel.send('AwA!')
     if message.content.lower()=='ping':
         await message.channel.send('Estoy online')
-    if 'jojo' in message.content.lower() and message.author!=bot.user:
+    if 'jojo' in message.content.lower() and message.author!=bot.user and 'fur' not in message.content.lower():
         output=random.choice(jojos)
         await message.channel.send(output)
-    if ('jojo' in message.content.lower() or 'jojos' in message.content.lower()) and message.author!=bot.user:
+    if ('jojo' in message.content.lower() or 'jojos' in message.content.lower()) and message.author!=bot.user and 'fur' not in message.content.lower():
         creator = await bot.fetch_user(int(creator_id))
         usr=await bot.fetch_user(int(usr1_id))   
         string = str(message.author) + " habló de jojos en este mensaje: " + message.jump_url
