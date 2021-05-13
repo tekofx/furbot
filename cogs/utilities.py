@@ -11,6 +11,7 @@ from PIL import Image
 from PIL import ImageFont
 from PIL import ImageDraw
 import qrcode
+from pyrae import dle
 
 
 class utilities(commands.Cog):
@@ -146,6 +147,13 @@ class utilities(commands.Cog):
         convert_pic(meme_templates_path + "01.webp", "01")
         await context.channel.send(file=discord.File(meme_templates_path + "01.png"))
         delete_files(("01.webp", "01.png"))
+
+    @commands.command()
+    async def rae(self, context, *, search: str):
+        """Obtén la imagen de perfil de alguien"""
+        output=dle.search_by_word(search)
+
+        await context.channel.send(output)
 
 
 def setup(bot):
