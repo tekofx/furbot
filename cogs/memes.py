@@ -1,12 +1,14 @@
 import random
 import textwrap
 import time
+import cowpy
 import wget
 from PIL import ImageFont, ImageDraw
 from sympy import symbols, solve
 from cogs.functions import *
 import discord
 import logging
+from cowpy import cow
 
 meme_templates_path = "resources/memes/"
 memePath = "memes/"
@@ -795,9 +797,11 @@ class memes(commands.Cog):
     @commands.command()
     async def cowsay(self, context, text:str):
         """Top memes de r/dankmemes"""
-        stream= os.popen('cowsay {}'.format(text)) 
+        cow_cls = cow.get_cow('default')
+        cheese = cow_cls()
+        msg = cheese.milk(text)
         output='```'
-        output+= stream.read()
+        output+= msg
         output+= '```'
 
         await context.channel.send(output)
