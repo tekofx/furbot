@@ -22,6 +22,7 @@ class memes(commands.Cog):
 
     @commands.command()
     async def addmeme(self, context, *, arg1):
+        """ Añade un meme al bot """
         meme_extension = "." + context.message.attachments[0].url.split(".")[-1]
         count = 1
 
@@ -545,7 +546,7 @@ class memes(commands.Cog):
     @commands.command()
     async def cute(self, context, *, user: discord.Member = None):
         """You are cute"""
-
+       
         # Get user avatar
         avatarUrl = get_user(context, user).avatar_url
 
@@ -580,6 +581,8 @@ class memes(commands.Cog):
 
     @commands.command()
     async def coding(self, context, *, user: discord.Member = None):
+        """Programa como un pro hacker
+        """
 
         # Get user avatar
         avatarUrl = get_user(context, user).avatar_url
