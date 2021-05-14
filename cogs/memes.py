@@ -792,6 +792,16 @@ class memes(commands.Cog):
         await context.channel.send(get_top_reddit_image("dankmemes", 10))
         await message.delete()
 
+    @commands.command()
+    async def cowsay(self, context, text:str):
+        """Top memes de r/dankmemes"""
+        stream= os.popen('cowsay {}'.format(text)) 
+        output='```'
+        output+= stream.read()
+        output+= '```'
+
+        await context.channel.send(output)
+
 
 def setup(bot):
     bot.add_cog(memes(bot))
