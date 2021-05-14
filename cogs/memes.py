@@ -794,9 +794,24 @@ class memes(commands.Cog):
         await message.delete()
 
     @commands.command()
-    async def cowsay(self, context, text: str):
-        """Top memes de r/dankmemes"""
-        cow_cls = cow.get_cow("default")
+    async def cowsay(self, context, text: str, character:str=None):
+        """Una vaca dice cosas
+        
+         Uso:
+            fur cowsay <texto>: Vaca dice <texto>
+            fur cowsay <texto> <personaje>: <personaje> dice <texto>
+
+            Characters:
+            beavis budfrogs bunny cheese cower daemon dragonandcow eyes flamingsheep ghostbusters 
+            hellokitty kiss kitty koala kosh lukekoala 
+            mechandcow meow milk moofasa moose mutilated ren satanic sheep skeleton small 
+            squirrel stegosaurus stimpy supermilker surgery threeeyes 
+            turkey turtle tux udder vader vaderkoala www 
+        """
+        if character==None:
+            cow_cls = cow.get_cow("default")
+        else:
+            cow_cls = cow.get_cow(character)
         cheese = cow_cls()
         msg = cheese.milk(text)
         output = "```"
