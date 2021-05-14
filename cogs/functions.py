@@ -71,8 +71,8 @@ bot = commands.Bot(command_prefix=prefixes, owner_id=int(creator))
 work_directory = "/home/teko/bots/furbot/"
 stickersPath = "stickers/"
 meme_templates_path = "resources/memes/"
-memePath = "memes/"
-enanasPath = "fun/enanas/"
+meme_path = "memes/"
+enanas_path = "fun/enanas/"
 
 # Data files
 help_txt = "resources/help.txt"
@@ -371,7 +371,7 @@ def get_hot_subreddit_image(Subreddit: str, Limit: int):
             [x for x in reddit.subreddit(Subreddit).hot(limit=Limit)]
         )
 
-    var = 'echo "' + output.url + ' >> '+ reddit_memes_history_txt
+    var = 'echo "' + output.url + " >> " + reddit_memes_history_txt
     os.system(var)
 
     return output.url

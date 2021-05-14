@@ -11,7 +11,7 @@ import logging
 from cowpy import cow
 
 meme_templates_path = "resources/memes/"
-memePath = "memes/"
+meme_path = "memes/"
 
 
 class memes(commands.Cog):
@@ -39,13 +39,13 @@ class memes(commands.Cog):
 
         # Count the number to add to the name
         if meme_extension == ".png" or meme_extension == ".jpg":
-            for x in os.listdir(memePath):
+            for x in os.listdir(meme_path):
                 aux2 = x.split(" (", 1)
                 if "jpg" in aux2[1] and aux2[0] == arg1:
                     count = count + 1
 
         if meme_extension == ".mp4":
-            for x in os.listdir(memePath):
+            for x in os.listdir(meme_path):
                 aux2 = x.split(" (", 1)
                 if "mp4" in x and aux2[0] == arg1:
                     count = count + 1
@@ -60,7 +60,7 @@ class memes(commands.Cog):
         meme_url = context.message.attachments[0].url
         var = (
             "wget -O "
-            + memePath
+            + meme_path
             + '"'
             + meme_name
             + '"'
@@ -71,15 +71,15 @@ class memes(commands.Cog):
         os.system(var)
 
         if meme_extension == ".png":
-            im = Image.open(memePath + meme_name + meme_extension)
+            im = Image.open(meme_path + meme_name + meme_extension)
             rgb_im = im.convert("RGB")
             meme_extension = ".jpg"
-            rgb_im.save(memePath + meme_name + meme_extension)
-            os.remove(memePath + meme_name + ".png")
+            rgb_im.save(meme_path + meme_name + meme_extension)
+            os.remove(meme_path + meme_name + ".png")
 
-        old = memePath + meme_name + meme_extension
+        old = meme_path + meme_name + meme_extension
         newname = meme_name.replace("_", " ")
-        new = memePath + newname + meme_extension
+        new = meme_path + newname + meme_extension
         os.rename(old, new)
         logging.info("Meme " + newname + " added by" + str(context.author))
         await context.channel.send("Meme " + arg1 + " añadido")
@@ -103,12 +103,12 @@ class memes(commands.Cog):
             fur meme <nombre>-->Meme random de <nombre>
         """
         if name == None:
-            output = random.choice(os.listdir(memePath))
-            await context.channel.send(file=discord.File(memePath + output))
+            output = random.choice(os.listdir(meme_path))
+            await context.channel.send(file=discord.File(meme_path + output))
 
         else:
             uwu = []
-            for filenames in os.listdir(memePath):
+            for filenames in os.listdir(meme_path):
                 if name.lower() in filenames.lower():
                     uwu.append(filenames)
             # check if exists a meme with the filters
@@ -140,7 +140,7 @@ class memes(commands.Cog):
 
                 # Check if there are any memes with the name
 
-            await context.channel.send(file=discord.File(memePath + output))
+            await context.channel.send(file=discord.File(meme_path + output))
         logging.info("Meme sent")
 
     @commands.command()
@@ -752,7 +752,6 @@ class memes(commands.Cog):
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png", "02.png", "02.webp"))
 
-
     @commands.command()
     async def tren(self, context, *, user: discord.Member):
         """Tehc"""
@@ -795,14 +794,14 @@ class memes(commands.Cog):
         await message.delete()
 
     @commands.command()
-    async def cowsay(self, context, text:str):
+    async def cowsay(self, context, text: str):
         """Top memes de r/dankmemes"""
-        cow_cls = cow.get_cow('default')
+        cow_cls = cow.get_cow("default")
         cheese = cow_cls()
         msg = cheese.milk(text)
-        output='```'
-        output+= msg
-        output+= '```'
+        output = "```"
+        output += msg
+        output += "```"
 
         await context.channel.send(output)
 

@@ -4,7 +4,7 @@ import time
 import wget
 from PIL import ImageFont, ImageDraw
 from sympy import symbols, solve
-from cogs.functions import meme_templates_path,memePath
+from cogs.functions import meme_templates_path,meme_path
 import discord
 
 

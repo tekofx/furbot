@@ -3,7 +3,7 @@ from discord.ext import commands
 import random
 import os
 import logging
-from cogs.functions import cracker_id, creator, magnet_id, enanasPath
+from cogs.functions import cracker_id, creator, magnet_id, enanas_path
 
 
 class Fun(commands.Cog):
@@ -135,26 +135,25 @@ class Fun(commands.Cog):
         """
 
         if arg == None:
-            output = random.choice(os.listdir(enanasPath))
-            name=output.split('/')[-1] # Remove path
-            name=name[:-4] # Remove extension
-            
-            await context.channel.send(name, file=discord.File(enanasPath + output))
+            output = random.choice(os.listdir(enanas_path))
+            name = output.split("/")[-1]  # Remove path
+            name = name[:-4]  # Remove extension
+
+            await context.channel.send(name, file=discord.File(enanas_path + output))
 
         else:
-            for filenames in os.listdir(enanasPath):
+            for filenames in os.listdir(enanas_path):
                 if arg.lower() in filenames.lower():
                     output = filenames
                     break
-                
-            await context.channel.send(file=discord.File(enanasPath + output))
 
+            await context.channel.send(file=discord.File(enanas_path + output))
 
     @commands.command()
     async def enanalist(self, context):
 
         """Lista todas las enanas existentes"""
-        output = os.listdir(enanasPath)
+        output = os.listdir(enanas_path)
         output[:] = [s.replace(".png", "") for s in output]
         output[:] = [s.replace("'", "") for s in output]
         await context.channel.send(output)
