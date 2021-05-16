@@ -38,6 +38,7 @@ species = [
     "Dragón",
     "Tortuga",
     "Cabra",
+    "Paloma",
 ]
 ranks = [
     "Furrense Recien Llegado",
