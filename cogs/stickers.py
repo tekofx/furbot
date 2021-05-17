@@ -72,7 +72,11 @@ class stickers(commands.Cog):
             await context.channel.send(file=discord.File(stickerName))
             logging.info("Sticker " + sticker + " sent")
         else:
+            
+
             await context.channel.send("No existe el sticker " + sticker)
+            if sticker=='list':
+                await context.channel.send("Prueba con `fur list`")
             logging.error("Sticker " + sticker + " does not exist")
 
 
