@@ -638,7 +638,7 @@ class memes(commands.Cog):
     async def quien(
         self, context, text1: str, text2: str, *, user: discord.Member = None
     ):
-        """Este drama está interesante"""
+        """Quien ha sido?"""
         Y = 20
         Y_aux = 10
 
@@ -757,7 +757,7 @@ class memes(commands.Cog):
 
     @commands.command()
     async def tren(self, context, *, user: discord.Member):
-        """Tehc"""
+        """Atropella gente con un tren""
 
         # Get author avatar url
         author_avatar_url = context.author.avatar_url
