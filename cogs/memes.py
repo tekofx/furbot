@@ -757,7 +757,7 @@ class memes(commands.Cog):
 
     @commands.command()
     async def tren(self, context, *, user: discord.Member):
-        """Atropella gente con un tren""
+        """Atropella gente con un tren"""
 
         # Get author avatar url
         author_avatar_url = context.author.avatar_url
