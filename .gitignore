@@ -5,7 +5,7 @@ cogs/__pycache__/
 .vscode/
 .env
 logs
-cumpleaños.txt
-reddit_memes_history.txt
 __pycache__/main.cpython-37.pyc
-reddit_memes_history.txt
+resources/cumpleaños.txt
+resources/memes_history.txt
+resources/reddit_memes_history.txt
