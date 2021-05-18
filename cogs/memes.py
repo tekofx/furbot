@@ -106,7 +106,7 @@ class memes(commands.Cog):
 
 
         # If all memes have been sent, delete history
-        if count_files_in_dir(meme_path)==count_lines_in_file(memes_history_txt)
+        if count_files_in_dir(meme_path) == count_lines_in_file(memes_history_txt):
             with open(memes_history_txt, "w"):
                 pass
         
