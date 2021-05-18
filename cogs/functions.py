@@ -61,6 +61,9 @@ jojos = [
     "Yare yare daze",
     "Oh my God!",
     "Nigerundayo!",
+    "Moshi moshi? Doppio deshu",
+    "Mezametamae waga arujitachi yo!",
+    "Kono Giorno Giovanna niwa yume ga aru",
 ]
 
 
