@@ -400,13 +400,10 @@ def check_if_string_in_file(file_name: str, string: str):
 def count_lines_in_file(file:str):
     # FIXME: Count lines excepting last one
     # TODO: Add documentation
-    file = open(file,"r")
     output=0
-    content = file.read()
-    lines = content.split("\n")
-    for i in lines:
-        if i:
-            output += 1
+    with open(file, 'r') as f:
+        for line in f:
+            output+=1
     return output 
 
 def count_files_in_dir(directory:str):
