@@ -145,11 +145,11 @@ def get_user(context, user: discord.Member = None):
     """Gets user from a message
 
     Args:
-        context ([Message]): [Message to get an avatar]
-        user (discord.Member, optional): [User of a message]. Defaults to None.
+        context (Message): Message to get an avatar
+        user (discord.Member, optional): User of a message. Defaults to None.
 
     Returns:
-        [str]: [user]
+        str: user
     """
     if user == None:
         output = context.author
@@ -163,7 +163,7 @@ def delete_files(elements: list):
     """Delete files needed to create a meme
 
     Args:
-        elements (list): [files used in a meme]
+        elements (list): files used in a meme
     """
     for x in elements:
         if os.path.isfile(meme_templates_path + x):
@@ -177,11 +177,11 @@ def create_meme(
     """Crea un meme
 
     Args:
-        pictures (list): [lista de imagenes, siendo pictures[0] el meme y el resto avatares]
-        avatar_url (str): [url del avatar a añadir al meme]
-        avatar_size (int): [tamañao al que convertir el avatar de webp a png]
-        position (list): [posiciones en las que colocar las imagenes, siendo position[0] y position[1] la x,y del meme]
-        invert (bool): [Si es True usa el meme como canvas, en caso contrario, usa el avatar]
+        pictures (list): lista de imagenes, siendo pictures[0] el meme y el resto avatares
+        avatar_url (str): url del avatar a añadir al meme
+        avatar_size (int): tamañao al que convertir el avatar de webp a png
+        position (list): posiciones en las que colocar las imagenes, siendo position[0] y position[1] la x,y del meme
+        invert (bool): Si es True usa el meme como canvas, en caso contrario, usa el avatar
     """
 
     var = "wget -O %s%s %s" % (meme_templates_path, "01.webp", avatar_url)
@@ -254,10 +254,10 @@ def get_user_ranks(user: discord.Member):
     """Get ranks from a user
 
     Args:
-        user (discord.Member): [user to search for roles]
+        user (discord.Member): user to search for roles]
 
     Returns:
-        [str]: [String containing all ranks]
+        str]: String containing all ranks]
     """
     output = []
     for role in user.roles:
@@ -274,10 +274,10 @@ def get_user_roles(user: discord.Member):
     """Get user roles that are not ranks
 
     Args:
-        user (discord.Member): [user to search for roles]
+        user (discord.Member): user to search for roles
 
     Returns:
-        [str]: [String containing roles]
+        str: String containing roles
     """
     mention = []
     for role in user.roles:
@@ -296,10 +296,10 @@ def get_user_species(user: discord.Member):
     """Get user roles that are species
 
     Args:
-        user (discord.Member): [user to search for roles]
+        user (discord.Member): user to search for roles
 
     Returns:
-        [str]: [String containing roles]
+        str: String containing roles
     """
     mention = []
     for role in user.roles:
@@ -315,10 +315,10 @@ def is_owner(context):
     """Checks if user that calls a function is the bot creator
 
     Args:
-        context ([discord.ext.commands.context.Context]): [context of the function]
+        context (discord.ext.commands.context.Context): context of the function
 
     Returns:
-        [bool]: [true if is owner, false if not]
+        bool: true if is owner, false if not
     """
     if context.author.id == int(creator):
         return True
@@ -330,12 +330,12 @@ def get_reddit_image(Subreddit: str, Flair: str, Filter: str):
     """Gets a random Reddit image
 
     Args:
-        Subreddit (str): [subreddit to get the photo from]
-        Flair (str): [flair to filter by]
-        Filter (str): [filter to search by]
+        Subreddit (str): subreddit to get the photo from
+        Flair (str): flair to filter by
+        Filter (str): filter to search by
 
     Returns:
-        [str]: [url from a reddit image]
+        str: url from a reddit image
     """
     try:
         var = True
@@ -363,11 +363,11 @@ def get_hot_subreddit_image(Subreddit: str, Limit: int):
     """Get an image from a subreddit in hot
 
     Args:
-        Subreddit (str): [Subreddit to search for]
-        Limit (int): [Limit to search in subreddit]
+        Subreddit (str): Subreddit to search for
+        Limit (int): Limit to search in subreddit
 
     Returns:
-        [str]: [link to image]
+        str: link to image
     """
     output = random.choice([x for x in reddit.subreddit(Subreddit).hot(limit=Limit)])
 
@@ -386,11 +386,11 @@ def check_if_string_in_file(file_name: str, string: str):
     """Checks if string is contained as line in file_name
 
     Args:
-        file_name ([str]): [file to check]
-        string ([str]): [string to search]
+        file_name (str]): file to check
+        string (str): string to search
 
     Returns:
-        [bool]: [True if string is in file_name, False if not]
+        bool: True if string is in file_name, False if not
     """
     with open(file_name, "r") as file:
         for line in file:
@@ -398,8 +398,14 @@ def check_if_string_in_file(file_name: str, string: str):
                 return True
     return False
 def count_lines_in_file(file:str):
-    # FIXME: Count lines excepting last one
-    # TODO: Add documentation
+    """Counts lines of a file
+
+    Args:
+        file (str): file to count lines from
+
+    Returns:
+        int: number of lines
+    """
     output=0
     with open(file, 'r') as f:
         for line in f:
@@ -407,7 +413,14 @@ def count_lines_in_file(file:str):
     return output 
 
 def count_files_in_dir(directory:str):
-    # TODO: Add documentation
+    """ Counts files in a directory
+
+    Args:
+        directory (str): directory to count files from
+
+    Returns:
+        int: number of files in directory
+    """
     list = os.listdir(directory) # dir is your directory path
     output = len(list)
     return output 
