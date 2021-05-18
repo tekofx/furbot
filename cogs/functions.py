@@ -83,6 +83,7 @@ help_txt = "resources/help.txt"
 insults_txt = "resources/insults.txt"
 cumpleaños_txt = "resources/cumpleaños.txt"
 reddit_memes_history_txt = "resources/reddit_memes_history.txt"
+memes_history_txt="resources/memes_history.txt"
 
 stickerSize = 500
 
@@ -396,3 +397,20 @@ def check_if_string_in_file(file_name: str, string: str):
             if string in line:
                 return True
     return False
+def count_lines_in_file(file:str):
+    # FIXME: Count lines excepting last one
+    # TODO: Add documentation
+    file = open(file,"r")
+    output=0
+    content = file.read()
+    lines = content.split("\n")
+    for i in lines:
+        if i:
+            output += 1
+    return output 
+
+def count_files_in_dir(directory:str):
+    # TODO: Add documentation
+    list = os.listdir(directory) # dir is your directory path
+    output = len(list)
+    return output 
