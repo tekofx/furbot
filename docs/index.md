@@ -1,8 +1,8 @@
 ## Furbot - Bot para Villafurrense
-<button name="Módulos" onclick="modulos.md">Módulos</button>
-<button name="Módulos" onclick="comandos.md">Comandos</button>
+<button name="Módulos" onclick=https://tekofx.github.io/furbot/comandos>Módulos</button>
+<button name="Módulos" onclick=https://tekofx.github.io/furbot/modulos>Comandos</button>
 
-![Demo](../assets/demo.gif)
+![Demo](https://github.com/Tekofx/furbot/blob/main/assets/demo.gif)
 
 Para obtener ayuda sobre los comandos:
 fur help
