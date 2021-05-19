@@ -3,7 +3,9 @@ Bot para el servidor de Villafurrense
 
 ![Demo](assets/demo.gif)
 
-## Requisitos:
-Para instalar los requisitos :
+Para obtener ayuda sobre los comandos:
+fur help
 
-`pip3 install pillow qrcode moviepy praw discordpy`
+
+para ayuda sobre una categoria o comaando:
+`fur help <categoria/comando>`
