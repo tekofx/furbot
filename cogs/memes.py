@@ -836,5 +836,24 @@ class memes(commands.Cog):
         await context.channel.send(output)
 
 
+    @commands.command()
+    async def slap(self, context, *, user: discord.Member = None):
+        """slap"""
+
+        # Get user avatar
+        avatarUrl = get_user(context, user).avatar_url
+
+        create_meme(("slap", "01"), avatarUrl, 160, (0, 0, 120, 88), True)
+
+        # Send meme
+        await context.channel.send(
+            file=discord.File(meme_templates_path + "output.png")
+        )
+        logging.info("Meme sent")
+
+        # Delete user avatar and output
+        delete_files(("01.webp", "output.png", "01.png"))
+
+
 def setup(bot):
     bot.add_cog(memes(bot))
