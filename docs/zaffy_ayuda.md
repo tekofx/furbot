@@ -40,6 +40,6 @@
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Para toda esta ayuda, solo debes escribir el comando [fur help] o [fur info]. Si algo no va bien, @Teko o dm 
+ Si algo no va bien, @Teko o dm 
 ,-'Zaffy'-,
 ```
