@@ -1,3 +1,7 @@
+[Inicio](https://tekofx.github.io/furbot/)
+[Modulos](https://tekofx.github.io/furbot/modulos)   
+[Comandos](https://tekofx.github.io/furbot/comandos)
+
 ## Zaffy ayuda
 
 ```css
