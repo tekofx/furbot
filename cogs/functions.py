@@ -66,7 +66,7 @@ jojos = [
     "Kono Giorno Giovanna niwa yume ga aru",
     "Yes I am!",
     "Sunlight Yellow Overdrive!",
-    "Goodbye Jojo"
+    "Goodbye Jojo",
     "Oi Josuke",
     "Yo Angelo",
     "Star Finger!",
