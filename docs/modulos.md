@@ -3,12 +3,12 @@ Furbot tiene varios módulos que se pueden quitar, a excepción de [functions](h
 mayor parte de las funciones y dependencias que utilizan el resto de módulos.
 
 Los módulos son:
-- administration
-- animal
-- fun
-- functions
-- memes
-- roast
-- stickers
-- utilities
-- video_memes
+- **administration**: Para administrar funciones del bot
+- **animal**: Imágenes de animales
+- **fun**: Comandos divertidos
+- **functions**: Funciones y dependencias
+- **memes**: Para crear memes y enviar
+- **roast**: Para insultar y meterse con la gente
+- **stickers**: Añadir y enviar stickers
+- **utilities**: Utilidades varias como numeros al azar
+- **video_memes**: <span style="color:red">No operativo</span>.
