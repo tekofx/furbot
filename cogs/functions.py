@@ -72,6 +72,10 @@ jojos = [
     "Star Finger!",
     "Za Warudo!",
     "Rodarola Da!",
+    "Yes yes yes yes, YES!",
+    "Ora ora ora ora ora ora ora ora",
+    "Muda muda muda muda muda muda muda",
+    "Ari ari ari ari ari ari ari    Arivederci",
 ]
 
 
