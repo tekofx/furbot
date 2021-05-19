@@ -64,6 +64,14 @@ jojos = [
     "Moshi moshi? Doppio deshu",
     "Mezametamae waga arujitachi yo!",
     "Kono Giorno Giovanna niwa yume ga aru",
+    "Yes I am!",
+    "Sunlight Yellow Overdrive!",
+    "Goodbye Jojo"
+    "Oi Josuke",
+    "Yo Angelo",
+    "Star Finger!",
+    "Za Warudo!",
+    "Rodarola Da!",
 ]
 
 
@@ -254,10 +262,10 @@ def get_user_ranks(user: discord.Member):
     """Get ranks from a user
 
     Args:
-        user (discord.Member): user to search for roles]
+        user (discord.Member): user to search for roles
 
     Returns:
-        str]: String containing all ranks]
+        str: String containing all ranks
     """
     output = []
     for role in user.roles:
