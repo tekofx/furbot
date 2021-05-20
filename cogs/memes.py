@@ -154,7 +154,7 @@ class memes(commands.Cog):
                 # Check if there are any memes with the name
 
             await context.channel.send(file=discord.File(meme_path + output))
-        logging.info("Meme sent")
+        logging.info("Meme "+output+ " sent")
 
     @commands.command()
     async def trauma(self, context, *, user: discord.Member = None):
