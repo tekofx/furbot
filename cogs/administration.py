@@ -17,32 +17,7 @@ class Administration(commands.Cog):
         await context.channel.send(general)
         f.close()
 
-    @commands.command(name="rm")
-    @commands.check(is_owner)
-    async def remove_sticker(self, context, sticker):
-        """[ADMIN] Borra un sticker"""
-        os.system("rm " + stickersPath + sticker + ".png")
-        logging.info("Sticker " + sticker + " deleted")
-        await context.channel.send("Sticker " + sticker + " eliminado")
-
-    @commands.command(name="edit")
-    @commands.check(is_owner)
-    async def edit_sticker(self, context, sticker_before, sticker_after):
-        """[ADMIN] Cambia nombre a un sticker"""
-        os.system(
-            "mv "
-            + stickersPath
-            + sticker_before
-            + ".png "
-            + stickersPath
-            + sticker_after
-            + ".png"
-        )
-        logging.info("Sticker " + sticker_before + " edited")
-        await context.channel.send(
-            "Cambiado nombre del sticker " + sticker_before + " a " + sticker_after
-        )
-
+    
     @commands.command(name='activity')
     @commands.check(is_owner)
     async def change_activity(self, context, activity_test:str, activity:str):
