@@ -160,6 +160,25 @@ class utilities(commands.Cog):
         else:
             await tmp.edit(content=output)
 
+    @commands.check(is_owner)
+    @commands.command()
+    async def addcumple(self, context, birthday:str, user: discord.Member):
+        """Añade el cumpleaños de alguien al bot
+        
+        Uso:
+            fur addcumple <dia>-<mes> @<usuario>
+        
+        Ejemplo:
+            fur addcumple 16-01 @Teko
+        """
+        birthday=birthday.split('-')
+        birthday=birthday[1]+'-'+birthday[0]
+        f = open(cumpleaños_txt, "a")
+        f.write('\n'+birthday+' '+str(user.id)+' '+str(user.name))
+        f.close()
+        logging.info('Added birthday of '+user.name+': '+birthday)
+        await context.channel.send('Añadido cumpleaños de '+user.name)
+
 
 def setup(bot):
     bot.add_cog(utilities(bot))
