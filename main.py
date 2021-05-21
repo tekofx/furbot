@@ -4,7 +4,7 @@ from discord.ext import commands
 from dotenv import load_dotenv
 import os
 import setproctitle
-from cogs.functions import get_hot_subreddit_image, creator, setup_logs, general_channel, tests_channel, jojos, cumpleaños_txt
+from cogs.functions import get_hot_subreddit_image, creator, get_user, setup_logs, general_channel, tests_channel, jojos, cumpleaños_txt
 import logging
 from discord.ext import tasks
 import datetime
@@ -105,8 +105,9 @@ async def cumpleaños():
         for line in Lines:
             aux=line.split()
             if now==str(aux[0]) :
-                await channel.send("Es el cumple de "+ aux[1]+'. Felicidades!!!!!!!!!')
-                logging.info('Birthday of '+aux[1])
+                user = await bot.fetch_user(int(aux[1]))
+                await channel.send("Es el cumple de "+ user.mention +'. Felicidades!!!!!!!!!')
+                logging.info('Birthday of '+user.name)
 
 
 @tasks.loop(seconds=45)

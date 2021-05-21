@@ -436,3 +436,15 @@ def count_files_in_dir(directory:str):
     list = os.listdir(directory) # dir is your directory path
     output = len(list)
     return output 
+
+
+def get_user(user_id:int):
+    """Return user for a id
+
+    Args:
+        user_id (int): id of user
+
+    Returns:
+        [discord.user]: user
+    """
+    return bot.get_user(user_id)
