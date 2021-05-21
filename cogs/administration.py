@@ -9,12 +9,6 @@ class Administration(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command()
-    async def version(self, context, user: discord.Member = None):
-        embed = discord.Embed(title="FurBot", description="El mejor bot furro")
-        embed.add_field(name="Version", value="V 2.0", inline=False)
-        await context.channel.send(embed=embed)
-
     @commands.command(name="info")
     async def help(self, context, user: discord.Member = None):
         """Muestra la info de Zaffy"""
