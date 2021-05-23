@@ -72,15 +72,14 @@ class stickers(commands.Cog):
             await context.channel.send(file=discord.File(stickerName))
             logging.info("Sticker " + sticker + " sent")
         else:
-            
 
             await context.channel.send("No existe el sticker " + sticker)
-            if sticker=='list':
+            if sticker == "list":
                 await context.channel.send("Prueba con `fur list`")
             logging.error("Sticker " + sticker + " does not exist")
 
     @commands.command(name="rm")
-    @commands.check(is_owner)
+    @commands.check(is_admin)
     async def remove_sticker(self, context, sticker):
         """[ADMIN] Borra un sticker"""
         os.system("rm " + stickersPath + sticker + ".png")
@@ -88,7 +87,7 @@ class stickers(commands.Cog):
         await context.channel.send("Sticker " + sticker + " eliminado")
 
     @commands.command(name="edit")
-    @commands.check(is_owner)
+    @commands.check(is_admin)
     async def edit_sticker(self, context, sticker_before, sticker_after):
         """[ADMIN] Cambia nombre a un sticker"""
         os.system(
@@ -104,7 +103,6 @@ class stickers(commands.Cog):
         await context.channel.send(
             "Cambiado nombre del sticker " + sticker_before + " a " + sticker_after
         )
-
 
 
 # Resize and image and save it as png

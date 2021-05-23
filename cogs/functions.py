@@ -20,6 +20,7 @@ cracker_id = int(os.getenv("CRACKER"))
 general_channel = int(os.getenv("GENERAL_CHANNEL"))
 magnet_id = int(os.getenv("MAGNET"))
 tests_channel = int(os.getenv("TESTS_CHANNEL"))
+zaffy_id=int(os.getenv("ZAFFY"))
 
 
 # Variables
@@ -104,6 +105,9 @@ jojos = [
     "Muda muda muda muda muda muda muda",
     "Ari ari ari ari ari ari ari    Arivederci",
 ]
+
+
+admin=[magnet_id,creator,zaffy_id]
 
 
 # Create bot
@@ -368,7 +372,7 @@ def get_user_color(user: discord.Member):
 
 
 def get_color_code(color: str):
-    """ Gets the color code of a given color
+    """Gets the color code of a given color
 
     Args:
         color (str): color to search color_code
@@ -376,20 +380,20 @@ def get_color_code(color: str):
     Returns:
         list(str): contains values of RGB
     """
-    count=0
+    count = 0
     for i in colors:
-        if i==color:
+        if i == color:
             break
-        count=count+1
+        count = count + 1
 
-    output=color_codes[count].split(' ')
+    output = color_codes[count].split(" ")
     output[:] = list(map(int, output))
     return output
 
 
-# checks if message author is owner of the bot
-def is_owner(context):
-    """Checks if user that calls a function is the bot creator
+
+def is_admin(context):
+    """Checks if user that calls a function is a bot admin
 
     Args:
         context (discord.ext.commands.context.Context): context of the function
@@ -397,7 +401,7 @@ def is_owner(context):
     Returns:
         bool: true if is owner, false if not
     """
-    if context.author.id == int(creator):
+    if context.author.id in admin:
         return True
     else:
         return False
