@@ -126,7 +126,7 @@ class utilities(commands.Cog):
             await context.channel.send(
                 file=discord.File(meme_templates_path + "output.png")
             )
-        else:
+        if design=='2':
             W =1100
 
             # Open carnet design to draw
