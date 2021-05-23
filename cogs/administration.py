@@ -20,17 +20,19 @@ class Administration(commands.Cog):
     
     @commands.command(name='activity')
     @commands.check(is_owner)
-    async def change_activity(self, context, activity_name:str, activity:str):
-        """ Cambiar actividad del bot 
+    async def change_activity(self, context, activity_name:str, activity:str=None):
+        """ [Admin] Cambiar actividad del bot 
         """
-        if activity.lower()=='watching':
-            await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=activity_name))
-        elif activity.lower()=='streaming':
-            await self.bot.change_presence(activity=discord.Streaming(name="My Stream", url=activity_name))
-        elif activity.lower()=='listening':
-            await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=activity_name))
-        else:
+        if activity==None:
             await self.bot.change_presence(activity=discord.Game(name=activity_name))
+        else:
+            if activity.lower()=='watching':
+                await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=activity_name))
+            if activity.lower()=='streaming':
+                await self.bot.change_presence(activity=discord.Streaming(name="My Stream", url=activity_name))
+            if activity.lower()=='listening':
+                await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=activity_name))
+            
 
         await context.channel.send("Cambiada actividad a "+activity_name)
  
