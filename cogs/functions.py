@@ -50,6 +50,33 @@ ranks = [
     "Furrense Legendario",
 ]
 
+colors = [
+    "amarillo",
+    "celeste",
+    "negro",
+    "rosa",
+    "verde",
+    "rojo",
+    "naranja",
+    "azul",
+    "morado",
+    "azul oscuro",
+    "blanco",
+]
+color_codes = [
+    "241 196 15",
+    "9 173 173",
+    "5 4 4",
+    "228 11 194",
+    "15 199 29",
+    "197 10 12",
+    "211 82 13",
+    "10 92 199",
+    "114 18 172",
+    "14 12 150",
+    "253 253 253",
+]
+
 separator = "       "  # key word to distinguish separator roles
 jojos = [
     "Kono DIO da!",
@@ -95,7 +122,7 @@ help_txt = "resources/help.txt"
 insults_txt = "resources/insults.txt"
 cumpleaños_txt = "resources/cumpleaños.txt"
 reddit_memes_history_txt = "resources/reddit_memes_history.txt"
-memes_history_txt="resources/memes_history.txt"
+memes_history_txt = "resources/memes_history.txt"
 
 stickerSize = 500
 
@@ -322,6 +349,44 @@ def get_user_species(user: discord.Member):
     return b
 
 
+def get_user_color(user: discord.Member):
+    """Get user role that is a color
+
+    Args:
+        user (discord.Member): user to search for color
+
+    Returns:
+        str: String with color
+    """
+    output = "blanco"
+    for role in user.roles:
+        if role.name in colors:
+            output = role.name
+            break
+
+    return str(output)
+
+
+def get_color_code(color: str):
+    """ Gets the color code of a given color
+
+    Args:
+        color (str): color to search color_code
+
+    Returns:
+        list(str): contains values of RGB
+    """
+    count=0
+    for i in colors:
+        if i==color:
+            break
+        count=count+1
+
+    output=color_codes[count].split(' ')
+    output[:] = list(map(int, output))
+    return output
+
+
 # checks if message author is owner of the bot
 def is_owner(context):
     """Checks if user that calls a function is the bot creator
@@ -409,7 +474,9 @@ def check_if_string_in_file(file_name: str, string: str):
             if string in line:
                 return True
     return False
-def count_lines_in_file(file:str):
+
+
+def count_lines_in_file(file: str):
     """Counts lines of a file
 
     Args:
@@ -418,14 +485,15 @@ def count_lines_in_file(file:str):
     Returns:
         int: number of lines
     """
-    output=0
-    with open(file, 'r') as f:
+    output = 0
+    with open(file, "r") as f:
         for line in f:
-            output+=1
-    return output 
+            output += 1
+    return output
 
-def count_files_in_dir(directory:str):
-    """ Counts files in a directory
+
+def count_files_in_dir(directory: str):
+    """Counts files in a directory
 
     Args:
         directory (str): directory to count files from
@@ -433,18 +501,6 @@ def count_files_in_dir(directory:str):
     Returns:
         int: number of files in directory
     """
-    list = os.listdir(directory) # dir is your directory path
+    list = os.listdir(directory)  # dir is your directory path
     output = len(list)
-    return output 
-
-
-def get_user(user_id:int):
-    """Return user for a id
-
-    Args:
-        user_id (int): id of user
-
-    Returns:
-        [discord.user]: user
-    """
-    return bot.get_user(user_id)
+    return output

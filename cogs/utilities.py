@@ -4,7 +4,6 @@ from discord.ext import commands
 import asyncio
 import random
 from cogs.functions import *
-import wget
 import os
 from cogs.functions import *
 from PIL import Image
@@ -48,38 +47,25 @@ class utilities(commands.Cog):
         await asyncio.sleep(0.2)
         await tmp.edit(content="Numero aletorio: " + num)
 
-    #     @commands.command()
-    # async def carnet(self,context, *,user : discord.Member=None):
-    # """Muestra tu carnet como miembro de Villa Furrense
-    # """
-
-    # # Get user info
-    # usr=get_user(context, user)
-    # name=usr.display_name
-    # rango=get_user_ranks(usr)
-    # roles=get_user_roles(usr)
-    # fecha=str(usr.joined_at)
-    # fecha=fecha.split()
-
-    # # Add fields
-    # embed=discord.Embed(title="Carnet Villafurrense", color=0x0f8af5)
-    # embed.set_author(name=usr, icon_url=usr.avatar_url)
-    # embed.set_thumbnail(url=usr.avatar_url)
-    # embed.add_field(name="Nombre", value=name, inline=False)
-    # embed.add_field(name="Fecha de entrada", value=fecha[0], inline=False)
-    # embed.add_field(name="Rango", value=rango, inline=False)
-    # embed.add_field(name="Roles", value=roles, inline=False)
-    # await context.channel.send(embed=embed)
 
     @commands.command()
-    async def carnet(self, context, *, user: discord.Member = None):
-        """Muestra tu carnet como miembro de Villa Furrense"""
+    async def carnet(self, context, *, design:str=None ,user: discord.Member = None):
+        """Muestra tu carnet como miembro de Villa Furrense
+        
+        Uso: 
+            fur carnet <usuario>: Muestra carnet por defecto
+            fur carnet <diseño> <usuario>: Muestra carnet con diseño concreto
+            
+        Diseños: 1,2
+        """
         # Get user info
         usr = get_user(context, user)
         name = usr.display_name
         species = get_user_species(usr)
         rank = get_user_ranks(usr)
         roles = get_user_roles(usr)
+        color=get_user_color(usr)
+        color=get_color_code(color)
         date = str(usr.joined_at)
         date = date.split()
         date=date[0].split('-')
@@ -105,39 +91,93 @@ class utilities(commands.Cog):
         # Get user avatar
         var = "wget -O %s%s %s" % (meme_templates_path, "01" + ".webp", usr.avatar_url)
         os.system(var)
-        convert_pic(meme_templates_path + "01.webp", "01", 300)
+        convert_pic(meme_templates_path + "01.webp", "01", 1000)
         user_avatar = meme_templates_path + "01.png"
         avatar = Image.open(user_avatar)
 
-        # Open carnet to draw
-        output = Image.open("resources/utilities/carnet.png").convert("RGBA")
-        draw = ImageDraw.Draw(output)
-        font = ImageFont.truetype(meme_templates_path + "Calibri.ttf", 40)
 
-        # Draw name
-        draw.text(((425, 266)), name, font=font, fill=(0, 0, 0, 255))
+        if design==None or design=='1':
+            # Open carnet to draw
+            output = Image.open("resources/utilities/carnet.png").convert("RGBA")
+            draw = ImageDraw.Draw(output)
+            font = ImageFont.truetype(meme_templates_path + "Calibri.ttf", 40)
 
-        # Draw species
-        draw.text(((425, 388)), species, font=font, fill=(0, 0, 0, 255))
+            # Draw name
+            draw.text(((425, 266)), name, font=font, fill=(0, 0, 0, 255))
 
-        # Draw rank
-        draw.text(((425, 518)), rank, font=font, fill=(0, 0, 0, 255))
+            # Draw species
+            draw.text(((425, 388)), species, font=font, fill=(0, 0, 0, 255))
 
-        # Draw time in server
-        draw.text(((425, 646)), date, font=font, fill=(0, 0, 0, 255))
+            # Draw rank
+            draw.text(((425, 518)), rank, font=font, fill=(0, 0, 0, 255))
 
-        # Add avatar
-        output.paste(avatar, (50, 250))
+            # Draw time in server
+            draw.text(((425, 646)), date, font=font, fill=(0, 0, 0, 255))
 
-        # Add qrcode
-        output.paste(img, (1030, 250))
+            # Add avatar
+            avatar=avatar.resize((300,300))
+            output.paste(avatar, (50, 250))
 
-        # Save carnet
-        output.save(meme_templates_path + "output.png", "PNG")
-        await context.channel.send(
-            file=discord.File(meme_templates_path + "output.png")
-        )
-        delete_files(("01.webp", "output.png", "01.png"))
+            # Add qrcode
+            output.paste(img, (1030, 250))
+
+            # Save carnet
+            output.save(meme_templates_path + "output.png", "PNG")
+            await context.channel.send(
+                file=discord.File(meme_templates_path + "output.png")
+            )
+        else:
+            W =1100
+
+            # Open carnet design to draw
+            carnet_design = Image.open("resources/utilities/carnet2.png").convert("RGBA")
+            draw = ImageDraw.Draw(carnet_design)
+            font = ImageFont.truetype(meme_templates_path + "Calibri.ttf", 60)
+            font_bold = ImageFont.truetype(meme_templates_path + "Calibri_bold.ttf", 65)
+          
+            # Add avatar
+            avatar=avatar.resize((400,400))
+            carnet_design.paste(avatar, (380, 150))
+
+            # Draw name
+            w, h = draw.textsize(name,font=font)
+            size=W-w
+            draw.text((size/2,576), name, font=font_bold, fill=(0, 0, 0, 255))
+            
+            # Draw rank
+            w, h = draw.textsize(rank, font=font)
+            size=W-w
+            draw.text((size/2, 670), rank, font=font, fill=(73, 73, 73, 255))
+
+            # Draw species
+            w, h = draw.textsize(species,font=font)
+            size=W-w
+            draw.text((size/2, 765), species, font=font, fill=(0, 0, 0, 255))
+
+            # Draw time in server
+            w, h = draw.textsize(date,font=font)
+            size=W-w
+            draw.text((size/2, 873), date, font=font, fill=(0, 0, 0, 255))
+
+            # Add qrcode
+            img = img.resize((430, 430))
+            carnet_design.paste(img, (350, 1084))
+
+            # Add color to carnet
+            output = Image.new('RGB', (1100, 1700), (color[0], color[1], color[2]))
+            output.paste(carnet_design,(0,0),carnet_design)
+
+            # Save carnet
+            output.save(meme_templates_path + "output.png", "PNG")
+            await context.channel.send(
+                file=discord.File(meme_templates_path + "output.png")
+            )
+
+
+
+        
+        #delete_files(("01.webp", "output.png", "01.png"))
+
 
     @commands.command()
     async def avatar(self, context, *, user: discord.Member = None):
@@ -149,6 +189,7 @@ class utilities(commands.Cog):
         convert_pic(meme_templates_path + "01.webp", "01")
         await context.channel.send(file=discord.File(meme_templates_path + "01.png"))
         delete_files(("01.webp", "01.png"))
+
 
     @commands.command()
     async def rae(self, context, *, search: str):
@@ -165,7 +206,7 @@ class utilities(commands.Cog):
     @commands.check(is_owner)
     @commands.command()
     async def addcumple(self, context, birthday:str, user: discord.Member):
-        """Añade el cumpleaños de alguien al bot
+        """[Admin] Añade el cumpleaños de alguien al bot
         
         Uso:
             fur addcumple <dia>-<mes> @<usuario>
