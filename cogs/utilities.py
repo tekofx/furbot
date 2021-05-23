@@ -78,11 +78,12 @@ class utilities(commands.Cog):
         usr = get_user(context, user)
         name = usr.display_name
         species = get_user_species(usr)
-        rango = get_user_ranks(usr)
-        print(species)
+        rank = get_user_ranks(usr)
         roles = get_user_roles(usr)
-        fecha = str(usr.joined_at)
-        fecha = fecha.split()
+        date = str(usr.joined_at)
+        date = date.split()
+        date=date[0].split('-')
+        date=date[2]+'-'+date[1]+'-'+date[0]
 
         # Create qr code
         qr_text = (
@@ -93,17 +94,17 @@ class utilities(commands.Cog):
             + species
             + "\n"
             + "Rango: "
-            + rango
+            + rank
             + "\n"
             + "Fecha: "
-            + fecha[0]
+            + date
         )
         img = qrcode.make(qr_text)
         img = img.resize((250, 250))
 
+        # Get user avatar
         var = "wget -O %s%s %s" % (meme_templates_path, "01" + ".webp", usr.avatar_url)
         os.system(var)
-        # get_user_avatar(usr,'01')
         convert_pic(meme_templates_path + "01.webp", "01", 300)
         user_avatar = meme_templates_path + "01.png"
         avatar = Image.open(user_avatar)
@@ -120,10 +121,10 @@ class utilities(commands.Cog):
         draw.text(((425, 388)), species, font=font, fill=(0, 0, 0, 255))
 
         # Draw rank
-        draw.text(((425, 518)), rango, font=font, fill=(0, 0, 0, 255))
+        draw.text(((425, 518)), rank, font=font, fill=(0, 0, 0, 255))
 
         # Draw time in server
-        draw.text(((425, 646)), fecha[0], font=font, fill=(0, 0, 0, 255))
+        draw.text(((425, 646)), date, font=font, fill=(0, 0, 0, 255))
 
         # Add avatar
         output.paste(avatar, (50, 250))
@@ -131,6 +132,7 @@ class utilities(commands.Cog):
         # Add qrcode
         output.paste(img, (1030, 250))
 
+        # Save carnet
         output.save(meme_templates_path + "output.png", "PNG")
         await context.channel.send(
             file=discord.File(meme_templates_path + "output.png")
