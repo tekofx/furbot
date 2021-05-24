@@ -3,7 +3,7 @@ import random
 import os
 from discord.ext import commands
 import logging
-from cogs.functions import insults_txt, magnet_id
+from cogs.functions import insults_txt, is_admin, magnet_id
 
 
 
@@ -121,6 +121,16 @@ class roast(commands.Cog):
             await context.channel.send(output.format(usuario))
         except:
             logging.error("Error at getting insults.txt")
+
+    @commands.check(is_admin)
+    @commands.command()
+    async def addinsult(self, context, *insults:str):
+        f = open(insults_txt, "a")
+        for insult in insults:
+            insult=insult.replace('"','')
+            f.write("\n"+insult)
+        f.close()
+        await context.channel.send("Insulto/s añadido/s")
 
 
 def setup(bot):
