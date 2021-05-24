@@ -3,7 +3,7 @@ import random
 import os
 from discord.ext import commands
 import logging
-from cogs.functions import insults_txt
+from cogs.functions import insults_txt, magnet_id
 
 
 
@@ -59,6 +59,13 @@ class roast(commands.Cog):
         """Teko puto"""
         await context.channel.send("Teko puto")
 
+    @commands.command()
+    async def tecute(self, context):
+        """Teko cute"""
+        if context.author.id==magnet_id:
+            await context.channel.send("Teko cute")
+        else:
+            await context.channel.send("Teko NO cute")
     @commands.command()
     async def teodio(self, context, *, user: discord.Member = None):
         """Muestra tu odio al bot"""
