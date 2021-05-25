@@ -508,3 +508,10 @@ def count_files_in_dir(directory: str):
     list = os.listdir(directory)  # dir is your directory path
     output = len(list)
     return output
+
+def exists_file(file:str, directory:str):
+    output=False
+    list = os.listdir(directory)
+    if file in list:
+        output=True
+    return output

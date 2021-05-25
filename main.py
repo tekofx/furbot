@@ -4,7 +4,7 @@ from discord.ext import commands
 from dotenv import load_dotenv
 import os
 import setproctitle
-from cogs.functions import get_hot_subreddit_image, creator, get_user, setup_logs, general_channel, tests_channel, jojos, cumpleaños_txt
+from cogs.functions import *
 import logging
 from discord.ext import tasks
 import datetime
@@ -67,10 +67,16 @@ async def on_command_error(context, error):
         context ([type]): [Where the command was used]
         error ([type]): [Error of the command]
     """
+    message_content=str(context.message.content)
+    message_content=message_content.split(' ')
+
     if isinstance(error, commands.MissingRequiredArgument):
         await context.send("Error: Faltan parámetros, escribe `fur help <comando>` para ver ayuda sobre ese comando")
     if isinstance(error,commands.CommandNotFound):
         await context.send("Error: Comando no existente, escribe `fur help` para ver los comandos disponibles")
+    if exists_file(message_content[1]+'.png', stickersPath):
+        await context.send("Igual quisiste usar un sticker con `fur s "+message_content[1]+'`')
+
 
 @tasks.loop(minutes=1)
 async def dankmemes():
@@ -148,6 +154,10 @@ async def on_message(message):
         usr=await bot.fetch_user(int(usr1_id))   
         string = str(message.author) + " habló de jojos en este mensaje: " + message.jump_url
         await creator.send(string)
+        await usr.send(string)
+    if 'teko' in message.content.lower() and 'cute' in message.content.lower() and message.author!=bot.user :
+        usr=await bot.fetch_user(int(usr1_id))   
+        string = str(message.author) + " dijo Teko cute en este mensaje: " + message.jump_url
         await usr.send(string)
 
     await bot.process_commands(message)
