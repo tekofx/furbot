@@ -3,7 +3,7 @@ import random
 import os
 from discord.ext import commands
 import logging
-from cogs.functions import insults_txt, is_admin, magnet_id
+from cogs.functions import insults_txt, is_admin, magnet_id, animos_txt
 
 
 
@@ -131,6 +131,34 @@ class roast(commands.Cog):
             f.write(insult+"\n")
         f.close()
         await context.channel.send("Insulto/s añadido/s")
+
+
+    @commands.command()
+    async def animo(self, context, *, user: discord.Member = None):
+        """Anima a la gente
+        """
+        if user == None:
+            usuario = context.author.mention
+        else:
+            usuario = user.mention
+        try:
+            with open(animos_txt) as f:
+                animos = f.readlines()
+
+            output = "{} %s " % (random.choice(animos))
+            await context.channel.send(output.format(usuario))
+        except:
+            logging.error("Error at getting animos.txt")
+
+    @commands.check(is_admin)
+    @commands.command()
+    async def addanimo(self, context, *animos:str):
+        f = open(animos_txt, "a")
+        for animo in animos:
+            animo=animo.replace('"','')
+            f.write(animo+"\n")
+        f.close()
+        await context.channel.send("animo/s añadido/s")
 
 
 def setup(bot):
