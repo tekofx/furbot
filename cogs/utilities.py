@@ -212,7 +212,7 @@ class utilities(commands.Cog):
         birthday = birthday.split("-")
         birthday = birthday[1] + "-" + birthday[0]
         f = open(cumpleaños_txt, "a")
-        f.write("\n" + birthday + " " + str(user.id) + " " + str(user.name))
+        f.write(birthday + " " + str(user.id) + " " + str(user.name)+"\n" )
         f.close()
         logging.info("Added birthday of " + user.name + ": " + birthday)
         await context.channel.send("Añadido cumpleaños de " + user.name)
