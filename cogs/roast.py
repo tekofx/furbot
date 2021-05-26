@@ -128,7 +128,7 @@ class roast(commands.Cog):
         f = open(insults_txt, "a")
         for insult in insults:
             insult=insult.replace('"','')
-            f.write("\n"+insult)
+            f.write(insult+"\n")
         f.close()
         await context.channel.send("Insulto/s añadido/s")
 
