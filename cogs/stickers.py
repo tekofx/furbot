@@ -78,12 +78,11 @@ class stickers(commands.Cog):
             # If sticker is confused with meme
             for command in self.bot.commands:
                 if sticker == command.name:
-                    await context.send("Igual quisiste usar el comando `fur "+sticker +'`')
-                    break
+                    raise commands.CommandError("confused_sticker_meme",sticker)
             
             # If command fur list is wrong used
             if sticker == "list":
-                await context.channel.send("Prueba con `fur list`")
+                raise commands.CommandError("use_list_as_sticker")
             logging.error("Sticker " + sticker + " does not exist")
 
     @commands.command(name="rm")

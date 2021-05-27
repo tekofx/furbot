@@ -128,9 +128,26 @@ async def on_command_error(context, error):
     if isinstance(error,commands.CommandNotFound):
         await context.send("Error: Comando no existente, escribe `fur help` para ver los comandos disponibles")
     
+
+    ############### Sticker errors ###################
     # Wrong use of add_sticker
     if exists_file(message_content[1]+'.png', stickersPath):
         await context.send("Igual quisiste usar un sticker con `fur s "+message_content[1]+'`')
+    
+    # Confuse sticker and meme
+    if error.args[0]=='confused_sticker_meme':
+        await context.send("Igual quisiste usar el comando `fur "+error.args[1] +'`')
+
+    # Use list as sticker
+    if error.args[0]=='use_list_as_sticker':
+        await context.send("Prueba con `fur list`")
+
+
+
+
+
+
+
 
 
 # When a message is posted
