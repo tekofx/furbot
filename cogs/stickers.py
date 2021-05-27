@@ -74,6 +74,14 @@ class stickers(commands.Cog):
         else:
 
             await context.channel.send("No existe el sticker " + sticker)
+
+            # If sticker is confused with meme
+            for command in self.bot.commands:
+                if sticker == command.name:
+                    await context.send("Igual quisiste usar el comando `fur "+sticker +'`')
+                    break
+            
+            # If command fur list is wrong used
             if sticker == "list":
                 await context.channel.send("Prueba con `fur list`")
             logging.error("Sticker " + sticker + " does not exist")
