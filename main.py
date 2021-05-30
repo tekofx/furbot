@@ -169,7 +169,7 @@ async def on_message(message):
     # if message.content.lower() == 'awa':
         # await message.channel.send('AwA!')
     if message.content.lower()=='ping':
-        await message.channel.send('Estoy online')
+        await message.channel.send('pam trucu trucu')
     if 'jojo' in message.content.lower() and message.author!=bot.user and 'fur' not in message.content.lower():
         output=random.choice(jojos)
         await message.channel.send(output)
