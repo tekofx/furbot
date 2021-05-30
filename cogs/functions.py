@@ -126,6 +126,7 @@ help_txt = "resources/help.txt"
 insults_txt = "resources/insults.txt"
 cumpleaños_txt = "resources/cumpleaños.txt"
 reddit_memes_history_txt = "resources/reddit_memes_history.txt"
+animos_txt="resources/animos.txt"
 memes_history_txt = "resources/memes_history.txt"
 
 stickerSize = 500
