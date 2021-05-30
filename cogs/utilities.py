@@ -65,10 +65,13 @@ class utilities(commands.Cog):
         roles = get_user_roles(usr)
         color = get_user_color(usr)
         color = get_color_code(color)
-        date = str(usr.joined_at)
-        date = date.split()
-        date = date[0].split("-")
-        date = date[2] + "-" + date[1] + "-" + date[0]
+        if usr.id==magnet_id:
+            date="24-01-2021"
+        else:
+            date = str(usr.joined_at)
+            date = date.split()
+            date = date[0].split("-")
+            date = date[2] + "-" + date[1] + "-" + date[0]
 
         # Create qr code
         qr_text = (
