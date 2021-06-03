@@ -687,7 +687,7 @@ class memes(commands.Cog):
         delete_files(("01.webp", "output.png", "01.png", "output2.png"))
 
     @commands.command()
-    async def cojones(self, context, *, user: discord.Member):
+    async def cojones(self, context, text:str,*, user: discord.Member):
         """Si, los cojones"""
 
         # Get user avatar
@@ -705,9 +705,20 @@ class memes(commands.Cog):
             ("cojones", "01", "02"), avatarUrl, 175, (0, 0, 185, 431, 218, 6), True
         )
 
+        # Add text to image
+        img = Image.open(meme_templates_path + "output" + ".png").convert("RGBA")
+        txtPic = Image.new("RGBA", (600, 300))
+        draw = ImageDraw.Draw(txtPic)
+        font = ImageFont.truetype(meme_templates_path + "Calibri.ttf", 45)
+ 
+        draw.text(((10, 10)), text, font=font, fill=(0, 0, 0, 255))
+        img.paste(txtPic, (720, 560), txtPic)
+
+        img.save(meme_templates_path + "output2.png", "PNG")
+
         # Send meme
         await context.channel.send(
-            file=discord.File(meme_templates_path + "output.png")
+            file=discord.File(meme_templates_path + "output2.png")
         )
         logging.info("Meme sent")
 
