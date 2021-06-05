@@ -9,6 +9,7 @@ from cogs.functions import *
 import discord
 import logging
 from cowpy import cow
+import unicodedata
 
 meme_templates_path = "resources/memes/"
 meme_path = "memes/"
@@ -28,15 +29,22 @@ class memes(commands.Cog):
 
         # Remove "
         arg1 = arg1.replace('"', "")
-
-        # Order names in case they are not in order
-        names = arg1.split()
-        names.sort()
-        arg1 = " ".join(names)
+       
+        # Remove accents
+        arg1 = unicodedata.normalize('NFD', arg1)
+        arg1 = arg1.encode('ascii', 'ignore')
+        arg1 = arg1.decode("utf-8")
 
         # Capitalize all names
-        arg1.lower()
+        arg1=arg1.lower()
         arg1 = arg1.title()
+
+        # split into a list
+        names = arg1.split()
+        
+        # Order names in case they are not in order
+        names=sorted(names)
+        arg1 = " ".join(names)
 
         # Count the number to add to the name
         if meme_extension == ".png" or meme_extension == ".jpg":
