@@ -48,12 +48,12 @@ class utilities(commands.Cog):
         await tmp.edit(content="Numero aletorio: " + num)
 
     @commands.command()
-    async def carnet(self, context, *, design: str = None, user: discord.Member = None):
+    async def carnet(self, context, *,  user: discord.Member = None, design: str = None):
         """Muestra tu carnet como miembro de Villa Furrense
 
         Uso:
             fur carnet <usuario>: Muestra carnet por defecto
-            fur carnet <diseño> <usuario>: Muestra carnet con diseño concreto
+            fur carnet <usuario> <diseño>: Muestra carnet con diseño concreto
 
         Diseños: 1,2
         """
