@@ -3,7 +3,6 @@ import discord
 from discord.ext import commands
 import asyncio
 import random
-from cogs.functions import *
 import os
 from cogs.functions import *
 from PIL import Image
@@ -48,12 +47,13 @@ class utilities(commands.Cog):
         await tmp.edit(content="Numero aletorio: " + num)
 
     @commands.command()
-    async def carnet(self, context, *,  user: discord.Member = None, design: str = None):
+    async def carnet(self, context, design: str = None, user: discord.Member = None):
         """Muestra tu carnet como miembro de Villa Furrense
 
         Uso:
-            fur carnet <usuario>: Muestra carnet por defecto
-            fur carnet <usuario> <diseño>: Muestra carnet con diseño concreto
+            fur carnet: Muestra tu carnet por defecto
+            fur carnet <diseño>: Muestra tu carnet con diseño <diseño>
+            fur carnet <diseño> <usuario>: Muestra carnet de <usuario> con diseño <diseño>
 
         Diseños: 1,2
         """
