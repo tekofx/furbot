@@ -158,16 +158,16 @@ async def on_message(message):
     Args:
         message ([discord.Message]): Message to check
     """
-#     if message.content.lower() == 'owo':
-        # await message.channel.send('OwO!')
-    # if message.content.lower() == 'uwu':
-        # await message.channel.send('UwU!')
-    # if message.content.lower() == '7w7':
-        # await message.channel.send(':eyes:')
-    # if message.content.lower() == 'ewe':
-        # await message.channel.send('EwE!')
-    # if message.content.lower() == 'awa':
-        # await message.channel.send('AwA!')
+    if message.content.lower() == 'owo':
+        await message.channel.send('OwO!')
+    if message.content.lower() == 'uwu':
+        await message.channel.send('UwU!')
+    if message.content.lower() == '7w7':
+        await message.channel.send(':eyes:')
+    if message.content.lower() == 'ewe':
+        await message.channel.send('EwE!')
+    if message.content.lower() == 'awa':
+        await message.channel.send('AwA!')
     if message.content.lower()=='ping':
         await message.channel.send('pam trucu trucu')
     if 'jojo' in message.content.lower() and message.author!=bot.user and 'fur' not in message.content.lower():
