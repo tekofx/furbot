@@ -10,6 +10,7 @@ from PIL import ImageFont
 from PIL import ImageDraw
 import qrcode
 from pyrae import dle
+from cogs.functions import bot
 
 
 class utilities(commands.Cog):
@@ -47,16 +48,29 @@ class utilities(commands.Cog):
         await tmp.edit(content="Numero aletorio: " + num)
 
     @commands.command()
-    async def carnet(self, context, design: str = None, user: discord.Member = None):
+    async def carnet(self, context, *args):
         """Muestra tu carnet como miembro de Villa Furrense
 
         Uso:
             fur carnet: Muestra tu carnet por defecto
             fur carnet <diseño>: Muestra tu carnet con diseño <diseño>
-            fur carnet <diseño> <usuario>: Muestra carnet de <usuario> con diseño <diseño>
+            fur carnet <usuario> : Muestra carnet por defecto de <usuario> 
+            fur carnet <usuario> <diseño>: Muestra carnet con diseño <diseño> de <usuario> 
+
 
         Diseños: 1,2
         """
+
+        user=None
+        design=None
+        for arg in args:
+            if "@" in arg:
+                arg= int(arg.strip('<@!>'))
+                user=context.guild.get_member(arg)
+            else:
+                design=arg
+
+        
         # Get user info
         usr = get_user(context, user)
         name = usr.display_name
