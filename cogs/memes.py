@@ -91,7 +91,7 @@ class memes(commands.Cog):
         new = meme_path + newname + meme_extension
         os.rename(old, new)
         logging.info("Meme " + newname + " added by" + str(context.author))
-        await context.channel.send("Meme " + arg1 + " añadido")
+        await context.channel.send("Meme " + newname + " añadido")
 
     """
     type: can be video or image
