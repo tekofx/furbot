@@ -142,6 +142,9 @@ async def on_command_error(context, error):
     if error.args[0]=='use_list_as_sticker':
         await context.send("Prueba con `fur list`")
 
+    if isinstance(error, commands.CheckFailure):
+        await context.send("Error: No tienes permiso para usar este comando")
+
 
 
 
