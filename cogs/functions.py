@@ -459,7 +459,7 @@ def get_hot_subreddit_image(Subreddit: str, Limit: int):
             [x for x in reddit.subreddit(Subreddit).hot(limit=Limit)]
         )
 
-    var = 'echo "' + output.url + " >> " + reddit_memes_history_txt
+    var = 'echo ' + output.url + ' >> ' + reddit_memes_history_txt
     os.system(var)
 
     return output.url
