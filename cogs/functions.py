@@ -465,6 +465,7 @@ def get_hot_subreddit_image(Subreddit: str, Limit: int):
     return output.url
 
 
+############################### Files functions ###############################
 def check_if_string_in_file(file_name: str, string: str):
     """Checks if string is contained as line in file_name
 
@@ -512,8 +513,53 @@ def count_files_in_dir(directory: str):
     return output
 
 def exists_file(file:str, directory:str):
+    """ Checks if exists a file with a given name
+
+    Args:
+        file (str): name of the file
+        directory (str): folder to search for file
+
+    Returns:
+        [Bool]: true if exists, false if not
+    """
     output=False
     list = os.listdir(directory)
     if file in list:
         output=True
+    return output
+
+def exists_file_with_substring(substring:str, directory:str):
+    output=False
+    list = os.listdir(directory)
+    for file in list:
+        if substring in file:
+            output=True
+    return output
+
+def get_files_in_directory(directory:str):
+    """Get a list of files in a directory
+
+    Args:
+        directory (str): directory to search
+
+    Returns:
+        [list]: list of files in dir
+    """
+    return os.listdir(directory)
+
+def get_files_in_directory_with_substring(substring:str,directory:str):
+    """Get a list of files in a directory that contain a substring
+
+    Args:
+        directory (str): directory to search
+
+    Returns:
+        [list]: list of files in dir
+    """
+    output=''
+    list = os.listdir(directory)
+    for file in list:
+        if substring in file:
+            output+=str(file[:-4])+', '
+    output=output[:-2]
     return output

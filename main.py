@@ -120,6 +120,7 @@ async def on_command_error(context, error):
     message_content=str(context.message.content)
     message_content=message_content.split(' ')
     command_used=message_content[1]
+    arg1=message_content[2]
 
     # Argument missing
     if isinstance(error, commands.MissingRequiredArgument):
@@ -142,9 +143,8 @@ async def on_command_error(context, error):
         await context.send("Error: No tienes permiso para usar este comando")
         
     
-
     ############### Sticker errors ###################
-    # Wrong use of add_sticker
+    # Forgot to add s
     if exists_file(message_content[1]+'.png', stickersPath):
         await context.send("Igual quisiste usar un sticker con `fur s "+message_content[1]+'`')
     
@@ -156,12 +156,9 @@ async def on_command_error(context, error):
     if error.args[0]=='use_list_as_sticker':
         await context.send("Prueba con `fur list`")
 
-
-
-
-
-
-
+    # Wrong name of sticker
+    if error.args[0]=='wrong_sticker_name':
+        await context.send("Igual qusiste alguno de estos stickers: "+get_files_in_directory_with_substring(arg1,stickersPath))
 
 
 

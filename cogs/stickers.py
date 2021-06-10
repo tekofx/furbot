@@ -80,6 +80,9 @@ class stickers(commands.Cog):
                 if sticker == command.name:
                     raise commands.CommandError("confused_sticker_meme",sticker)
             
+            if exists_file_with_substring(sticker,stickersPath):
+                raise commands.CommandError("wrong_sticker_name",sticker)
+            
             # If command fur list is wrong used
             if sticker == "list":
                 raise commands.CommandError("use_list_as_sticker")
