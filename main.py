@@ -1,6 +1,7 @@
 import discord
 from discord import activity
 from discord.ext import commands
+from discord.flags import MessageFlags
 from dotenv import load_dotenv
 import os
 import setproctitle
@@ -8,7 +9,6 @@ from cogs.functions import *
 import logging
 from discord.ext import tasks
 import datetime
-import asyncio
 import random
 
 # Get info from .env
@@ -119,6 +119,7 @@ async def on_command_error(context, error):
     """
     message_content=str(context.message.content)
     message_content=message_content.split(' ')
+    command_used=message_content[1]
 
     # Argument missing
     if isinstance(error, commands.MissingRequiredArgument):
@@ -127,10 +128,19 @@ async def on_command_error(context, error):
     # Command does not exist
     if isinstance(error,commands.CommandNotFound):
         await context.send("Error: Comando no existente, escribe `fur help` para ver los comandos disponibles")
-    
+        
+        # Check if exists a similar command
+        output='Igual quisiste usar alguno de estos comandos:\n'
+        for command in bot.commands:
+            if command_used in str(command):
+                output+=str(command)+', '
+        if output!='Igual quisiste usar alguno de estos comandos:\n':
+            await context.send(output)
+
     # Not admin access
     if isinstance(error, commands.CheckFailure):
         await context.send("Error: No tienes permiso para usar este comando")
+        
     
 
     ############### Sticker errors ###################
