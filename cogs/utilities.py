@@ -190,7 +190,7 @@ class utilities(commands.Cog):
                 file=discord.File(meme_templates_path + "output.png")
             )
 
-        # delete_files(("01.webp", "output.png", "01.png"))
+        delete_files(("01.webp", "output.png", "01.png"))
 
     @commands.command()
     async def avatar(self, context, *, user: discord.Member = None):
