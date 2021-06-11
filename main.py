@@ -96,9 +96,12 @@ async def on_ready():
     dankmemes.start()
     es_viernes.start()
     cumpleaños.start()
-    with open(activity_txt) as f:
-        aux = f.readline()
-    await bot.change_presence(status=status, activity=discord.Game(name=aux))
+    try:
+        with open(activity_txt) as f:
+            aux = f.readline()
+        await bot.change_presence(status=status, activity=discord.Game(name=aux))
+    except:
+        logging.error("Error: activity.txt not found")
 
 
 @bot.event
