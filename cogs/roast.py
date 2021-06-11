@@ -125,12 +125,16 @@ class roast(commands.Cog):
     @commands.check(is_admin)
     @commands.command()
     async def addinsult(self, context, *insults:str):
-        f = open(insults_txt, "a")
-        for insult in insults:
-            insult=insult.replace('"','')
-            f.write(insult+"\n")
-        f.close()
-        await context.channel.send("Insulto/s añadido/s")
+        try:
+            f = open(insults_txt, "a")
+            for insult in insults:
+                insult=insult.replace('"','')
+                f.write(insult+"\n")
+            f.close()
+            await context.channel.send("Insulto/s añadido/s")
+        except:
+            logging.error("Error at getting insults.txt")
+
 
 
     @commands.command()
@@ -153,12 +157,16 @@ class roast(commands.Cog):
     @commands.check(is_admin)
     @commands.command()
     async def addanimo(self, context, *animos:str):
-        f = open(animos_txt, "a")
-        for animo in animos:
-            animo=animo.replace('"','')
-            f.write(animo+"\n")
-        f.close()
-        await context.channel.send("animo/s añadido/s")
+        try:
+            f = open(animos_txt, "a")
+            for animo in animos:
+                animo=animo.replace('"','')
+                f.write(animo+"\n")
+            f.close()
+            await context.channel.send("animo/s añadido/s")
+        except:
+            logging.error("Error at getting animos.txt")
+
 
 
 def setup(bot):

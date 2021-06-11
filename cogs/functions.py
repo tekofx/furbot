@@ -453,16 +453,18 @@ def get_hot_subreddit_image(Subreddit: str, Limit: int):
         str: link to image
     """
     output = random.choice([x for x in reddit.subreddit(Subreddit).hot(limit=Limit)])
+    try:
+        while check_if_string_in_file(reddit_memes_history_txt, output.url):
+            output = random.choice(
+                [x for x in reddit.subreddit(Subreddit).hot(limit=Limit)]
+            )
 
-    while check_if_string_in_file(reddit_memes_history_txt, output.url):
-        output = random.choice(
-            [x for x in reddit.subreddit(Subreddit).hot(limit=Limit)]
-        )
+        var = 'echo ' + output.url + ' >> ' + reddit_memes_history_txt
+        os.system(var)
 
-    var = 'echo ' + output.url + ' >> ' + reddit_memes_history_txt
-    os.system(var)
-
-    return output.url
+        return output.url
+    except: 
+        logging.error("Error at getting reddit_memes_history.txt")
 
 
 ############################### Files functions ###############################
