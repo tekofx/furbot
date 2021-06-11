@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 import os
-from cogs.functions import is_admin, stickersPath, help_txt, admin
+from cogs.functions import is_admin, stickersPath, help_txt, admin, activity_txt
 import logging
 
 
@@ -22,7 +22,12 @@ class Administration(commands.Cog):
     async def change_activity(self, context, activity_name: str, activity: str = None):
         """[Admin] Cambiar actividad del bot"""
         if activity == None:
-            await self.bot.change_presence(activity=discord.Game(name=activity_name))
+            open(activity_txt, 'w').close()
+            var = 'echo ' + activity_name + '>>'  + activity_txt 
+            os.system(var)
+            with open(activity_txt) as f:
+                aux = f.readline()
+            await self.bot.change_presence(activity=discord.Game(name=aux))
         else:
             if activity.lower() == "watching":
                 await self.bot.change_presence(

@@ -2,6 +2,7 @@
 import discord
 from PIL import Image
 import os
+from discord import activity
 import moviepy.editor as mp
 import logging
 import wget
@@ -129,6 +130,7 @@ cumpleaños_txt = "resources/cumpleaños.txt"
 reddit_memes_history_txt = "resources/reddit_memes_history.txt"
 animos_txt="resources/animos.txt"
 memes_history_txt = "resources/memes_history.txt"
+activity_txt="resources/activity.txt"
 
 stickerSize = 500
 
