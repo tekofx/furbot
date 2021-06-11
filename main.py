@@ -48,6 +48,7 @@ async def dankmemes():
         logging.info("Dankmeme sent")
 
 
+
 @tasks.loop(seconds=1)
 async def cumpleaños():
     """ Sends a felicitation for birthday
@@ -120,11 +121,12 @@ async def on_command_error(context, error):
     message_content=str(context.message.content)
     message_content=message_content.split(' ')
     command_used=message_content[1]
-    arg1=message_content[2]
+    if len(message_content)>=3:
+        arg1=message_content[2]
 
     # Argument missing
     if isinstance(error, commands.MissingRequiredArgument):
-        await context.send("Error: Faltan parámetros, escribe `fur help <comando>` para ver ayuda sobre ese comando")
+        await context.send("Error: Faltan parámetros, escribe `fur help "+ command_used+"` para ver ayuda sobre este comando")
     
     # Command does not exist
     if isinstance(error,commands.CommandNotFound):
