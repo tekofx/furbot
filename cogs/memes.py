@@ -60,10 +60,8 @@ class memes(commands.Cog):
                     count = count + 1
 
         count = str(count)
-        if count == "0":
-            meme_name = arg1
-        else:
-            meme_name = arg1 + " (" + count + ")"
+        
+        meme_name = arg1 + " (" + count + ")"
 
         meme_name = meme_name.replace(" ", "_")
         meme_url = context.message.attachments[0].url
@@ -114,9 +112,13 @@ class memes(commands.Cog):
 
 
         # If all memes have been sent, delete history
-        if count_files_in_dir(meme_path) <= 30 + count_lines_in_file(memes_history_txt):
-            open(memes_history_txt, 'w').close()
-        
+        try:
+            if count_files_in_dir(meme_path) <= 30 + count_lines_in_file(memes_history_txt):
+                open(memes_history_txt, 'w').close()
+        except:
+            logging.error("Error:  memes_history_txt could not be readed")
+            return 0
+
 
         if name == None:
             output = random.choice(os.listdir(meme_path))
