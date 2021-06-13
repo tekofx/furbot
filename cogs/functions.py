@@ -3,6 +3,7 @@ import discord
 from PIL import Image
 import os
 from discord import activity
+from discord.raw_models import RawReactionClearEvent
 import moviepy.editor as mp
 import logging
 import wget
@@ -333,7 +334,7 @@ def get_user_roles(user: discord.Member):
             and str(role) not in ranks
             and separator not in str(role)
         ):
-            mention.append(role.mention)
+            mention.append(role.name)
 
     b = ", ".join(mention)
     return str(b)

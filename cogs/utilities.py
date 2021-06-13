@@ -133,6 +133,12 @@ class utilities(commands.Cog):
             avatar = avatar.resize((300, 300))
             output.paste(avatar, (50, 250))
 
+            # Add discord nitro badge
+            if "Furrense Booster" in roles:
+                booster = Image.open("resources/utilities/booster.png").convert("RGBA")
+                booster=booster.resize((140,140))
+                output.paste(booster,(1090,530),booster)
+
             # Add qrcode
             output.paste(img, (1030, 250))
 
@@ -177,8 +183,14 @@ class utilities(commands.Cog):
             draw.text((size / 2, 873), date, font=font, fill=(0, 0, 0, 255))
 
             # Add qrcode
-            img = img.resize((430, 430))
-            carnet_design.paste(img, (350, 1084))
+            img = img.resize((460, 460))
+            carnet_design.paste(img, (340, 980))
+
+            # Add discord nitro badge
+            if "Furrense Booster" in roles:
+                booster = Image.open("resources/utilities/booster.png").convert("RGBA")
+                booster=booster.resize((140,140))
+                carnet_design.paste(booster,(10,10),booster)
 
             # Add color to carnet
             output = Image.new("RGB", (1100, 1700), (color[0], color[1], color[2]))
