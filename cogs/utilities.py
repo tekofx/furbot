@@ -267,7 +267,7 @@ class utilities(commands.Cog):
                 cumple=aux[0].split('-')
                 cumple=cumple[1]+'-'+cumple[0]
                 await context.channel.send("El cumpleaños de "+user.name+" es el "+cumple)
-                break
+                return
         f.close()
         await context.channel.send("No existe el cumpleaños de "+user.name)
 
