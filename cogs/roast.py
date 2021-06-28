@@ -5,12 +5,13 @@ from discord.ext import commands
 import logging
 from cogs.functions import insults_txt, is_admin, magnet_id, animos_txt
 
+
 class roast(commands.Cog):
     """Insultos varios"""
 
     def __init__(self, bot):
         self.bot = bot
-    
+
     @commands.command()
     async def garich(self, context):
         """Gala rich"""
@@ -20,7 +21,7 @@ class roast(commands.Cog):
     @commands.command()
     async def tecute(self, context):
         """Teko cute"""
-        if context.author.id==magnet_id:
+        if context.author.id == magnet_id:
             await context.channel.send("Teko cute")
         else:
             await context.channel.send("Teko NO cute")
@@ -56,12 +57,12 @@ class roast(commands.Cog):
 
     @commands.check(is_admin)
     @commands.command()
-    async def addinsult(self, context, *insults:str):
+    async def addinsult(self, context, *insults: str):
         try:
             f = open(insults_txt, "a")
             for insult in insults:
-                insult=insult.replace('"','')
-                f.write(insult+"\n")
+                insult = insult.replace('"', "")
+                f.write(insult + "\n")
             f.close()
             await context.channel.send("Insulto/s añadido/s")
         except:
@@ -69,8 +70,7 @@ class roast(commands.Cog):
 
     @commands.command()
     async def animo(self, context, *, user: discord.Member = None):
-        """Anima a la gente
-        """
+        """Anima a la gente"""
         if user == None:
             usuario = context.author.mention
         else:
@@ -86,17 +86,16 @@ class roast(commands.Cog):
 
     @commands.check(is_admin)
     @commands.command()
-    async def addanimo(self, context, *animos:str):
+    async def addanimo(self, context, *animos: str):
         try:
             f = open(animos_txt, "a")
             for animo in animos:
-                animo=animo.replace('"','')
-                f.write(animo+"\n")
+                animo = animo.replace('"', "")
+                f.write(animo + "\n")
             f.close()
             await context.channel.send("animo/s añadido/s")
         except:
             logging.error("Error at getting animos.txt")
-
 
 
 def setup(bot):

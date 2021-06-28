@@ -23,27 +23,27 @@ class memes(commands.Cog):
 
     @commands.command()
     async def addmeme(self, context, *, arg1):
-        """ Añade un meme al bot """
+        """Añade un meme al bot"""
         meme_extension = "." + context.message.attachments[0].url.split(".")[-1]
         count = 1
 
         # Remove "
         arg1 = arg1.replace('"', "")
-       
+
         # Remove accents
-        arg1 = unicodedata.normalize('NFD', arg1)
-        arg1 = arg1.encode('ascii', 'ignore')
+        arg1 = unicodedata.normalize("NFD", arg1)
+        arg1 = arg1.encode("ascii", "ignore")
         arg1 = arg1.decode("utf-8")
 
         # Capitalize all names
-        arg1=arg1.lower()
+        arg1 = arg1.lower()
         arg1 = arg1.title()
 
         # split into a list
         names = arg1.split()
-        
+
         # Order names in case they are not in order
-        names=sorted(names)
+        names = sorted(names)
         arg1 = " ".join(names)
 
         # Count the number to add to the name
@@ -60,7 +60,7 @@ class memes(commands.Cog):
                     count = count + 1
 
         count = str(count)
-        
+
         meme_name = arg1 + " (" + count + ")"
 
         meme_name = meme_name.replace(" ", "_")
@@ -110,21 +110,21 @@ class memes(commands.Cog):
             fur meme <nombre>-->Meme random de <nombre>
         """
 
-
         # If all memes have been sent, delete history
         try:
-            if count_files_in_dir(meme_path) <= 30 + count_lines_in_file(memes_history_txt):
-                open(memes_history_txt, 'w').close()
+            if count_files_in_dir(meme_path) <= 30 + count_lines_in_file(
+                memes_history_txt
+            ):
+                open(memes_history_txt, "w").close()
         except:
             logging.error("Error:  memes_history_txt could not be readed")
             return 0
 
-
         if name == None:
             output = random.choice(os.listdir(meme_path))
-            while check_if_string_in_file(memes_history_txt,output):
+            while check_if_string_in_file(memes_history_txt, output):
                 output = random.choice(os.listdir(meme_path))
-            var = 'echo "' + output + '">>'  + memes_history_txt 
+            var = 'echo "' + output + '">>' + memes_history_txt
             os.system(var)
             await context.channel.send(file=discord.File(meme_path + output))
 
@@ -163,7 +163,7 @@ class memes(commands.Cog):
                 # Check if there are any memes with the name
 
             await context.channel.send(file=discord.File(meme_path + output))
-        logging.info("Meme "+output+ " sent")
+        logging.info("Meme " + output + " sent")
 
     @commands.command()
     async def trauma(self, context, *, user: discord.Member = None):
@@ -565,7 +565,7 @@ class memes(commands.Cog):
     @commands.command()
     async def cute(self, context, *, user: discord.Member = None):
         """You are cute"""
-       
+
         # Get user avatar
         avatarUrl = get_user(context, user).avatar_url
 
@@ -600,8 +600,7 @@ class memes(commands.Cog):
 
     @commands.command()
     async def coding(self, context, *, user: discord.Member = None):
-        """Programa como un pro hacker
-        """
+        """Programa como un pro hacker"""
 
         # Get user avatar
         avatarUrl = get_user(context, user).avatar_url
@@ -669,7 +668,6 @@ class memes(commands.Cog):
         img = Image.open(meme_templates_path + "output" + ".png").convert("RGBA")
         draw = ImageDraw.Draw(txtPic)
         font = ImageFont.truetype(meme_templates_path + "Calibri.ttf", 24)
-      
 
         lines = textwrap.wrap(text1, width=18)
         for line in lines:
@@ -691,7 +689,7 @@ class memes(commands.Cog):
         delete_files(("01.webp", "output.png", "01.png", "output2.png"))
 
     @commands.command()
-    async def cojones(self, context, text:str,*, user: discord.Member):
+    async def cojones(self, context, text: str, *, user: discord.Member):
         """Si, los cojones"""
 
         # Get user avatar
@@ -714,7 +712,7 @@ class memes(commands.Cog):
         txtPic = Image.new("RGBA", (600, 300))
         draw = ImageDraw.Draw(txtPic)
         font = ImageFont.truetype(meme_templates_path + "Calibri.ttf", 45)
- 
+
         draw.text(((10, 10)), text, font=font, fill=(0, 0, 0, 255))
         img.paste(txtPic, (720, 560), txtPic)
 
@@ -823,21 +821,21 @@ class memes(commands.Cog):
         await message.delete()
 
     @commands.command()
-    async def cowsay(self, context, text: str, character:str=None):
+    async def cowsay(self, context, text: str, character: str = None):
         """Una vaca dice cosas
-        
-         Uso:
-            fur cowsay <texto>: Vaca dice <texto>
-            fur cowsay <texto> <personaje>: <personaje> dice <texto>
 
-            Characters:
-            beavis budfrogs bunny cheese cower daemon dragonandcow eyes flamingsheep ghostbusters 
-            hellokitty kiss kitty koala kosh lukekoala 
-            mechandcow meow milk moofasa moose mutilated ren satanic sheep skeleton small 
-            squirrel stegosaurus stimpy supermilker surgery threeeyes 
-            turkey turtle tux udder vader vaderkoala www 
+        Uso:
+           fur cowsay <texto>: Vaca dice <texto>
+           fur cowsay <texto> <personaje>: <personaje> dice <texto>
+
+           Characters:
+           beavis budfrogs bunny cheese cower daemon dragonandcow eyes flamingsheep ghostbusters
+           hellokitty kiss kitty koala kosh lukekoala
+           mechandcow meow milk moofasa moose mutilated ren satanic sheep skeleton small
+           squirrel stegosaurus stimpy supermilker surgery threeeyes
+           turkey turtle tux udder vader vaderkoala www
         """
-        if character==None:
+        if character == None:
             cow_cls = cow.get_cow("default")
         else:
             cow_cls = cow.get_cow(character)
@@ -848,7 +846,6 @@ class memes(commands.Cog):
         output += "```"
 
         await context.channel.send(output)
-
 
     @commands.command()
     async def slap(self, context, *, user: discord.Member = None):
@@ -885,7 +882,6 @@ class memes(commands.Cog):
 
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
-
 
 
 def setup(bot):

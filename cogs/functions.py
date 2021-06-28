@@ -20,10 +20,10 @@ load_dotenv()
 creator = int(os.getenv("BOT_CREATOR"))
 cracker_id = int(os.getenv("CRACKER"))
 magnet_id = int(os.getenv("MAGNET"))
-angel_id=int(os.getenv("ANGEL"))
+angel_id = int(os.getenv("ANGEL"))
 general_channel = int(os.getenv("GENERAL_CHANNEL"))
 tests_channel = int(os.getenv("TESTS_CHANNEL"))
-zaffy_id=int(os.getenv("ZAFFY"))
+zaffy_id = int(os.getenv("ZAFFY"))
 
 
 # Variables
@@ -111,7 +111,7 @@ jojos = [
 ]
 
 
-admin=[magnet_id,creator,zaffy_id]
+admin = [magnet_id, creator, zaffy_id]
 
 
 # Create bot
@@ -130,9 +130,9 @@ help_txt = "resources/help.txt"
 insults_txt = "resources/insults.txt"
 cumpleaños_txt = "resources/cumpleaños.txt"
 reddit_memes_history_txt = "resources/reddit_memes_history.txt"
-animos_txt="resources/animos.txt"
+animos_txt = "resources/animos.txt"
 memes_history_txt = "resources/memes_history.txt"
-activity_txt="resources/activity.txt"
+activity_txt = "resources/activity.txt"
 
 stickerSize = 500
 
@@ -397,7 +397,6 @@ def get_color_code(color: str):
     return output
 
 
-
 def is_admin(context):
     """Checks if user that calls a function is a bot admin
 
@@ -463,11 +462,11 @@ def get_hot_subreddit_image(Subreddit: str, Limit: int):
                 [x for x in reddit.subreddit(Subreddit).hot(limit=Limit)]
             )
 
-        var = 'echo ' + output.url + ' >> ' + reddit_memes_history_txt
+        var = "echo " + output.url + " >> " + reddit_memes_history_txt
         os.system(var)
 
         return output.url
-    except: 
+    except:
         logging.error("Error at getting reddit_memes_history.txt")
 
 
@@ -518,8 +517,9 @@ def count_files_in_dir(directory: str):
     output = len(list)
     return output
 
-def exists_file(file:str, directory:str):
-    """ Checks if exists a file with a given name
+
+def exists_file(file: str, directory: str):
+    """Checks if exists a file with a given name
 
     Args:
         file (str): name of the file
@@ -528,21 +528,23 @@ def exists_file(file:str, directory:str):
     Returns:
         [Bool]: true if exists, false if not
     """
-    output=False
+    output = False
     list = os.listdir(directory)
     if file in list:
-        output=True
+        output = True
     return output
 
-def exists_file_with_substring(substring:str, directory:str):
-    output=False
+
+def exists_file_with_substring(substring: str, directory: str):
+    output = False
     list = os.listdir(directory)
     for file in list:
         if substring in file:
-            output=True
+            output = True
     return output
 
-def get_files_in_directory(directory:str):
+
+def get_files_in_directory(directory: str):
     """Get a list of files in a directory
 
     Args:
@@ -553,7 +555,8 @@ def get_files_in_directory(directory:str):
     """
     return os.listdir(directory)
 
-def get_files_in_directory_with_substring(substring:str,directory:str):
+
+def get_files_in_directory_with_substring(substring: str, directory: str):
     """Get a list of files in a directory that contain a substring
 
     Args:
@@ -562,10 +565,10 @@ def get_files_in_directory_with_substring(substring:str,directory:str):
     Returns:
         [list]: list of files in dir
     """
-    output=''
+    output = ""
     list = os.listdir(directory)
     for file in list:
         if substring in file:
-            output+=str(file[:-4])+', '
-    output=output[:-2]
+            output += str(file[:-4]) + ", "
+    output = output[:-2]
     return output

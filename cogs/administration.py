@@ -22,8 +22,8 @@ class Administration(commands.Cog):
     async def change_activity(self, context, activity_name: str, activity: str = None):
         """[Admin] Cambiar actividad del bot"""
         if activity == None:
-            open(activity_txt, 'w').close()
-            var = 'echo ' + activity_name + '>>'  + activity_txt 
+            open(activity_txt, "w").close()
+            var = "echo " + activity_name + ">>" + activity_txt
             os.system(var)
             try:
                 with open(activity_txt) as f:
@@ -31,7 +31,9 @@ class Administration(commands.Cog):
                 await self.bot.change_presence(activity=discord.Game(name=aux))
             except:
                 logging.error("Error: activity.txt not found")
-                await context.channel.send("Error: No se ha encontrado el archivo activity.txt")
+                await context.channel.send(
+                    "Error: No se ha encontrado el archivo activity.txt"
+                )
                 await context.channel.send("Contacte con un administrador")
 
         else:
@@ -54,14 +56,12 @@ class Administration(commands.Cog):
 
         await context.channel.send("Cambiada actividad a " + activity_name)
 
-
-    @commands.command(name='admin')
+    @commands.command(name="admin")
     async def check_admin(self, context):
-        """ Comprueba si eres admin del bot
-        """
-        output='No eres admin del bot'
+        """Comprueba si eres admin del bot"""
+        output = "No eres admin del bot"
         if context.author.id in admin:
-            output="Eres admin del bot"
+            output = "Eres admin del bot"
         await context.channel.send(output)
 
 

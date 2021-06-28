@@ -54,23 +54,22 @@ class utilities(commands.Cog):
         Uso:
             fur carnet: Muestra tu carnet por defecto
             fur carnet <diseño>: Muestra tu carnet con diseño <diseño>
-            fur carnet <usuario> : Muestra carnet por defecto de <usuario> 
-            fur carnet <usuario> <diseño>: Muestra carnet con diseño <diseño> de <usuario> 
+            fur carnet <usuario> : Muestra carnet por defecto de <usuario>
+            fur carnet <usuario> <diseño>: Muestra carnet con diseño <diseño> de <usuario>
 
 
         Diseños: 1,2
         """
 
-        user=None
-        design=None
+        user = None
+        design = None
         for arg in args:
             if "@" in arg:
-                arg= int(arg.strip('<@!>'))
-                user=context.guild.get_member(arg)
+                arg = int(arg.strip("<@!>"))
+                user = context.guild.get_member(arg)
             else:
-                design=arg
+                design = arg
 
-        
         # Get user info
         usr = get_user(context, user)
         name = usr.display_name
@@ -79,10 +78,10 @@ class utilities(commands.Cog):
         roles = get_user_roles(usr)
         color = get_user_color(usr)
         color = get_color_code(color)
-        if usr.id==magnet_id:
-            date="24-01-2021"
-        elif usr.id==angel_id:
-            date="17-03-2020"
+        if usr.id == magnet_id:
+            date = "24-01-2021"
+        elif usr.id == angel_id:
+            date = "17-03-2020"
         else:
             date = str(usr.joined_at)
             date = date.split()
@@ -138,8 +137,8 @@ class utilities(commands.Cog):
             # Add discord nitro badge
             if "Furrense Booster" in roles:
                 booster = Image.open("resources/utilities/booster.png").convert("RGBA")
-                booster=booster.resize((140,140))
-                output.paste(booster,(1090,530),booster)
+                booster = booster.resize((140, 140))
+                output.paste(booster, (1090, 530), booster)
 
             # Add qrcode
             output.paste(img, (1030, 250))
@@ -191,8 +190,8 @@ class utilities(commands.Cog):
             # Add discord nitro badge
             if "Furrense Booster" in roles:
                 booster = Image.open("resources/utilities/booster.png").convert("RGBA")
-                booster=booster.resize((140,140))
-                carnet_design.paste(booster,(10,10),booster)
+                booster = booster.resize((140, 140))
+                carnet_design.paste(booster, (10, 10), booster)
 
             # Add color to carnet
             output = Image.new("RGB", (1100, 1700), (color[0], color[1], color[2]))
@@ -243,15 +242,14 @@ class utilities(commands.Cog):
         birthday = birthday.split("-")
         birthday = birthday[1] + "-" + birthday[0]
         f = open(cumpleaños_txt, "a")
-        f.write(birthday + " " + str(user.id) + " " + str(user.name)+"\n" )
+        f.write(birthday + " " + str(user.id) + " " + str(user.name) + "\n")
         f.close()
         logging.info("Added birthday of " + user.name + ": " + birthday)
         await context.channel.send("Añadido cumpleaños de " + user.name)
-    
-    
+
     @commands.command()
     async def cumple(self, context, user: discord.Member):
-        """ Muestra cumpleaños de un usuario
+        """Muestra cumpleaños de un usuario
 
         Uso:
             fur cumple @<usuario>
@@ -262,14 +260,16 @@ class utilities(commands.Cog):
         f = open(cumpleaños_txt, "r")
         lines = f.readlines()
         for line in lines:
-            aux=line.split()
+            aux = line.split()
             if user.id == int(aux[1]):
-                cumple=aux[0].split('-')
-                cumple=cumple[1]+'-'+cumple[0]
-                await context.channel.send("El cumpleaños de "+user.name+" es el "+cumple)
+                cumple = aux[0].split("-")
+                cumple = cumple[1] + "-" + cumple[0]
+                await context.channel.send(
+                    "El cumpleaños de " + user.name + " es el " + cumple
+                )
                 return
         f.close()
-        await context.channel.send("No existe el cumpleaños de "+user.name)
+        await context.channel.send("No existe el cumpleaños de " + user.name)
 
 
 def setup(bot):
