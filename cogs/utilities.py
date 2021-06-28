@@ -251,13 +251,13 @@ class utilities(commands.Cog):
     
     @commands.command()
     async def cumple(self, context, user: discord.Member):
-        """[Admin] Añade el cumpleaños de alguien al bot
+        """ Muestra cumpleaños de un usuario
 
         Uso:
-            fur addcumple <dia>-<mes> @<usuario>
+            fur cumple @<usuario>
 
         Ejemplo:
-            fur addcumple 16-01 @Teko
+            fur cumple @Teko
         """
         f = open(cumpleaños_txt, "r")
         lines = f.readlines()
