@@ -264,7 +264,6 @@ class memes(commands.Cog):
         # Get user avatar
         avatarUrl = get_user(context, user).avatar_url
 
-        # createMeme('01', '01','burn',avatar_url=avatarUrl, avatar_size=300, position=(0,0,0,0))
         create_meme(("burn", "01"), avatarUrl, 300, (0, 0, 0, 0), False)
 
         # Send meme
@@ -282,7 +281,6 @@ class memes(commands.Cog):
         # Get user avatar
         avatarUrl = get_user(context, user).avatar_url
 
-        # createMeme('01', '01','burn',avatar_url=avatarUrl, avatar_size=300, position=(0,0,0,0))
         create_meme(("shef", "01"), avatarUrl, 120, (0, 0, 280, 87), True)
 
         # Send meme
@@ -663,9 +661,6 @@ class memes(commands.Cog):
         Y = 20
         Y_aux = 10
 
-        # draw.text((x, y),"Sample Text",(r,g,b))
-        # x, y is the top-left coordinate
-
         # Get user avatar
         avatarUrl = get_user(context, user).avatar_url
 
@@ -674,8 +669,7 @@ class memes(commands.Cog):
         img = Image.open(meme_templates_path + "output" + ".png").convert("RGBA")
         draw = ImageDraw.Draw(txtPic)
         font = ImageFont.truetype(meme_templates_path + "Calibri.ttf", 24)
-        """ draw.text(((170, 30)), text, font=font, fill=(0,0,0,255))
-        print('f') """
+      
 
         lines = textwrap.wrap(text1, width=18)
         for line in lines:
