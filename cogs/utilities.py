@@ -262,10 +262,7 @@ class utilities(commands.Cog):
         f = open(cumpleaños_txt, "r")
         lines = f.readlines()
         for line in lines:
-            print('1')
             aux=line.split()
-            print('2')
-            print(aux)
             if user.id == int(aux[1]):
                 cumple=aux[0].split('-')
                 cumple=cumple[1]+'-'+cumple[0]
