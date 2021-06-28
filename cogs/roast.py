@@ -118,7 +118,7 @@ class roast(commands.Cog):
                 insults = f.readlines()
 
             output = "{} %s " % (random.choice(insults))
-            await context.channel.send(output.format(usuario))
+            await context.reply(output.format(usuario))
         except:
             logging.error("Error at getting insults.txt")
 
@@ -150,7 +150,7 @@ class roast(commands.Cog):
                 animos = f.readlines()
 
             output = "{} %s " % (random.choice(animos))
-            await context.channel.send(output.format(usuario))
+            await context.reply(output.format(usuario))
         except:
             logging.error("Error at getting animos.txt")
 
