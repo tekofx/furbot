@@ -81,6 +81,8 @@ class utilities(commands.Cog):
         color = get_color_code(color)
         if usr.id==magnet_id:
             date="24-01-2021"
+        elif usr.id==angel_id:
+            date="17-03-2020"
         else:
             date = str(usr.joined_at)
             date = date.split()
@@ -245,7 +247,6 @@ class utilities(commands.Cog):
         f.close()
         logging.info("Added birthday of " + user.name + ": " + birthday)
         await context.channel.send("Añadido cumpleaños de " + user.name)
-
 
 def setup(bot):
     bot.add_cog(utilities(bot))

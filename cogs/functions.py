@@ -19,8 +19,9 @@ prefixes = ["fur ", "Fur ", "FUR "]
 load_dotenv()
 creator = int(os.getenv("BOT_CREATOR"))
 cracker_id = int(os.getenv("CRACKER"))
-general_channel = int(os.getenv("GENERAL_CHANNEL"))
 magnet_id = int(os.getenv("MAGNET"))
+angel_id=int(os.getenv("ANGEL"))
+general_channel = int(os.getenv("GENERAL_CHANNEL"))
 tests_channel = int(os.getenv("TESTS_CHANNEL"))
 zaffy_id=int(os.getenv("ZAFFY"))
 
