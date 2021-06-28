@@ -269,6 +269,7 @@ class utilities(commands.Cog):
                 await context.channel.send("El cumpleaños de "+user.name+" es el "+cumple)
                 break
         f.close()
+        await context.channel.send("No existe el cumpleaños de "+user.name)
 
 
 def setup(bot):
