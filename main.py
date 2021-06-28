@@ -180,6 +180,10 @@ async def on_message(message):
     """
     if message.content.lower() == 'owo':
         await message.channel.send('OwO!')
+    if "vaca" in message.content.lower():
+        await message.channel.send('Muuu!')
+    if "vacas" in message.content.lower():
+        await message.channel.send('Muuu Muuu!')
     if message.content.lower() == 'uwu':
         await message.channel.send('UwU!')
     if message.content.lower() == '7w7':
@@ -188,8 +192,6 @@ async def on_message(message):
         await message.channel.send('EwE!')
     if message.content.lower() == 'awa':
         await message.channel.send('AwA!')
-    if message.content.lower()=='ping':
-        await message.channel.send('pam trucu trucu')
     if 'jojo' in message.content.lower() and message.author!=bot.user and 'fur' not in message.content.lower():
         output=random.choice(jojos)
         await message.channel.send(output)
