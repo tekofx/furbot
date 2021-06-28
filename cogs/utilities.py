@@ -247,6 +247,32 @@ class utilities(commands.Cog):
         f.close()
         logging.info("Added birthday of " + user.name + ": " + birthday)
         await context.channel.send("Añadido cumpleaños de " + user.name)
+    
+    
+    @commands.command()
+    async def cumple(self, context, user: discord.Member):
+        """[Admin] Añade el cumpleaños de alguien al bot
+
+        Uso:
+            fur addcumple <dia>-<mes> @<usuario>
+
+        Ejemplo:
+            fur addcumple 16-01 @Teko
+        """
+        f = open(cumpleaños_txt, "r")
+        lines = f.readlines()
+        for line in lines:
+            print('1')
+            aux=line.split()
+            print('2')
+            print(aux)
+            if user.id == int(aux[1]):
+                cumple=aux[0].split('-')
+                cumple=cumple[1]+'-'+cumple[0]
+                await context.channel.send("El cumpleaños de "+user.name+" es el "+cumple)
+                break
+        f.close()
+
 
 def setup(bot):
     bot.add_cog(utilities(bot))
