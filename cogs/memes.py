@@ -883,6 +883,24 @@ class memes(commands.Cog):
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
 
+    @commands.command()
+    async def radiopatio(self, context, *, user: discord.Member = None):
+        """a que me reviento"""
+
+        # Get user avatar
+        avatarUrl = get_user(context, user).avatar_url
+
+        create_meme(("radiopatio", "01"), avatarUrl, 88, (0, 0, 188, 45), True)
+
+        # Send meme
+        await context.channel.send(
+            file=discord.File(meme_templates_path + "output.png")
+        )
+        logging.info("Meme sent")
+
+        # Delete user avatar and output
+        delete_files(("01.webp", "output.png", "01.png"))
+
 
 def setup(bot):
     bot.add_cog(memes(bot))
