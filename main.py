@@ -136,7 +136,7 @@ async def on_message(message):
     """
     if message.content.lower() == "owo":
         await message.channel.send("OwO!")
-    if "vaca" in message.content.lower():
+    if "vaca" in message.content.lower() and message.author!=bot.user:
         await message.channel.send("Muuu!")
     if "vacas" in message.content.lower():
         await message.channel.send("Muuu Muuu!")
