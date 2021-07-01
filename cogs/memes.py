@@ -166,29 +166,6 @@ class memes(commands.Cog):
         logging.info("Meme " + output + " sent")
 
     @commands.command()
-    async def trauma(self, context, *, user: discord.Member = None):
-
-        """Oh no traumita
-
-        Uso: fur trauma "@<usuario>
-        """
-
-        # Get user avatar
-        avatarUrl = get_user(context, user).avatar_url
-
-        # Create meme
-        create_meme(("trauma", "01"), avatarUrl, 670, (0, 0, 39, 400), True)
-
-        # Send meme
-        await context.channel.send(
-            file=discord.File(meme_templates_path + "output.png")
-        )
-        logging.info("Meme sent")
-
-        # Delete user avatar and output
-        delete_files(("01.webp", "output.png", "01.png"))
-
-    @commands.command()
     async def horny(self, context, *, user: discord.Member = None):
         """Mucho horny
 
