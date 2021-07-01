@@ -210,27 +210,6 @@ class memes(commands.Cog):
         delete_files(("01.webp", "output.png", "01.png"))
 
     @commands.command()
-    async def burn(self, context, *, user: discord.Member = None):
-        """Quema a tus amigos :)
-
-        Uso: fur burn "@<usuario>  ---> quema a un amigo
-             fur burn              ---> quémate tu solo
-        """
-        # Get user avatar
-        avatarUrl = get_user(context, user).avatar_url
-
-        create_meme(("burn", "01"), avatarUrl, 300, (0, 0, 0, 0), False)
-
-        # Send meme
-        await context.channel.send(
-            file=discord.File(meme_templates_path + "output.png")
-        )
-        logging.info("Meme sent")
-
-        # Delete user avatar and output
-        delete_files(("01.webp", "output.png", "01.png"))
-
-    @commands.command()
     async def shef(self, context, *, user: discord.Member = None):
         """shef"""
         # Get user avatar
