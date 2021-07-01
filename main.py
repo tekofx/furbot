@@ -1,5 +1,4 @@
 import discord
-from discord import activity
 from discord.ext import commands
 from discord.flags import MessageFlags
 from dotenv import load_dotenv
@@ -7,8 +6,6 @@ import os
 import setproctitle
 from cogs.functions import *
 import logging
-from discord.ext import tasks
-import datetime
 import random
 from cogs.tasks import *
 
