@@ -1,10 +1,7 @@
 import random
 import textwrap
 import time
-import cowpy
-import wget
 from PIL import ImageFont, ImageDraw
-from sympy import symbols, solve
 from cogs.functions import *
 import discord
 import logging

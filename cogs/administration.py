@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 import os
-from cogs.functions import is_admin, stickersPath, help_txt, admin, activity_txt
+from cogs.functions import is_admin, help_txt, admin, activity_txt
 import logging
 
 

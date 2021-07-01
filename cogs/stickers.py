@@ -2,7 +2,6 @@ import discord
 from discord.ext import commands
 import os
 from PIL import Image
-from discord.ext.commands.core import command
 from cogs.functions import *
 from pathlib import Path
 import logging

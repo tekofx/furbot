@@ -1,6 +1,5 @@
 import discord
 import random
-import os
 from discord.ext import commands
 import logging
 from cogs.functions import insults_txt, is_admin, magnet_id, animos_txt

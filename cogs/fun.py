@@ -2,7 +2,6 @@ import discord
 from discord.ext import commands
 import random
 import os
-import logging
 from cogs.functions import cracker_id, creator, magnet_id, enanas_path
 
 
