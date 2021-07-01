@@ -210,28 +210,6 @@ class memes(commands.Cog):
         delete_files(("01.webp", "output.png", "01.png"))
 
     @commands.command()
-    async def cringe(self, context, *, user: discord.Member = None):
-        """That's cringy as fuck
-
-        Uso: fur cringe "@<usuario>
-        """
-
-        # Get user avatar
-        avatarUrl = get_user(context, user).avatar_url
-
-        # Create meme
-        create_meme(("cringe", "01"), avatarUrl, 170, (0, 0, 370, 20), True)
-
-        # Send meme
-        await context.channel.send(
-            file=discord.File(meme_templates_path + "output.png")
-        )
-        logging.info("Meme sent")
-
-        # Delete user avatar and output
-        delete_files(("01.webp", "output.png", "01.png"))
-
-    @commands.command()
     async def burn(self, context, *, user: discord.Member = None):
         """Quema a tus amigos :)
 
