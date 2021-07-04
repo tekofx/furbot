@@ -172,7 +172,16 @@ async def on_command_error(context, error):
             "Igual qusiste alguno de estos stickers: "
             + get_files_in_directory_with_substring(arg1, stickersPath)
         )
-    
+
+    # Sticker name already exists
+    if error.args[0]=='sticker_name_exists':
+        await context.send('Error: El nombre de sticker ya existe')
+
+    # Not image provided
+    if error.args[0]=='not_image_provided':
+        await context.send('Error: Falta una imagen')
+
+
     # Passed user as argument
     if error.args[0]=='argument_is_user':
         await context.send('Error: El argumento utilizado es un usuario, el argumento debe ser una cadena de texto')

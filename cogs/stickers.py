@@ -21,33 +21,38 @@ class stickers(commands.Cog):
         poner fur add <nombre_sticker>
         """
 
+        # If not image provided
         if not context.message.attachments:
             logging.error("Image not provided")
-            await context.channel.send("Falta el sticker a añadir")
+            raise commands.CommandError("not_image_provided")
 
+        # Passed user as name
+        if '@' in arg1:
+            logging.error("Argument is user")
+            raise commands.CommandError("argument_is_user")
+
+        # Checks if a picture is correct
+        sticker_extension = context.message.attachments[0].url.split(".")[-1]
+        if check_sticker(arg1, sticker_extension) == 0:
+            logging.error("Name already in use")
+            raise commands.CommandError("sticker_name_exists")
+
+
+        if sticker_extension == "jpg":
+            sticker_fileName = arg1 + ".jpg"
         else:
-            # Checks if a picture is correct
-            sticker_extension = context.message.attachments[0].url.split(".")[-1]
-            if check_sticker(arg1, sticker_extension) == 0:
-                logging.error("Name already in use")
-                await context.channel.send("El nombre de sticker ya existe")
-                return
+            sticker_fileName = arg1 + ".png"
 
-            if sticker_extension == "jpg":
-                sticker_fileName = arg1 + ".jpg"
-            else:
-                sticker_fileName = arg1 + ".png"
+        stickerUrl = context.message.attachments[0].url
+        var = "wget -O %s%s %s" % (stickersPath, sticker_fileName, stickerUrl)
+        stickerPath = "%s%s" % (stickersPath, sticker_fileName)
+        os.system(var)
+        convert_pic(stickerPath, arg1)
 
-            stickerUrl = context.message.attachments[0].url
-            var = "wget -O %s%s %s" % (stickersPath, sticker_fileName, stickerUrl)
-            stickerPath = "%s%s" % (stickersPath, sticker_fileName)
-            os.system(var)
-            convert_pic(stickerPath, arg1)
-
-            if sticker_extension == "jpg":
-                var2 = "rm " + stickerPath
-                os.system(var2)
-            await context.channel.send("Sticker " + arg1 + " añadido")
+        if sticker_extension == "jpg":
+            var2 = "rm " + stickerPath
+            os.system(var2)
+        await context.channel.send("Sticker " + arg1 + " añadido")
 
     @commands.command()
     async def list(self, context):
