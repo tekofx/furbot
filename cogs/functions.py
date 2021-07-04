@@ -2,11 +2,9 @@
 import discord
 from PIL import Image
 import os
-from discord import activity
 from discord.raw_models import RawReactionClearEvent
 import moviepy.editor as mp
 import logging
-import wget
 from dotenv import load_dotenv
 import praw
 import random
