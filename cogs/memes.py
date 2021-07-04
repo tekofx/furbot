@@ -19,46 +19,50 @@ class memes(commands.Cog):
         self.bot = bot
 
     @commands.command()
-    async def addmeme(self, context, *, arg1):
+    async def addmeme(self, context, meme_name):
         """Añade un meme al bot"""
         meme_extension = "." + context.message.attachments[0].url.split(".")[-1]
         count = 1
 
+        # If meme_name is user
+        if '@' in meme_extension:
+            raise commands.CommandError("argument_is_user")
+
         # Remove "
-        arg1 = arg1.replace('"', "")
+        meme_name = meme_name.replace('"', "")
 
         # Remove accents
-        arg1 = unicodedata.normalize("NFD", arg1)
-        arg1 = arg1.encode("ascii", "ignore")
-        arg1 = arg1.decode("utf-8")
+        meme_name = unicodedata.normalize("NFD", meme_name)
+        meme_name = meme_name.encode("ascii", "ignore")
+        meme_name = meme_name.decode("utf-8")
 
         # Capitalize all names
-        arg1 = arg1.lower()
-        arg1 = arg1.title()
+        meme_name = meme_name.lower()
+        meme_name = meme_name.title()
 
         # split into a list
-        names = arg1.split()
+        names = meme_name.split()
 
         # Order names in case they are not in order
         names = sorted(names)
-        arg1 = " ".join(names)
+        meme_name = " ".join(names)
 
         # Count the number to add to the name
         if meme_extension == ".png" or meme_extension == ".jpg":
             for x in os.listdir(meme_path):
                 aux2 = x.split(" (", 1)
-                if "jpg" in aux2[1] and aux2[0] == arg1:
+                if "jpg" in aux2[1] and aux2[0] == meme_name:
                     count = count + 1
 
         if meme_extension == ".mp4":
             for x in os.listdir(meme_path):
                 aux2 = x.split(" (", 1)
-                if "mp4" in x and aux2[0] == arg1:
+                if "mp4" in x and aux2[0] == meme_name:
                     count = count + 1
 
         count = str(count)
 
-        meme_name = arg1 + " (" + count + ")"
+        meme_name = meme_name + " (" + count + ")"
 
         meme_name = meme_name.replace(" ", "_")
         meme_url = context.message.attachments[0].url

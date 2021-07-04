@@ -172,7 +172,10 @@ async def on_command_error(context, error):
             "Igual qusiste alguno de estos stickers: "
             + get_files_in_directory_with_substring(arg1, stickersPath)
         )
-
+    
+    # Passed user as argument
+    if error.args[0]=='argument_is_user':
+        await context.send('Error: El argumento utilizado es un usuario, el argumento debe ser una cadena de texto')
 
 # When a message is posted
 @bot.event
