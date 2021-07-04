@@ -102,9 +102,7 @@ class memes(commands.Cog):
         self,
         context,
         name: str = None,
-        tipo: str = None,
-        *,
-        user: discord.Member = None,
+        tipo: str = None
     ):
         """Meme random de los nuestros
         Uso:
@@ -421,7 +419,7 @@ class memes(commands.Cog):
         delete_files(("01.webp", "output.png", "01.png"))
 
     @commands.command()
-    async def suicidio(self, context, *, user: discord.Member = None):
+    async def suicidio(self, context):
         """Es hora del suisidio"""
 
         # Get user avatar

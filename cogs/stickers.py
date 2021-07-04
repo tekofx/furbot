@@ -14,7 +14,7 @@ class stickers(commands.Cog):
         self.bot = bot
 
     @commands.command(name="addsticker")
-    async def add_sticker(self, context, arg1):
+    async def add_sticker(self, context, sticker_name):
         """Añade un sticker
 
         Uso: seleccionar una imagen y en el cuadro de "añadir comentario"
@@ -27,32 +27,32 @@ class stickers(commands.Cog):
             raise commands.CommandError("not_image_provided")
 
         # Passed user as name
-        if '@' in arg1:
+        if '@' in sticker_name:
             logging.error("Argument is user")
             raise commands.CommandError("argument_is_user")
 
         # Checks if a picture is correct
         sticker_extension = context.message.attachments[0].url.split(".")[-1]
-        if check_sticker(arg1, sticker_extension) == 0:
+        if check_sticker(sticker_name, sticker_extension) == 0:
             logging.error("Name already in use")
             raise commands.CommandError("sticker_name_exists")
 
 
         if sticker_extension == "jpg":
-            sticker_fileName = arg1 + ".jpg"
+            sticker_fileName = sticker_name + ".jpg"
         else:
-            sticker_fileName = arg1 + ".png"
+            sticker_fileName = sticker_name + ".png"
 
         stickerUrl = context.message.attachments[0].url
         var = "wget -O %s%s %s" % (stickersPath, sticker_fileName, stickerUrl)
         stickerPath = "%s%s" % (stickersPath, sticker_fileName)
         os.system(var)
-        convert_pic(stickerPath, arg1)
+        convert_pic(stickerPath, sticker_name)
 
         if sticker_extension == "jpg":
             var2 = "rm " + stickerPath
             os.system(var2)
-        await context.channel.send("Sticker " + arg1 + " añadido")
+        await context.channel.send("Sticker " + sticker_name + " añadido")
 
     @commands.command()
     async def list(self, context):

@@ -125,7 +125,7 @@ class Fun(commands.Cog):
         await context.channel.send(output.format(usuario, num))
 
     @commands.command()
-    async def enana(self, context, arg: str = None):
+    async def enana(self, context, enana_name: str = None):
         """Elije una enana o consigue una aleatoria de forma totalmente gratuita
 
         Uso:
@@ -133,7 +133,7 @@ class Fun(commands.Cog):
             fur enana <palabra> ---> Enana que contega palabra
         """
 
-        if arg == None:
+        if enana_name == None:
             output = random.choice(os.listdir(enanas_path))
             name = output.split("/")[-1]  # Remove path
             name = name[:-4]  # Remove extension
@@ -142,7 +142,7 @@ class Fun(commands.Cog):
 
         else:
             for filenames in os.listdir(enanas_path):
-                if arg.lower() in filenames.lower():
+                if enana_name.lower() in filenames.lower():
                     output = filenames
                     break
 
