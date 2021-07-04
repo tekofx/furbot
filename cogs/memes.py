@@ -26,6 +26,7 @@ class memes(commands.Cog):
 
         # If meme_name is user
         if '@' in meme_extension:
+            logging.error("Argument provided is a user")
             raise commands.CommandError("argument_is_user")
 
         # Remove "
