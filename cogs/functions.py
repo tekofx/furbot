@@ -15,14 +15,15 @@ prefixes = ["fur ", "Fur ", "FUR "]
 # .env data
 
 load_dotenv()
-creator = int(os.getenv("BOT_CREATOR"))
+creator_id = int(os.getenv("BOT_CREATOR"))
 cracker_id = int(os.getenv("CRACKER"))
 magnet_id = int(os.getenv("MAGNET"))
 angel_id = int(os.getenv("ANGEL"))
+zaffy_id = int(os.getenv("ZAFFY"))
+capi_id=int(os.getenv("CAPI"))
+
 general_channel = int(os.getenv("GENERAL_CHANNEL"))
 tests_channel = int(os.getenv("TESTS_CHANNEL"))
-zaffy_id = int(os.getenv("ZAFFY"))
-
 
 # Variables
 species = [
@@ -109,11 +110,11 @@ jojos = [
 ]
 
 
-admin = [magnet_id, creator, zaffy_id]
+admin = [magnet_id, creator_id, zaffy_id]
 
 
 # Create bot
-bot = commands.Bot(command_prefix=prefixes, owner_id=int(creator))
+bot = commands.Bot(command_prefix=prefixes, owner_id=int(creator_id))
 
 
 # Paths
