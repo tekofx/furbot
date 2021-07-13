@@ -13,7 +13,6 @@ import datetime
 # Get info from .env
 load_dotenv()
 token = os.getenv("DISCORD_TOKEN")
-creator_id = os.getenv("BOT_CREATOR")
 usr1_id = os.getenv("MAGNET")
 
 # Activity for the bot
@@ -22,7 +21,7 @@ activity = discord.Game("owo what's this")
 
 # Set prefixes for bot commands
 prefixes = ["fur ", "Fur ", "FUR "]
-bot = commands.Bot(command_prefix=prefixes, owner_id=int(creator))
+bot = commands.Bot(command_prefix=prefixes, owner_id=int(creator_id))
 
 
 # Remove some commands to use their names
@@ -237,8 +236,10 @@ async def on_message(message):
             str(message.author) + " dijo Teko cute en este mensaje: " + message.jump_url
         )
         await usr.send(string)
-
-    await bot.process_commands(message)
+    
+    if message.author.id!=capi_id:
+    
+        await bot.process_commands(message)
 
 
 # Add extensions
