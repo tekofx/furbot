@@ -563,7 +563,7 @@ class memes(commands.Cog):
         logging.info("Meme sent")
 
         # Delete user avatar and output
-        delete_files(("01.webp", "output.png", "01.png", "02.png", "02.webp"))
+        delete_files(("01.webp", "output.png", "01.png", "02.png", "02.webp", "output.png"))
 
     @commands.command()
     async def palanca(self, context, *, user: discord.Member):
