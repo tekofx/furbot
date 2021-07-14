@@ -7,7 +7,7 @@ import discord
 import logging
 from cowpy import cow
 import unicodedata
-
+from reactionmenu import ReactionMenu
 meme_templates_path = "resources/memes/"
 meme_path = "memes/"
 
@@ -705,7 +705,7 @@ class memes(commands.Cog):
 
     @commands.command()
     async def radiopatio(self, context, *, user: discord.Member = None):
-        """a que me reviento"""
+        """Es hora del cotilleo"""
 
         # Get user avatar
         avatarUrl = get_user(context, user).avatar_url
