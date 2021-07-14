@@ -57,6 +57,15 @@ class roast(commands.Cog):
     @commands.check(is_admin)
     @commands.command()
     async def addinsult(self, context, *insults: str):
+        """[ADMIN] Añade insulto
+
+        Uso:
+            fur addinsulto <insulto>
+            fur addinsulto <insulto1> <insulto2>...
+
+        Ejemplo:
+            fur addinsulto "feo" "horrible"
+        """
         try:
             f = open(insults_txt, "a")
             for insult in insults:
@@ -86,6 +95,15 @@ class roast(commands.Cog):
     @commands.check(is_admin)
     @commands.command()
     async def addanimo(self, context, *animos: str):
+        """[ADMIN] Añade animos
+
+        Uso:
+            fur addanimo <animo>
+            fur addanimo <animo1> <animo2>...
+
+        Ejemplo:
+            fur addanimo "guapo" "hermoso"
+        """
         try:
             f = open(animos_txt, "a")
             for animo in animos:
