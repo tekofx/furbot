@@ -547,3 +547,14 @@ def get_files_in_directory_with_substring(substring: str, directory: str):
             output += str(file[:-4]) + ", "
     output = output[:-2]
     return output
+
+def write_in_file(file:str,string:str):
+    """ Writes text in a file
+
+    Args:
+        file (str): file to write
+        string (str): string to write
+    """
+    f = open(file, "a")
+    f.write(string)
+    f.close()
