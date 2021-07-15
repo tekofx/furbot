@@ -104,7 +104,7 @@ class Fun(commands.Cog):
             elif user.id == magnet_id:
                 num = 0
                 usuario = "Magnet"
-            elif user.id == creator:
+            elif user.id == creator_id:
                 num = 0
                 usuario = "Teko"
             else:
