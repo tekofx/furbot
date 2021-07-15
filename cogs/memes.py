@@ -2,14 +2,28 @@ import random
 import textwrap
 import time
 from PIL import ImageFont, ImageDraw
-from cogs.functions import *
+from cogs.functions import (
+    create_meme,
+    get_user,
+    delete_files,
+    convert_pic,
+    get_hot_subreddit_image,
+    meme_path,
+    meme_templates_path,
+    count_files_in_dir,
+    memes_history_txt,
+    check_if_string_in_file,
+    write_in_file,
+    count_lines_in_file,
+)
 import discord
+import os
+from discord.ext import commands
 import logging
 from cowpy import cow
 import unicodedata
-from reactionmenu import ReactionMenu
-meme_templates_path = "resources/memes/"
-meme_path = "memes/"
+import requests
+from PIL import Image
 
 
 class memes(commands.Cog):
@@ -25,7 +39,7 @@ class memes(commands.Cog):
         count = 1
 
         # If meme_name is user
-        if '@' in meme_extension:
+        if "@" in meme_extension:
             logging.error("Argument provided is a user")
             raise commands.CommandError("argument_is_user")
 
@@ -67,9 +81,9 @@ class memes(commands.Cog):
 
         meme_name = meme_name.replace(" ", "_")
         meme_url = context.message.attachments[0].url
-        
+
         r = requests.get(meme_url, allow_redirects=True)
-        open(meme_templates_path+meme_name+meme_extension, 'wb').write(r.content) 
+        open(meme_templates_path + meme_name + meme_extension, "wb").write(r.content)
 
         if meme_extension == ".png":
             im = Image.open(meme_path + meme_name + meme_extension)
@@ -90,12 +104,7 @@ class memes(commands.Cog):
     """
 
     @commands.command()
-    async def meme(
-        self,
-        context,
-        name: str = None,
-        tipo: str = None
-    ):
+    async def meme(self, context, name: str = None, tipo: str = None):
         """Meme random de los nuestros
         Uso:
             fur meme-->Meme random
@@ -112,12 +121,12 @@ class memes(commands.Cog):
             logging.error("Error:  memes_history_txt could not be readed")
             return 0
 
-        if name == None:
+        if name is None:
             output = random.choice(os.listdir(meme_path))
             while check_if_string_in_file(memes_history_txt, output):
                 output = random.choice(os.listdir(meme_path))
-            
-            write_in_file(memes_history_txt,output+'\n')
+
+            write_in_file(memes_history_txt, output + "\n")
             await context.channel.send(file=discord.File(meme_path + output))
 
         else:
@@ -251,7 +260,7 @@ class memes(commands.Cog):
         quote = '"' + quote + '"'
 
         r = requests.get(userName.avatar_url, allow_redirects=True)
-        open(meme_templates_path+'01.webp', 'wb').write(r.content) 
+        open(meme_templates_path + "01.webp", "wb").write(r.content)
 
         convert_pic(meme_templates_path + "01.webp", "01", avatarSize)
 
@@ -371,8 +380,7 @@ class memes(commands.Cog):
         avatarUrl = get_user(context, user).avatar_url
 
         r = requests.get(context.author.avatar_url, allow_redirects=True)
-        open(meme_templates_path+'02.webp', 'wb').write(r.content) 
-        
+        open(meme_templates_path + "02.webp", "wb").write(r.content)
 
         convert_pic(meme_templates_path + "02.webp", "02", 65)
 
@@ -524,7 +532,7 @@ class memes(commands.Cog):
 
         # Download second avatar
         r = requests.get(avatarUrl, allow_redirects=True)
-        open(meme_templates_path+'02.webp', 'wb').write(r.content) 
+        open(meme_templates_path + "02.webp", "wb").write(r.content)
 
         convert_pic(meme_templates_path + "02.webp", "02", 146)
 
@@ -550,7 +558,9 @@ class memes(commands.Cog):
         logging.info("Meme sent")
 
         # Delete user avatar and output
-        delete_files(("01.webp", "output.png", "01.png", "02.png", "02.webp", "output.png"))
+        delete_files(
+            ("01.webp", "output.png", "01.png", "02.png", "02.webp", "output.png")
+        )
 
     @commands.command()
     async def palanca(self, context, *, user: discord.Member):
@@ -561,7 +571,7 @@ class memes(commands.Cog):
 
         # Download second avatar
         r = requests.get(user.avatar_url, allow_redirects=True)
-        open(meme_templates_path+'02.webp', 'wb').write(r.content) 
+        open(meme_templates_path + "02.webp", "wb").write(r.content)
 
         convert_pic(meme_templates_path + "02.webp", "02", 57)
 
@@ -590,8 +600,7 @@ class memes(commands.Cog):
         author_avatar_url = context.author.avatar_url
 
         r = requests.get(user.avatar_url, allow_redirects=True)
-        open(meme_templates_path+'02.webp', 'wb').write(r.content) 
-
+        open(meme_templates_path + "02.webp", "wb").write(r.content)
 
         convert_pic(meme_templates_path + "02.webp", "02", 133)
 
