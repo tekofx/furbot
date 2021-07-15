@@ -99,10 +99,7 @@ class memes(commands.Cog):
         logging.info("Meme " + newname + " added by" + str(context.author))
         await context.channel.send("Meme " + newname + " añadido")
 
-    """
-    type: can be video or image
-    """
-
+   
     @commands.command()
     async def meme(self, context, name: str = None, tipo: str = None):
         """Meme random de los nuestros
@@ -117,7 +114,7 @@ class memes(commands.Cog):
                 memes_history_txt
             ):
                 open(memes_history_txt, "w").close()
-        except:
+        except FileNotFoundError:
             logging.error("Error:  memes_history_txt could not be readed")
             return 0
 
@@ -643,7 +640,7 @@ class memes(commands.Cog):
            squirrel stegosaurus stimpy supermilker surgery threeeyes
            turkey turtle tux udder vader vaderkoala www
         """
-        if character == None:
+        if character is None:
             cow_cls = cow.get_cow("default")
         else:
             cow_cls = cow.get_cow(character)
