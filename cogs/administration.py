@@ -1,6 +1,5 @@
 import discord
 from discord.ext import commands
-import os
 from cogs.functions import delete_content_in_file, is_admin, help_txt, admin, activity_txt, write_in_file
 import logging
 
