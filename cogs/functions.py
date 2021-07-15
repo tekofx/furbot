@@ -8,10 +8,8 @@ from dotenv import load_dotenv
 import praw
 import random
 from discord.ext import commands
-import wget
 import requests
 
-prefixes = ["fur ", "Fur ", "FUR "]
 
 # .env data
 
@@ -118,6 +116,7 @@ admin = [magnet_id, creator_id, zaffy_id]
 
 
 # Create bot
+prefixes = ["fur ", "Fur ", "FUR "]
 bot = commands.Bot(command_prefix=prefixes, owner_id=int(creator_id))
 
 
@@ -200,7 +199,7 @@ def get_user(context, user: discord.Member = None):
         user (discord.Member, optional): User of a message. Defaults to None.
 
     Returns:
-        str: user
+        discord.Member: user
     """
     if user == None:
         output = context.author
@@ -561,3 +560,19 @@ def delete_content_in_file(file:str):
         file (str): File to delete contents
     """
     open(file, "w").close()
+
+def get_random_line_of_file(file:str):
+    """ Gets random line of a file
+
+    Args:
+        file (str): file to get the line
+
+    Returns:
+        [str]: random line
+    """
+    with open(file) as f:
+        lines = f.readlines()
+    f.close()
+
+    return random.choice(lines)
+    
