@@ -33,7 +33,6 @@ bot.remove_command("avatar")
 setproctitle.setproctitle("furbot")
 
 
-
 @tasks.loop(minutes=1)
 async def dankmemes():
     now = datetime.datetime.now()
@@ -44,6 +43,7 @@ async def dankmemes():
         else:
             await channel.send(get_hot_subreddit_image(("memes"), 10))
         logging.info("Dankmeme sent")
+
 
 @tasks.loop(seconds=1)
 async def cumpleaños():
@@ -80,6 +80,7 @@ async def es_viernes():
         channel = bot.get_channel(int(os.getenv("GENERAL_CHANNEL")))
         logging.info("Es viernes sent")
         await channel.send(file=discord.File("resources/es_viernes.mp4"))
+
 
 # When the bot starts
 @bot.event
@@ -152,7 +153,7 @@ async def on_command_error(context, error):
 
     ############### Sticker errors ###################
     # Forgot to add s
-    if exists_file(message_content[1] + ".png", stickersPath):
+    if exists_file(message_content[1] + ".png", stickers_path):
         await context.send(
             "Igual quisiste usar un sticker con `fur s " + message_content[1] + "`"
         )
@@ -169,21 +170,23 @@ async def on_command_error(context, error):
     if error.args[0] == "wrong_sticker_name":
         await context.send(
             "Igual qusiste alguno de estos stickers: "
-            + get_files_in_directory_with_substring(arg1, stickersPath)
+            + get_files_in_directory_with_substring(arg1, stickers_path)
         )
 
     # Sticker name already exists
-    if error.args[0]=='sticker_name_exists':
-        await context.send('Error: El nombre de sticker ya existe')
+    if error.args[0] == "sticker_name_exists":
+        await context.send("Error: El nombre de sticker ya existe")
 
     # Not image provided
-    if error.args[0]=='not_image_provided':
-        await context.send('Error: Falta una imagen')
-
+    if error.args[0] == "not_image_provided":
+        await context.send("Error: Falta una imagen")
 
     # Passed user as argument
-    if error.args[0]=='argument_is_user':
-        await context.send('Error: El argumento utilizado es un usuario, el argumento debe ser una cadena de texto')
+    if error.args[0] == "argument_is_user":
+        await context.send(
+            "Error: El argumento utilizado es un usuario, el argumento debe ser una cadena de texto"
+        )
+
 
 # When a message is posted
 @bot.event
@@ -195,7 +198,7 @@ async def on_message(message):
     """
     if message.content.lower() == "owo":
         await message.channel.send("OwO!")
-    if "vaca" in message.content.lower() and message.author!=bot.user:
+    if "vaca" in message.content.lower() and message.author != bot.user:
         await message.channel.send("Muuu!")
     if "vacas" in message.content.lower():
         await message.channel.send("Muuu Muuu!")
@@ -236,9 +239,9 @@ async def on_message(message):
             str(message.author) + " dijo Teko cute en este mensaje: " + message.jump_url
         )
         await usr.send(string)
-    
-    if message.author.id!=capi_id:
-    
+
+    if message.author.id != capi_id:
+
         await bot.process_commands(message)
 
 
