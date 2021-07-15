@@ -3,7 +3,6 @@ import discord
 from PIL import Image
 import os
 from discord.raw_models import RawReactionClearEvent
-import moviepy.editor as mp
 import logging
 from dotenv import load_dotenv
 import praw
@@ -267,36 +266,6 @@ def create_meme(
 
     # Save final meme
     output.save(meme_templates_path + "output.png", "PNG")
-
-
-def create_video_meme(meme: str, user: discord.Member):
-    """Creates a video with a 50% transparency video meme above
-
-    Args:
-        meme (str): name of the video meme to put above
-        user (discord.Member): user to put in the video
-    """
-    get_user_avatar(user, "01")
-    convert_pic(picture=meme_templates_path + "01.webp", imgName="01", imgSize=1000)
-
-    # Create video
-    memeVideo = (
-        mp.VideoFileClip(meme_templates_path + meme + ".mp4")
-        .set_opacity(0.5)
-        .set_pos(("center", "center"))
-    )
-
-    avatar = (
-        mp.ImageClip(meme_templates_path + "01" + ".png")
-        .set_duration(memeVideo.duration)
-        .resize(height=360)
-        .set_pos(("center", "center"))
-    )
-
-    final_video = mp.CompositeVideoClip([avatar, memeVideo])
-    final_video.write_videofile(meme_templates_path + "output.mp4")
-    final_video.close()
-    delete_files(("01" + ".webp", "01" + ".png"))
 
 
 def get_user_ranks(user: discord.Member):
