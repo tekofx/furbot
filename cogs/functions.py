@@ -378,8 +378,7 @@ def is_admin(context):
     """
     if context.author.id in admin:
         return True
-    else:
-        return False
+    return False
 
 
 def get_reddit_image(Subreddit: str, Flair: str, Filter: str):
@@ -396,7 +395,7 @@ def get_reddit_image(Subreddit: str, Flair: str, Filter: str):
     try:
         var = True
         while var:
-            if Flair == None:
+            if Flair is None:
                 memes_submissions = reddit.subreddit(Subreddit).search(
                     Filter
                 )  # Gets a random images from r/foxes with flair Pics!
@@ -409,7 +408,7 @@ def get_reddit_image(Subreddit: str, Flair: str, Filter: str):
                 submission = next(x for x in memes_submissions if not x.stickied)
             if submission.url.endswith("jpg"):
                 var = False
-    except:
+    except ConnectionError:
         logging.error("Error at getting images from reddit")
 
     return submission.url
@@ -435,7 +434,7 @@ def get_hot_subreddit_image(Subreddit: str, Limit: int):
         write_in_file(reddit_memes_history_txt,output.url+'\n')
 
         return output.url
-    except:
+    except FileNotFoundError:
         logging.error("Error at getting reddit_memes_history.txt")
 
 
@@ -482,8 +481,8 @@ def count_files_in_dir(directory: str):
     Returns:
         int: number of files in directory
     """
-    list = os.listdir(directory)  # dir is your directory path
-    output = len(list)
+    files = os.listdir(directory)  # dir is your directory path
+    output = len(files)
     return output
 
 
@@ -498,16 +497,16 @@ def exists_file(file: str, directory: str):
         [Bool]: true if exists, false if not
     """
     output = False
-    list = os.listdir(directory)
-    if file in list:
+    files = os.listdir(directory)
+    if file in files:
         output = True
     return output
 
 
 def exists_file_with_substring(substring: str, directory: str):
     output = False
-    list = os.listdir(directory)
-    for file in list:
+    files = os.listdir(directory)
+    for file in files:
         if substring in file:
             output = True
     return output
@@ -532,11 +531,11 @@ def get_files_in_directory_with_substring(substring: str, directory: str):
         directory (str): directory to search
 
     Returns:
-        [list]: list of files in dir
+        [files]: list of files in dir
     """
     output = ""
-    list = os.listdir(directory)
-    for file in list:
+    files = os.listdir(directory)
+    for file in files:
         if substring in file:
             output += str(file[:-4]) + ", "
     output = output[:-2]
