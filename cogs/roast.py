@@ -20,7 +20,7 @@ class roast(commands.Cog):
     @commands.command()
     async def tecute(self, context):
         """Teko cute"""
-        if context.author.id == magnet_id:
+        if context.author.id is magnet_id:
             await context.channel.send("Teko cute")
         else:
             await context.channel.send("Teko NO cute")
@@ -28,7 +28,7 @@ class roast(commands.Cog):
     @commands.command()
     async def teodio(self, context, *, user: discord.Member = None):
         """Muestra tu odio al bot"""
-        if user == None:
+        if user is None:
             usuario = context.author.mention
         else:
             usuario = user.mention
@@ -41,7 +41,7 @@ class roast(commands.Cog):
 
         Genera un insulto aleatorio
         """
-        if user == None:
+        if user is None:
             usuario = context.author.mention
         else:
             usuario = user.mention
@@ -51,7 +51,7 @@ class roast(commands.Cog):
 
             output = "{} %s " % (random.choice(insults))
             await context.reply(output.format(usuario))
-        except:
+        except FileNotFoundError:
             logging.error("Error at getting insults.txt")
 
     @commands.check(is_admin)
@@ -73,13 +73,13 @@ class roast(commands.Cog):
                 f.write(insult + "\n")
             f.close()
             await context.channel.send("Insulto/s añadido/s")
-        except:
+        except FileNotFoundError:
             logging.error("Error at getting insults.txt")
 
     @commands.command()
     async def animo(self, context, *, user: discord.Member = None):
         """Anima a la gente"""
-        if user == None:
+        if user is None:
             usuario = context.author.mention
         else:
             usuario = user.mention
@@ -89,7 +89,7 @@ class roast(commands.Cog):
 
             output = "{} %s " % (random.choice(animos))
             await context.reply(output.format(usuario))
-        except:
+        except FileNotFoundError:
             logging.error("Error at getting animos.txt")
 
     @commands.check(is_admin)
@@ -111,7 +111,7 @@ class roast(commands.Cog):
                 f.write(animo + "\n")
             f.close()
             await context.channel.send("animo/s añadido/s")
-        except:
+        except FileNotFoundError:
             logging.error("Error at getting animos.txt")
 
 
