@@ -4,10 +4,21 @@ from discord.flags import MessageFlags
 from dotenv import load_dotenv
 import os
 import setproctitle
-from cogs.functions import *
 import logging
 import random
 import datetime
+from cogs.functions import (
+    creator_id,
+    general_channel,
+    setup_logs,
+    magnet_id,
+    get_hot_subreddit_image,
+    cumpleaños_txt,
+    activity_txt,
+    get_files_in_directory_with_substring,
+    jojos,
+    stickers_path,
+)
 
 
 # Get info from .env
@@ -223,7 +234,7 @@ async def on_message(message):
         and "fur" not in message.content.lower()
     ):
         creator = await bot.fetch_user(int(creator_id))
-        usr = await bot.fetch_user(int(usr1_id))
+        usr = await bot.fetch_user(int(magnet_id))
         string = (
             str(message.author) + " habló de jojos en este mensaje: " + message.jump_url
         )
@@ -234,15 +245,13 @@ async def on_message(message):
         and "cute" in message.content.lower()
         and message.author != bot.user
     ):
-        usr = await bot.fetch_user(int(usr1_id))
+        usr = await bot.fetch_user(int(magnet_id))
         string = (
             str(message.author) + " dijo Teko cute en este mensaje: " + message.jump_url
         )
         await usr.send(string)
 
-    if message.author.id != capi_id:
-
-        await bot.process_commands(message)
+    await bot.process_commands(message)
 
 
 # Add extensions
