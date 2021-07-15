@@ -3,15 +3,27 @@ import discord
 from discord.ext import commands
 import asyncio
 import random
-import os
-from cogs.functions import *
 from PIL import Image
 from PIL import ImageFont
 from PIL import ImageDraw
 import qrcode
 from pyrae import dle
-from cogs.functions import bot
-from discord.utils import get
+import requests
+from cogs.functions import (
+    get_user,
+    get_user_species,
+    get_user_color,
+    get_user_ranks,
+    get_user_roles,
+    magnet_id,
+    angel_id,
+    convert_pic,
+    meme_templates_path,
+    get_color_code,
+    delete_files,
+    is_admin,
+    cumpleaños_txt,
+)
 
 
 class utilities(commands.Cog):
@@ -108,13 +120,13 @@ class utilities(commands.Cog):
 
         # Get user avatar
         r = requests.get(usr.avatar_url, allow_redirects=True)
-        open(meme_templates_path+'01.webp', 'wb').write(r.content) 
+        open(meme_templates_path + "01.webp", "wb").write(r.content)
 
         convert_pic(meme_templates_path + "01.webp", "01", 1000)
         user_avatar = meme_templates_path + "01.png"
         avatar = Image.open(user_avatar)
 
-        if design == None or design == "1":
+        if design is None or design is "1":
             # Open carnet to draw
             output = Image.open("resources/utilities/carnet.png").convert("RGBA")
             draw = ImageDraw.Draw(output)
@@ -214,7 +226,7 @@ class utilities(commands.Cog):
         avatar_url = get_user(context, user).avatar_url
 
         r = requests.get(avatar_url, allow_redirects=True)
-        open(meme_templates_path+'01.webp', 'wb').write(r.content) 
+        open(meme_templates_path + "01.webp", "wb").write(r.content)
 
         convert_pic(meme_templates_path + "01.webp", "01")
         await context.channel.send(file=discord.File(meme_templates_path + "01.png"))

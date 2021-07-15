@@ -119,7 +119,7 @@ def get_user(context, user: discord.Member = None):
     Returns:
         discord.Member: user
     """
-    if user == None:
+    if user is None:
         output = context.author
     else:
         output = user
