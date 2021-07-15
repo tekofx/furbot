@@ -116,8 +116,8 @@ class memes(commands.Cog):
             output = random.choice(os.listdir(meme_path))
             while check_if_string_in_file(memes_history_txt, output):
                 output = random.choice(os.listdir(meme_path))
-            var = 'echo "' + output + '">>' + memes_history_txt
-            os.system(var)
+            
+            write_in_file(memes_history_txt,output+'\n')
             await context.channel.send(file=discord.File(meme_path + output))
 
         else:

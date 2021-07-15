@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 import os
-from cogs.functions import is_admin, help_txt, admin, activity_txt
+from cogs.functions import delete_content_in_file, is_admin, help_txt, admin, activity_txt, write_in_file
 import logging
 
 
@@ -22,9 +22,8 @@ class Administration(commands.Cog):
     async def change_activity(self, context, activity_name: str, activity: str = None):
         """[Admin] Cambiar actividad del bot"""
         if activity == None:
-            open(activity_txt, "w").close()
-            var = "echo " + activity_name + ">>" + activity_txt
-            os.system(var)
+            delete_content_in_file(activity_txt)            
+            write_in_file(activity_txt,activity_name)
             try:
                 with open(activity_txt) as f:
                     aux = f.readline()

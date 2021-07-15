@@ -165,8 +165,6 @@ def get_user_avatar(url: str, name: str):
         name (str): user to download avatar from
     """
 
-    """ var = "wget -O %s%s %s" % (meme_templates_path, name + ".webp", user.avatar_url)
-    os.system(var) """
     r = requests.get(url, allow_redirects=True)
 
     open(meme_templates_path + name, "wb").write(r.content)
@@ -218,7 +216,7 @@ def delete_files(elements: list):
     """
     for x in elements:
         if os.path.isfile(meme_templates_path + x):
-            os.system("rm " + meme_templates_path + x)
+            os.remove(meme_templates_path+x)
     logging.info("Removed dependencies")
 
 
@@ -234,9 +232,6 @@ def create_meme(
         position (list): posiciones en las que colocar las imagenes, siendo position[0] y position[1] la x,y del meme
         invert (bool): Si es True usa el meme como canvas, en caso contrario, usa el avatar
     """
-
-    """ var = "wget -O %s%s %s" % (meme_templates_path, "01.webp", avatar_url)
-    os.system(var) """
 
     r = requests.get(avatar_url, allow_redirects=True)
     open(meme_templates_path + "01.webp", "wb").write(r.content)
@@ -437,8 +432,7 @@ def get_hot_subreddit_image(Subreddit: str, Limit: int):
                 [x for x in reddit.subreddit(Subreddit).hot(limit=Limit)]
             )
 
-        var = "echo " + output.url + " >> " + reddit_memes_history_txt
-        os.system(var)
+        write_in_file(reddit_memes_history_txt,output.url+'\n')
 
         return output.url
     except:
