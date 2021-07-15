@@ -83,7 +83,7 @@ class memes(commands.Cog):
         meme_url = context.message.attachments[0].url
 
         r = requests.get(meme_url, allow_redirects=True)
-        open(meme_templates_path + meme_name + meme_extension, "wb").write(r.content)
+        open(meme_path + meme_name + meme_extension, "wb").write(r.content)
 
         if meme_extension == ".png":
             im = Image.open(meme_path + meme_name + meme_extension)
