@@ -26,99 +26,13 @@ zaffy_id = int(os.getenv("ZAFFY"))
 general_channel = int(os.getenv("GENERAL_CHANNEL"))
 tests_channel = int(os.getenv("TESTS_CHANNEL"))
 
-# Variables
-species = [
-    "Cordero",
-    "Protogen",
-    "Lobo",
-    "Turiano",
-    "Zorro",
-    "Ampwave",
-    "Skull",
-    "Erizo",
-    "Murciélago",
-    "Híbrido",
-    "Gato",
-    "Dragón",
-    "Tortuga",
-    "Cabra",
-    "Paloma",
-    "Rata",
-    "Avian",
-]
-ranks = [
-    "Furrense Recien Llegado",
-    "Furrense Nuevo",
-    "Furrense Viejo",
-    "Furrense Veterano",
-    "Furrense de Oro",
-    "Furrense VIP",
-    "Furrense Legendario",
-]
-
-colors = [
-    "amarillo",
-    "celeste",
-    "negro",
-    "rosa",
-    "verde",
-    "rojo",
-    "naranja",
-    "azul",
-    "morado",
-    "azul oscuro",
-    "blanco",
-]
-color_codes = [
-    "241 196 15",
-    "9 173 173",
-    "5 4 4",
-    "228 11 194",
-    "15 199 29",
-    "197 10 12",
-    "247 155 38",
-    "10 92 199",
-    "114 18 172",
-    "14 12 150",
-    "253 253 253",
-]
-
 separator = "       "  # key word to distinguish separator roles
-jojos = [
-    "Kono DIO da!",
-    "No one can deflect emerald splash",
-    "Wryyyyyyy",
-    "Let's kill da hoo, Beeeeetch!",
-    "Daga kotowaru",
-    "Gureto daze",
-    "Yare yare daze",
-    "Oh my God!",
-    "Nigerundayo!",
-    "Moshi moshi? Doppio deshu",
-    "Mezametamae waga arujitachi yo!",
-    "Kono Giorno Giovanna niwa yume ga aru",
-    "Yes I am!",
-    "Sunlight Yellow Overdrive!",
-    "Goodbye Jojo",
-    "Oi Josuke",
-    "Yo Angelo",
-    "Star Finger!",
-    "Za Warudo!",
-    "Rodarola Da!",
-    "Yes yes yes yes, YES!",
-    "Ora ora ora ora ora ora ora ora",
-    "Muda muda muda muda muda muda muda",
-    "Ari ari ari ari ari ari ari    Arivederci",
-]
-
 
 admin = [magnet_id, creator_id, zaffy_id]
-
 
 # Create bot
 prefixes = ["fur ", "Fur ", "FUR "]
 bot = commands.Bot(command_prefix=prefixes, owner_id=int(creator_id))
-
 
 # Paths
 work_directory = "/home/teko/bots/furbot/"
@@ -136,6 +50,9 @@ animos_txt = "resources/animos.txt"
 memes_history_txt = "resources/memes_history.txt"
 activity_txt = "resources/activity.txt"
 jojos_txt="resources/jojos.txt"
+species_txt="resources/species.txt"
+colors_txt="resources/colors.txt"
+ranks_txt="resources/ranks.txt"
 
 stickerSize = 500
 
@@ -290,7 +207,7 @@ def get_user_ranks(user: discord.Member):
     """
     output = []
     for role in user.roles:
-        if str(role) in ranks:
+        if check_if_string_in_file(ranks_txt,str(role.name)):
             output.append(role.name)
     if output:
         b = ", ".join(output)
@@ -312,7 +229,7 @@ def get_user_roles(user: discord.Member):
     for role in user.roles:
         if (
             role.name != "@everyone"
-            and str(role) not in ranks
+            and not check_if_string_in_file(ranks_txt,str(role.name))
             and separator not in str(role)
         ):
             mention.append(role.name)
@@ -332,7 +249,7 @@ def get_user_species(user: discord.Member):
     """
     mention = []
     for role in user.roles:
-        if role.name != "@everyone" and str(role) in species:
+        if check_if_string_in_file(species_txt,str(role.name)):
             mention.append(role.name)
 
     b = ", ".join(mention)
@@ -350,7 +267,7 @@ def get_user_color(user: discord.Member):
     """
     output = "blanco"
     for role in user.roles:
-        if role.name in colors:
+        if check_if_string_in_file(colors_txt,str(role.name)):
             output = role.name
             break
 
@@ -364,17 +281,22 @@ def get_color_code(color: str):
         color (str): color to search color_code
 
     Returns:
-        list(str): contains values of RGB
+        list(int): contains values of RGB
     """
-    count = 0
-    for i in colors:
-        if i == color:
-            break
-        count = count + 1
+    with open(colors_txt) as f:
+        for line in f:
+            if color in line:
+                output = f.readline()
 
-    output = color_codes[count].split(" ")
-    output[:] = list(map(int, output))
-    return output
+                # Transform into a list
+                output=output.split(" ")
+
+                # Delete \n from last element
+                output = [s.replace("\n", "") for s in output]
+                
+                # Convert all elements into int
+                output = list(map(int, output))
+                return output
 
 
 ############################### Reddit functions ###############################
