@@ -27,7 +27,7 @@ class stickers(commands.Cog):
             raise commands.CommandError("not_image_provided")
 
         # Passed user as name
-        if '@' in sticker_name:
+        if "@" in sticker_name:
             logging.error("Argument is user")
             raise commands.CommandError("argument_is_user")
 
@@ -37,27 +37,27 @@ class stickers(commands.Cog):
             logging.error("Name already in use")
             raise commands.CommandError("sticker_name_exists")
 
-
         if sticker_extension == "jpg":
             sticker_fileName = sticker_name + ".jpg"
         else:
             sticker_fileName = sticker_name + ".png"
 
         stickerUrl = context.message.attachments[0].url
-        var = "wget -O %s%s %s" % (stickersPath, sticker_fileName, stickerUrl)
-        stickerPath = "%s%s" % (stickersPath, sticker_fileName)
-        os.system(var)
-        convert_pic(stickerPath, sticker_name)
+
+        r = requests.get(stickerUrl, allow_redirects=True)
+        open(stickers_path + sticker_fileName, "wb").write(r.content)
+
+        convert_pic(stickers_path + sticker_fileName, sticker_name)
 
         if sticker_extension == "jpg":
-            var2 = "rm " + stickerPath
+            var2 = "rm " + stickers_path + sticker_fileName
             os.system(var2)
         await context.channel.send("Sticker " + sticker_name + " añadido")
 
     @commands.command()
     async def list(self, context):
         """Nombre de los stickers añadidos"""
-        output = os.listdir(stickersPath)
+        output = os.listdir(stickers_path)
         output.sort()
         output[:] = [s.replace(".png", "") for s in output]
         output = ", ".join(output)
@@ -69,8 +69,8 @@ class stickers(commands.Cog):
 
         Uso: fur s <nombre_sticker>
         """
-        if Path(stickersPath + sticker + ".png").is_file():
-            stickerName = stickersPath
+        if Path(stickers_path + sticker + ".png").is_file():
+            stickerName = stickers_path
             stickerName += sticker
             stickerName += ".png"
             await context.channel.send(file=discord.File(stickerName))
@@ -84,7 +84,7 @@ class stickers(commands.Cog):
                 if sticker == command.name:
                     raise commands.CommandError("confused_sticker_meme", sticker)
 
-            if exists_file_with_substring(sticker, stickersPath):
+            if exists_file_with_substring(sticker, stickers_path):
                 raise commands.CommandError("wrong_sticker_name", sticker)
 
             # If command fur list is wrong used
@@ -96,7 +96,7 @@ class stickers(commands.Cog):
     @commands.check(is_admin)
     async def remove_sticker(self, context, sticker):
         """[ADMIN] Borra un sticker"""
-        os.system("rm " + stickersPath + sticker + ".png")
+        os.system("rm " + stickers_path + sticker + ".png")
         logging.info("Sticker " + sticker + " deleted")
         await context.channel.send("Sticker " + sticker + " eliminado")
 
@@ -106,10 +106,10 @@ class stickers(commands.Cog):
         """[ADMIN] Cambia nombre a un sticker"""
         os.system(
             "mv "
-            + stickersPath
+            + stickers_path
             + sticker_before
             + ".png "
-            + stickersPath
+            + stickers_path
             + sticker_after
             + ".png"
         )
@@ -132,7 +132,7 @@ def convert_pic(picture: str, stickerName: str):
     wpercent = stickerSize / float(img.size[0])
     hsize = int((float(img.size[1]) * float(wpercent)))
     img = img.resize((stickerSize, hsize), Image.ANTIALIAS)
-    img.save(stickersPath + stickerName + ".png")
+    img.save(stickers_path + stickerName + ".png")
 
 
 def check_sticker(stickerName: str, stickerExtension: str):
@@ -146,7 +146,7 @@ def check_sticker(stickerName: str, stickerExtension: str):
         [0]: [name used by other sticker]
         [1]: [if file extension is correct, must be jpg or png]
     """
-    str = os.listdir(stickersPath)
+    str = os.listdir(stickers_path)
     str[:] = [s.replace(".png", "") for s in str]
     str[:] = [s.replace("'", "") for s in str]
     if stickerName in str:
