@@ -3,7 +3,6 @@ from discord.ext import commands
 from cogs.functions import delete_content_in_file, is_admin, help_txt, admin, activity_txt, write_in_file
 import logging
 
-
 class Administration(commands.Cog):
     def __init__(self, bot):
         self.bot = bot

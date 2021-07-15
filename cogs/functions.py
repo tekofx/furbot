@@ -49,10 +49,10 @@ reddit_memes_history_txt = "resources/reddit_memes_history.txt"
 animos_txt = "resources/animos.txt"
 memes_history_txt = "resources/memes_history.txt"
 activity_txt = "resources/activity.txt"
-jojos_txt="resources/jojos.txt"
-species_txt="resources/species.txt"
-colors_txt="resources/colors.txt"
-ranks_txt="resources/ranks.txt"
+jojos_txt = "resources/jojos.txt"
+species_txt = "resources/species.txt"
+colors_txt = "resources/colors.txt"
+ranks_txt = "resources/ranks.txt"
 
 stickerSize = 500
 
@@ -141,8 +141,6 @@ def is_admin(context):
     return False
 
 
-
-
 def create_meme(
     pictures: list, avatar_url: str, avatar_size: int, position: list, invert: bool
 ):
@@ -192,9 +190,6 @@ def create_meme(
     output.save(meme_templates_path + "output.png", "PNG")
 
 
-
-
-
 ############################# Carnet functions ##############################
 def get_user_ranks(user: discord.Member):
     """Get ranks from a user
@@ -207,7 +202,7 @@ def get_user_ranks(user: discord.Member):
     """
     output = []
     for role in user.roles:
-        if check_if_string_in_file(ranks_txt,str(role.name)):
+        if exists_string_in_file(ranks_txt, str(role.name)):
             output.append(role.name)
     if output:
         b = ", ".join(output)
@@ -229,7 +224,7 @@ def get_user_roles(user: discord.Member):
     for role in user.roles:
         if (
             role.name != "@everyone"
-            and not check_if_string_in_file(ranks_txt,str(role.name))
+            and not exists_string_in_file(ranks_txt, str(role.name))
             and separator not in str(role)
         ):
             mention.append(role.name)
@@ -249,7 +244,7 @@ def get_user_species(user: discord.Member):
     """
     mention = []
     for role in user.roles:
-        if check_if_string_in_file(species_txt,str(role.name)):
+        if exists_string_in_file(species_txt, str(role.name)):
             mention.append(role.name)
 
     b = ", ".join(mention)
@@ -267,7 +262,7 @@ def get_user_color(user: discord.Member):
     """
     output = "blanco"
     for role in user.roles:
-        if check_if_string_in_file(colors_txt,str(role.name)):
+        if exists_string_in_file(colors_txt, str(role.name)):
             output = role.name
             break
 
@@ -289,11 +284,11 @@ def get_color_code(color: str):
                 output = f.readline()
 
                 # Transform into a list
-                output=output.split(" ")
+                output = output.split(" ")
 
                 # Delete \n from last element
                 output = [s.replace("\n", "") for s in output]
-                
+
                 # Convert all elements into int
                 output = list(map(int, output))
                 return output
@@ -345,12 +340,12 @@ def get_hot_subreddit_image(Subreddit: str, Limit: int):
     """
     output = random.choice([x for x in reddit.subreddit(Subreddit).hot(limit=Limit)])
     try:
-        while check_if_string_in_file(reddit_memes_history_txt, output.url):
+        while exists_string_in_file(reddit_memes_history_txt, output.url):
             output = random.choice(
                 [x for x in reddit.subreddit(Subreddit).hot(limit=Limit)]
             )
 
-        write_in_file(reddit_memes_history_txt,output.url+'\n')
+        write_in_file(reddit_memes_history_txt, output.url + "\n")
 
         return output.url
     except FileNotFoundError:
@@ -358,7 +353,7 @@ def get_hot_subreddit_image(Subreddit: str, Limit: int):
 
 
 ############################### Files functions ###############################
-def check_if_string_in_file(file_name: str, string: str):
+def exists_string_in_file(file_name: str, string: str):
     """Checks if string is contained as line in file_name
 
     Args:
@@ -422,7 +417,7 @@ def exists_file(file: str, directory: str):
     return output
 
 
-def exists_file_with_substring(substring: str, directory: str):
+def exists_substring_in_file(substring: str, directory: str):
     output = False
     files = os.listdir(directory)
     for file in files:
@@ -460,8 +455,9 @@ def get_files_in_directory_with_substring(substring: str, directory: str):
     output = output[:-2]
     return output
 
-def write_in_file(file:str,string:str):
-    """ Writes text in a file
+
+def write_in_file(file: str, string: str):
+    """Writes text in a file
 
     Args:
         file (str): file to write
@@ -471,16 +467,18 @@ def write_in_file(file:str,string:str):
     f.write(string)
     f.close()
 
-def delete_content_in_file(file:str):
-    """ Deletes contents of a file
+
+def delete_content_in_file(file: str):
+    """Deletes contents of a file
 
     Args:
         file (str): File to delete contents
     """
     open(file, "w").close()
 
-def get_random_line_of_file(file:str):
-    """ Gets random line of a file
+
+def get_random_line_of_file(file: str):
+    """Gets random line of a file
 
     Args:
         file (str): file to get the line
@@ -494,6 +492,7 @@ def get_random_line_of_file(file:str):
 
     return random.choice(lines)
 
+
 def delete_files(elements: list):
     """Delete files needed to create a meme
 
@@ -502,5 +501,5 @@ def delete_files(elements: list):
     """
     for x in elements:
         if os.path.isfile(meme_templates_path + x):
-            os.remove(meme_templates_path+x)
+            os.remove(meme_templates_path + x)
     logging.info("Removed dependencies")

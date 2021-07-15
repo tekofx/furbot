@@ -50,7 +50,7 @@ class stickers(commands.Cog):
         convert_pic(stickers_path + sticker_fileName, sticker_name)
 
         if sticker_extension == "jpg":
-            os.remove(stickers_path+sticker_fileName)
+            os.remove(stickers_path + sticker_fileName)
         await context.channel.send("Sticker " + sticker_name + " añadido")
 
     @commands.command()
@@ -83,7 +83,7 @@ class stickers(commands.Cog):
                 if sticker == command.name:
                     raise commands.CommandError("confused_sticker_meme", sticker)
 
-            if exists_file_with_substring(sticker, stickers_path):
+            if exists_substring_in_file(sticker, stickers_path):
                 raise commands.CommandError("wrong_sticker_name", sticker)
 
             # If command fur list is wrong used
@@ -95,7 +95,7 @@ class stickers(commands.Cog):
     @commands.check(is_admin)
     async def remove_sticker(self, context, sticker):
         """[ADMIN] Borra un sticker"""
-        os.remove(stickers_path+sticker+'.png')
+        os.remove(stickers_path + sticker + ".png")
         logging.info("Sticker " + sticker + " deleted")
         await context.channel.send("Sticker " + sticker + " eliminado")
 
@@ -103,9 +103,9 @@ class stickers(commands.Cog):
     @commands.check(is_admin)
     async def edit_sticker(self, context, sticker_before, sticker_after):
         """[ADMIN] Cambia nombre a un sticker"""
-        old_name=stickers_path+sticker_before+'.png'
-        new_name=stickers_path+sticker_after+'.png'
-        os.rename(old_name,new_name)
+        old_name = stickers_path + sticker_before + ".png"
+        new_name = stickers_path + sticker_after + ".png"
+        os.rename(old_name, new_name)
         logging.info("Sticker " + sticker_before + " edited")
         await context.channel.send(
             "Cambiado nombre del sticker " + sticker_before + " a " + sticker_after

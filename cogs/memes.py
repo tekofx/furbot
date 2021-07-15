@@ -12,7 +12,7 @@ from cogs.functions import (
     meme_templates_path,
     count_files_in_dir,
     memes_history_txt,
-    check_if_string_in_file,
+    exists_string_in_file,
     write_in_file,
     count_lines_in_file,
 )
@@ -99,7 +99,6 @@ class memes(commands.Cog):
         logging.info("Meme " + newname + " added by" + str(context.author))
         await context.channel.send("Meme " + newname + " añadido")
 
-   
     @commands.command()
     async def meme(self, context, name: str = None, tipo: str = None):
         """Meme random de los nuestros
@@ -120,7 +119,7 @@ class memes(commands.Cog):
 
         if name is None:
             output = random.choice(os.listdir(meme_path))
-            while check_if_string_in_file(memes_history_txt, output):
+            while exists_string_in_file(memes_history_txt, output):
                 output = random.choice(os.listdir(meme_path))
 
             write_in_file(memes_history_txt, output + "\n")
