@@ -56,7 +56,7 @@ class Fun(commands.Cog):
             if context.author.id == cracker_id:
                 num = 100
                 usuario = "Cracker"
-            elif context.author.id == creator:
+            elif context.author.id == creator_id:
                 num = 100
                 usuario = "Teko"
             elif context.author.id == magnet_id:
@@ -71,7 +71,7 @@ class Fun(commands.Cog):
             elif user.id == magnet_id:
                 num = 100
                 usuario = "Magnet"
-            elif user.id == creator:
+            elif user.id == creator_id:
                 num = 100
                 usuario = "Teko"
             else:
@@ -89,7 +89,7 @@ class Fun(commands.Cog):
             if context.author.id == cracker_id:
                 num = 0
                 usuario = "Cracker"
-            elif context.author.id == creator:
+            elif context.author.id == creator_id:
                 num = 0
                 usuario = "Teko"
             elif context.author.id == magnet_id:
