@@ -135,6 +135,7 @@ reddit_memes_history_txt = "resources/reddit_memes_history.txt"
 animos_txt = "resources/animos.txt"
 memes_history_txt = "resources/memes_history.txt"
 activity_txt = "resources/activity.txt"
+jojos_txt="resources/jojos.txt"
 
 stickerSize = 500
 
@@ -209,16 +210,20 @@ def get_user(context, user: discord.Member = None):
     return output
 
 
-def delete_files(elements: list):
-    """Delete files needed to create a meme
+def is_admin(context):
+    """Checks if user that calls a function is a bot admin
 
     Args:
-        elements (list): files used in a meme
+        context (discord.ext.commands.context.Context): context of the function
+
+    Returns:
+        bool: true if is owner, false if not
     """
-    for x in elements:
-        if os.path.isfile(meme_templates_path + x):
-            os.remove(meme_templates_path+x)
-    logging.info("Removed dependencies")
+    if context.author.id in admin:
+        return True
+    return False
+
+
 
 
 def create_meme(
@@ -270,6 +275,10 @@ def create_meme(
     output.save(meme_templates_path + "output.png", "PNG")
 
 
+
+
+
+############################# Carnet functions ##############################
 def get_user_ranks(user: discord.Member):
     """Get ranks from a user
 
@@ -368,20 +377,7 @@ def get_color_code(color: str):
     return output
 
 
-def is_admin(context):
-    """Checks if user that calls a function is a bot admin
-
-    Args:
-        context (discord.ext.commands.context.Context): context of the function
-
-    Returns:
-        bool: true if is owner, false if not
-    """
-    if context.author.id in admin:
-        return True
-    return False
-
-
+############################### Reddit functions ###############################
 def get_reddit_image(Subreddit: str, Flair: str, Filter: str):
     """Gets a random Reddit image
 
@@ -575,4 +571,14 @@ def get_random_line_of_file(file:str):
     f.close()
 
     return random.choice(lines)
-    
+
+def delete_files(elements: list):
+    """Delete files needed to create a meme
+
+    Args:
+        elements (list): files used in a meme
+    """
+    for x in elements:
+        if os.path.isfile(meme_templates_path + x):
+            os.remove(meme_templates_path+x)
+    logging.info("Removed dependencies")

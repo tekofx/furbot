@@ -10,13 +10,14 @@ import datetime
 from cogs.functions import (
     creator_id,
     general_channel,
+    get_random_line_of_file,
     setup_logs,
     magnet_id,
     get_hot_subreddit_image,
     cumpleaños_txt,
     activity_txt,
     get_files_in_directory_with_substring,
-    jojos,
+    jojos_txt,
     stickers_path,
     exists_file,
 )
@@ -227,8 +228,7 @@ async def on_message(message):
         and message.author != bot.user
         and "fur" not in message.content.lower()
     ):
-        output = random.choice(jojos)
-        await message.channel.send(output)
+        await message.channel.send(get_random_line_of_file(jojos_txt))
     if (
         ("jojo" in message.content.lower() or "jojos" in message.content.lower())
         and message.author != bot.user
