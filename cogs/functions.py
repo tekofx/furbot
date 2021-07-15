@@ -558,3 +558,11 @@ def write_in_file(file:str,string:str):
     f = open(file, "a")
     f.write(string)
     f.close()
+
+def delete_content_in_file(file:str):
+    """ Deletes contents of a file
+
+    Args:
+        file (str): File to delete contents
+    """
+    open(file, "w").close()
