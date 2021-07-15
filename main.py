@@ -18,6 +18,7 @@ from cogs.functions import (
     get_files_in_directory_with_substring,
     jojos,
     stickers_path,
+    exists_file,
 )
 
 
