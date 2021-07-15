@@ -1,0 +1,8 @@
+dpytest
+numpy
+discordpy
+pillow
+praw
+dotenv
+pyrae
+qrcode
