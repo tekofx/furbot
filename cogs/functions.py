@@ -8,6 +8,8 @@ from dotenv import load_dotenv
 import praw
 import random
 from discord.ext import commands
+import wget
+import requests
 
 prefixes = ["fur ", "Fur ", "FUR "]
 
@@ -19,7 +21,7 @@ cracker_id = int(os.getenv("CRACKER"))
 magnet_id = int(os.getenv("MAGNET"))
 angel_id = int(os.getenv("ANGEL"))
 zaffy_id = int(os.getenv("ZAFFY"))
-capi_id=int(os.getenv("CAPI"))
+capi_id = int(os.getenv("CAPI"))
 
 general_channel = int(os.getenv("GENERAL_CHANNEL"))
 tests_channel = int(os.getenv("TESTS_CHANNEL"))
@@ -119,7 +121,7 @@ bot = commands.Bot(command_prefix=prefixes, owner_id=int(creator_id))
 
 # Paths
 work_directory = "/home/teko/bots/furbot/"
-stickersPath = "stickers/"
+stickers_path = "stickers/"
 meme_templates_path = "resources/memes/"
 meme_path = "memes/"
 enanas_path = "fun/enanas/"
@@ -155,7 +157,7 @@ def setup_logs():
     logging.info("\n\n\nStarted furbot")
 
 
-def get_user_avatar(user: discord.Member, name: str):
+def get_user_avatar(url: str, name: str):
     """Downloads the avatar of a user
 
     Args:
@@ -163,12 +165,13 @@ def get_user_avatar(user: discord.Member, name: str):
         name (str): user to download avatar from
     """
 
-    var = "wget -O %s%s %s" % (meme_templates_path, name + ".webp", user.avatar_url)
-    os.system(var)
+    """ var = "wget -O %s%s %s" % (meme_templates_path, name + ".webp", user.avatar_url)
+    os.system(var) """
+    r = requests.get(url, allow_redirects=True)
 
-    logging.info(
-        "Saved avatar with url " + user.avatar_url + " in " + meme_templates_path
-    )
+    open(meme_templates_path + name, "wb").write(r.content)
+
+    logging.info("Saved avatar with url " + url + " in " + meme_templates_path)
 
 
 def convert_pic(picture: str, imgName: str, imgSize: str = None):
@@ -232,8 +235,11 @@ def create_meme(
         invert (bool): Si es True usa el meme como canvas, en caso contrario, usa el avatar
     """
 
-    var = "wget -O %s%s %s" % (meme_templates_path, "01.webp", avatar_url)
-    os.system(var)
+    """ var = "wget -O %s%s %s" % (meme_templates_path, "01.webp", avatar_url)
+    os.system(var) """
+
+    r = requests.get(avatar_url, allow_redirects=True)
+    open(meme_templates_path + "01.webp", "wb").write(r.content)
 
     # Convert avatar
     convert_pic(meme_templates_path + "01.webp", "01", avatar_size)

@@ -107,8 +107,9 @@ class utilities(commands.Cog):
         img = img.resize((250, 250))
 
         # Get user avatar
-        var = "wget -O %s%s %s" % (meme_templates_path, "01" + ".webp", usr.avatar_url)
-        os.system(var)
+        r = requests.get(usr.avatar_url, allow_redirects=True)
+        open(meme_templates_path+'01.webp', 'wb').write(r.content) 
+
         convert_pic(meme_templates_path + "01.webp", "01", 1000)
         user_avatar = meme_templates_path + "01.png"
         avatar = Image.open(user_avatar)
@@ -211,8 +212,10 @@ class utilities(commands.Cog):
         """Obtén la imagen de perfil de alguien"""
 
         avatar_url = get_user(context, user).avatar_url
-        var = "wget -O %s%s %s" % (meme_templates_path, "01.webp", avatar_url)
-        os.system(var)
+
+        r = requests.get(avatar_url, allow_redirects=True)
+        open(meme_templates_path+'01.webp', 'wb').write(r.content) 
+
         convert_pic(meme_templates_path + "01.webp", "01")
         await context.channel.send(file=discord.File(meme_templates_path + "01.png"))
         delete_files(("01.webp", "01.png"))

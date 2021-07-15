@@ -67,17 +67,9 @@ class memes(commands.Cog):
 
         meme_name = meme_name.replace(" ", "_")
         meme_url = context.message.attachments[0].url
-        var = (
-            "wget -O "
-            + meme_path
-            + '"'
-            + meme_name
-            + '"'
-            + meme_extension
-            + " "
-            + meme_url
-        )
-        os.system(var)
+        
+        r = requests.get(meme_url, allow_redirects=True)
+        open(meme_templates_path+meme_name+meme_extension, 'wb').write(r.content) 
 
         if meme_extension == ".png":
             im = Image.open(meme_path + meme_name + meme_extension)
@@ -258,9 +250,8 @@ class memes(commands.Cog):
             quote = quote.replace("'", '"')
         quote = '"' + quote + '"'
 
-        var = "wget -O %s%s %s" % (meme_templates_path, "01.webp", userName.avatar_url)
-        print(userName.avatar_url)
-        os.system(var)
+        r = requests.get(userName.avatar_url, allow_redirects=True)
+        open(meme_templates_path+'01.webp', 'wb').write(r.content) 
 
         convert_pic(meme_templates_path + "01.webp", "01", avatarSize)
 
@@ -379,12 +370,10 @@ class memes(commands.Cog):
         # Get user avatar
         avatarUrl = get_user(context, user).avatar_url
 
-        var = "wget -O %s%s %s" % (
-            meme_templates_path,
-            "02.webp",
-            context.author.avatar_url,
-        )
-        os.system(var)
+        r = requests.get(context.author.avatar_url, allow_redirects=True)
+        open(meme_templates_path+'02.webp', 'wb').write(r.content) 
+        
+
         convert_pic(meme_templates_path + "02.webp", "02", 65)
 
         create_meme(
@@ -533,12 +522,10 @@ class memes(commands.Cog):
         # Get user avatar
         avatarUrl = get_user(context, user).avatar_url
 
-        var = "wget -O %s%s %s" % (
-            meme_templates_path,
-            "02.webp",
-            context.author.avatar_url,
-        )
-        os.system(var)
+        # Download second avatar
+        r = requests.get(avatarUrl, allow_redirects=True)
+        open(meme_templates_path+'02.webp', 'wb').write(r.content) 
+
         convert_pic(meme_templates_path + "02.webp", "02", 146)
 
         create_meme(
@@ -572,14 +559,10 @@ class memes(commands.Cog):
         # Get author avatar url
         author_avatar_url = context.author.avatar_url
 
-        # Get parameter user avatar
-        parameter_user_avatar_url = user.avatar_url
-        var = "wget -O %s%s %s" % (
-            meme_templates_path,
-            "02.webp",
-            parameter_user_avatar_url,
-        )
-        os.system(var)
+        # Download second avatar
+        r = requests.get(user.avatar_url, allow_redirects=True)
+        open(meme_templates_path+'02.webp', 'wb').write(r.content) 
+
         convert_pic(meme_templates_path + "02.webp", "02", 57)
 
         create_meme(
@@ -606,14 +589,10 @@ class memes(commands.Cog):
         # Get author avatar url
         author_avatar_url = context.author.avatar_url
 
-        # Get parameter user avatar
-        parameter_user_avatar_url = user.avatar_url
-        var = "wget -O %s%s %s" % (
-            meme_templates_path,
-            "02.webp",
-            parameter_user_avatar_url,
-        )
-        os.system(var)
+        r = requests.get(user.avatar_url, allow_redirects=True)
+        open(meme_templates_path+'02.webp', 'wb').write(r.content) 
+
+
         convert_pic(meme_templates_path + "02.webp", "02", 133)
 
         create_meme(
