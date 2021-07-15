@@ -11,6 +11,7 @@ from PIL import ImageDraw
 import qrcode
 from pyrae import dle
 from cogs.functions import bot
+from discord.utils import get
 
 
 class utilities(commands.Cog):
@@ -66,7 +67,7 @@ class utilities(commands.Cog):
         for arg in args:
             if "@" in arg:
                 arg = int(arg.strip("<@!>"))
-                user = context.guild.get_member(arg)
+                user = await context.guild.fetch_member(int(arg))
             else:
                 design = arg
 
