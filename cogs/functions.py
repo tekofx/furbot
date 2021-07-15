@@ -43,6 +43,7 @@ species = [
     "Cabra",
     "Paloma",
     "Rata",
+    "Avian",
 ]
 ranks = [
     "Furrense Recien Llegado",
