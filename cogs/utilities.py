@@ -35,7 +35,7 @@ class utilities(commands.Cog):
 
     @commands.command()
     async def ping(self, context):
-        await context.channel.send("Estoy online")
+        await context.channel.send("Pim pam trucu trucu")
 
     @commands.command()
     async def random(
