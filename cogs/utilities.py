@@ -32,6 +32,11 @@ class utilities(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+
+    @commands.command()
+    async def ping(self, context):
+        await context.channel.send("Estoy online")
+
     @commands.command()
     async def random(
         self, context, min_num: int = None, max_num: int = None
