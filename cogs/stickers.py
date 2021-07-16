@@ -2,9 +2,15 @@ import discord
 from discord.ext import commands
 import os
 from PIL import Image
-from cogs.functions import *
 from pathlib import Path
 import logging
+import requests
+from cogs.functions import (
+    stickers_path,
+    exists_substring_in_file,
+    is_admin,
+    stickerSize,
+)
 
 
 class stickers(commands.Cog):
@@ -139,10 +145,10 @@ def check_sticker(stickerName: str, stickerExtension: str):
         [0]: [name used by other sticker]
         [1]: [if file extension is correct, must be jpg or png]
     """
-    str = os.listdir(stickers_path)
-    str[:] = [s.replace(".png", "") for s in str]
-    str[:] = [s.replace("'", "") for s in str]
-    if stickerName in str:
+    string = os.listdir(stickers_path)
+    string[:] = [s.replace(".png", "") for s in string]
+    string[:] = [s.replace("'", "") for s in string]
+    if stickerName in string:
         return 0
     if stickerExtension in ["jpg", "png"]:
         return 1

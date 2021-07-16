@@ -34,16 +34,16 @@ class utilities(commands.Cog):
 
     @commands.command()
     async def random(
-        self, context, min: int = None, max: int = None, *, user: discord.Member = None
+        self, context, min_num: int = None, max_num: int = None
     ):
         """Genera un número aleatorio
 
         Uso: fur random                 ---> Genera un numero entre 1 y 100
-             fur random <min> <max>     ---> Genera un numero entre <min> y <max>
+             fur random <min_num> <max_num>     ---> Genera un numero entre <min_num> y <max_num>
         """
 
-        if min and max is not None:
-            num = str(random.randint(min, max))
+        if min_num and max_num is not None:
+            num = str(random.randint(min_num, max_num))
         else:
             num = str(random.randint(0, 100))
         tmp = await context.channel.send("Generando número aleatorio")
@@ -126,7 +126,7 @@ class utilities(commands.Cog):
         user_avatar = meme_templates_path + "01.png"
         avatar = Image.open(user_avatar)
 
-        if design is None or design is "1":
+        if design is None or design == "1":
             # Open carnet to draw
             output = Image.open("resources/utilities/carnet.png").convert("RGBA")
             draw = ImageDraw.Draw(output)

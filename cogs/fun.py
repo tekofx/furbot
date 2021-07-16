@@ -40,7 +40,7 @@ class Fun(commands.Cog):
 
         num = random.randint(0, 100)
         output = "{} es {}% comunista"
-        if user == None:
+        if user is None:
             usuario = str(context.author)[:-5]
         else:
             usuario = str(user)[:-5]
@@ -52,7 +52,7 @@ class Fun(commands.Cog):
 
         num = random.randint(0, 100)
         output = "{} es {}% gay"
-        if user == None:
+        if user is None:
             if context.author.id == cracker_id:
                 num = 100
                 usuario = "Cracker"
@@ -85,7 +85,7 @@ class Fun(commands.Cog):
 
         num = random.randint(0, 100)
         output = "{} es {}% hetero"
-        if user == None:
+        if user is None:
             if context.author.id == cracker_id:
                 num = 0
                 usuario = "Cracker"
@@ -118,7 +118,7 @@ class Fun(commands.Cog):
 
         num = random.randint(0, 100)
         output = "{} es {}% capitalista"
-        if user == None:
+        if user is None:
             usuario = str(context.author)[:-5]
         else:
             usuario = str(user)[:-5]
@@ -133,7 +133,7 @@ class Fun(commands.Cog):
             fur enana <palabra> ---> Enana que contega palabra
         """
 
-        if enana_name == None:
+        if enana_name is None:
             output = random.choice(os.listdir(enanas_path))
             name = output.split("/")[-1]  # Remove path
             name = name[:-4]  # Remove extension

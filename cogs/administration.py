@@ -19,14 +19,14 @@ class Administration(commands.Cog):
     @commands.check(is_admin)
     async def change_activity(self, context, activity_name: str, activity: str = None):
         """[Admin] Cambiar actividad del bot"""
-        if activity == None:
+        if activity is None:
             delete_content_in_file(activity_txt)            
             write_in_file(activity_txt,activity_name)
             try:
                 with open(activity_txt) as f:
                     aux = f.readline()
                 await self.bot.change_presence(activity=discord.Game(name=aux))
-            except:
+            except discord.HTTPException:
                 logging.error("Error: activity.txt not found")
                 await context.channel.send(
                     "Error: No se ha encontrado el archivo activity.txt"
