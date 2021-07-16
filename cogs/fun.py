@@ -23,7 +23,7 @@ class Fun(commands.Cog):
 
         num = random.randint(1, 15)
         output = "El pene de {}\n"
-        if user == None:
+        if user is None:
             usuario = str(context.author)[:-5]
         else:
             usuario = str(user)[:-5]
