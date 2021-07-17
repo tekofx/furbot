@@ -162,6 +162,13 @@ class memes(commands.Cog):
             await context.channel.send(file=discord.File(meme_path + output))
         logging.info("Meme " + output + " sent")
 
+
+    @commands.command(name="countmemes")
+    async def count_memes(self, context):
+        """Número de memes añadidos al bot"""
+        await context.channel.send(count_files_in_dir(meme_path))
+
+
     @commands.command()
     async def horny(self, context, *, user: discord.Member = None):
         """Mucho horny
