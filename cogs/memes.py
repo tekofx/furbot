@@ -15,6 +15,7 @@ from cogs.functions import (
     exists_string_in_file,
     write_in_file,
     count_lines_in_file,
+    reddit_memes_history_txt,
 )
 import discord
 import os
@@ -628,7 +629,7 @@ class memes(commands.Cog):
     async def dankmeme(self, context):
         """Top memes de r/dankmemes"""
         message = await context.channel.send("buscando dankmeme")
-        await context.channel.send(get_hot_subreddit_image("dankmemes", 10))
+        await context.channel.send(get_hot_subreddit_image("dankmemes", 10,reddit_memes_history_txt))
         await message.delete()
 
     @commands.command()

@@ -20,6 +20,7 @@ from cogs.functions import (
     jojos_txt,
     stickers_path,
     exists_file,
+    reddit_memes_history_txt
 )
 
 
@@ -52,9 +53,9 @@ async def dankmemes():
     if now.minute == 0:
         channel = bot.get_channel(int(os.getenv("MEMES_CHANNEL")))
         if now.hour % 2 == 0:
-            await channel.send(get_hot_subreddit_image(("dankmemes"), 10))
+            await channel.send(get_hot_subreddit_image(("dankmemes"), 10,reddit_memes_history_txt))
         else:
-            await channel.send(get_hot_subreddit_image(("memes"), 10))
+            await channel.send(get_hot_subreddit_image(("memes"), 10,reddit_memes_history_txt))
         logging.info("Dankmeme sent")
 
 

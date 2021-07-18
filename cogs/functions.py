@@ -328,7 +328,7 @@ def get_reddit_image(Subreddit: str, Flair: str, Filter: str):
     return submission.url
 
 
-def get_hot_subreddit_image(Subreddit: str, Limit: int):
+def get_hot_subreddit_image(Subreddit: str, Limit: int, file_txt:str):
     """Get an image from a subreddit in hot
 
     Args:
@@ -340,12 +340,12 @@ def get_hot_subreddit_image(Subreddit: str, Limit: int):
     """
     output = random.choice([x for x in reddit.subreddit(Subreddit).hot(limit=Limit)])
     try:
-        while exists_string_in_file(reddit_memes_history_txt, output.url):
+        while exists_string_in_file(file_txt, output.url):
             output = random.choice(
                 [x for x in reddit.subreddit(Subreddit).hot(limit=Limit)]
             )
 
-        write_in_file(reddit_memes_history_txt, output.url + "\n")
+        write_in_file(file_txt, output.url + "\n")
 
         return output.url
     except FileNotFoundError:
