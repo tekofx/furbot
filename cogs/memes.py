@@ -718,12 +718,30 @@ class memes(commands.Cog):
 
     @commands.command()
     async def omni(self, context, *, user: discord.Member = None):
-        """Es hora del cotilleo"""
+        """Omniman"""
 
         # Get user avatar
         avatarUrl = get_user(context, user).avatar_url
 
         create_meme(("omni", "01"), avatarUrl, 470, (0, 0, 210, 388), True)
+
+        # Send meme
+        await context.channel.send(
+            file=discord.File(meme_templates_path + "output.png")
+        )
+        logging.info("Meme sent")
+
+        # Delete user avatar and output
+        delete_files(("01.webp", "output.png", "01.png"))
+    
+    @commands.command()
+    async def mierda(self, context, *, user: discord.Member = None):
+        """Menudo montón de mierda"""
+
+        # Get user avatar
+        avatarUrl = get_user(context, user).avatar_url
+
+        create_meme(("mierda", "01"), avatarUrl, 270, (0, 0, 476, 161), True)
 
         # Send meme
         await context.channel.send(
