@@ -165,9 +165,12 @@ class memes(commands.Cog):
 
 
     @commands.command(name="countmemes")
-    async def count_memes(self, context):
+    async def count_memes(self, context, word:str=None):
         """Número de memes añadidos al bot"""
-        await context.channel.send(count_files_in_dir(meme_path))
+        if word is None:
+            await context.channel.send(count_files_in_dir(meme_path))
+        else:
+            pass
 
 
     @commands.command()
