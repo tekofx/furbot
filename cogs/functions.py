@@ -328,7 +328,7 @@ def get_reddit_image(Subreddit: str, Flair: str, Filter: str):
     return submission.url
 
 
-def get_hot_subreddit_image(Subreddit: str, Limit: int, file_txt:str):
+def get_hot_subreddit_image(Subreddit: str, Limit: int, file_txt: str):
     """Get an image from a subreddit in hot
 
     Args:

@@ -163,15 +163,13 @@ class memes(commands.Cog):
             await context.channel.send(file=discord.File(meme_path + output))
         logging.info("Meme " + output + " sent")
 
-
     @commands.command(name="countmemes")
-    async def count_memes(self, context, word:str=None):
+    async def count_memes(self, context, word: str = None):
         """Número de memes añadidos al bot"""
         if word is None:
             await context.channel.send(count_files_in_dir(meme_path))
         else:
             pass
-
 
     @commands.command()
     async def horny(self, context, *, user: discord.Member = None):
@@ -632,7 +630,9 @@ class memes(commands.Cog):
     async def dankmeme(self, context):
         """Top memes de r/dankmemes"""
         message = await context.channel.send("buscando dankmeme")
-        await context.channel.send(get_hot_subreddit_image("dankmemes", 10,reddit_memes_history_txt))
+        await context.channel.send(
+            get_hot_subreddit_image("dankmemes", 10, reddit_memes_history_txt)
+        )
         await message.delete()
 
     @commands.command()
@@ -733,7 +733,7 @@ class memes(commands.Cog):
 
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
-    
+
     @commands.command()
     async def mierda(self, context, *, user: discord.Member = None):
         """Menudo montón de mierda"""
@@ -751,6 +751,7 @@ class memes(commands.Cog):
 
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
+
 
 def setup(bot):
     bot.add_cog(memes(bot))

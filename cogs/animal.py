@@ -8,13 +8,15 @@ class Animal(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    awa = {"a", "b", "b", "c"}
+
     @commands.command()
     async def fox(self, context):
         """Fotos de zorros hermosos -/////-
 
         Envia una foto de r/foxes
         """
-        message=await context.channel.send("Buscando fotos de zorros hermosos")
+        message = await context.channel.send("Buscando fotos de zorros hermosos")
         await context.channel.send(get_reddit_image("foxes", "Pics!", None))
         await message.delete()
 
@@ -24,7 +26,7 @@ class Animal(commands.Cog):
 
         Envia una foto de r/wolves
         """
-        message=await context.channel.send("Buscando fotos de lobos lobitos lobones")
+        message = await context.channel.send("Buscando fotos de lobos lobitos lobones")
         await context.channel.send(get_reddit_image("wolves", "Pics", None))
         await message.delete()
 
@@ -34,7 +36,7 @@ class Animal(commands.Cog):
 
         Envia una foto de r/fish
         """
-        message=await context.channel.send("Buscando fotos de pescaitos")
+        message = await context.channel.send("Buscando fotos de pescaitos")
         await context.channel.send(get_reddit_image("fish", "Pic", None))
         await message.delete()
 
@@ -44,7 +46,7 @@ class Animal(commands.Cog):
 
         Envia una foto de r/reptiles
         """
-        message=await context.channel.send("Buscando fotos de lagartos y reptiles")
+        message = await context.channel.send("Buscando fotos de lagartos y reptiles")
         await context.channel.send(
             get_reddit_image(
                 "reptiles",
@@ -60,7 +62,9 @@ class Animal(commands.Cog):
 
         Envia una foto de r/Amphibians
         """
-        message=await context.channel.send("Buscando fotos de ranas y anfibios monísimos")
+        message = await context.channel.send(
+            "Buscando fotos de ranas y anfibios monísimos"
+        )
         await context.channel.send(
             get_reddit_image(
                 "Amphibians",
@@ -76,7 +80,7 @@ class Animal(commands.Cog):
 
         Envia una foto de r/birds
         """
-        message=await context.channel.send("Buscando fotos de pajaros")
+        message = await context.channel.send("Buscando fotos de pajaros")
         await context.channel.send(
             get_reddit_image(
                 "birds",

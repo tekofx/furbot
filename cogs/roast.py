@@ -2,7 +2,14 @@ import discord
 import random
 from discord.ext import commands
 import logging
-from cogs.functions import get_random_line_of_file, get_user, insults_txt, is_admin, magnet_id, animos_txt
+from cogs.functions import (
+    get_random_line_of_file,
+    get_user,
+    insults_txt,
+    is_admin,
+    magnet_id,
+    animos_txt,
+)
 
 
 class roast(commands.Cog):
@@ -41,9 +48,9 @@ class roast(commands.Cog):
 
         Genera un insulto aleatorio
         """
-        usuario=get_user(context,user).mention
+        usuario = get_user(context, user).mention
         try:
-            output = usuario+get_random_line_of_file(insults_txt)
+            output = usuario + get_random_line_of_file(insults_txt)
             await context.reply(output)
         except FileNotFoundError:
             logging.error("Error at getting insults.txt")
@@ -73,9 +80,9 @@ class roast(commands.Cog):
     @commands.command()
     async def animo(self, context, *, user: discord.Member = None):
         """Anima a la gente"""
-        usuario=get_user(context,user).mention
+        usuario = get_user(context, user).mention
         try:
-            output = usuario+get_random_line_of_file(animos_txt)
+            output = usuario + get_random_line_of_file(animos_txt)
             await context.reply(output)
         except FileNotFoundError:
             logging.error("Error at getting animos.txt")
