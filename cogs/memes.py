@@ -752,6 +752,89 @@ class memes(commands.Cog):
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
 
+    @commands.command()
+    async def coche(
+        self, context, text1: str, text2: str, text3: str, user: discord.Member
+    ):
+        """Fuera de mi coche
+
+        Uso:
+            fur coche "Texto1" "Texto2" "Texto3" @usuario
+
+        Ejemplo:
+            fur coche "Gala eres rich?" "Si, tengo 5 alexas" "Fuera de mi coche" @Gala
+
+        """
+
+        # Get images
+        r = requests.get(context.author.avatar_url, allow_redirects=True)
+        open(meme_templates_path + "01.webp", "wb").write(r.content)
+        r = requests.get(user.avatar_url, allow_redirects=True)
+        open(meme_templates_path + "02.webp", "wb").write(r.content)
+
+        # Convert images
+        convert_pic(meme_templates_path + "01.webp", "01", 205)  # author
+        convert_pic(meme_templates_path + "02.webp", "02", 205)  # user
+        convert_pic(meme_templates_path + "02.webp", "03", 120)  # user
+
+        # Open new image
+        width, height = (
+            Image.open(meme_templates_path + "coche.png").convert("RGBA").size
+        )
+        output = Image.new("RGBA", (width, height))  # Create picture
+
+        # Open other images
+        meme = Image.open(meme_templates_path + "coche.png").convert("RGBA")
+        author_image = Image.open(meme_templates_path + "01.png").convert("RGBA")
+        user_image = Image.open(meme_templates_path + "02.png").convert("RGBA")
+        user_image2 = Image.open(meme_templates_path + "03.png").convert("RGBA")
+
+        # Paste images
+        output.paste(author_image, (171, 0), author_image)
+        output.paste(author_image, (170, 616), author_image)
+        output.paste(user_image, (603, 10), user_image)
+        output.paste(user_image2, (766, 741), user_image2)
+        output.paste(meme, (0, 0), meme)
+
+        # Write text
+        Y = 15
+
+        txtPic1 = Image.new("RGBA", (450, 230))
+        draw = ImageDraw.Draw(txtPic1)
+        font = ImageFont.truetype(meme_templates_path + "Calibri.ttf", 40)
+        lines1 = textwrap.wrap(text1, width=18)
+        for line in lines1:
+            draw.text(((10, Y)), line, font=font, fill=(255, 255, 255, 255))
+            Y = Y + 40
+
+        Y = 8
+        txtPic2 = Image.new("RGBA", (320, 220))
+        draw = ImageDraw.Draw(txtPic2)
+        lines2 = textwrap.wrap(text2, width=18)
+        for line in lines2:
+            draw.text(((10, Y)), line, font=font, fill=(255, 255, 255, 255))
+            Y = Y + 40
+
+        Y = 8
+        txtPic3 = Image.new("RGBA", (540, 120))
+        draw = ImageDraw.Draw(txtPic3)
+        lines3 = textwrap.wrap(text3, width=18)
+        for line in lines3:
+            draw.text(((10, Y)), line, font=font, fill=(255, 255, 255, 255))
+            Y = Y + 40
+
+        output.paste(txtPic1, (18, 249), txtPic1)
+        output.paste(txtPic2, (550, 260), txtPic2)
+        output.paste(txtPic3, (188, 888), txtPic3)
+
+        # Save image
+        output.save(meme_templates_path + "output.png", "PNG")
+
+        await context.channel.send(
+            file=discord.File(meme_templates_path + "output.png")
+        )
+        delete_files(("01.webp", "02.webp", "01.png", "02.png", "03.png", "output.png"))
+
 
 def setup(bot):
     bot.add_cog(memes(bot))
