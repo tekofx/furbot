@@ -802,7 +802,7 @@ class memes(commands.Cog):
         txtPic1 = Image.new("RGBA", (450, 230))
         draw = ImageDraw.Draw(txtPic1)
         font = ImageFont.truetype(meme_templates_path + "Calibri.ttf", 40)
-        lines1 = textwrap.wrap(text1, width=18)
+        lines1 = textwrap.wrap(text1, width=25)
         for line in lines1:
             draw.text(((10, Y)), line, font=font, fill=(255, 255, 255, 255))
             Y = Y + 40
@@ -810,7 +810,7 @@ class memes(commands.Cog):
         Y = 8
         txtPic2 = Image.new("RGBA", (320, 220))
         draw = ImageDraw.Draw(txtPic2)
-        lines2 = textwrap.wrap(text2, width=18)
+        lines2 = textwrap.wrap(text2, width=19)
         for line in lines2:
             draw.text(((10, Y)), line, font=font, fill=(255, 255, 255, 255))
             Y = Y + 40
@@ -818,7 +818,7 @@ class memes(commands.Cog):
         Y = 8
         txtPic3 = Image.new("RGBA", (540, 120))
         draw = ImageDraw.Draw(txtPic3)
-        lines3 = textwrap.wrap(text3, width=18)
+        lines3 = textwrap.wrap(text3, width=30)
         for line in lines3:
             draw.text(((10, Y)), line, font=font, fill=(255, 255, 255, 255))
             Y = Y + 40
