@@ -533,10 +533,10 @@ class memes(commands.Cog):
         """Si, los cojones"""
 
         # Get user avatar
-        avatarUrl = get_user(context, user).avatar_url
+        avatarUrl = user.avatar_url
 
-        # Download second avatar
-        r = requests.get(avatarUrl, allow_redirects=True)
+        # Download author avatar
+        r = requests.get(context.author.avatar_url, allow_redirects=True)
         open(meme_templates_path + "02.webp", "wb").write(r.content)
 
         convert_pic(meme_templates_path + "02.webp", "02", 146)
@@ -564,7 +564,7 @@ class memes(commands.Cog):
 
         # Delete user avatar and output
         delete_files(
-            ("01.webp", "output.png", "01.png", "02.png", "02.webp", "output.png")
+            ("01.webp", "output.png", "01.png", "02.png", "02.webp", "output2.png")
         )
 
     @commands.command()
