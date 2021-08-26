@@ -6,3 +6,5 @@ praw
 python-dotenv
 pyrae
 qrcode
+setproctitle
+cowpy
