@@ -1,8 +1,8 @@
 dpytest
 numpy
-discordpy
+discord
 pillow
 praw
-dotenv
+python-dotenv
 pyrae
 qrcode
