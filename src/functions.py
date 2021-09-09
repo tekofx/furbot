@@ -2,7 +2,6 @@
 import discord
 from PIL import Image
 import os
-from discord.raw_models import RawReactionClearEvent
 import logging
 from dotenv import load_dotenv
 import praw
@@ -35,24 +34,24 @@ prefixes = ["fur ", "Fur ", "FUR "]
 bot = commands.Bot(command_prefix=prefixes, owner_id=int(creator_id))
 
 # Paths
-work_directory = "/home/teko/bots/furbot/"
-stickers_path = "stickers/"
-meme_templates_path = "resources/memes/"
-meme_path = "memes/"
+work_directory = "/"
+stickers_path = "files/stickers"
+meme_templates_path = "files/resources/memes/"
+meme_path = "files/memes"
 enanas_path = "fun/enanas/"
 
-# Data files
-help_txt = "resources/help.txt"
-insults_txt = "resources/insults.txt"
-cumpleaños_txt = "resources/cumpleaños.txt"
-reddit_memes_history_txt = "resources/reddit_memes_history.txt"
-animos_txt = "resources/animos.txt"
-memes_history_txt = "resources/memes_history.txt"
-activity_txt = "resources/activity.txt"
-jojos_txt = "resources/jojos.txt"
-species_txt = "resources/species.txt"
-colors_txt = "resources/colors.txt"
-ranks_txt = "resources/ranks.txt"
+# Datafiles
+help_txt = "files/resources/data/help.txt"
+insults_txt = "files/resources/data/insults.txt"
+cumpleaños_txt = "files/resources/data/cumpleaños.txt"
+reddit_memes_history_txt = "files/resources/data/reddit_memes_history.txt"
+animos_txt = "files/resources/data/animos.txt"
+memes_history_txt = "files/resources/data/memes_history.txt"
+activity_txt = "files/resources/data/activity.txt"
+jojos_txt = "files/resources/data/jojos.txt"
+species_txt = "files/resources/data/species.txt"
+colors_txt = "files/resources/data/colors.txt"
+ranks_txt = "files/resources/data/ranks.txt"
 
 stickerSize = 500
 

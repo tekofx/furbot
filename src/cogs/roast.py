@@ -2,7 +2,7 @@ import discord
 import random
 from discord.ext import commands
 import logging
-from cogs.functions import (
+from functions import (
     get_random_line_of_file,
     get_user,
     insults_txt,

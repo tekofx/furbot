@@ -5,7 +5,7 @@ from PIL import Image
 from pathlib import Path
 import logging
 import requests
-from cogs.functions import (
+from functions import (
     stickers_path,
     exists_substring_in_file,
     is_admin,

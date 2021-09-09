@@ -9,7 +9,7 @@ from PIL import ImageDraw
 import qrcode
 from pyrae import dle
 import requests
-from cogs.functions import (
+from functions import (
     get_user,
     get_user_species,
     get_user_color,

@@ -2,7 +2,7 @@ import random
 import textwrap
 import time
 from PIL import ImageFont, ImageDraw
-from cogs.functions import (
+from functions import (
     create_meme,
     get_user,
     delete_files,
@@ -405,6 +405,9 @@ class memes(commands.Cog):
     @commands.command()
     async def cute(self, context, *, user: discord.Member = None):
         """You are cute"""
+
+        if context.author.id == 745844458184245361:
+            return
 
         # Get user avatar
         avatarUrl = get_user(context, user).avatar_url
