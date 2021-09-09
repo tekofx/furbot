@@ -34,11 +34,11 @@ prefixes = ["fur ", "Fur ", "FUR "]
 bot = commands.Bot(command_prefix=prefixes, owner_id=int(creator_id))
 
 # Paths
-work_directory = "/"
-stickers_path = "files/stickers"
+stickers_path = "files/stickers/"
 meme_templates_path = "files/resources/memes/"
-meme_path = "files/memes"
-enanas_path = "fun/enanas/"
+meme_path = "files/memes/"
+enanas_path = "files/enanas/"
+paths = [stickers_path, meme_path, enanas_path]
 
 # Datafiles
 help_txt = "files/resources/data/help.txt"
@@ -52,6 +52,19 @@ jojos_txt = "files/resources/data/jojos.txt"
 species_txt = "files/resources/data/species.txt"
 colors_txt = "files/resources/data/colors.txt"
 ranks_txt = "files/resources/data/ranks.txt"
+files = [
+    help_txt,
+    insults_txt,
+    cumpleaños_txt,
+    reddit_memes_history_txt,
+    animos_txt,
+    memes_history_txt,
+    activity_txt,
+    jojos_txt,
+    species_txt,
+    colors_txt,
+    ranks_txt,
+]
 
 stickerSize = 500
 
@@ -73,6 +86,24 @@ def setup_logs():
         level=logging.INFO,
     )
     logging.info("\n\n\nStarted furbot")
+
+
+def setup_directories():
+    """Creates needed directories"""
+    for path in paths:
+        if not os.path.isdir(path):
+            print("directory ", path, " not exists, creating it")
+
+            os.mkdir(path)
+
+
+def setup_files():
+    """Creates needed directories"""
+    for file in files:
+        if not os.path.isfile(file):
+            print("file ", file, " not exists, creating it")
+            fp = open(file, "x")
+            fp.close()
 
 
 def get_user_avatar(url: str, name: str):

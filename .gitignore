@@ -2,7 +2,6 @@
 /files/resources/data/
 /src/.env
 furbot.code-workspace
-main.py
 /.vscode
 files/stickers/
 src/__pycache__/*
