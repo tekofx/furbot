@@ -79,7 +79,7 @@ reddit = praw.Reddit(
 def setup_logs():
     """Set up the logs"""
     logging.basicConfig(
-        filename="logs",
+        filename="src/logs",
         filemode="a",
         format="%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s",
         datefmt="%H:%M:%S",
