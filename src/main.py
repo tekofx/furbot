@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 import os
 import setproctitle
 import logging
-import random
+import sys
 import datetime
 from functions import (
     creator_id,
@@ -271,10 +271,9 @@ extensions = [
     "utilities",
 ]
 
-dir = os.getcwd()
-parent_dir = os.path.dirname(dir)
-print(parent_dir)
-# os.chdir(parent_dir)
+path = os.path.dirname(sys.argv[0])
+working_dir = os.path.dirname(path)
+os.chdir(working_dir)
 print(os.getcwd())
 for extension in extensions:
     bot.load_extension("cogs." + extension)
