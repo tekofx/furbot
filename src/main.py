@@ -272,9 +272,8 @@ extensions = [
 ]
 
 # Set path
-path = os.path.dirname(__file__)
+path = os.path.dirname(os.path.abspath(__file__))
 working_dir = os.path.dirname(path)
-os.chdir(working_dir)
 for extension in extensions:
     bot.load_extension("cogs." + extension)
 
