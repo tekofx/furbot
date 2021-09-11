@@ -271,12 +271,12 @@ extensions = [
     "utilities",
 ]
 
-path = os.path.dirname(sys.argv[0])
+# Set path
+path = os.path.dirname(__file__)
 working_dir = os.path.dirname(path)
 os.chdir(working_dir)
-print(os.getcwd())
 for extension in extensions:
     bot.load_extension("cogs." + extension)
 
-# Runs bot
+# Run bot
 bot.run(token)
