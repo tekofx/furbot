@@ -1,4 +1,3 @@
-dpytest
 numpy
 discord
 pillow
