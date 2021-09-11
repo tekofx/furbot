@@ -32,3 +32,9 @@ docker start furbot # Iniciar docker
 docker restart furbot # Reiniciar docker
 docker stop furbot # Detener docker
 ```
+
+Para iniciar automaticamente al encender:
+
+```
+docker update --restart=always furbot
+```
