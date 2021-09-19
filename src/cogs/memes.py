@@ -838,6 +838,27 @@ class memes(commands.Cog):
         )
         delete_files(("01.webp", "02.webp", "01.png", "02.png", "03.png", "output.png"))
 
+    @commands.command()
+    async def sus(self, context, user: discord.Member = None):
+        string = """. 　　　。　　　　•　 　ﾟ　　。 　　.
+
+            　　　.　　　 　　.　　　　　。　　 。　. 　
+
+            .　　 。　　　　　 ඞ 。 . 　　 • 　　　　•.                                     .
+
+            　　ﾟ　　 {} 　 。　.
+
+            　　'　　　  　 　　。                                          .
+            。
+            　　ﾟ　　　.　　　. ,　　　　.　 ."""
+
+        if user is None:
+            string = string.format(context.author.name + " era el impostor")
+        else:
+            string = string.format(user.name + " era el impostor")
+
+        await context.channel.send(string)
+
 
 def setup(bot):
     bot.add_cog(memes(bot))
