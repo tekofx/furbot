@@ -8,7 +8,6 @@ import requests
 from functions import (
     stickers_path,
     exists_substring_in_file,
-    is_admin,
     stickerSize,
 )
 
@@ -98,7 +97,7 @@ class stickers(commands.Cog):
             logging.error("Sticker " + sticker + " does not exist")
 
     @commands.command(name="rm")
-    @commands.check(is_admin)
+    @commands.has_permissions(administrator=True)
     async def remove_sticker(self, context, sticker):
         """[ADMIN] Borra un sticker"""
         os.remove(stickers_path + sticker + ".png")
@@ -106,7 +105,7 @@ class stickers(commands.Cog):
         await context.channel.send("Sticker " + sticker + " eliminado")
 
     @commands.command(name="edit")
-    @commands.check(is_admin)
+    @commands.has_permissions(administrator=True)
     async def edit_sticker(self, context, sticker_before, sticker_after):
         """[ADMIN] Cambia nombre a un sticker"""
         old_name = stickers_path + sticker_before + ".png"

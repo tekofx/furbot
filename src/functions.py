@@ -157,20 +157,6 @@ def get_user(context, user: discord.Member = None):
     return output
 
 
-def is_admin(context):
-    """Checks if user that calls a function is a bot admin
-
-    Args:
-        context (discord.ext.commands.context.Context): context of the function
-
-    Returns:
-        bool: true if is owner, false if not
-    """
-    if context.author.id in admin:
-        return True
-    return False
-
-
 def create_meme(
     pictures: list, avatar_url: str, avatar_size: int, position: list, invert: bool
 ):

@@ -21,7 +21,6 @@ from functions import (
     meme_templates_path,
     get_color_code,
     delete_files,
-    is_admin,
     cumpleaños_txt,
 )
 
@@ -246,7 +245,7 @@ class utilities(commands.Cog):
         else:
             await tmp.edit(content=output)
 
-    @commands.check(is_admin)
+    @commands.has_permissions(administrator=True)
     @commands.command()
     async def addcumple(self, context, birthday: str, user: discord.Member):
         """[Admin] Añade el cumpleaños de alguien al bot
