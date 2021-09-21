@@ -8,3 +8,4 @@ src/__pycache__/*
 logs
 src/cogs/__pycache__/*
 docker-composer.yml
+tests/__pycache__/*
