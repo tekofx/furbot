@@ -6,7 +6,6 @@ from functions import (
     get_random_line_of_file,
     get_user,
     insults_txt,
-    is_admin,
     magnet_id,
     animos_txt,
 )
@@ -55,7 +54,7 @@ class roast(commands.Cog):
         except FileNotFoundError:
             logging.error("Error at getting insults.txt")
 
-    @commands.check(is_admin)
+    @commands.has_permissions(administrator=True)
     @commands.command()
     async def addinsult(self, context, *insults: str):
         """[ADMIN] Añade insulto
@@ -87,7 +86,7 @@ class roast(commands.Cog):
         except FileNotFoundError:
             logging.error("Error at getting animos.txt")
 
-    @commands.check(is_admin)
+    @commands.has_permissions(administrator=True)
     @commands.command()
     async def addanimo(self, context, *animos: str):
         """[ADMIN] Añade animos
