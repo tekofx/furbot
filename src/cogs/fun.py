@@ -24,9 +24,9 @@ class Fun(commands.Cog):
         num = random.randint(1, 15)
         output = "El pene de {}\n"
         if user is None:
-            usuario = str(context.author)[:-5]
+            usuario = context.author.name
         else:
-            usuario = str(user)[:-5]
+            usuario = user.name
 
         output += "8"
         for x in range(num):
@@ -41,9 +41,9 @@ class Fun(commands.Cog):
         num = random.randint(0, 100)
         output = "{} es {}% comunista"
         if user is None:
-            usuario = str(context.author)[:-5]
+            usuario = context.author.name
         else:
-            usuario = str(user)[:-5]
+            usuario = user.name
         await context.channel.send(output.format(usuario, num))
 
     @commands.command()
@@ -53,29 +53,9 @@ class Fun(commands.Cog):
         num = random.randint(0, 100)
         output = "{} es {}% gay"
         if user is None:
-            if context.author.id == cracker_id:
-                num = 100
-                usuario = "Cracker"
-            elif context.author.id == creator_id:
-                num = 100
-                usuario = "Teko"
-            elif context.author.id == magnet_id:
-                num = 100
-                usuario = "Magnet"
-            else:
-                usuario = str(context.author)[:-5]
+            usuario = context.author.name
         else:
-            if user.id == cracker_id:
-                num = 100
-                usuario = "Cracker"
-            elif user.id == magnet_id:
-                num = 100
-                usuario = "Magnet"
-            elif user.id == creator_id:
-                num = 100
-                usuario = "Teko"
-            else:
-                usuario = str(user)[:-5]
+            usuario = user.name
 
         await context.channel.send(output.format(usuario, num))
 
@@ -86,29 +66,9 @@ class Fun(commands.Cog):
         num = random.randint(0, 100)
         output = "{} es {}% hetero"
         if user is None:
-            if context.author.id == cracker_id:
-                num = 0
-                usuario = "Cracker"
-            elif context.author.id == creator_id:
-                num = 0
-                usuario = "Teko"
-            elif context.author.id == magnet_id:
-                num = 0
-                usuario = "Magnet"
-            else:
-                usuario = str(context.author)[:-5]
+            usuario = context.author.name
         else:
-            if user.id == cracker_id:
-                num = 0
-                usuario = "Cracker"
-            elif user.id == magnet_id:
-                num = 0
-                usuario = "Magnet"
-            elif user.id == creator_id:
-                num = 0
-                usuario = "Teko"
-            else:
-                usuario = str(user)[:-5]
+            usuario = user.name
 
         await context.channel.send(output.format(usuario, num))
 
@@ -119,43 +79,10 @@ class Fun(commands.Cog):
         num = random.randint(0, 100)
         output = "{} es {}% capitalista"
         if user is None:
-            usuario = str(context.author)[:-5]
+            usuario = context.author.name
         else:
-            usuario = str(user)[:-5]
+            usuario = user.name
         await context.channel.send(output.format(usuario, num))
-
-    @commands.command()
-    async def enana(self, context, enana_name: str = None):
-        """Elije una enana o consigue una aleatoria de forma totalmente gratuita
-
-        Uso:
-            fur enana           ---> Enana aleatoria
-            fur enana <palabra> ---> Enana que contega palabra
-        """
-
-        if enana_name is None:
-            output = random.choice(os.listdir(enanas_path))
-            name = output.split("/")[-1]  # Remove path
-            name = name[:-4]  # Remove extension
-
-            await context.channel.send(name, file=discord.File(enanas_path + output))
-
-        else:
-            for filenames in os.listdir(enanas_path):
-                if enana_name.lower() in filenames.lower():
-                    output = filenames
-                    break
-
-            await context.channel.send(file=discord.File(enanas_path + output))
-
-    @commands.command()
-    async def enanalist(self, context):
-
-        """Lista todas las enanas existentes"""
-        output = os.listdir(enanas_path)
-        output[:] = [s.replace(".png", "") for s in output]
-        output[:] = [s.replace("'", "") for s in output]
-        await context.channel.send(output)
 
 
 def setup(bot):
