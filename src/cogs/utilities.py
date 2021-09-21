@@ -21,6 +21,7 @@ from functions import (
     delete_files,
     cumpleaños_txt,
 )
+from main import magnet_id, angel_id
 
 
 class utilities(commands.Cog):

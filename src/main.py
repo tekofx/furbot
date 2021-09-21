@@ -26,6 +26,8 @@ from functions import (
 load_dotenv()
 token = os.getenv("DISCORD_TOKEN")
 magnet_id = int(os.getenv("MAGNET"))
+angel_id = int(os.getenv("ANGEL"))
+
 general_channel = int(os.getenv("GENERAL_CHANNEL"))
 
 
@@ -238,12 +240,10 @@ async def on_message(message):
         and message.author != bot.user
         and "fur" not in message.content.lower()
     ):
-        creator = await bot.fetch_user(int(creator_id))
         usr = await bot.fetch_user(int(magnet_id))
         string = (
             str(message.author) + " habló de jojos en este mensaje: " + message.jump_url
         )
-        await creator.send(string)
         await usr.send(string)
     if (
         "teko" in message.content.lower()
