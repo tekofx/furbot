@@ -1,0 +1,22 @@
+amarillo
+241 196 15
+celeste
+9 173 173
+negro
+5 4 4
+rosa
+228 11 194
+verde
+15 199 29
+rojo
+197 10 12
+naranja
+247 155 38
+azul
+10 92 199
+morado
+114 18 172
+azul oscuro
+14 12 150
+blanco
+253 253 253
