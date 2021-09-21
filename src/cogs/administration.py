@@ -61,14 +61,6 @@ class Administration(commands.Cog):
 
         await context.channel.send("Cambiada actividad a " + activity_name)
 
-    @commands.command(name="admin")
-    async def check_admin(self, context):
-        """Comprueba si eres admin del bot"""
-        output = "No eres admin del bot"
-        if context.author.id in admin:
-            output = "Eres admin del bot"
-        await context.channel.send(output)
-
 
 def setup(bot):
     bot.add_cog(Administration(bot))
