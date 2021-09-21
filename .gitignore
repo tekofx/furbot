@@ -9,3 +9,4 @@ logs
 src/cogs/__pycache__/*
 docker-composer.yml
 tests/__pycache__/*
+__pycache__/
