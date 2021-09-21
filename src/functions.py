@@ -15,23 +15,15 @@ import requests
 load_dotenv()
 
 # Users
-creator_id = int(os.getenv("BOT_CREATOR"))
-cracker_id = int(os.getenv("CRACKER"))
-magnet_id = int(os.getenv("MAGNET"))
-angel_id = int(os.getenv("ANGEL"))
-zaffy_id = int(os.getenv("ZAFFY"))
 
 # Channels
-general_channel = int(os.getenv("GENERAL_CHANNEL"))
-tests_channel = int(os.getenv("TESTS_CHANNEL"))
 
 separator = "       "  # key word to distinguish separator roles
 
-admin = [magnet_id, creator_id, zaffy_id]
 
 # Create bot
 prefixes = ["fur ", "Fur ", "FUR "]
-bot = commands.Bot(command_prefix=prefixes, owner_id=int(creator_id))
+bot = commands.Bot(command_prefix=prefixes)
 
 # Paths
 stickers_path = "files/stickers/"

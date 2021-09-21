@@ -2,7 +2,6 @@ import discord
 from discord.ext import commands
 import random
 import os
-from functions import cracker_id, creator_id, magnet_id, enanas_path
 
 
 class Fun(commands.Cog):

@@ -15,8 +15,6 @@ from functions import (
     get_user_color,
     get_user_ranks,
     get_user_roles,
-    magnet_id,
-    angel_id,
     convert_pic,
     meme_templates_path,
     get_color_code,

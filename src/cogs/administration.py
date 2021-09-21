@@ -3,7 +3,6 @@ from discord.ext import commands
 from functions import (
     delete_content_in_file,
     help_txt,
-    admin,
     activity_txt,
     write_in_file,
 )

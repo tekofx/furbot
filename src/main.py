@@ -8,13 +8,10 @@ import logging
 import sys
 import datetime
 from functions import (
-    creator_id,
-    general_channel,
     get_random_line_of_file,
     setup_directories,
     setup_files,
     setup_logs,
-    magnet_id,
     get_hot_subreddit_image,
     cumpleaños_txt,
     activity_txt,
@@ -28,7 +25,9 @@ from functions import (
 # Get info from .env
 load_dotenv()
 token = os.getenv("DISCORD_TOKEN")
-usr1_id = os.getenv("MAGNET")
+magnet_id = int(os.getenv("MAGNET"))
+general_channel = int(os.getenv("GENERAL_CHANNEL"))
+
 
 # Activity for the bot
 status = discord.Status.online
@@ -36,7 +35,7 @@ activity = discord.Game("owo what's this")
 
 # Set prefixes for bot commands
 prefixes = ["fur ", "Fur ", "FUR "]
-bot = commands.Bot(command_prefix=prefixes, owner_id=int(creator_id))
+bot = commands.Bot(command_prefix=prefixes)
 
 
 # Remove some commands to use their names
