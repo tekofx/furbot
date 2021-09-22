@@ -128,7 +128,7 @@ class utilities(commands.Cog):
 
         if design is None or design == "1":
             # Open carnet to draw
-            output = Image.open("resources/utilities/carnet.png").convert("RGBA")
+            output = Image.open("files/resources/utilities/carnet.png").convert("RGBA")
             draw = ImageDraw.Draw(output)
             font = ImageFont.truetype(meme_templates_path + "Calibri.ttf", 40)
 
@@ -150,7 +150,9 @@ class utilities(commands.Cog):
 
             # Add discord nitro badge
             if "Furrense Booster" in roles:
-                booster = Image.open("resources/utilities/booster.png").convert("RGBA")
+                booster = Image.open("files/resources/utilities/booster.png").convert(
+                    "RGBA"
+                )
                 booster = booster.resize((140, 140))
                 output.paste(booster, (1090, 530), booster)
 
@@ -166,7 +168,7 @@ class utilities(commands.Cog):
             W = 1100
 
             # Open carnet design to draw
-            carnet_design = Image.open("resources/utilities/carnet2.png").convert(
+            carnet_design = Image.open("files/resources/utilities/carnet2.png").convert(
                 "RGBA"
             )
             draw = ImageDraw.Draw(carnet_design)
@@ -203,7 +205,9 @@ class utilities(commands.Cog):
 
             # Add discord nitro badge
             if "Furrense Booster" in roles:
-                booster = Image.open("resources/utilities/booster.png").convert("RGBA")
+                booster = Image.open("files/resources/utilities/booster.png").convert(
+                    "RGBA"
+                )
                 booster = booster.resize((140, 140))
                 carnet_design.paste(booster, (10, 10), booster)
 
