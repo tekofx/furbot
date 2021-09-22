@@ -365,7 +365,7 @@ def exists_string_in_file(file_name: str, string: str):
     """Checks if string is contained as line in file_name
 
     Args:
-        file_name (str]): file to check
+        file_name (str): file to check
         string (str): string to search
 
     Returns:
@@ -373,7 +373,7 @@ def exists_string_in_file(file_name: str, string: str):
     """
     with open(file_name, "r") as file:
         for line in file:
-            if string in line:
+            if string + "\n" == line:
                 return True
     return False
 
@@ -408,6 +408,7 @@ def count_files_in_dir(directory: str):
     return output
 
 
+# TODO: cambiar argumentos a solo el path del archivo
 def exists_file(file: str, directory: str):
     """Checks if exists a file with a given name
 
@@ -425,6 +426,7 @@ def exists_file(file: str, directory: str):
     return output
 
 
+# TODO: cambiar argumentos a solo el path del archivo
 def exists_substring_in_file(substring: str, directory: str):
     output = False
     files = os.listdir(directory)
@@ -447,7 +449,7 @@ def get_files_in_directory(directory: str):
 
 
 def get_files_in_directory_with_substring(substring: str, directory: str):
-    """Get a list of files in a directory that contain a substring
+    """Get a string with files in a directory that contain a substring in its name
 
     Args:
         directory (str): directory to search

@@ -3,10 +3,18 @@ from PIL import Image
 import pytest
 from src.functions import (
     convert_pic,
+    count_files_in_dir,
+    count_lines_in_file,
+    delete_content_in_file,
+    exists_file,
     exists_string_in_file,
     get_color_code,
+    get_files_in_directory,
+    get_files_in_directory_with_substring,
+    get_random_line_of_file,
     get_user,
     meme_templates_path,
+    write_in_file,
 )
 import discord
 import os
@@ -86,12 +94,89 @@ def test_get_hot_subreddit_image():
 
 
 def test_exists_string_in_file_true():
-    file = "tests/file1.txt"
-    string = "dafadsfasd545454"
+    file = "tests/dir/test_file2.txt"
+    string = "falseasdf"
     assert exists_string_in_file(file, string) == True
 
 
 def test_exists_string_in_file_false():
-    file = "tests/file1.txt"
-    string = "d"
+    file = "tests/dir/test_file2.txt"
+    string = "x"
     assert exists_string_in_file(file, string) == False
+
+
+def test_count_lines_in_file():
+    assert count_lines_in_file("tests/dir/a") == 18
+
+
+def test_count_files_in_dir():
+    assert count_files_in_dir("tests/dir/") == 5
+
+
+def test_exists_file_true():
+    assert exists_file("a", "tests/dir/") == True
+
+
+def test_exists_file_false():
+    assert exists_file("c", "tests/dir/") == False
+
+
+def test_get_files_in_directory():
+    assert len(get_files_in_directory("tests/dir/")) == 5
+
+
+def test_get_files_in_directory_with_substring():
+    assert (
+        get_files_in_directory_with_substring("e", "tests/dir/")
+        == "test_file1, test_file2"
+    )
+
+
+# TODO
+def test_write_in_file():
+    file = "tests/dir/d"
+    string1 = "hola mundo"
+    string2 = " adios mundo"
+
+    # Write first string
+    write_in_file(file, string1)
+    f = open(file, "r")
+
+    # check first string
+    assert f.readline() == string1
+    f.close()
+
+    # Write string2
+    write_in_file(file, string2)
+    f = open(file, "r")
+
+    # Check string1 and string2
+    assert f.readline() == string1 + string2
+    f.close()
+
+    # Delete contents of file
+    open(file, "w").close()
+
+
+def test_delete_content_in_file():
+    string1 = "hola mundo"
+    file = "tests/dir/d"
+    write_in_file(file, string1)
+
+    delete_content_in_file(file)
+
+    f = open(file, "r")
+    assert f.readline() == ""
+
+    f.close()
+
+
+def test_get_random_line_of_file():
+    assert get_random_line_of_file("tests/dir/b") in [
+        "a\n",
+        "b\n",
+        "c\n",
+        "d\n",
+        "e\n",
+        "f\n",
+    ]
