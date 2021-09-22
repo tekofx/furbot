@@ -33,7 +33,6 @@ enanas_path = "files/enanas/"
 paths = [stickers_path, meme_path, enanas_path]
 
 # Datafiles
-help_txt = "files/resources/data/help.txt"
 insults_txt = "files/resources/data/insults.txt"
 cumpleaños_txt = "files/resources/data/cumpleaños.txt"
 reddit_memes_history_txt = "files/resources/data/reddit_memes_history.txt"
@@ -45,7 +44,6 @@ species_txt = "files/resources/data/species.txt"
 colors_txt = "files/resources/data/colors.txt"
 ranks_txt = "files/resources/data/ranks.txt"
 files = [
-    help_txt,
     insults_txt,
     cumpleaños_txt,
     reddit_memes_history_txt,
@@ -348,7 +346,9 @@ def get_hot_subreddit_image(Subreddit: str, Limit: int, file_txt: str):
     """
     output = random.choice([x for x in reddit.subreddit(Subreddit).hot(limit=Limit)])
     try:
-        while exists_string_in_file(file_txt, output.url):
+        while (
+            exists_string_in_file(file_txt, output.url) and "v.reddit.it" not in output
+        ):
             output = random.choice(
                 [x for x in reddit.subreddit(Subreddit).hot(limit=Limit)]
             )

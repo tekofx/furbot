@@ -15,14 +15,6 @@ class Administration(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name="info")
-    async def help(self, context, user: discord.Member = None):
-        """Muestra la info de Zaffy"""
-        f = open(help_txt, "r")
-        general = f.read()
-        await context.channel.send(general)
-        f.close()
-
     @commands.command(name="activity")
     @commands.has_permissions(administrator=True)
     async def change_activity(self, context, activity_name: str, activity: str = None):
