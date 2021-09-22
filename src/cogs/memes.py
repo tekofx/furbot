@@ -153,7 +153,6 @@ class memes(commands.Cog):
                     output = "0"
                     while ".jpg" not in output:
                         output = random.choice(uwu)
-                        print(output)
 
             else:
                 output = random.choice(uwu)
