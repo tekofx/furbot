@@ -199,11 +199,9 @@ def get_user_ranks(user: discord.Member):
         str: String containing all ranks
     """
     server_ranks = get_ranks(yaml_file)
-    print(server_ranks)
     output = []
     for role in user.roles:
         if str(role.name) in server_ranks:
-            print("b")
             output.append(role.name)
     if output:
         b = ", ".join(output)
@@ -263,9 +261,10 @@ def get_user_color(user: discord.Member):
     Returns:
         str: String with color
     """
+    server_colors = get_colors(yaml_file)
     output = "blanco"
     for role in user.roles:
-        if exists_string_in_file(colors_txt, str(role.name)):
+        if str(role.name) in server_colors:
             output = role.name
             break
 
@@ -505,10 +504,12 @@ def get_ranks(yaml_file: str):
     return output
 
 
-def get_activity(yaml_file: str):
+def get_colors(yaml_file: str):
     content = get_content_yaml(yaml_file)
-    print(content["activity"])
-    pass
+    output = []
+    for key, value in content["colors"].items():
+        output.append(key)
+    return output
 
 
 def get_color_code(yaml_file: str, color: str):
@@ -516,14 +517,12 @@ def get_color_code(yaml_file: str, color: str):
 
     for key, value in content["colors"].items():
         if key == color:
-            print(value)
             output = value.split(" ")
             # Delete \n from last element
             output = [s.replace("\n", "") for s in output]
 
             # Convert all elements into int
             output = list(map(int, output))
-            print(output)
             return output
 
 
