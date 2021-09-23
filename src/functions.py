@@ -38,9 +38,6 @@ animos_txt = "files/resources/data/animos.txt"
 memes_history_txt = "files/resources/data/memes_history.txt"
 activity_txt = "files/resources/data/activity.txt"
 jojos_txt = "files/resources/data/jojos.txt"
-species_txt = "files/resources/data/species.txt"
-colors_txt = "files/resources/data/colors.txt"
-ranks_txt = "files/resources/data/ranks.txt"
 files = [
     insults_txt,
     cumpleaños_txt,
@@ -49,9 +46,6 @@ files = [
     memes_history_txt,
     activity_txt,
     jojos_txt,
-    species_txt,
-    colors_txt,
-    ranks_txt,
 ]
 
 stickerSize = 500
@@ -540,3 +534,16 @@ def get_species(yaml_file: str):
         output.append(x)
 
     return output
+
+
+def get_activity(yaml_file: str):
+    content = get_content_yaml(yaml_file)
+    return content["activity"]
+
+
+def change_activity(yaml_file: str, activity: str):
+    with open(yaml_file, "r") as f:
+        content = yaml.safe_load(f)
+        content["activity"] = activity
+    with open(yaml_file, "w") as f:
+        yaml.dump(content, f, allow_unicode=True)
