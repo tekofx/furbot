@@ -8,15 +8,14 @@ import praw
 import random
 from discord.ext import commands
 import requests
+import yaml
 
 
 # .env data
 
 load_dotenv()
 
-# Users
-
-# Channels
+yaml_file = "files/resources/config.yaml"
 
 separator = "       "  # key word to distinguish separator roles
 
@@ -29,8 +28,7 @@ bot = commands.Bot(command_prefix=prefixes)
 stickers_path = "files/stickers/"
 meme_templates_path = "files/resources/memes/"
 meme_path = "files/memes/"
-enanas_path = "files/enanas/"
-paths = [stickers_path, meme_path, enanas_path]
+paths = [stickers_path, meme_path]
 
 # Datafiles
 insults_txt = "files/resources/data/insults.txt"
@@ -206,9 +204,12 @@ def get_user_ranks(user: discord.Member):
     Returns:
         str: String containing all ranks
     """
+    server_ranks = get_ranks(yaml_file)
+    print(server_ranks)
     output = []
     for role in user.roles:
-        if exists_string_in_file(ranks_txt, str(role.name)):
+        if str(role.name) in server_ranks:
+            print("b")
             output.append(role.name)
     if output:
         b = ", ".join(output)
@@ -226,11 +227,12 @@ def get_user_roles(user: discord.Member):
     Returns:
         str: String containing roles
     """
+    server_ranks = get_ranks(yaml_file)
     mention = []
     for role in user.roles:
         if (
             role.name != "@everyone"
-            and not exists_string_in_file(ranks_txt, str(role.name))
+            and str(role.name) not in server_ranks
             and separator not in str(role)
         ):
             mention.append(role.name)
@@ -248,9 +250,10 @@ def get_user_species(user: discord.Member):
     Returns:
         str: String containing roles
     """
+    server_species = get_species(yaml_file)
     mention = []
     for role in user.roles:
-        if exists_string_in_file(species_txt, str(role.name)):
+        if str(role.name) in server_species:
             mention.append(role.name)
 
     b = ", ".join(mention)
@@ -273,31 +276,6 @@ def get_user_color(user: discord.Member):
             break
 
     return str(output)
-
-
-def get_color_code(color: str):
-    """Gets the color code of a given color
-
-    Args:
-        color (str): color to search color_code
-
-    Returns:
-        list(int): contains values of RGB
-    """
-    with open(colors_txt) as f:
-        for line in f:
-            if color in line:
-                output = f.readline()
-
-                # Transform into a list
-                output = output.split(" ")
-
-                # Delete \n from last element
-                output = [s.replace("\n", "") for s in output]
-
-                # Convert all elements into int
-                output = list(map(int, output))
-                return output
 
 
 ############################### Reddit functions ###############################
@@ -513,3 +491,52 @@ def delete_files(elements: list):
         if os.path.isfile(meme_templates_path + x):
             os.remove(meme_templates_path + x)
     logging.info("Removed dependencies")
+
+
+############################ YAML #########################
+def get_content_yaml(yaml_file: str):
+    with open(yaml_file, "r") as stream:
+        try:
+            return yaml.safe_load(stream)
+        except yaml.YAMLError as exc:
+            print("Error loading YAML: " + exc)
+
+
+def get_ranks(yaml_file: str):
+    content = get_content_yaml(yaml_file)
+    output = []
+    for x in content["ranks"]:
+        output.append(x)
+
+    return output
+
+
+def get_activity(yaml_file: str):
+    content = get_content_yaml(yaml_file)
+    print(content["activity"])
+    pass
+
+
+def get_color_code(yaml_file: str, color: str):
+    content = get_content_yaml(yaml_file)
+
+    for key, value in content["colors"].items():
+        if key == color:
+            print(value)
+            output = value.split(" ")
+            # Delete \n from last element
+            output = [s.replace("\n", "") for s in output]
+
+            # Convert all elements into int
+            output = list(map(int, output))
+            print(output)
+            return output
+
+
+def get_species(yaml_file: str):
+    content = get_content_yaml(yaml_file)
+    output = []
+    for x in content["species"]:
+        output.append(x)
+
+    return output

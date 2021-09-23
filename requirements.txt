@@ -6,3 +6,4 @@ pyrae
 qrcode
 setproctitle
 cowpy
+pyyaml
