@@ -8,13 +8,13 @@ from src.functions import (
     delete_content_in_file,
     exists_file,
     exists_string_in_file,
-    get_color_code,
     get_files_in_directory,
     get_files_in_directory_with_substring,
     get_random_line_of_file,
     get_user,
     meme_templates_path,
     write_in_file,
+    yaml_functions,
 )
 import discord
 import os
@@ -80,9 +80,10 @@ def test_get_user_color():
 
 
 def test_get_color_code():
-    assert get_color_code("rojo") == [197, 10, 12]
-    assert get_color_code("verde") == [15, 199, 29]
-    assert get_color_code("morado") == [114, 18, 172]
+    yaml_f = yaml_functions("tests/config_test.yaml")
+    assert yaml_f.get_color_code("rojo") == [197, 10, 12]
+    assert yaml_f.get_color_code("verde") == [15, 199, 29]
+    assert yaml_f.get_color_code("morado") == [114, 18, 172]
 
 
 def test_get_reddit_image():
