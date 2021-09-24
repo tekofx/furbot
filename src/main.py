@@ -5,8 +5,6 @@ from dotenv import load_dotenv
 import os
 import setproctitle
 import logging
-import sys
-import datetime
 from functions import (
     get_random_line_of_file,
     setup_directories,
@@ -14,30 +12,27 @@ from functions import (
     setup_logs,
     get_hot_subreddit_image,
     cumpleaños_txt,
-    activity_txt,
     get_files_in_directory_with_substring,
     jojos_txt,
     stickers_path,
     exists_file,
     reddit_memes_history_txt,
+    yaml_f,
+    magnet_id,
+    bot,
 )
+from tasks import dankmemes, cumpleaños, es_viernes
 
 # Get info from .env
 load_dotenv()
 token = os.getenv("DISCORD_TOKEN")
-magnet_id = int(os.getenv("MAGNET"))
-angel_id = int(os.getenv("ANGEL"))
-
-general_channel = int(os.getenv("GENERAL_CHANNEL"))
 
 
 # Activity for the bot
 status = discord.Status.online
-activity = discord.Game("owo what's this")
 
 # Set prefixes for bot commands
 prefixes = ["fur ", "Fur ", "FUR "]
-bot = commands.Bot(command_prefix=prefixes)
 
 
 # Remove some commands to use their names
@@ -47,59 +42,6 @@ bot.remove_command("avatar")
 
 # Set process name
 setproctitle.setproctitle("furbot")
-
-
-@tasks.loop(minutes=1)
-async def dankmemes():
-    now = datetime.datetime.now()
-    if now.minute == 0 or now.minute == 1:
-        channel = bot.get_channel(int(os.getenv("MEMES_CHANNEL")))
-        if now.hour % 2 == 0:
-            await channel.send(
-                get_hot_subreddit_image(("dankmemes"), 10, reddit_memes_history_txt)
-            )
-        else:
-            await channel.send(
-                get_hot_subreddit_image(("memes"), 10, reddit_memes_history_txt)
-            )
-        logging.info("Dankmeme sent")
-
-
-@tasks.loop(seconds=1)
-async def cumpleaños():
-    """Sends a felicitation for birthday"""
-    now = datetime.datetime.now()
-    hour = str(now.hour)
-    minute = str(now.minute)
-    second = str(now.second)
-    now = str(now)[:-16]
-    now = now[-5:]
-
-    if hour == "9" and minute == "0" and second == "0":
-        channel = bot.get_channel(general_channel)
-        file1 = open(cumpleaños_txt, "r")
-        Lines = file1.readlines()
-        for line in Lines:
-            aux = line.split()
-            if now == str(aux[0]):
-                user = await bot.fetch_user(int(aux[1]))
-                await channel.send(
-                    "Es el cumple de " + user.mention + ". Felicidades!!!!!!!!!"
-                )
-                logging.info("Birthday of " + user.name)
-
-
-@tasks.loop(seconds=45)
-async def es_viernes():
-    """Sends es_viernes.mp4 every friday at 9:00"""
-    if (
-        datetime.datetime.today().weekday() == 4
-        and datetime.datetime.now().time().hour == 9
-        and datetime.datetime.now().time().minute == 00
-    ):
-        channel = bot.get_channel(int(os.getenv("GENERAL_CHANNEL")))
-        logging.info("Es viernes sent")
-        await channel.send(file=discord.File("resources/es_viernes.mp4"))
 
 
 # When the bot starts
@@ -112,9 +54,9 @@ async def on_ready():
     dankmemes.start()
     es_viernes.start()
     cumpleaños.start()
-    with open(activity_txt) as f:
-        aux = f.readline()
-    await bot.change_presence(status=status, activity=discord.Game(name=aux))
+    await bot.change_presence(
+        status=status, activity=discord.Game(name=yaml_f.get_activity())
+    )
     print("We have logged in as {0.user}".format(bot))
 
 

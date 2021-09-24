@@ -14,7 +14,7 @@ import yaml
 class yaml_functions:
     def __init__(self, yaml_file=None):
         if yaml_file is None:
-            self.yaml_file = "files/resources/confi.yaml"
+            self.yaml_file = "files/resources/config.yaml"
         else:
             self.yaml_file = yaml_file
 
@@ -80,7 +80,10 @@ yaml_f = yaml_functions()
 
 # .env data
 load_dotenv()
+magnet_id = int(os.getenv("MAGNET"))
+angel_id = int(os.getenv("ANGEL"))
 
+general_channel = int(os.getenv("GENERAL_CHANNEL"))
 
 separator = "       "  # key word to distinguish separator roles
 

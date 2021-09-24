@@ -21,7 +21,7 @@ from functions import (
     cumpleaños_txt,
     yaml_f,
 )
-from main import magnet_id, angel_id
+from functions import magnet_id, angel_id
 
 
 class utilities(commands.Cog):

@@ -8,7 +8,7 @@ from functions import (
     insults_txt,
     animos_txt,
 )
-from main import magnet_id
+from functions import magnet_id
 
 
 class roast(commands.Cog):
