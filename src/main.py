@@ -52,7 +52,7 @@ setproctitle.setproctitle("furbot")
 @tasks.loop(minutes=1)
 async def dankmemes():
     now = datetime.datetime.now()
-    if now.minute == 0:
+    if now.minute == 0 or now.minute == 1:
         channel = bot.get_channel(int(os.getenv("MEMES_CHANNEL")))
         if now.hour % 2 == 0:
             await channel.send(
