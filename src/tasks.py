@@ -7,7 +7,6 @@ from functions import (
     bot,
     get_hot_subreddit_image,
     reddit_memes_history_txt,
-    cumpleaños_txt,
     yaml_f,
 )
 

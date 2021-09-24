@@ -132,14 +132,12 @@ paths = [stickers_path, meme_path]
 
 # Datafiles
 insults_txt = "files/resources/data/insults.txt"
-cumpleaños_txt = "files/resources/data/cumpleaños.txt"
 reddit_memes_history_txt = "files/resources/data/reddit_memes_history.txt"
 animos_txt = "files/resources/data/animos.txt"
 memes_history_txt = "files/resources/data/memes_history.txt"
 jojos_txt = "files/resources/data/jojos.txt"
 files = [
     insults_txt,
-    cumpleaños_txt,
     reddit_memes_history_txt,
     animos_txt,
     memes_history_txt,
