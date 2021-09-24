@@ -1,0 +1,40 @@
+activity: FCK NZS
+colors:
+  amarillo: 241 196 15
+  azul: 10 92 199
+  azul oscuro: 14 12 150
+  blanco: 253 253 253
+  celeste: 9 173 173
+  morado: 114 18 172
+  naranja: 247 155 38
+  negro: 5 4 4
+  rojo: 197 10 12
+  rosa: 228 11 194
+  verde: 15 199 29
+ranks:
+- Furrense Recien Llegado
+- Furrense Nuevo
+- Furrense Viejo
+- Furrense Veterano
+- Furrense de Oro
+- Furrense VIP
+- Furrense Legendario
+species:
+- Ampwave
+- Avian
+- Cabra
+- Cordero
+- Dragón
+- Erizo
+- Gato
+- Híbrido
+- Lobo
+- Murciélago
+- Paloma
+- Perro
+- Protogen
+- Rata
+- Skull
+- Tortuga
+- Turiano
+- Zorro
