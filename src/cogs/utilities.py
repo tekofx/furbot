@@ -7,6 +7,7 @@ from PIL import Image
 from PIL import ImageFont
 from PIL import ImageDraw
 import qrcode
+import datetime
 from pyrae import dle
 import requests
 from functions import (
@@ -257,13 +258,13 @@ class utilities(commands.Cog):
             fur addcumple <dia>-<mes> @<usuario>
 
         Ejemplo:
-            fur addcumple 16-01 @Teko
+            fur addcumple 16-1 @Teko
         """
         birthday = birthday.split("-")
         birthday = birthday[1] + "-" + birthday[0]
-        f = open(cumpleaños_txt, "a")
-        f.write(birthday + " " + str(user.id) + " " + str(user.name) + "\n")
-        f.close()
+        day = int(birthday[0])
+        month = int(birthday[1])
+        datetime.datetime(2000, month, day)
         logging.info("Added birthday of " + user.name + ": " + birthday)
         await context.channel.send("Añadido cumpleaños de " + user.name)
 

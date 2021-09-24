@@ -75,6 +75,39 @@ class yaml_functions:
         with open(self.yaml_file, "w") as f:
             yaml.dump(content, f, allow_unicode=True)
 
+    def get_cumpleaños(self):
+        content = self.get_content_yaml()
+        output = []
+        output1 = []
+        output2 = []
+        for entry in content["birthdays"].items():
+            for key, value in entry[1].items():
+                output1.append(key)
+                output2.append(value)
+        output.append(output1)
+        output.append(output2)
+        return output
+
+    def add_cumpleaños(self, user_id: int, user_name: str, date: str):
+        date = date.split("-")
+        day = date[0]
+        month = date[1]
+        if len(day) == 1:
+            day = "0" + day
+        if len(month) == 1:
+            month = "0" + month
+
+        date = month + "-" + day
+        with open(self.yaml_file, "r") as yml:
+            content = yaml.safe_load(yml)
+            aux = content["birthdays"]
+            data = {user_name: {date: user_id}}
+            aux.update(data)
+            print(type(aux))
+
+        with open(self.yaml_file, "w") as f:
+            yaml.dump(content, f, allow_unicode=True)
+
 
 yaml_f = yaml_functions()
 

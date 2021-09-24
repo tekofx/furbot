@@ -9,6 +9,7 @@ from functions import (
     reddit_memes_history_txt,
     general_channel,
     cumpleaños_txt,
+    yaml_f,
 )
 
 
@@ -35,17 +36,23 @@ async def cumpleaños():
     hour = str(now.hour)
     minute = str(now.minute)
     second = str(now.second)
-    now = str(now)[:-16]
-    now = now[-5:]
+    month = str(now.month)
+    day = str(now.day)
+    if len(month) == 1:
+        month = "0" + month
+    if len(day) == 1:
+        day = "0" + day
+    today = month + "-" + day
 
-    if hour == "9" and minute == "0" and second == "0":
+    if True:
+        content = yaml_f.get_cumpleaños()
+        fechas = content[0]
+        users = content[1]
         channel = bot.get_channel(general_channel)
-        file1 = open(cumpleaños_txt, "r")
-        Lines = file1.readlines()
-        for line in Lines:
-            aux = line.split()
-            if now == str(aux[0]):
-                user = await bot.fetch_user(int(aux[1]))
+        for x in range(len(fechas)):
+            if today == fechas[x]:
+
+                user = await bot.fetch_user(int(users[x]))
                 await channel.send(
                     "Es el cumple de " + user.mention + ". Felicidades!!!!!!!!!"
                 )

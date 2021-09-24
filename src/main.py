@@ -10,13 +10,10 @@ from functions import (
     setup_directories,
     setup_files,
     setup_logs,
-    get_hot_subreddit_image,
-    cumpleaños_txt,
     get_files_in_directory_with_substring,
     jojos_txt,
     stickers_path,
     exists_file,
-    reddit_memes_history_txt,
     yaml_f,
     magnet_id,
     bot,
@@ -37,7 +34,6 @@ prefixes = ["fur ", "Fur ", "FUR "]
 
 # Remove some commands to use their names
 bot.remove_command("trauma")
-bot.remove_command("enana")
 bot.remove_command("avatar")
 
 # Set process name
