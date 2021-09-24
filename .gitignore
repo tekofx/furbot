@@ -10,3 +10,4 @@ src/cogs/__pycache__/*
 docker-composer.yml
 tests/__pycache__/*
 __pycache__/
+src/test.py
