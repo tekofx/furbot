@@ -11,11 +11,76 @@ import requests
 import yaml
 
 
-# .env data
+class yaml_functions:
+    def __init__(self, yaml_file=None):
+        if yaml_file is None:
+            self.yaml_file = "files/resources/confi.yaml"
+        else:
+            self.yaml_file = yaml_file
 
+    def set_yaml_file(self, yaml_file: str):
+        self.yaml_file = yaml_file
+
+    def get_content_yaml(self):
+        with open(self.yaml_file, "r") as stream:
+            try:
+                return yaml.safe_load(stream)
+            except yaml.YAMLError as exc:
+                print("Error loading YAML: " + exc)
+
+    def get_ranks(self):
+        content = self.get_content_yaml()
+        output = []
+        for x in content["ranks"]:
+            output.append(x)
+
+        return output
+
+    def get_colors(self):
+        content = self.get_content_yaml()
+        output = []
+        for key, value in content["colors"].items():
+            output.append(key)
+        return output
+
+    def get_color_code(self, color: str):
+        content = self.get_content_yaml()
+
+        for key, value in content["colors"].items():
+            if key == color:
+                output = value.split(" ")
+                # Delete \n from last element
+                output = [s.replace("\n", "") for s in output]
+
+                # Convert all elements into int
+                output = list(map(int, output))
+                return output
+
+    def get_species(self):
+        content = self.get_content_yaml()
+        output = []
+        for x in content["species"]:
+            output.append(x)
+
+        return output
+
+    def get_activity(self):
+        content = self.get_content_yaml()
+        return content["activity"]
+
+    def change_activity(self, activity: str):
+        with open(self.yaml_file, "r") as f:
+            content = yaml.safe_load(f)
+            content["activity"] = activity
+        with open(self.yaml_file, "w") as f:
+            yaml.dump(content, f, allow_unicode=True)
+
+
+yaml_f = yaml_functions()
+
+# .env data
 load_dotenv()
 
-yaml_file = "files/resources/config.yaml"
 
 separator = "       "  # key word to distinguish separator roles
 
@@ -36,7 +101,6 @@ cumpleaños_txt = "files/resources/data/cumpleaños.txt"
 reddit_memes_history_txt = "files/resources/data/reddit_memes_history.txt"
 animos_txt = "files/resources/data/animos.txt"
 memes_history_txt = "files/resources/data/memes_history.txt"
-activity_txt = "files/resources/data/activity.txt"
 jojos_txt = "files/resources/data/jojos.txt"
 files = [
     insults_txt,
@@ -44,7 +108,6 @@ files = [
     reddit_memes_history_txt,
     animos_txt,
     memes_history_txt,
-    activity_txt,
     jojos_txt,
 ]
 
@@ -198,7 +261,7 @@ def get_user_ranks(user: discord.Member):
     Returns:
         str: String containing all ranks
     """
-    server_ranks = get_ranks()
+    server_ranks = yaml_f.get_ranks()
     output = []
     for role in user.roles:
         if str(role.name) in server_ranks:
@@ -219,7 +282,7 @@ def get_user_roles(user: discord.Member):
     Returns:
         str: String containing roles
     """
-    server_ranks = get_ranks()
+    server_ranks = yaml_f.get_ranks()
     mention = []
     for role in user.roles:
         if (
@@ -242,7 +305,7 @@ def get_user_species(user: discord.Member):
     Returns:
         str: String containing roles
     """
-    server_species = get_species()
+    server_species = yaml_f.get_species()
     mention = []
     for role in user.roles:
         if str(role.name) in server_species:
@@ -261,7 +324,7 @@ def get_user_color(user: discord.Member):
     Returns:
         str: String with color
     """
-    server_colors = get_colors()
+    server_colors = yaml_f.get_colors()
     output = "blanco"
     for role in user.roles:
         if str(role.name) in server_colors:
@@ -485,62 +548,3 @@ def delete_files(elements: list):
 
 
 ############################ YAML #########################
-def get_content_yaml():
-    with open(yaml_file, "r") as stream:
-        try:
-            return yaml.safe_load(stream)
-        except yaml.YAMLError as exc:
-            print("Error loading YAML: " + exc)
-
-
-def get_ranks():
-    content = get_content_yaml()
-    output = []
-    for x in content["ranks"]:
-        output.append(x)
-
-    return output
-
-
-def get_colors():
-    content = get_content_yaml()
-    output = []
-    for key, value in content["colors"].items():
-        output.append(key)
-    return output
-
-
-def get_color_code(color: str):
-    content = get_content_yaml()
-
-    for key, value in content["colors"].items():
-        if key == color:
-            output = value.split(" ")
-            # Delete \n from last element
-            output = [s.replace("\n", "") for s in output]
-
-            # Convert all elements into int
-            output = list(map(int, output))
-            return output
-
-
-def get_species():
-    content = get_content_yaml()
-    output = []
-    for x in content["species"]:
-        output.append(x)
-
-    return output
-
-
-def get_activity():
-    content = get_content_yaml()
-    return content["activity"]
-
-
-def change_activity(activity: str):
-    with open(yaml_file, "r") as f:
-        content = yaml.safe_load(f)
-        content["activity"] = activity
-    with open(yaml_file, "w") as f:
-        yaml.dump(content, f, allow_unicode=True)
