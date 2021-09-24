@@ -116,7 +116,6 @@ load_dotenv()
 magnet_id = int(os.getenv("MAGNET"))
 angel_id = int(os.getenv("ANGEL"))
 
-general_channel = int(os.getenv("GENERAL_CHANNEL"))
 
 separator = "       "  # key word to distinguish separator roles
 

@@ -7,10 +7,11 @@ from functions import (
     bot,
     get_hot_subreddit_image,
     reddit_memes_history_txt,
-    general_channel,
     cumpleaños_txt,
     yaml_f,
 )
+
+general_channel = int(os.getenv("GENERAL_CHANNEL"))
 
 
 @tasks.loop(minutes=1)
