@@ -44,7 +44,7 @@ async def cumpleaños():
         day = "0" + day
     today = month + "-" + day
 
-    if True:
+    if hour == "9" and minute == "0" and second == "0":
         content = yaml_f.get_cumpleaños()
         fechas = content[0]
         users = content[1]
