@@ -6,7 +6,6 @@ from functions import (
     activity_txt,
     get_activity,
     write_in_file,
-    yaml_file,
 )
 import logging
 
@@ -21,11 +20,9 @@ class Administration(commands.Cog):
     @commands.has_permissions(administrator=True)
     async def change_activity(self, context, activity_name: str):
         """[Admin] Cambiar actividad del bot"""
-        change_activity(yaml_file, activity_name)
+        change_activity(activity_name)
         try:
-            await self.bot.change_presence(
-                activity=discord.Game(name=get_activity(yaml_file))
-            )
+            await self.bot.change_presence(activity=discord.Game(name=get_activity()))
         except discord.HTTPException:
             await context.channel.send("Error: No se ha podido establecer la actividad")
 

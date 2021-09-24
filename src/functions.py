@@ -198,7 +198,7 @@ def get_user_ranks(user: discord.Member):
     Returns:
         str: String containing all ranks
     """
-    server_ranks = get_ranks(yaml_file)
+    server_ranks = get_ranks()
     output = []
     for role in user.roles:
         if str(role.name) in server_ranks:
@@ -219,7 +219,7 @@ def get_user_roles(user: discord.Member):
     Returns:
         str: String containing roles
     """
-    server_ranks = get_ranks(yaml_file)
+    server_ranks = get_ranks()
     mention = []
     for role in user.roles:
         if (
@@ -242,7 +242,7 @@ def get_user_species(user: discord.Member):
     Returns:
         str: String containing roles
     """
-    server_species = get_species(yaml_file)
+    server_species = get_species()
     mention = []
     for role in user.roles:
         if str(role.name) in server_species:
@@ -261,7 +261,7 @@ def get_user_color(user: discord.Member):
     Returns:
         str: String with color
     """
-    server_colors = get_colors(yaml_file)
+    server_colors = get_colors()
     output = "blanco"
     for role in user.roles:
         if str(role.name) in server_colors:
@@ -485,7 +485,7 @@ def delete_files(elements: list):
 
 
 ############################ YAML #########################
-def get_content_yaml(yaml_file: str):
+def get_content_yaml():
     with open(yaml_file, "r") as stream:
         try:
             return yaml.safe_load(stream)
@@ -493,8 +493,8 @@ def get_content_yaml(yaml_file: str):
             print("Error loading YAML: " + exc)
 
 
-def get_ranks(yaml_file: str):
-    content = get_content_yaml(yaml_file)
+def get_ranks():
+    content = get_content_yaml()
     output = []
     for x in content["ranks"]:
         output.append(x)
@@ -502,16 +502,16 @@ def get_ranks(yaml_file: str):
     return output
 
 
-def get_colors(yaml_file: str):
-    content = get_content_yaml(yaml_file)
+def get_colors():
+    content = get_content_yaml()
     output = []
     for key, value in content["colors"].items():
         output.append(key)
     return output
 
 
-def get_color_code(yaml_file: str, color: str):
-    content = get_content_yaml(yaml_file)
+def get_color_code(color: str):
+    content = get_content_yaml()
 
     for key, value in content["colors"].items():
         if key == color:
@@ -524,8 +524,8 @@ def get_color_code(yaml_file: str, color: str):
             return output
 
 
-def get_species(yaml_file: str):
-    content = get_content_yaml(yaml_file)
+def get_species():
+    content = get_content_yaml()
     output = []
     for x in content["species"]:
         output.append(x)
@@ -533,12 +533,12 @@ def get_species(yaml_file: str):
     return output
 
 
-def get_activity(yaml_file: str):
-    content = get_content_yaml(yaml_file)
+def get_activity():
+    content = get_content_yaml()
     return content["activity"]
 
 
-def change_activity(yaml_file: str, activity: str):
+def change_activity(activity: str):
     with open(yaml_file, "r") as f:
         content = yaml.safe_load(f)
         content["activity"] = activity

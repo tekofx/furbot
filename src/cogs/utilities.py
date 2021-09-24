@@ -20,7 +20,6 @@ from functions import (
     get_color_code,
     delete_files,
     cumpleaños_txt,
-    yaml_file,
 )
 from main import magnet_id, angel_id
 
@@ -91,7 +90,7 @@ class utilities(commands.Cog):
         rank = get_user_ranks(usr)
         roles = get_user_roles(usr)
         color = get_user_color(usr)
-        color = get_color_code(yaml_file, color)
+        color = get_color_code(color)
         if usr.id == magnet_id:
             date = "24-01-2021"
         elif usr.id == angel_id:
