@@ -277,19 +277,19 @@ class utilities(commands.Cog):
         Ejemplo:
             fur cumple @Teko
         """
-        f = open(cumpleaños_txt, "r")
-        lines = f.readlines()
-        for line in lines:
-            aux = line.split()
-            if user.id == int(aux[1]):
-                cumple = aux[0].split("-")
-                cumple = cumple[1] + "-" + cumple[0]
-                await context.channel.send(
-                    "El cumpleaños de " + user.name + " es el " + cumple
+        output = "No existe el cumpleaños de " + user.name
+        data = yaml_f.get_cumpleaños()
+        dates = data[0]
+        user_ids = data[1]
+        print(user_ids)
+        for x in range(len(dates)):
+            print(dates[x])
+            if user_ids[x] == user.id:
+                output = "El cumpleaños de {user} es el {cumple}".format(
+                    user=user.name, cumple=dates[x]
                 )
-                return
-        f.close()
-        await context.channel.send("No existe el cumpleaños de " + user.name)
+                break
+        await context.channel.send(output)
 
 
 def setup(bot):
