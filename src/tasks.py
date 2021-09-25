@@ -20,11 +20,13 @@ async def dankmemes():
         channel = bot.get_channel(int(os.getenv("MEMES_CHANNEL")))
         if now.hour % 2 == 0:
             await channel.send(
-                get_hot_subreddit_image(("dankmemes"), 10, reddit_memes_history_txt)
+                get_hot_subreddit_image(
+                    ("dankmemes"), 10, reddit_memes_history_txt, None
+                )
             )
         else:
             await channel.send(
-                get_hot_subreddit_image(("memes"), 10, reddit_memes_history_txt)
+                get_hot_subreddit_image(("memes"), 10, reddit_memes_history_txt, None)
             )
         logging.info("Dankmeme sent")
 
