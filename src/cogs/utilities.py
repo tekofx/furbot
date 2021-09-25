@@ -19,7 +19,6 @@ from functions import (
     convert_pic,
     meme_templates_path,
     delete_files,
-    cumpleaños_txt,
     yaml_f,
 )
 from functions import magnet_id, angel_id

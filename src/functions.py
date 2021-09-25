@@ -368,7 +368,7 @@ def get_user_color(user: discord.Member):
 
 
 ############################### Reddit functions ###############################
-def get_reddit_image(Subreddit: str, Flair: str, Filter: str):
+def get_reddit_image(Subreddit: str, Flair: str, Filter: str, history_file_txt: str):
     """Gets a random Reddit image
 
     Args:
@@ -390,11 +390,14 @@ def get_reddit_image(Subreddit: str, Flair: str, Filter: str):
                 memes_submissions = reddit.subreddit(Subreddit).search(
                     "Flair:" + Flair
                 )  # Gets a random images from r/foxes with flair Pics!
-            post_to_pick = random.randint(1, 10)
+            post_to_pick = random.randint(1, 100)
             for i in range(0, post_to_pick):
                 submission = next(x for x in memes_submissions if not x.stickied)
-            if submission.url.endswith("jpg"):
+            if submission.url.endswith("jpg") and not exists_string_in_file(
+                history_file_txt, submission.url
+            ):
                 var = False
+                write_in_file(history_file_txt, submission.url + "\n")
     except ConnectionError:
         logging.error("Error at getting images from reddit")
 
@@ -422,7 +425,41 @@ def get_hot_subreddit_image(Subreddit: str, Limit: int, file_txt: str):
 
         return output.url
     except FileNotFoundError:
-        logging.error("Error at getting reddit_memes_history.txt")
+        logging.error("Error at getting {}".format(file_txt))
+
+
+def get_hot_subreddit_image(
+    Subreddit: str, Limit: int, file_txt: str, flair: str = None
+):
+    """Get an image from a subreddit in hot
+
+    Args:
+        Subreddit (str): Subreddit to search for
+        Limit (int): Limit to search in subreddit
+
+    Returns:
+        str: link to image
+    """
+    posts = reddit.subreddit(Subreddit).hot(limit=Limit)
+    try:
+        for post in posts:
+            if flair is not None:
+                if post.url.endswith("jpg") and not exists_string_in_file(
+                    file_txt, post.url
+                ):
+                    write_in_file(file_txt, post.url + "\n")
+                    return post.url
+            else:
+                if (
+                    post.link_flair_text == flair
+                    and post.url.endswith("jpg")
+                    and not exists_string_in_file(file_txt, post.url)
+                ):
+                    write_in_file(file_txt, post.url + "\n")
+                    return post.url
+
+    except Exception as error:
+        logging.error("Error in get_hot_subreddit_image: {}".format(error))
 
 
 ############################### Files functions ###############################

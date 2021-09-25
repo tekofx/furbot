@@ -16,7 +16,7 @@ general_channel = int(os.getenv("GENERAL_CHANNEL"))
 @tasks.loop(minutes=1)
 async def dankmemes():
     now = datetime.datetime.now()
-    if now.minute == 0 or now.minute == 1:
+    if now.minute == 0:
         channel = bot.get_channel(int(os.getenv("MEMES_CHANNEL")))
         if now.hour % 2 == 0:
             await channel.send(

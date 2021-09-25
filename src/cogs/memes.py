@@ -633,7 +633,7 @@ class memes(commands.Cog):
         """Top memes de r/dankmemes"""
         message = await context.channel.send("buscando dankmeme")
         await context.channel.send(
-            get_hot_subreddit_image("dankmemes", 10, reddit_memes_history_txt)
+            get_hot_subreddit_image("dankmemes", 10, reddit_memes_history_txt, None)
         )
         await message.delete()
 
