@@ -8,7 +8,6 @@ from functions import get_hot_subreddit_image, reddit_memes_history_txt, yaml_f
 
 load_dotenv()
 general_channel_id = os.getenv("GENERAL_CHANNEL")
-villafurrense_id = os.getenv("VILLAFURRENSE")
 memes_channel_id = os.getenv("MEMES_CHANNEL")
 
 
@@ -17,9 +16,8 @@ class Tasks(lightbulb.Plugin):
         self.name = "Tasks"
         self.bot = bot
         # task starts here
-        self.vf_server = self.bot.cache.get_available_guild(villafurrense_id)
         self.general_channel = self.bot.cache.get_guild_channel(general_channel_id)
-        self.memes_channel = self.bot.cache.get_guild_channel()
+        self.memes_channel = self.bot.cache.get_guild_channel(memes_channel_id)
 
         # Tasks
         self.loop = asyncio.get_event_loop()
@@ -32,7 +30,6 @@ class Tasks(lightbulb.Plugin):
     async def tasks_manager(self):
         while True:
             if datetime.datetime.now().minute == 21:
-                print("a")
                 await self.dankmeme()
                 await self.es_viernes()
                 await self.cumpleaños()
@@ -46,7 +43,7 @@ class Tasks(lightbulb.Plugin):
         meme = get_hot_subreddit_image(
             ("dankmemes"), 1000, reddit_memes_history_txt, None
         )
-        await self.general_channel.send(attachment=meme)
+        await self.memes_channel.send(attachment=meme)
 
     async def es_viernes(self):
         """Sends es_viernes.mp4 every friday at 9:00"""

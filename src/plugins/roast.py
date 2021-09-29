@@ -3,7 +3,6 @@ import lightbulb
 from time import sleep
 import hikari
 import random
-from cogs.roast import roast
 
 from functions import magnet_id
 from functions import get_random_line_of_file, insults_txt, animos_txt
