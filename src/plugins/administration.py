@@ -5,23 +5,11 @@ from functions import yaml_f
 
 class Administration(lightbulb.Plugin):
     @lightbulb.command(name="activity")
-    async def change_activity(
-        self, ctx: lightbulb.Context, activity_name: str, activity_type: str = None
-    ):
+    async def change_activity(self, ctx: lightbulb.Context, activity_name: str):
         """[Admin] Cambiar actividad del bot"""
-        if activity_type is None:
-            activity_type = 1
-
-        else:
-
-            if activity_type.lower() == "play":
-                activity_type = 1
-
-            if activity_type.lower() == "watch":
-                activity_type = 3
 
         yaml_f.change_activity(activity_name)
-        activity = hikari.Activity(name=activity_name, type=2)
+        activity = hikari.Activity(name=activity_name)
 
         try:
             await bot_instance.update_presence(activity=activity)

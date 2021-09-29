@@ -253,8 +253,9 @@ class Utilites(lightbulb.Plugin):
 
         output = "No existe el cumpleaños de " + user.username
         data = yaml_f.get_cumpleaños()
-        dates = data[0]
+        user_names = data[0]
         user_ids = data[1]
+        dates = data[2]
         for x in range(len(dates)):
             if user_ids[x] == user.id:
                 output = "El cumpleaños de {user} es el {cumple}".format(

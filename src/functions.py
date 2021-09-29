@@ -9,6 +9,8 @@ import random
 from discord.ext import commands
 import requests
 import yaml
+import lightbulb
+import hikari
 
 
 class yaml_functions:
@@ -76,16 +78,27 @@ class yaml_functions:
             yaml.dump(content, f, allow_unicode=True)
 
     def get_cumpleaños(self):
+        """Gets birthdays from YAML file
+
+        Returns:
+            list: containing 3 lists
+                - user names
+                - user ids
+                - dates
+        """
         content = self.get_content_yaml()
         output = []
-        output1 = []
-        output2 = []
+        user_names = []
+        dates = []
+        user_ids = []
         for entry in content["birthdays"].items():
+            user_names.append(entry[0])
             for key, value in entry[1].items():
-                output1.append(key)
-                output2.append(value)
-        output.append(output1)
-        output.append(output2)
+                dates.append(key)
+                user_ids.append(value)
+        output.append(user_names)
+        output.append(user_ids)
+        output.append(dates)
         return output
 
     def add_cumpleaños(self, user_id: int, user_name: str, date: str):
@@ -188,7 +201,7 @@ def get_user_avatar(url: str, name: str):
     """Downloads the avatar of a user
 
     Args:
-        user (discord.Member): user to download avatar from
+        user (hikari.User): user to download avatar from
         name (str): user to download avatar from
     """
 
@@ -217,18 +230,18 @@ def convert_pic(picture: str, imgName: str, imgSize: str = None):
     img.save(meme_templates_path + imgName + ".png")
 
 
-def get_user(context, user: discord.Member = None):
+def get_user(ctx: lightbulb.Context, user: hikari.User = None):
     """Gets user from a message
 
     Args:
         context (Message): Message to get an avatar
-        user (discord.Member, optional): User of a message. Defaults to None.
+        user (hikari.User, optional): User of a message. Defaults to None.
 
     Returns:
-        discord.Member: user
+        hikari.User: user
     """
     if user is None:
-        output = context.author
+        output = ctx.author
     else:
         output = user
 
@@ -285,18 +298,20 @@ def create_meme(
 
 
 ############################# Carnet functions ##############################
-def get_user_ranks(user: discord.Member):
+def get_user_ranks(user: hikari.Member):
     """Get ranks from a user
 
     Args:
-        user (discord.Member): user to search for roles
+        user (hikari.User): user to search for roles
 
     Returns:
         str: String containing all ranks
     """
     server_ranks = yaml_f.get_ranks()
     output = []
-    for role in user.roles:
+    roles = user.get_roles()
+
+    for role in roles:
         if str(role.name) in server_ranks:
             output.append(role.name)
     if output:
@@ -306,18 +321,20 @@ def get_user_ranks(user: discord.Member):
     return str(b)
 
 
-def get_user_roles(user: discord.Member):
+def get_user_roles(user: hikari.Member):
     """Get user roles that are not ranks
 
     Args:
-        user (discord.Member): user to search for roles
+        user (hikari.User): user to search for roles
 
     Returns:
         str: String containing roles
     """
     server_ranks = yaml_f.get_ranks()
     mention = []
-    for role in user.roles:
+    roles = user.get_roles()
+
+    for role in roles:
         if (
             role.name != "@everyone"
             and str(role.name) not in server_ranks
@@ -329,18 +346,19 @@ def get_user_roles(user: discord.Member):
     return str(b)
 
 
-def get_user_species(user: discord.Member):
+def get_user_species(user: hikari.Member):
     """Get user roles that are species
 
     Args:
-        user (discord.Member): user to search for roles
+        user (hikari.User): user to search for roles
 
     Returns:
         str: String containing roles
     """
     server_species = yaml_f.get_species()
     mention = []
-    for role in user.roles:
+    roles = user.get_roles()
+    for role in roles:
         if str(role.name) in server_species:
             mention.append(role.name)
 
@@ -348,18 +366,19 @@ def get_user_species(user: discord.Member):
     return b
 
 
-def get_user_color(user: discord.Member):
+def get_user_color(user: hikari.Member):
     """Get user role that is a color
 
     Args:
-        user (discord.Member): user to search for color
+        user (hikari.User): user to search for color
 
     Returns:
         str: String with color
     """
     server_colors = yaml_f.get_colors()
     output = "blanco"
-    for role in user.roles:
+    roles = user.get_roles()
+    for role in roles:
         if str(role.name) in server_colors:
             output = role.name
             break

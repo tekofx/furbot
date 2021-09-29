@@ -12,7 +12,7 @@ class Listeners(lightbulb.Plugin):
             return await event.context.reply("Command is on cooldown")
 
         if isinstance(error, lightbulb.errors.CommandNotFound):
-            return await event.context.reply("Command is on cooldown")
+            return await event.context.respond("Command is on cooldown")
 
         if isinstance(error, lightbulb.errors.BotMissingRequiredPermission):
             missing_perms = ", ".join(c for c in error.permissions)
