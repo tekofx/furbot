@@ -7,3 +7,6 @@ qrcode
 setproctitle
 cowpy
 pyyaml
+hikari[speedups]
+hikari-lightbulb
+uvloop
