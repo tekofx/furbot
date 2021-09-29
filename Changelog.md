@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Mejoras
 - Comando dankmeme: Mayor eficiencia
 - Animal: Ahora usa la funcion de dankmemes
-- 
+
 
 ### Cambios
 - Libreria discordpy por hikari y hikari-lightbulb
