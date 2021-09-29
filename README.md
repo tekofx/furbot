@@ -26,12 +26,13 @@ docker build --no-cache -t furbot .
 ```
 ## Ejecutar
 ```sh
-docker run -d \                 
---env-file <env_file> \
---name furbot \
---mount type=bind,src=<furbot_folder>/files/,dst=/bot/files/  \
---mount type=bind,src=<furbot_folder>/src/,dst=/bot/src \
--p 80:80 furbot
+docker run -d \           
+  --env-file <env_file> \
+  --name furbot \
+  --mount type=bind,src=<furbot_folder>/files/,dst=/bot/files/  \
+  --mount type=bind,src=<furbot_folder>/src/,dst=/bot/src \
+  --restart=unless-stopped \
+  -p 80:80 furbot
 ```
 
 ## Ejecucion automatica al reinicar el sistema
