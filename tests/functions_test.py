@@ -18,7 +18,6 @@ from src.functions import (
     write_in_file,
     yaml_functions,
 )
-import discord
 import os
 
 
