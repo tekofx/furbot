@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Añadido
 
 - Comando votacion
+- Comando sorteo
 - Script para construir y ejecutar en docker
 
 ## [2.5] - 2021-9-29

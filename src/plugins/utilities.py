@@ -289,6 +289,23 @@ class Utilites(lightbulb.Plugin):
             await message.add_reaction(x)
         await ctx._message.delete()
 
+    @lightbulb.command()
+    async def sorteo(self, ctx: lightbulb.Context, nombre: str):
+        """Crea un mensaje para reaccionar y participar en un sorteo
+
+        Uso:
+            fur sorteo <nombre_sorteo>
+        """
+        await ctx._message.delete()
+        embed = hikari.Embed(
+            title=nombre,
+            colour=hikari.Colour(0x563275),
+            description="Reacciona a este mensaje para participar en el sorteo",
+        )
+
+        message = await ctx.respond(embed)
+        await message.add_reaction("⭕")
+
 
 def load(bot: lightbulb.Bot):
     bot.add_plugin(Utilites)
