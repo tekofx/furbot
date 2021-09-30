@@ -99,6 +99,7 @@ class Memes(lightbulb.Plugin):
     @lightbulb.command()
     async def meme(self, ctx: lightbulb.Context, name: str = None, tipo: str = None):
         """Meme random de los nuestros
+
         Uso:
             fur meme-->Meme random
             fur meme <nombre>-->Meme random de <nombre>
@@ -812,6 +813,7 @@ class Memes(lightbulb.Plugin):
 
     @lightbulb.command()
     async def sus(self, ctx: lightbulb.Context, user: hikari.Member = None):
+        """Its kinda sus"""
         string = """. 　　　。　　　　•　 　ﾟ　　。 　　.
 
             　　　.　　　 　　.　　　　　。　　 。　. 　
@@ -823,11 +825,14 @@ class Memes(lightbulb.Plugin):
             　　'　　　  　 　　。                                          .
             。
             　　ﾟ　　　.　　　. ,　　　　.　 ."""
+        impostor = " era el impostor"
+        no_impostor = " no era el impostor"
+        selecccion = random.choice(impostor, no_impostor)
 
         if user is None:
-            string = string.format(ctx.author.username + " era el impostor")
+            string = string.format(ctx.author.username + selecccion)
         else:
-            string = string.format(user.name + " era el impostor")
+            string = string.format(user.name + selecccion)
 
         await ctx.respond(string)
 

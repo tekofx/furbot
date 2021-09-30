@@ -38,6 +38,7 @@ from functions import (
 class Utilites(lightbulb.Plugin):
     @lightbulb.command()
     async def ping(self, ctx: lightbulb.Context):
+        """Comprueba si el bot está online"""
         await ctx.respond("Pim pam trucu trucu")
 
     @lightbulb.command()

@@ -7,6 +7,7 @@ animal_history_txt = "files/resources/data/animal_history.txt"
 class Animal(lightbulb.Plugin):
     @lightbulb.command()
     async def fox(self, context: lightbulb.Context):
+        """Fotos de zorritos hermosos"""
         message = await context.respond("Buscando fotos de zorros hermosos")
         await context.respond(
             attachment=get_hot_subreddit_image(
@@ -17,6 +18,7 @@ class Animal(lightbulb.Plugin):
 
     @lightbulb.command()
     async def wolf(self, context: lightbulb.Context):
+        """Fotos de lobos lobitos lobones"""
         message = await context.respond("Buscando fotos de lobos lobitos lobones")
         await context.respond(
             attachment=get_hot_subreddit_image(
