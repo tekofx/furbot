@@ -5,7 +5,6 @@ import logging
 from dotenv import load_dotenv
 import praw
 import random
-from discord.ext import commands
 import requests
 import yaml
 import lightbulb
@@ -131,10 +130,6 @@ angel_id = int(os.getenv("ANGEL"))
 
 separator = "       "  # key word to distinguish separator roles
 
-
-# Create bot
-prefixes = ["fur ", "Fur ", "FUR "]
-bot = commands.Bot(command_prefix=prefixes)
 
 # Paths
 stickers_path = "files/stickers/"
