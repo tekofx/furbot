@@ -1,4 +1,3 @@
-discord
 pillow
 praw
 python-dotenv
