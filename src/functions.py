@@ -1,5 +1,4 @@
 # Contains all functions that are not commands
-import discord
 from PIL import Image
 import os
 import logging
