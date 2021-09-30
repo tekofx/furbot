@@ -14,7 +14,7 @@ class Animal(lightbulb.Plugin):
                 "foxes", 100, animal_history_txt, "Pics!"
             )
         )
-        message.delete()
+        await message.delete()
 
     @lightbulb.command()
     async def wolf(self, context: lightbulb.Context):
