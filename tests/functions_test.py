@@ -1,6 +1,8 @@
 import requests
 from PIL import Image
 import pytest
+import lightbulb
+import hikari
 from src.functions import (
     convert_pic,
     count_files_in_dir,
@@ -44,7 +46,7 @@ def test_convert_pic():
 
 def test_get_user_none():
     user = None
-    context = discord.ext.commands.context.Context
+    context = lightbulb.Context
     context.author = 719623435607643137
 
     assert get_user(context, user) == 719623435607643137
@@ -52,7 +54,7 @@ def test_get_user_none():
 
 def test_get_user_not_none():
     user = 719623435607643137
-    context = discord.ext.commands.context.Context
+    context = lightbulb.Context
     context.author = 123456789607643137
 
     assert get_user(context, user) == 719623435607643137
