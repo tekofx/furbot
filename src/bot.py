@@ -5,6 +5,7 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv
 from functions import yaml_f
+import setproctitle
 
 
 class Bot(lightbulb.Bot):
@@ -47,11 +48,18 @@ if os.name != "nt":
 
     uvloop.install()
 
+# Get .env
 load_dotenv()
 token = os.getenv("DISCORD_TOKEN")
+
+# Set workdir
 path = os.path.dirname(os.path.abspath(__file__))
 working_dir = os.path.dirname(path)
 os.chdir(working_dir)
-bot = Bot(token)
 
+# Set process name
+setproctitle.setproctitle("furbot")
+
+# Run bot
+bot = Bot(token)
 bot.run()
