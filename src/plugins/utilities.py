@@ -265,6 +265,27 @@ class Utilites(lightbulb.Plugin):
                 break
         await ctx.respond(output)
 
+    @lightbulb.command()
+    async def votacion(self, ctx: lightbulb.Context, titulo: str, *opciones):
+        values = []
+        reactions = []
+        for x in opciones:
+            if opciones.index(x) % 2 == 0:
+                values.append(x)
+            else:
+                reactions.append(x)
+
+        embed = hikari.Embed(
+            title="Votacion", colour=hikari.Colour(0x563275), description=titulo
+        )
+
+        for x in values:
+            embed.add_field(name=x, value=reactions[values.index(x)], inline=False)
+
+        message = await ctx.respond(embed)
+        for x in reactions:
+            await message.add_reaction(x)
+
 
 def load(bot: lightbulb.Bot):
     bot.add_plugin(Utilites)
