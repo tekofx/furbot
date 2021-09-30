@@ -608,7 +608,7 @@ class Memes(lightbulb.Plugin):
         """Top memes de r/dankmemes"""
         message = await ctx.respond("buscando dankmeme")
         await ctx.respond(
-            get_hot_subreddit_image("dankmemes", 10, reddit_memes_history_txt, None)
+            get_hot_subreddit_image("dankmemes", 100, reddit_memes_history_txt, None)
         )
         await message.delete()
 
