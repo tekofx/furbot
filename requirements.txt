@@ -9,3 +9,4 @@ pyyaml
 hikari[speedups]
 hikari-lightbulb
 uvloop
+pytest
