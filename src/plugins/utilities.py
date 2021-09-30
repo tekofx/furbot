@@ -267,6 +267,12 @@ class Utilites(lightbulb.Plugin):
 
     @lightbulb.command()
     async def votacion(self, ctx: lightbulb.Context, titulo: str, *opciones):
+        """Crea una votacion
+
+        Uso:
+
+            fur votacion <titulo> <opcion_1> <emoji_1> <opcion_2> <emoji_2>...
+        """
         values = []
         reactions = []
         for x in opciones:
