@@ -387,42 +387,6 @@ def get_user_color(user: hikari.Member):
 
 
 ############################### Reddit functions ###############################
-def get_reddit_image(Subreddit: str, Flair: str, Filter: str, history_file_txt: str):
-    """Gets a random Reddit image
-
-    Args:
-        Subreddit (str): subreddit to get the photo from
-        Flair (str): flair to filter by
-        Filter (str): filter to search by
-
-    Returns:
-        str: url from a reddit image
-    """
-    try:
-        var = True
-        while var:
-            if Flair is None:
-                memes_submissions = reddit.subreddit(Subreddit).search(
-                    Filter
-                )  # Gets a random images from r/foxes with flair Pics!
-            else:
-                memes_submissions = reddit.subreddit(Subreddit).search(
-                    "Flair:" + Flair
-                )  # Gets a random images from r/foxes with flair Pics!
-            post_to_pick = random.randint(1, 100)
-            for i in range(0, post_to_pick):
-                submission = next(x for x in memes_submissions if not x.stickied)
-            if submission.url.endswith("jpg") and not exists_string_in_file(
-                history_file_txt, submission.url
-            ):
-                var = False
-                write_in_file(history_file_txt, submission.url + "\n")
-    except ConnectionError:
-        logging.error("Error at getting images from reddit")
-
-    return submission.url
-
-
 def get_hot_subreddit_image(Subreddit: str, Limit: int, file_txt: str):
     """Get an image from a subreddit in hot
 
