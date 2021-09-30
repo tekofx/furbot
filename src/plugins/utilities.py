@@ -233,12 +233,7 @@ class Utilites(lightbulb.Plugin):
         Ejemplo:
             fur addcumple 16-1 @Teko
         """
-        birthday = birthday.split("-")
-        birthday = birthday[1] + "-" + birthday[0]
-        day = int(birthday[0])
-        month = int(birthday[1])
-        datetime.datetime(2000, month, day)
-        logging.info("Added birthday of " + user.username + ": " + birthday)
+        yaml_f.add_cumpleaños(int(user.id), user.username, birthday)
         await ctx.respond("Añadido cumpleaños de " + user.username)
 
     @lightbulb.command()
@@ -273,6 +268,7 @@ class Utilites(lightbulb.Plugin):
 
             fur votacion <titulo> <opcion_1> <emoji_1> <opcion_2> <emoji_2>...
         """
+
         values = []
         reactions = []
         for x in opciones:
@@ -291,6 +287,7 @@ class Utilites(lightbulb.Plugin):
         message = await ctx.respond(embed)
         for x in reactions:
             await message.add_reaction(x)
+        await ctx._message.delete()
 
 
 def load(bot: lightbulb.Bot):
