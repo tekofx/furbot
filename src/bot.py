@@ -33,7 +33,6 @@ class Bot(lightbulb.Bot):
 
         # Set activity
         activity = hikari.Activity(name=yaml_f.get_activity())
-        print(activity)
         await self.update_presence(activity=activity)
 
     def run(self):
