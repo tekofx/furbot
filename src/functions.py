@@ -387,30 +387,6 @@ def get_user_color(user: hikari.Member):
 
 
 ############################### Reddit functions ###############################
-def get_hot_subreddit_image(Subreddit: str, Limit: int, file_txt: str):
-    """Get an image from a subreddit in hot
-
-    Args:
-        Subreddit (str): Subreddit to search for
-        Limit (int): Limit to search in subreddit
-
-    Returns:
-        str: link to image
-    """
-    output = random.choice([x for x in reddit.subreddit(Subreddit).hot(limit=Limit)])
-    try:
-        while exists_string_in_file(file_txt, output.url) and "v.redd.it" not in output:
-            output = random.choice(
-                [x for x in reddit.subreddit(Subreddit).hot(limit=Limit)]
-            )
-
-        write_in_file(file_txt, output.url + "\n")
-
-        return output.url
-    except FileNotFoundError:
-        logging.error("Error at getting {}".format(file_txt))
-
-
 def get_hot_subreddit_image(
     Subreddit: str, Limit: int, file_txt: str, flair: str = None
 ):
@@ -426,7 +402,7 @@ def get_hot_subreddit_image(
     posts = reddit.subreddit(Subreddit).hot(limit=Limit)
     try:
         for post in posts:
-            if flair is not None:
+            if flair is None:
                 if post.url.endswith("jpg") and not exists_string_in_file(
                     file_txt, post.url
                 ):
