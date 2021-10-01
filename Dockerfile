@@ -5,7 +5,7 @@ COPY requirements.txt /tmp/
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
         build-essential libffi-dev  \
-        libtiff-dev  \
+        libtiff-dev libfreetype6-dev \
         libwebp-dev \
         && apt-get clean \
         && rm -rf /var/lib/apt/lists/* \
