@@ -10,3 +10,4 @@ hikari[speedups]
 hikari-lightbulb
 uvloop
 pytest
+graphviz
