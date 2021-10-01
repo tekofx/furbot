@@ -1,13 +1,11 @@
 import lightbulb
 import hikari
-import logging
-import discord
-import datetime
 from PIL import Image
 from PIL import ImageFont
 from PIL import ImageDraw
 import qrcode
-import os
+import random
+from asyncio import sleep
 from pyrae import dle
 from hikari import permissions
 import requests
@@ -36,6 +34,10 @@ from functions import (
 
 
 class Utilites(lightbulb.Plugin):
+    def __init__(self, bot: lightbulb.Bot) -> None:
+        super().__init__(name=Utilites)
+        self.bot = bot
+
     @lightbulb.command()
     async def ping(self, ctx: lightbulb.Context):
         """Comprueba si el bot está online"""
@@ -306,6 +308,31 @@ class Utilites(lightbulb.Plugin):
         message = await ctx.respond(embed)
         await message.add_reaction("⭕")
 
+    @lightbulb.command()
+    async def resultados(self, ctx: lightbulb.Context):
+        """Obtiene un ganador de un mensaje de sorteo
+
+        Uso
+            - Responder al mensaje con fur resultados
+        """
+        replied_message = ctx.message.referenced_message
+
+        # Get users who replied with ⭕
+        users = await self.bot.rest.fetch_reactions_for_emoji(
+            ctx.get_channel(), replied_message, "⭕"
+        )
+
+        # Remove bot from users
+        output = []
+        for x in users:
+            if x.id != self.bot.get_me().id:
+                output.append(x)
+
+        # Select a user randomly
+        output = random.choice(output)
+
+        await ctx.respond("El/la ganador/a es " + output.mention)
+
 
 def load(bot: lightbulb.Bot):
-    bot.add_plugin(Utilites)
+    bot.add_plugin(Utilites(bot))
