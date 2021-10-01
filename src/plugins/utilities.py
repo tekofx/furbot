@@ -35,7 +35,7 @@ from functions import (
 
 class Utilites(lightbulb.Plugin):
     def __init__(self, bot: lightbulb.Bot) -> None:
-        super().__init__(name=Utilites)
+        super().__init__(name="Utilites")
         self.bot = bot
 
     @lightbulb.command()
