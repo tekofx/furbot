@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Corregido
 
 - Error al añadir cumpleaños
+- Error en comando carnet que hacia que no se creara
+- Script run_in_docker
 
 ### Añadido
 

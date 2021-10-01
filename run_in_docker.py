@@ -34,17 +34,17 @@ path = os.path.dirname(os.path.abspath(__file__))
 
 # Build
 print("Building furbot docker image")
-os.system("docker build --no-cache -t uwubot .")
+os.system("docker build --no-cache -t furbot .")
 
 
 # Run
 print("Running docker container")
 docker_run = """ docker run -d \
-    --name uwu \
+    --name furbot \
     --mount type=bind,src={path}/files/,dst=/bot/files/  \
     --mount type=bind,src={path}/src/,dst=/bot/src \
     --restart=unless-stopped \
-    -p {port}:80 uwu """
+    -p {port}:80 furbot """
 docker_run = docker_run.format(path=path, port=port)
 
 
