@@ -1,3 +1,4 @@
+import hikari
 import lightbulb
 
 
@@ -9,10 +10,10 @@ class Listeners(lightbulb.Plugin):
     async def on_command_error(self, event):
         error = event.exception
         if isinstance(error, lightbulb.errors.CommandIsOnCooldown):
-            return await event.context.reply("Command is on cooldown")
+            return await event.message.reply("Command is on cooldown")
 
         if isinstance(error, lightbulb.errors.CommandNotFound):
-            return await event.context.respond("Command is on cooldown")
+            return await event.message.respond("Comando no existente")
 
         if isinstance(error, lightbulb.errors.BotMissingRequiredPermission):
             missing_perms = ", ".join(c for c in error.permissions)
@@ -25,11 +26,11 @@ class Listeners(lightbulb.Plugin):
             missing_perms = ", ".join(c for c in error.permissions)
             print(f"user - {missing_perms}")
             return await event.message.reply(
-                f":no_entry_sign: Command failed, you're missing `{missing_perms}` permissions!"
+                f":no_entry_sign: Error, no dispones del permiso `{missing_perms}` "
             )
 
         if isinstance(error, lightbulb.errors.NotEnoughArguments):
-            return await event.message.respond("Error: Not enough arguments")
+            return await event.message.respond("Error: Faltan argumentos")
 
 
 def load(bot: lightbulb.Bot):
