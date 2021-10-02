@@ -41,6 +41,7 @@ class Utilites(lightbulb.Plugin):
     @lightbulb.command()
     async def ping(self, ctx: lightbulb.Context):
         """Comprueba si el bot está online"""
+        self.bot.lava
         await ctx.respond("Pim pam trucu trucu")
 
     @lightbulb.command()
@@ -292,19 +293,26 @@ class Utilites(lightbulb.Plugin):
         await ctx._message.delete()
 
     @lightbulb.command()
-    async def sorteo(self, ctx: lightbulb.Context, nombre: str):
+    async def sorteo(
+        self, ctx: lightbulb.Context, nombre: str, descripcion: str, user: hikari.Member
+    ):
         """Crea un mensaje para reaccionar y participar en un sorteo
 
         Uso:
             fur sorteo <nombre_sorteo>
         """
-        await ctx._message.delete()
         embed = hikari.Embed(
             title=nombre,
             colour=hikari.Colour(0x563275),
-            description="Reacciona a este mensaje para participar en el sorteo",
+            description=descripcion,
         )
+        embed.set_author(name=user.username, icon=user.avatar_url)
 
+        embed.add_field(
+            name="Instrucciones",
+            value="Reacciona a este mensaje para participar en el sorteo",
+        )
+        await ctx._message.delete()
         message = await ctx.respond(embed)
         await message.add_reaction("⭕")
 
