@@ -59,14 +59,13 @@ class Utilites(lightbulb.Plugin):
         """
 
         # Get user info
-        # usr = get_user(ctx, user) TODO: Cambiar funcion get_user
         usr = user
         name = usr.username
         species = get_user_species(usr)
         rank = get_user_ranks(usr)
         roles = get_user_roles(usr)
         color = get_user_color(usr)
-        color = yaml_f.get_color_code(color)  # FIXME: No funciona
+        color = yaml_f.get_color_code(color)  #
 
         if int(usr.id) == magnet_id:
             date = "24-01-2021"

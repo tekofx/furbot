@@ -15,7 +15,6 @@ class Tasks(lightbulb.Plugin):
     def __init__(self, bot: lightbulb.Bot):
         self.name = "Tasks"
         self.bot = bot
-        # task starts here
         self.general_channel = self.bot.cache.get_guild_channel(general_channel_id)
         self.memes_channel = self.bot.cache.get_guild_channel(memes_channel_id)
 

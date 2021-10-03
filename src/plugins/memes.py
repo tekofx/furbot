@@ -574,7 +574,6 @@ class Memes(lightbulb.Plugin):
 
     @lightbulb.command()
     async def dankmeme(self, ctx: lightbulb.Context):
-        # FIXME: No funciona, duelve None
         """Top memes de r/dankmemes"""
         message = await ctx.respond("buscando dankmeme")
         await ctx.respond(
