@@ -340,6 +340,35 @@ class Utilites(lightbulb.Plugin):
 
         await ctx.respond("El/la ganador/a es " + output.mention)
 
+    @lightbulb.command(name="stats")
+    async def server_stats(self, ctx: lightbulb.Context):
+        guild = ctx.get_guild()
+        members = self.bot.rest.fetch_members(guild)
+        member_count = 0
+        bot_count = 0
+        async for i, member in members.enumerate():
+            if not member.is_bot:
+                member_count += 1
+            else:
+                bot_count += 1
+
+        num_roles = len(guild.get_roles())
+
+        ranks = ""
+        for x in yaml_f.get_ranks_ids():
+            ranks += guild.get_role(x).mention + "\n"
+
+        embed = hikari.Embed(title="Server Stats", description="Stats de este server")
+        embed.set_thumbnail(guild.icon_url)
+        embed.add_field(name="Miembros", value=member_count, inline=True)
+        embed.add_field(name="Bots", value=bot_count, inline=True)
+
+        embed.add_field(name="Rangos", value=ranks)
+
+        embed.add_field(name="Numero roles", value=num_roles)
+
+        await ctx.respond(embed)
+
 
 def load(bot: lightbulb.Bot):
     bot.add_plugin(Utilites(bot))
