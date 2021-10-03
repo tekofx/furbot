@@ -8,7 +8,7 @@ from hikari import permissions
 
 
 class Stickers(lightbulb.Plugin):
-    @lightbulb.command()
+    @lightbulb.command(name="addsticker")
     async def add_sticker(self, ctx: lightbulb.Context, sticker_name: str):
         """Añade un sticker
 
