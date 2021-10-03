@@ -31,8 +31,16 @@ class yaml_functions:
     def get_ranks(self):
         content = self.get_content_yaml()
         output = []
-        for x in content["ranks"]:
+        for x, y in content["ranks"].items():
             output.append(x)
+
+        return output
+
+    def get_ranks_ids(self):
+        content = self.get_content_yaml()
+        output = []
+        for x, y in content["ranks"].items():
+            output.append(y)
 
         return output
 
