@@ -1,5 +1,6 @@
 import hikari
 import lightbulb
+from hikari import permissions
 from functions import yaml_f
 
 
@@ -19,8 +20,16 @@ class Administration(lightbulb.Plugin):
 
         await ctx.respond("Cambiada actividad a " + activity_name)
 
+    @lightbulb.check(
+        lightbulb.has_guild_permissions(permissions.Permissions.ADMINISTRATOR)
+    )
     @lightbulb.command(name="addspecie")
-    async def add_specie(self, ctx: lightbulb.Context, specie: hikari.Role):
+    async def add_species(self, ctx: lightbulb.Context, specie: hikari.Role):
+        """Añade una especie al bot
+
+        Uso:
+            fur addspecie <rol>
+        """
         yaml_f.add_specie(specie.name, specie.id)
         await ctx.respond("Especie {} añadida".format(specie.mention))
 
