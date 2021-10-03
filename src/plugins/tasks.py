@@ -29,7 +29,7 @@ class Tasks(lightbulb.Plugin):
 
     async def tasks_manager(self):
         while True:
-            if datetime.datetime.now().minute == 15:
+            if datetime.datetime.now().minute == 0:
                 await self.meme()
                 await self.es_viernes()
                 await self.cumpleaños()
