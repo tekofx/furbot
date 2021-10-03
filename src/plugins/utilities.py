@@ -235,7 +235,7 @@ class Utilites(lightbulb.Plugin):
         Ejemplo:
             fur addcumple 16-1 @Teko
         """
-        yaml_f.add_cumpleaños(int(user.id), user.username, birthday)
+        yaml_f.add_birthday(int(user.id), user.username, birthday)
         await ctx.respond("Añadido cumpleaños de " + user.username)
 
     @lightbulb.command()
@@ -342,6 +342,7 @@ class Utilites(lightbulb.Plugin):
 
     @lightbulb.command(name="stats")
     async def server_stats(self, ctx: lightbulb.Context):
+        "Muestra los stats del server"
         guild = ctx.get_guild()
         members = self.bot.rest.fetch_members(guild)
         member_count = 0
