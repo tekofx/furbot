@@ -19,9 +19,19 @@ class yaml_functions:
             self.yaml_file = yaml_file
 
     def set_yaml_file(self, yaml_file: str):
+        """Sets the yaml file
+
+        Args:
+            yaml_file (str): file
+        """
         self.yaml_file = yaml_file
 
     def get_content_yaml(self):
+        """Gets the content of yaml_file
+
+        Returns:
+            any: content of yaml_file
+        """
         with open(self.yaml_file, "r") as stream:
             try:
                 return yaml.safe_load(stream)
@@ -29,6 +39,11 @@ class yaml_functions:
                 print("Error loading YAML: " + exc)
 
     def get_ranks(self):
+        """Get ranks names
+
+        Returns:
+            list: list of ranks names
+        """
         content = self.get_content_yaml()
         output = []
         for x, y in content["ranks"].items():
@@ -37,6 +52,11 @@ class yaml_functions:
         return output
 
     def get_ranks_ids(self):
+        """Get ranks ids
+
+        Returns:
+            list: list of ranks ids
+        """
         content = self.get_content_yaml()
         output = []
         for x, y in content["ranks"].items():
@@ -45,6 +65,11 @@ class yaml_functions:
         return output
 
     def get_colors(self):
+        """Get colors names
+
+        Returns:
+            list: containing color names
+        """
         content = self.get_content_yaml()
         output = []
         for key, value in content["colors"].items():
@@ -52,6 +77,14 @@ class yaml_functions:
         return output
 
     def get_color_code(self, color: str):
+        """Gets color code of a color
+
+        Args:
+            color (str): color name
+
+        Returns:
+            list: contains RGB values
+        """
         content = self.get_content_yaml()
 
         for key, value in content["colors"].items():
@@ -65,6 +98,11 @@ class yaml_functions:
                 return output
 
     def get_species(self):
+        """Gets species
+
+        Returns:
+            list: contains species names
+        """
         content = self.get_content_yaml()
         output = []
         for x in content["species"]:
@@ -73,10 +111,20 @@ class yaml_functions:
         return output
 
     def get_activity(self):
+        """Gets activity from yaml_file
+
+        Returns:
+            str: activity name
+        """
         content = self.get_content_yaml()
         return content["activity"]
 
     def change_activity(self, activity: str):
+        """Edits the activity of yaml_file
+
+        Args:
+            activity (str): name of the activity
+        """
         with open(self.yaml_file, "r") as f:
             content = yaml.safe_load(f)
             content["activity"] = activity
@@ -107,7 +155,13 @@ class yaml_functions:
         output.append(dates)
         return output
 
-    def add_cumpleaños(self, user_id: int, user_name: str, date: str):
+    def add_birthday(self, user_id: int, user_name: str, date: str):
+        """Adds a birthday to the yaml_file
+        Args:
+            user_id(int): user id
+            user_name (str): user name
+            date (str): birthday with format dd-mm
+        """
         date = date.split("-")
         day = date[0]
         month = date[1]
@@ -126,7 +180,13 @@ class yaml_functions:
         with open(self.yaml_file, "w") as f:
             yaml.dump(content, f, allow_unicode=True)
 
-    def add_specie(self, specie_name: str, specie_id: int):
+    def add_species(self, specie_name: str, specie_id: int):
+        """Adds an specie to yaml_file
+
+        Args:
+            specie_name (str): name of specie
+            specie_id (int): id of specie role
+        """
         with open(self.yaml_file, "r") as yml:
             content = yaml.safe_load(yml)
             aux = content["species"]
@@ -135,6 +195,18 @@ class yaml_functions:
         with open(self.yaml_file, "w") as f:
             yaml.dump(content, f, allow_unicode=True)
 
+    def add_rank(self, rank_name: str, rank_id: int):
+        # TODO: Implement
+        pass
+
+    def remove_species(self, specie_name: str, specie_id: int):
+        # TODO: Implement
+        pass
+
+    def remove_rank(self, rank_name: str, rank_id: int):
+        # TODO: Implement
+        pass
+
 
 yaml_f = yaml_functions()
 
@@ -142,9 +214,6 @@ yaml_f = yaml_functions()
 load_dotenv()
 magnet_id = int(os.getenv("MAGNET"))
 angel_id = int(os.getenv("ANGEL"))
-
-
-separator = "       "  # key word to distinguish separator roles
 
 
 # Paths
