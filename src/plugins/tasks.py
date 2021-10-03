@@ -30,7 +30,7 @@ class Tasks(lightbulb.Plugin):
     async def tasks_manager(self):
         while True:
             if datetime.datetime.now().minute == 15:
-                await self.dankmeme()
+                await self.meme()
                 await self.es_viernes()
                 await self.cumpleaños()
                 await asyncio.sleep(60)
@@ -39,7 +39,7 @@ class Tasks(lightbulb.Plugin):
 
                 await asyncio.sleep(10)
 
-    async def dankmeme(self):
+    async def meme(self):
         if datetime.datetime.now().hour % 2 == 0:
             meme = get_hot_subreddit_image(
                 ("dankmemes"), 1000, reddit_memes_history_txt, None

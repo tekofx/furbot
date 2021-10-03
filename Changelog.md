@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Comando sorteo
 - Comando resultados
 - Script para construir y ejecutar en docker
+- Furry_irl en task memes
 
 ## [2.5] - 2021-9-29
 
