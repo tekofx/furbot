@@ -19,6 +19,11 @@ class Administration(lightbulb.Plugin):
 
         await ctx.respond("Cambiada actividad a " + activity_name)
 
+    @lightbulb.command(name="addspecie")
+    async def add_specie(self, ctx: lightbulb.Context, specie: hikari.Role):
+        yaml_f.add_specie(specie.name, specie.id)
+        await ctx.respond("Especie {} añadida".format(specie.mention))
+
 
 def load(bot: lightbulb.Bot):
     global bot_instance

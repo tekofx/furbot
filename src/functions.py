@@ -126,6 +126,15 @@ class yaml_functions:
         with open(self.yaml_file, "w") as f:
             yaml.dump(content, f, allow_unicode=True)
 
+    def add_specie(self, specie_name: str, specie_id: int):
+        with open(self.yaml_file, "r") as yml:
+            content = yaml.safe_load(yml)
+            aux = content["species"]
+            data = {str(specie_name): int(specie_id)}
+            aux.update(data)
+        with open(self.yaml_file, "w") as f:
+            yaml.dump(content, f, allow_unicode=True)
+
 
 yaml_f = yaml_functions()
 
