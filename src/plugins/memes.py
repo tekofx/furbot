@@ -25,6 +25,7 @@ import unicodedata
 import requests
 from PIL import Image
 import lightbulb
+from time import sleep
 
 
 class Memes(lightbulb.Plugin):
@@ -158,12 +159,9 @@ class Memes(lightbulb.Plugin):
         logging.info("Meme " + output + " sent")
 
     @lightbulb.command(name="countmemes")
-    async def count_memes(self, ctx: lightbulb.Context, word: str = None):
+    async def count_memes(self, ctx: lightbulb.Context):
         """Número de memes añadidos al bot"""
-        if word is None:
-            await ctx.respond(count_files_in_dir(meme_path))
-        else:
-            pass
+        await ctx.respond(count_files_in_dir(meme_path))
 
     @lightbulb.command()
     async def horny(self, ctx: lightbulb.Context, user: hikari.Member = None):
@@ -179,8 +177,6 @@ class Memes(lightbulb.Plugin):
 
         # Send meme
         await ctx.respond(attachment=meme_templates_path + "output.png")
-
-        logging.info("Meme sent")
 
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
@@ -201,7 +197,6 @@ class Memes(lightbulb.Plugin):
 
         # Send meme
         await ctx.respond(attachment=meme_templates_path + "output.png")
-        logging.info("Meme sent")
 
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
@@ -216,7 +211,6 @@ class Memes(lightbulb.Plugin):
 
         # Send meme
         await ctx.respond(attachment=meme_templates_path + "output.png")
-        logging.info("Meme sent")
 
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
@@ -327,9 +321,9 @@ class Memes(lightbulb.Plugin):
         pic.save(meme_templates_path + "output.png", "PNG")
 
         await ctx.respond(attachment=meme_templates_path + "output.png")
+        sleep(10)
+        await ctx._message.delete()
 
-        logging.info("Meme sent")
-        time.sleep(1)
         delete_files(("01.webp", "output.png", "01.png"))
 
     @lightbulb.command()
@@ -341,8 +335,6 @@ class Memes(lightbulb.Plugin):
 
         # Send meme
         await ctx.respond(attachment=meme_templates_path + "output.png")
-
-        logging.info("Meme sent")
 
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
@@ -357,8 +349,6 @@ class Memes(lightbulb.Plugin):
 
         # Send meme
         await ctx.respond(attachment=meme_templates_path + "output.png")
-
-        logging.info("Meme sent")
 
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
@@ -382,8 +372,6 @@ class Memes(lightbulb.Plugin):
         # Send meme
         await ctx.respond(attachment=meme_templates_path + "output.png")
 
-        logging.info("Meme sent")
-
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png", "02.png", "02.webp"))
 
@@ -398,8 +386,6 @@ class Memes(lightbulb.Plugin):
 
         # Send meme
         await ctx.respond(attachment=meme_templates_path + "output.png")
-
-        logging.info("Meme sent")
 
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
@@ -416,8 +402,6 @@ class Memes(lightbulb.Plugin):
         # Send meme
         await ctx.respond(attachment=meme_templates_path + "output.png")
 
-        logging.info("Meme sent")
-
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
 
@@ -432,8 +416,6 @@ class Memes(lightbulb.Plugin):
 
         # Send meme
         await ctx.respond(attachment=meme_templates_path + "output.png")
-
-        logging.info("Meme sent")
 
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
@@ -450,8 +432,6 @@ class Memes(lightbulb.Plugin):
         # Send meme
         await ctx.respond(attachment=meme_templates_path + "output.png")
 
-        logging.info("Meme sent")
-
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
 
@@ -466,8 +446,6 @@ class Memes(lightbulb.Plugin):
 
         # Send meme
         await ctx.respond(attachment=meme_templates_path + "output.png")
-
-        logging.info("Meme sent")
 
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
@@ -500,8 +478,6 @@ class Memes(lightbulb.Plugin):
 
         # Send meme
         await ctx.respond(attachment=meme_templates_path + "output.png")
-
-        logging.info("Meme sent")
 
         # Delete user avatar and output
         time.sleep(1)
@@ -538,8 +514,6 @@ class Memes(lightbulb.Plugin):
         # Send meme
         await ctx.respond(attachment=meme_templates_path + "output.png")
 
-        logging.info("Meme sent")
-
         # Delete user avatar and output
         delete_files(
             ("01.webp", "output.png", "01.png", "02.png", "02.webp", "output2.png")
@@ -569,8 +543,6 @@ class Memes(lightbulb.Plugin):
         # Send meme
         await ctx.respond(attachment=meme_templates_path + "output.png")
 
-        logging.info("Meme sent")
-
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png", "02.png", "02.webp"))
 
@@ -596,8 +568,6 @@ class Memes(lightbulb.Plugin):
 
         # Send meme
         await ctx.respond(attachment=meme_templates_path + "output.png")
-
-        logging.info("Meme sent")
 
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png", "02.png", "02.webp"))
@@ -651,8 +621,6 @@ class Memes(lightbulb.Plugin):
         # Send meme
         await ctx.respond(attachment=meme_templates_path + "output.png")
 
-        logging.info("Meme sent")
-
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
 
@@ -667,8 +635,6 @@ class Memes(lightbulb.Plugin):
 
         # Send meme
         await ctx.respond(attachment=meme_templates_path + "output.png")
-
-        logging.info("Meme sent")
 
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
@@ -685,8 +651,6 @@ class Memes(lightbulb.Plugin):
         # Send meme
         await ctx.respond(attachment=meme_templates_path + "output.png")
 
-        logging.info("Meme sent")
-
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
 
@@ -702,8 +666,6 @@ class Memes(lightbulb.Plugin):
         # Send meme
         await ctx.respond(attachment=meme_templates_path + "output.png")
 
-        logging.info("Meme sent")
-
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
 
@@ -718,8 +680,6 @@ class Memes(lightbulb.Plugin):
 
         # Send meme
         await ctx.respond(attachment=meme_templates_path + "output.png")
-
-        logging.info("Meme sent")
 
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))

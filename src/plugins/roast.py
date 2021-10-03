@@ -46,10 +46,8 @@ class Roast(lightbulb.Plugin):
 
         try:
             output = usuario + get_random_line_of_file(insults_txt)
-            print(output)
             await context.respond(content=output, reply=True)
         except FileNotFoundError:
-            print("a")
             # logging.error("Error at getting insults.txt")
 
     # TODO: Check if working

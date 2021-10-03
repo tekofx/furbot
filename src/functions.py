@@ -114,7 +114,6 @@ class yaml_functions:
             aux = content["birthdays"]
             data = {user_name: {date: user_id}}
             aux.update(data)
-            print(type(aux))
 
         with open(self.yaml_file, "w") as f:
             yaml.dump(content, f, allow_unicode=True)
