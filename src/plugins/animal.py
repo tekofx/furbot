@@ -1,5 +1,5 @@
 import lightbulb
-from functions import exists_string_in_file, get_hot_subreddit_image, write_in_file
+from functions import exists_string_in_file, write_in_file
 from dotenv import load_dotenv
 import os
 import tweepy as tw
@@ -23,42 +23,18 @@ class Animal(lightbulb.Plugin):
 
     @lightbulb.command()
     async def fox(self, ctx: lightbulb.Context):
+        """Fotos de zorros hermosos"""
         message = await ctx.respond("Buscando fotos de zorros hermosos")
-        tweets = self.api.user_timeline(
-            screen_name="hourlyFox",
-            count=200,
-            include_rts=False,
-        )
-
-        for tweet in tweets:
-            tweet_image_url = tweet.entities["media"][0]["media_url"]
-            if not exists_string_in_file(animal_history_txt, tweet_image_url):
-                write_in_file(animal_history_txt, tweet_image_url + "\n")
-                r = requests.get(tweet_image_url, allow_redirects=True)
-                open("files/" + "image.jpg", "wb").write(r.content)
-                break
-
+        get_twitter_image(self.api, "hourlyFox")
         await message.delete()
         await ctx.respond(attachment="files/" + "image.jpg")
         os.remove("files/image.jpg")
 
     @lightbulb.command()
     async def wolf(self, ctx: lightbulb.Context):
+        """Fotos de lobos lobitos lobones"""
         message = await ctx.respond("Buscando fotos de lobos lobitos lobones")
-        tweets = self.api.user_timeline(
-            screen_name="hourlywolvesbot",
-            count=200,
-            include_rts=False,
-        )
-
-        for tweet in tweets:
-            tweet_image_url = tweet.entities["media"][0]["media_url"]
-            if not exists_string_in_file(animal_history_txt, tweet_image_url):
-                write_in_file(animal_history_txt, tweet_image_url + "\n")
-                r = requests.get(tweet_image_url, allow_redirects=True)
-                open("files/" + "image.jpg", "wb").write(r.content)
-                break
-
+        get_twitter_image(self.api, "hourlywolvesbot")
         await message.delete()
         await ctx.respond(attachment="files/" + "image.jpg")
         os.remove("files/image.jpg")
@@ -66,3 +42,19 @@ class Animal(lightbulb.Plugin):
 
 def load(bot) -> None:
     bot.add_plugin(Animal)
+
+
+def get_twitter_image(api: tw.API, username: str):
+    tweets = api.user_timeline(
+        screen_name=username,
+        count=200,
+        include_rts=False,
+    )
+
+    for tweet in tweets:
+        tweet_image_url = tweet.entities["media"][0]["media_url"]
+        if not exists_string_in_file(animal_history_txt, tweet_image_url):
+            write_in_file(animal_history_txt, tweet_image_url + "\n")
+            r = requests.get(tweet_image_url, allow_redirects=True)
+            open("files/" + "image.jpg", "wb").write(r.content)
+            break
