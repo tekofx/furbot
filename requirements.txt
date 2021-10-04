@@ -11,3 +11,4 @@ hikari-lightbulb
 uvloop
 pytest
 graphviz
+tweepy
