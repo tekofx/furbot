@@ -7,14 +7,14 @@ from dotenv import load_dotenv
 from functions import get_hot_subreddit_image, reddit_memes_history_txt, yaml_f
 
 load_dotenv()
+villafurrense_id = os.getenv("VILLAFURRENSE")
 general_channel_id = os.getenv("GENERAL_CHANNEL")
 memes_channel_id = os.getenv("MEMES_CHANNEL")
-villafurrense_id = os.getenv("VILLAFURRENSE")
 
 
 class Tasks(lightbulb.Plugin):
     def __init__(self, bot: lightbulb.Bot):
-        self.name = "Tasks"
+        super().__init__(name="Tasks")
         self.bot = bot
         self.general_channel = self.bot.cache.get_guild_channel(general_channel_id)
         self.memes_channel = self.bot.cache.get_guild_channel(memes_channel_id)
@@ -35,10 +35,6 @@ class Tasks(lightbulb.Plugin):
                 await self.meme()
                 await self.es_viernes()
                 await asyncio.sleep(60)
-
-            else:
-
-                await asyncio.sleep(10)
 
     async def meme(self):
         if datetime.datetime.now().hour % 2 == 0:
@@ -64,11 +60,9 @@ class Tasks(lightbulb.Plugin):
 
     async def cumpleaños(self):
         now = datetime.datetime.now()
-        hour = str(now.hour)
-        minute = str(now.minute)
-        second = str(now.second)
+        hour = now.hour
 
-        if hour == "9":
+        if True:
             # Get month and day
             month = str(now.month)
             day = str(now.day)
@@ -80,26 +74,14 @@ class Tasks(lightbulb.Plugin):
 
             # Get yaml info
             content = yaml_f.get_cumpleaños()
-            user_names = content[0]
             user_ids = content[1]
             dates = content[2]
             for x in range(len(dates)):
                 if today == dates[x]:
-
-                    members = self.bot.rest.fetch_members(self.vf_server.id)
-                    """ member = self.vf_server.get_member(user_ids[x])
-                    print(member) """
-                    async for i, member in members.enumerate():
-                        if member.id == user_ids[x]:
+                    member = await self.bot.rest.fetch_user(user_ids[x])
                             await self.general_channel.send(
-                                "Es el cumple de "
-                                + member.mention
-                                + ". Felicidades!!!!!!!!!"
+                        "Es el cumple de " + member.mention + ". Felicidades!!!!!!!!!"
                             )
-                    # FIXME: Does not work
-                    # user = self.vf_server.get_member(int(user_ids[x]))
-
-                    # logging.info("Birthday of " + user.name)
 
     # TODO: Comprobar
     def cancel(self, task_name: str):
@@ -108,5 +90,5 @@ class Tasks(lightbulb.Plugin):
 
 def load(bot: lightbulb.Bot):
     # TODO: Ver si se puede añadir Tasks como plugin
-    # bot.add_plugin(Tasks(bot))
+    bot.add_plugin(Tasks(bot))
     t = Tasks(bot)
