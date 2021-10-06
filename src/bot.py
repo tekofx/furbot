@@ -1,3 +1,4 @@
+from hikari import intents
 import lightbulb
 import hikari
 from importlib import import_module
@@ -14,6 +15,9 @@ class Bot(lightbulb.Bot):
         super().__init__(
             prefix=["fur ", "Fur ", "FUR "],
             token=discord_token,
+            intents=hikari.Intents.GUILD_MEMBERS
+            | hikari.Intents.GUILDS
+            | hikari.Intents.GUILD_MESSAGES,
         )
 
     async def on_starting(self, event: hikari.StartingEvent):
