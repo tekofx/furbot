@@ -8,6 +8,10 @@ from hikari import permissions
 
 
 class Stickers(lightbulb.Plugin):
+    def __init__(self, bot: lightbulb.Bot) -> None:
+        super().__init__(name="Stickers")
+        self.bot = bot
+
     @lightbulb.command(name="addsticker")
     async def add_sticker(self, ctx: lightbulb.Context, sticker_name: str):
         """Añade un sticker
@@ -15,22 +19,19 @@ class Stickers(lightbulb.Plugin):
         Uso: seleccionar una imagen y en el cuadro de "añadir comentario"
         poner fur add <nombre_sticker>
         """
-        # TODO: Arreglar exceptions
-        # If not image provided
-        # if not context.message.attachments:
-        #    logging.error("Image not provided")
-        #    raise commands.CommandError("not_image_provided")
 
-        # Passed user as name
-        # if "@" in sticker_name:
-        #    logging.error("Argument is user")
-        #    raise commands.CommandError("argument_is_user")
+        # If not image provided
+        if not ctx.attachments:
+            await ctx.respond("Error: No se ha añadido una imagen")
+            return
 
         # Checks if a picture is correct
         sticker_extension = ctx.attachments[0].url.split(".")[-1]
-        # if check_sticker(sticker_name, sticker_extension) == 0:
-        #    logging.error("Name already in use")
-        #    raise commands.CommandError("sticker_name_exists")
+        if check_sticker(sticker_name, sticker_extension) == 0:
+            await ctx.respond(
+                "Error: Ya existe un sticker con el nombre {}".format(sticker_name)
+            )
+            return
 
         if sticker_extension == "jpg":
             sticker_fileName = sticker_name + ".jpg"
@@ -148,4 +149,4 @@ def check_sticker(stickerName: str, stickerExtension: str):
 
 
 def load(bot: lightbulb.Bot):
-    bot.add_plugin(Stickers)
+    bot.add_plugin(Stickers(bot))
