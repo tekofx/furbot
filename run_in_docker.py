@@ -34,8 +34,14 @@ path = os.path.dirname(os.path.abspath(__file__))
 
 # Build
 print("Building furbot docker image")
-subprocess.call("docker build --no-cache -t furbot .", shell=False)
+subprocess.call(["docker", "build", "--no-cache", "-t", "furbot", "."], shell=False)
 
+# Check if exists a container named furbot, if so remove it
+var = subprocess.check_output(
+    ["docker", "ps", "-q", "-f", "name=furbot"], shell=False, universal_newlines=True
+)
+if var != "":
+    subprocess.call(["docker", "rmi", "{}".format(var)], shell=False)
 
 # Run
 print("Running docker container")
@@ -48,4 +54,4 @@ docker_run = """ docker run -d \
 docker_run = docker_run.format(path=path, port=port)
 
 
-subprocess.call(docker_run, shell=False)
+os.system(docker_run)
