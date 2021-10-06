@@ -27,6 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Cambiado 
 - Actualizados comandos fox y wolf
+- Añadida eliminacion de contenedor anterior a run_in_docker
 
 ## [2.5] - 2021-9-29
 

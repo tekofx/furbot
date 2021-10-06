@@ -33,15 +33,16 @@ print("Port available: ", port)
 path = os.path.dirname(os.path.abspath(__file__))
 
 # Build
-print("Building furbot docker image")
+print("Building docker image")
 subprocess.call(["docker", "build", "--no-cache", "-t", "furbot", "."], shell=False)
 
 # Check if exists a container named furbot, if so remove it
-var = subprocess.check_output(
+container_id = subprocess.check_output(
     ["docker", "ps", "-q", "-f", "name=furbot"], shell=False, universal_newlines=True
 )
-if var != "":
-    subprocess.call(["docker", "rmi", "{}".format(var)], shell=False)
+if container_id != "":
+    print("Removing container with id {}".format(container_id))
+    subprocess.call(["docker", "rmi", "{}".format(container_id)], shell=False)
 
 # Run
 print("Running docker container")
