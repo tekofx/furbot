@@ -85,3 +85,7 @@ class Fun(lightbulb.Plugin):
 
 def load(bot):
     bot.add_plugin(Fun(bot))
+
+
+def unload(bot: lightbulb.Bot):
+    bot.remove_plugin("Fun")

@@ -8,7 +8,7 @@ from hikari import permissions
 
 
 class Stickers(lightbulb.Plugin):
-    def __init__(self, bot: lightbulb.Bot) :
+    def __init__(self, bot: lightbulb.Bot):
         super().__init__(name="Stickers")
         self.bot = bot
 
@@ -150,3 +150,7 @@ def check_sticker(stickerName: str, stickerExtension: str):
 
 def load(bot: lightbulb.Bot):
     bot.add_plugin(Stickers(bot))
+
+
+def unload(bot: lightbulb.Bot):
+    bot.remove_plugin("Stickers")

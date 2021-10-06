@@ -54,6 +54,10 @@ def load(bot):
     bot.add_plugin(Animal(bot))
 
 
+def unload(bot: lightbulb.Bot):
+    bot.remove_plugin("Animal")
+
+
 def get_twitter_image(api: tw.API, username: str):
     tweets = api.user_timeline(
         screen_name=username,

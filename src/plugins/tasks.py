@@ -95,3 +95,7 @@ class Tasks(lightbulb.Plugin):
 def load(bot: lightbulb.Bot):
     # TODO: Ver si se puede añadir Tasks como plugin
     t = Tasks(bot)
+
+
+def unload(bot: lightbulb.Bot):
+    bot.remove_plugin("Tasks")

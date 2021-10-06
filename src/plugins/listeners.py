@@ -36,3 +36,7 @@ class Listeners(lightbulb.Plugin):
 
 def load(bot: lightbulb.Bot):
     bot.add_plugin(Listeners(bot))
+
+
+def unload(bot: lightbulb.Bot):
+    bot.remove_plugin("Listeners")

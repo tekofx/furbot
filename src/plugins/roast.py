@@ -123,3 +123,7 @@ class Roast(lightbulb.Plugin):
 
 def load(bot):
     bot.add_plugin(Roast(bot))
+
+
+def unload(bot: lightbulb.Bot):
+    bot.remove_plugin("Roast")

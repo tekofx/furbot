@@ -373,3 +373,7 @@ class Utilites(lightbulb.Plugin):
 
 def load(bot: lightbulb.Bot):
     bot.add_plugin(Utilites(bot))
+
+
+def unload(bot: lightbulb.Bot):
+    bot.remove_plugin("Utilities")
