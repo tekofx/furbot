@@ -7,7 +7,7 @@ class Listeners(lightbulb.Plugin):
         super().__init__(name="listeners")
 
     @lightbulb.listener(lightbulb.events.CommandErrorEvent)
-    async def on_command_error(self, event):
+    async def on_command_error(self, event: lightbulb.events.CommandErrorEvent):
         error = event.exception
         if isinstance(error, lightbulb.errors.CommandIsOnCooldown):
             return await event.message.reply("Command is on cooldown")
