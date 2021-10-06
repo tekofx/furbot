@@ -29,6 +29,10 @@ from time import sleep
 
 
 class Memes(lightbulb.Plugin):
+    def __init__(self, bot: lightbulb.Bot):
+        super().__init__(name="Memes")
+        self.bot = bot
+
     @lightbulb.command()
     async def addmeme(self, ctx: lightbulb.Context, meme_name: str):
         """Añade un meme al bot"""
@@ -797,4 +801,4 @@ class Memes(lightbulb.Plugin):
 
 
 def load(bot: lightbulb.Bot):
-    bot.add_plugin(Memes)
+    bot.add_plugin(Memes(bot))

@@ -5,6 +5,10 @@ from functions import yaml_f
 
 
 class Administration(lightbulb.Plugin):
+    def __init__(self, bot: lightbulb.Bot):
+        super().__init__(name="Administration")
+        self.bot = bot
+
     @lightbulb.command(name="activity")
     async def change_activity(self, ctx: lightbulb.Context, activity_name: str):
         """[Admin] Cambiar actividad del bot"""
@@ -13,7 +17,7 @@ class Administration(lightbulb.Plugin):
         activity = hikari.Activity(name=activity_name)
 
         try:
-            await bot_instance.update_presence(activity=activity)
+            await self.bot.update_presence(activity=activity)
 
         except FileNotFoundError:
             await ctx.respond("Error: No se ha podido establecer la actividad")
@@ -35,6 +39,4 @@ class Administration(lightbulb.Plugin):
 
 
 def load(bot: lightbulb.Bot):
-    global bot_instance
-    bot_instance = bot
-    bot.add_plugin(Administration)
+    bot.add_plugin(Administration(bot))

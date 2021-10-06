@@ -15,11 +15,12 @@ access_token_secret = os.getenv("TWITTER_ACCESS_TOKEN_SECRET")
 
 
 class Animal(lightbulb.Plugin):
-    def __init__(self, *, name: str = None) -> None:
-        super().__init__(name=name)
+    def __init__(self, bot: lightbulb.Bot):
+        super().__init__(name="Animal")
         self.auth = tw.OAuthHandler(consumer_key, consumer_secret)
         self.auth.set_access_token(access_token, access_token_secret)
         self.api = tw.API(self.auth, wait_on_rate_limit=True)
+        self.bot = bot
 
     @lightbulb.command()
     async def fox(self, ctx: lightbulb.Context):
@@ -49,8 +50,8 @@ class Animal(lightbulb.Plugin):
         os.remove("files/image.jpg")
 
 
-def load(bot) -> None:
-    bot.add_plugin(Animal)
+def load(bot):
+    bot.add_plugin(Animal(bot))
 
 
 def get_twitter_image(api: tw.API, username: str):

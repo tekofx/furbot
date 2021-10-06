@@ -3,8 +3,9 @@ import lightbulb
 
 
 class Listeners(lightbulb.Plugin):
-    def __init__(self):
+    def __init__(self, bot: lightbulb.Bot):
         super().__init__(name="listeners")
+        self.bot = bot
 
     @lightbulb.listener(lightbulb.events.CommandErrorEvent)
     async def on_command_error(self, event: lightbulb.events.CommandErrorEvent):
@@ -34,4 +35,4 @@ class Listeners(lightbulb.Plugin):
 
 
 def load(bot: lightbulb.Bot):
-    bot.add_plugin(Listeners)
+    bot.add_plugin(Listeners(bot))

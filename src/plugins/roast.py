@@ -9,6 +9,10 @@ from functions import get_random_line_of_file, insults_txt, animos_txt
 
 
 class Roast(lightbulb.Plugin):
+    def __init__(self, bot: lightbulb.Bot):
+        super().__init__(name="Roast")
+        self.bot = bot
+
     @lightbulb.command()
     async def garich(self, context: lightbulb.Context):
         """Gala rich"""
@@ -117,5 +121,5 @@ class Roast(lightbulb.Plugin):
             # logging.error("Error at getting animos.txt")
 
 
-def load(bot) -> None:
-    bot.add_plugin(Roast)
+def load(bot):
+    bot.add_plugin(Roast(bot))

@@ -5,6 +5,10 @@ import random
 
 
 class Fun(lightbulb.Plugin):
+    def __init__(self, bot: lightbulb.Bot):
+        super().__init__(name="Fun")
+        self.bot = bot
+
     @lightbulb.command()
     async def penis(self, context: lightbulb.Context, user: hikari.User = None):
         """Buena tula
@@ -79,5 +83,5 @@ class Fun(lightbulb.Plugin):
         await context.respond(output.format(usuario, num))
 
 
-def load(bot) -> None:
-    bot.add_plugin(Fun)
+def load(bot):
+    bot.add_plugin(Fun(bot))
