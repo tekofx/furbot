@@ -155,6 +155,21 @@ class yaml_functions:
         output.append(dates)
         return output
 
+    def set_user_list(self, data: dict):
+        """Set user list of Villafurrense server
+
+        Args:
+            data (dict): dict containing usernames and user ids
+        """
+
+        with open(self.yaml_file, "r") as yml:
+            content = yaml.safe_load(yml)
+            del content["user_list"]
+            data = {"user_list": data}
+            content.update(data)
+        with open(self.yaml_file, "w") as f:
+            yaml.dump(content, f, allow_unicode=True)
+
     def add_birthday(self, user_id: int, user_name: str, date: str):
         """Adds a birthday to the yaml_file
         Args:

@@ -16,17 +16,19 @@ class Tasks(lightbulb.Plugin):
     def __init__(self, bot: lightbulb.Bot):
         super().__init__(name="Tasks")
         self.bot = bot
-        self.general_channel = self.bot.cache.get_guild_channel(general_channel_id)
-        self.memes_channel = self.bot.cache.get_guild_channel(memes_channel_id)
-        self.vf_server = self.bot.cache.get_guild(villafurrense_id)
 
         # Tasks
         self.loop = asyncio.get_event_loop()
         self.tasks_manager_task = self.loop.create_task(self.tasks_manager())
 
     async def tasks_manager(self):
+        self.general_channel = await self.bot.rest.fetch_channel(general_channel_id)
+        self.memes_channel = await self.bot.rest.fetch_channel(memes_channel_id)
+        self.vf_server = await self.bot.rest.fetch_guild(villafurrense_id)
+
         while True:
             if datetime.datetime.now().minute == 0:
+                await self.save_users()
                 await self.cumpleaños()
                 await self.meme()
                 await self.es_viernes()
@@ -78,6 +80,16 @@ class Tasks(lightbulb.Plugin):
                     await self.general_channel.send(
                         "Es el cumple de " + member.mention + ". Felicidades!!!!!!!!!"
                     )
+
+    async def save_users(self):
+        """Saves users in Villafurrense to yaml file"""
+        members = self.bot.rest.fetch_members(self.vf_server)
+        output = {}
+        async for i, member in members.enumerate():
+            dict = {member.username: int(member.id)}
+            output.update(dict)
+
+        yaml_f.set_user_list(output)
 
 
 def load(bot: lightbulb.Bot):
