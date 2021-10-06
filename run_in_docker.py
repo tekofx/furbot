@@ -34,7 +34,7 @@ path = os.path.dirname(os.path.abspath(__file__))
 
 # Build
 print("Building furbot docker image")
-os.system("docker build --no-cache -t furbot .")
+subprocess.call("docker build --no-cache -t furbot .", shell=False)
 
 
 # Run
@@ -48,4 +48,4 @@ docker_run = """ docker run -d \
 docker_run = docker_run.format(path=path, port=port)
 
 
-os.system(docker_run)
+subprocess.call(docker_run, shell=False)

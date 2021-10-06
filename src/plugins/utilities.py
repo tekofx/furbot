@@ -41,7 +41,6 @@ class Utilites(lightbulb.Plugin):
     @lightbulb.command()
     async def ping(self, ctx: lightbulb.Context):
         """Comprueba si el bot está online"""
-        self.bot.lava
         await ctx.respond("Pim pam trucu trucu")
 
     @lightbulb.command()
