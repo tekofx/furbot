@@ -24,17 +24,13 @@ class Tasks(lightbulb.Plugin):
         self.loop = asyncio.get_event_loop()
         self.tasks_manager_task = self.loop.create_task(self.tasks_manager())
 
-    @lightbulb.command()
-    async def stop(self):
-        pass
-
     async def tasks_manager(self):
         while True:
             if datetime.datetime.now().minute == 0:
                 await self.cumpleaños()
                 await self.meme()
                 await self.es_viernes()
-                await asyncio.sleep(60)
+            await asyncio.sleep(60)
 
     async def meme(self):
         if datetime.datetime.now().hour % 2 == 0:
@@ -62,7 +58,7 @@ class Tasks(lightbulb.Plugin):
         now = datetime.datetime.now()
         hour = now.hour
 
-        if True:
+        if hour == 9:
             # Get month and day
             month = str(now.month)
             day = str(now.day)
@@ -79,16 +75,11 @@ class Tasks(lightbulb.Plugin):
             for x in range(len(dates)):
                 if today == dates[x]:
                     member = await self.bot.rest.fetch_user(user_ids[x])
-                            await self.general_channel.send(
+                    await self.general_channel.send(
                         "Es el cumple de " + member.mention + ". Felicidades!!!!!!!!!"
-                            )
-
-    # TODO: Comprobar
-    def cancel(self, task_name: str):
-        self._task.cancel()
+                    )
 
 
 def load(bot: lightbulb.Bot):
     # TODO: Ver si se puede añadir Tasks como plugin
-    bot.add_plugin(Tasks(bot))
     t = Tasks(bot)
