@@ -253,6 +253,8 @@ files = [
 
 stickerSize = 500
 
+separator = "       "  # key word to distinguish separator roles
+
 # Creation of reddit
 reddit = praw.Reddit(
     client_id=os.getenv("REDDIT_CLIENT_ID"),
