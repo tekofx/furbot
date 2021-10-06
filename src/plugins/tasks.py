@@ -9,6 +9,7 @@ from functions import get_hot_subreddit_image, reddit_memes_history_txt, yaml_f
 load_dotenv()
 general_channel_id = os.getenv("GENERAL_CHANNEL")
 memes_channel_id = os.getenv("MEMES_CHANNEL")
+villafurrense_id = os.getenv("VILLAFURRENSE")
 
 
 class Tasks(lightbulb.Plugin):
@@ -17,6 +18,7 @@ class Tasks(lightbulb.Plugin):
         self.bot = bot
         self.general_channel = self.bot.cache.get_guild_channel(general_channel_id)
         self.memes_channel = self.bot.cache.get_guild_channel(memes_channel_id)
+        self.vf_server = self.bot.cache.get_guild(villafurrense_id)
 
         # Tasks
         self.loop = asyncio.get_event_loop()
@@ -29,9 +31,9 @@ class Tasks(lightbulb.Plugin):
     async def tasks_manager(self):
         while True:
             if datetime.datetime.now().minute == 0:
+                await self.cumpleaños()
                 await self.meme()
                 await self.es_viernes()
-                await self.cumpleaños()
                 await asyncio.sleep(60)
 
             else:
@@ -84,12 +86,19 @@ class Tasks(lightbulb.Plugin):
             for x in range(len(dates)):
                 if today == dates[x]:
 
+                    members = self.bot.rest.fetch_members(self.vf_server.id)
+                    """ member = self.vf_server.get_member(user_ids[x])
+                    print(member) """
+                    async for i, member in members.enumerate():
+                        if member.id == user_ids[x]:
+                            await self.general_channel.send(
+                                "Es el cumple de "
+                                + member.mention
+                                + ". Felicidades!!!!!!!!!"
+                            )
                     # FIXME: Does not work
                     # user = self.vf_server.get_member(int(user_ids[x]))
 
-                    await self.general_channel.send(
-                        "Es el cumple de " + user_names[x] + ". Felicidades!!!!!!!!!"
-                    )
                     # logging.info("Birthday of " + user.name)
 
     # TODO: Comprobar
