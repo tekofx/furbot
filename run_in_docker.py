@@ -4,29 +4,32 @@ import os
 import subprocess
 
 
-# Get ports available
-print("Getting port available")
-result = subprocess.Popen(
-    "docker ps --format '{{.Ports}}' | cut -d ' ' -f2 | cut -b 4-5 ",
-    shell=True,
-    stdout=subprocess.PIPE,
-)
+def get_available_port():
 
-result = result.stdout.read()
-result = result.decode("utf-8")
-result = result.split("\n")
+    # Get ports available
+    print("Getting port available")
+    result = subprocess.Popen(
+        "docker ps --format '{{.Ports}}' | cut -d ' ' -f2 | cut -b 4-5 ",
+        shell=True,
+        stdout=subprocess.PIPE,
+    )
 
-ports = []
-for x in result[:-1]:
-    ports.append(int(x))
+    result = result.stdout.read()
+    result = result.decode("utf-8")
+    result = result.split("\n")
 
-count = 80
-while True:
-    if count not in ports:
-        port = count
-        break
-    count += 1
-print("Port available: ", port)
+    ports = []
+    for x in result[:-1]:
+        ports.append(int(x))
+
+    count = 80
+    while True:
+        if count not in ports:
+            port = count
+            break
+        count += 1
+    print("Port available: ", port)
+    return port
 
 
 # Get path
@@ -38,11 +41,17 @@ subprocess.call(["docker", "build", "--no-cache", "-t", "furbot", "."], shell=Fa
 
 # Check if exists a container named furbot, if so remove it
 container_id = subprocess.check_output(
-    ["docker", "ps", "-q", "-f", "name=furbot"], shell=False, universal_newlines=True
+    ["docker", "ps", "-a", "-q", "-f", "name=furbot"],
+    shell=False,
+    universal_newlines=True,
 )
 if container_id != "":
     print("Removing container with id {}".format(container_id))
-    subprocess.call(["docker", "rmi", "{}".format(container_id)], shell=False)
+    subprocess.call(["docker", "stop", "furbot"], shell=False)
+    subprocess.call(["docker", "container", "rm", "furbot"], shell=False)
+
+
+port = get_available_port()
 
 # Run
 print("Running docker container")
