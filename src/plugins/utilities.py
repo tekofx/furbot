@@ -5,6 +5,7 @@ from PIL import ImageFont
 from PIL import ImageDraw
 import qrcode
 import random
+import datetime
 from asyncio import sleep
 from pyrae import dle
 from hikari import permissions
@@ -292,27 +293,32 @@ class Utilites(lightbulb.Plugin):
 
     @lightbulb.command()
     async def sorteo(
-        self, ctx: lightbulb.Context, nombre: str, descripcion: str, user: hikari.Member
+        self,
+        ctx: lightbulb.Context,
+        nombre: str,
+        descripcion: str,
+        autor: hikari.Member,
     ):
         """Crea un mensaje para reaccionar y participar en un sorteo
 
         Uso:
-            fur sorteo <nombre_sorteo>
+
+            fur sorteo <nombre_sorteo> <descripcion> <autor_sorteo>
         """
         embed = hikari.Embed(
             title=nombre,
             colour=hikari.Colour(0x563275),
             description=descripcion,
         )
-        embed.set_author(name=user.username, icon=user.avatar_url)
+        embed.set_author(name=autor.username, icon=autor.avatar_url)
 
         embed.add_field(
             name="Instrucciones",
             value="Reacciona a este mensaje para participar en el sorteo",
         )
-        await ctx._message.delete()
         message = await ctx.respond(embed)
         await message.add_reaction("⭕")
+        await ctx._message.delete()
 
     @lightbulb.command()
     async def resultados(self, ctx: lightbulb.Context):
@@ -321,11 +327,11 @@ class Utilites(lightbulb.Plugin):
         Uso
             - Responder al mensaje con fur resultados
         """
-        replied_message = ctx.message.referenced_message
+        sorteo_message = ctx.message.referenced_message
 
         # Get users who replied with ⭕
         users = await self.bot.rest.fetch_reactions_for_emoji(
-            ctx.get_channel(), replied_message, "⭕"
+            ctx.get_channel(), sorteo_message, "⭕"
         )
 
         # Remove bot from users
@@ -337,7 +343,8 @@ class Utilites(lightbulb.Plugin):
         # Select a user randomly
         output = random.choice(output)
 
-        await ctx.respond("El/la ganador/a es " + output.mention)
+        await ctx.respond("El/la ganador/a es " + output.mention, reply=sorteo_message)
+        await ctx._message.delete()
 
     @lightbulb.command(name="stats")
     async def server_stats(self, ctx: lightbulb.Context):
