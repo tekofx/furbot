@@ -89,8 +89,9 @@ class Tasks(lightbulb.Plugin):
         members = self.bot.rest.fetch_members(self.vf_server)
         output = {}
         async for i, member in members.enumerate():
-            users = {member.username: int(member.id)}
-            output.update(users)
+            if not member.is_bot:
+                users = {member.username: int(member.id)}
+                output.update(users)
 
         yaml_f.set_user_list(output)
 
