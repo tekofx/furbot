@@ -27,27 +27,27 @@ class Animal(lightbulb.Plugin):
         """Fotos de zorros hermosos"""
         message = await ctx.respond("Buscando fotos de zorros hermosos")
         get_twitter_image(self.api, "hourlyFox")
-        await message.delete()
         await ctx.respond(attachment="files/" + "image.jpg")
         os.remove("files/image.jpg")
+        await message.delete()
 
     @lightbulb.command(name="arctic")
     async def arctic_fox(self, ctx: lightbulb.Context):
         """Fotos de zorros hermosos"""
         message = await ctx.respond("Buscando fotos de zorros hermosos")
         get_twitter_image(self.api, "DailyArcticFox")
-        await message.delete()
         await ctx.respond(attachment="files/" + "image.jpg")
         os.remove("files/image.jpg")
+        await message.delete()
 
     @lightbulb.command()
     async def wolf(self, ctx: lightbulb.Context):
         """Fotos de lobos lobitos lobones"""
         message = await ctx.respond("Buscando fotos de lobos lobitos lobones")
         get_twitter_image(self.api, "hourlywolvesbot")
-        await message.delete()
         await ctx.respond(attachment="files/" + "image.jpg")
         os.remove("files/image.jpg")
+        await message.delete()
 
 
 def load(bot):
