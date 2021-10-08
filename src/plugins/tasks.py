@@ -1,3 +1,4 @@
+import logging
 from hikari.messages import Attachment
 import lightbulb
 import datetime
@@ -7,9 +8,9 @@ from dotenv import load_dotenv
 from functions import get_hot_subreddit_image, reddit_memes_history_txt, yaml_f
 
 load_dotenv()
-villafurrense_id = os.getenv("VILLAFURRENSE")
-general_channel_id = os.getenv("GENERAL_CHANNEL")
-memes_channel_id = os.getenv("MEMES_CHANNEL")
+villafurrense_id = os.getenv("TESTS_SERVER")
+general_channel_id = os.getenv("TESTS_CHANNEL")
+memes_channel_id = os.getenv("TESTS_CHANNEL")
 
 
 class Tasks(lightbulb.Plugin):
@@ -26,13 +27,15 @@ class Tasks(lightbulb.Plugin):
         self.memes_channel = await self.bot.rest.fetch_channel(memes_channel_id)
         self.vf_server = await self.bot.rest.fetch_guild(villafurrense_id)
 
+        # Seconds until its oclock
+        time = (60 - datetime.datetime.now().minute) * 60
+
         while True:
-            if datetime.datetime.now().minute == 0:
-                await self.save_users()
-                await self.cumpleaños()
-                await self.meme()
-                await self.es_viernes()
-            await asyncio.sleep(60)
+            await asyncio.sleep(time)
+            await self.save_users()
+            await self.cumpleaños()
+            await self.meme()
+            await self.es_viernes()
 
     async def meme(self):
         if datetime.datetime.now().hour % 2 == 0:
