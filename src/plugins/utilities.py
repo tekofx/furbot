@@ -341,7 +341,7 @@ class Utilites(lightbulb.Plugin):
 
     @lightbulb.command(name="stats")
     async def server_stats(self, ctx: lightbulb.Context):
-        "Muestra los stats del server"
+        """Muestra los stats del server"""
         guild = ctx.get_guild()
         members = self.bot.rest.fetch_members(guild)
         member_count = 0
@@ -362,9 +362,7 @@ class Utilites(lightbulb.Plugin):
         embed.set_thumbnail(guild.icon_url)
         embed.add_field(name="Miembros", value=member_count, inline=True)
         embed.add_field(name="Bots", value=bot_count, inline=True)
-
         embed.add_field(name="Rangos", value=ranks)
-
         embed.add_field(name="Numero roles", value=num_roles)
 
         await ctx.respond(embed)
