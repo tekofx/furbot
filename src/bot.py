@@ -1,4 +1,4 @@
-from hikari import intents
+from hikari import Intents
 import lightbulb
 import hikari
 from importlib import import_module
@@ -7,17 +7,16 @@ import os
 from dotenv import load_dotenv
 from functions import yaml_f
 import setproctitle
+from slash_commands import init
 
 
 class Bot(lightbulb.Bot):
     def __init__(self, discord_token: str) -> None:
 
         super().__init__(
-            prefix="-",
+            prefix=["fur", "Fur", "FUR"],
             token=discord_token,
-            intents=hikari.Intents.GUILD_MEMBERS
-            | hikari.Intents.GUILDS
-            | hikari.Intents.GUILD_MESSAGES,
+            intents=Intents.GUILD_MEMBERS | Intents.GUILDS | Intents.GUILD_MESSAGES,
         )
 
     async def on_new_guild_message(self, event: hikari.GuildMessageCreateEvent):
@@ -41,19 +40,21 @@ class Bot(lightbulb.Bot):
         pass
 
     async def on_starting(self, event: hikari.StartingEvent):
-        pass
+        # Load commands
+        commands = Path("./src/slash_commands").glob("*.py")
+        for c in commands:
+            mod = import_module(f"slash_commands.{c.stem}")
+            mod.load(self)
+            print(f"Loaded slash commands from {c.stem}")
 
     async def on_started(self, event: hikari.StartedEvent):
-        commands = Path("./src/slash_commands").glob("*.py")
+        # Load plugins
         plugins = Path("./src/plugins").glob("*.py")
-
-        """ for c in commands:
-            mod = import_module(f"slash_commands.{c.stem}")
-            mod.load(self) """
-
         for c in plugins:
+
             mod = import_module(f"plugins.{c.stem}")
             mod.load(self)
+            print(f"Loaded plugin {c.stem}")
 
         # Set activity
         activity = hikari.Activity(name=yaml_f.get_activity())
@@ -86,6 +87,5 @@ os.chdir(working_dir)
 # Set process name
 setproctitle.setproctitle("furbot")
 
-# Run bot
 bot = Bot(token)
 bot.run()
