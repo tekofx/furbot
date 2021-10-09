@@ -13,12 +13,32 @@ class Bot(lightbulb.Bot):
     def __init__(self, discord_token: str) -> None:
 
         super().__init__(
-            prefix=["fur ", "Fur ", "FUR "],
+            prefix="-",
             token=discord_token,
             intents=hikari.Intents.GUILD_MEMBERS
             | hikari.Intents.GUILDS
             | hikari.Intents.GUILD_MESSAGES,
         )
+
+    async def on_new_guild_message(self, event: hikari.GuildMessageCreateEvent):
+        if event.content and not event.message.author.is_bot:  # If message has text
+            if "uwu" in event.content.lower():
+                await event.message.respond("UwU")
+
+            if "owo" in event.content.lower():
+                await event.message.respond("OwO")
+
+            if "7w7" in event.content.lower():
+                await event.message.respond(":eyes:")
+
+            if "vaca " in event.content.lower():
+                await event.message.respond("Muu!")
+
+            if "vacas" in event.content.lower():
+                await event.message.respond("Muu muuu!")
+
+    async def on_new_member(self, event: hikari.MemberCreateEvent):
+        pass
 
     async def on_starting(self, event: hikari.StartingEvent):
         pass
@@ -42,6 +62,9 @@ class Bot(lightbulb.Bot):
     def run(self):
         self.event_manager.subscribe(hikari.StartingEvent, self.on_starting)
         self.event_manager.subscribe(hikari.StartedEvent, self.on_started)
+        self.event_manager.subscribe(
+            hikari.GuildMessageCreateEvent, self.on_new_guild_message
+        )
 
         super().run()
 
