@@ -484,37 +484,45 @@ def get_user_color(user: hikari.Member):
 
 ############################### Reddit functions ###############################
 def get_hot_subreddit_image(
-    Subreddit: str, Limit: int, file_txt: str, flair: str = None
+    sub_reddit: str,
+    posts_limit: int,
+    history_file: str,
+    not_flair: str = None,
 ):
-    """Get an image from a subreddit in hot
+    """Get a hot subreddit post image
 
     Args:
-        Subreddit (str): Subreddit to search for
-        Limit (int): Limit to search in subreddit
+        sub_reddit (str): subreddit to get the image from
+        posts_limit (int): maxium number of posts to get
+        history_file (str): file to save the posts that where
+        not_flair (str): flair not present in post
 
     Returns:
-        str: link to image
+        str: url of image
     """
-    posts = reddit.subreddit(Subreddit).hot(limit=Limit)
+    posts = reddit.subreddit(sub_reddit).hot(limit=posts_limit)
     try:
         for post in posts:
-            if flair is None:
+
+            if not_flair is None:
+
                 if post.url.endswith("jpg") and not exists_string_in_file(
-                    file_txt, post.url
+                    history_file, post.url
                 ):
-                    write_in_file(file_txt, post.url + "\n")
+                    write_in_file(history_file, post.url + "\n")
                     return post.url
             else:
                 if (
-                    post.link_flair_text == flair
+                    not_flair in post.link_flair_text
                     and post.url.endswith("jpg")
-                    and not exists_string_in_file(file_txt, post.url)
+                    and not exists_string_in_file(history_file, post.url)
                 ):
-                    write_in_file(file_txt, post.url + "\n")
+                    write_in_file(history_file, post.url + "\n")
                     return post.url
 
     except Exception as error:
         logging.error("Error in get_hot_subreddit_image: {}".format(error))
+        return "Error: {}".format(error)
 
 
 ############################### Files functions ###############################

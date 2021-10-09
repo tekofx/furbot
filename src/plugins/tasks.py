@@ -40,13 +40,20 @@ class Tasks(lightbulb.Plugin):
     async def meme(self):
         if datetime.datetime.now().hour % 2 == 0:
             meme = get_hot_subreddit_image(
-                ("dankmemes"), 1000, reddit_memes_history_txt, None
+                sub_reddit="dankmemes",
+                posts_limit=1000,
+                history_file=reddit_memes_history_txt,
+                not_flair=None,
             )
 
         else:
             meme = get_hot_subreddit_image(
-                ("furry_irl"), 1000, reddit_memes_history_txt, None
+                sub_reddit="furry_irl",
+                posts_limit=1000,
+                history_file=reddit_memes_history_txt,
+                not_flair="Actual Yiff",
             )
+
         await self.memes_channel.send(attachment=meme)
 
     async def es_viernes(self):
