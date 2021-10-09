@@ -8,9 +8,9 @@ from dotenv import load_dotenv
 from functions import get_hot_subreddit_image, reddit_memes_history_txt, yaml_f
 
 load_dotenv()
-villafurrense_id = os.getenv("TESTS_SERVER")
-general_channel_id = os.getenv("TESTS_CHANNEL")
-memes_channel_id = os.getenv("TESTS_CHANNEL")
+villafurrense_id = os.getenv("VILLAFURRENSE")
+general_channel_id = os.getenv("GENERAL_CHANNEL")
+memes_channel_id = os.getenv("MEMES_CHANNEL")
 
 
 class Tasks(lightbulb.Plugin):
