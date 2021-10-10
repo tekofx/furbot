@@ -36,7 +36,7 @@ class Tasks(lightbulb.Plugin):
                 await self.cumpleaños()
                 await self.meme()
                 await self.es_viernes()
-                await asyncio.sleep(50)
+            await asyncio.sleep(50)
 
     async def meme(self):
         if datetime.datetime.now().hour % 2 == 0:
