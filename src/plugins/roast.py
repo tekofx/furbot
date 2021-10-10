@@ -1,11 +1,13 @@
+from logging import error
 from hikari import permissions
 import lightbulb
 from time import sleep
 import hikari
-import random
-
+import logging
 from functions import magnet_id
 from functions import get_random_line_of_file, insults_txt, animos_txt
+
+log = logging.getLogger(__name__)
 
 
 class Roast(lightbulb.Plugin):
@@ -49,10 +51,10 @@ class Roast(lightbulb.Plugin):
             usuario = user.mention
 
         try:
-            output = usuario + get_random_line_of_file(insults_txt)
+            output = usuario + " " + get_random_line_of_file(insults_txt)
             await context.respond(content=output, reply=True)
-        except FileNotFoundError:
-            # logging.error("Error at getting insults.txt")
+        except Exception:
+            log.error("Error: {}".format(Exception))
             pass
 
     @lightbulb.check(
@@ -76,9 +78,8 @@ class Roast(lightbulb.Plugin):
                 f.write(insult + "\n")
             f.close()
             await context.respond("Insulto/s añadido/s")
-        except FileNotFoundError:
-            print("Error at getting insults.txt")
-            # logging.error("Error at getting insults.txt")
+        except Exception:
+            log.error("Error: {}".format(Exception))
 
     @lightbulb.command()
     async def animo(self, context, user: hikari.User = None):
@@ -91,9 +92,8 @@ class Roast(lightbulb.Plugin):
         try:
             output = usuario + get_random_line_of_file(animos_txt)
             await context.respond(content=output, reply=True)
-        except FileNotFoundError:
-            print("Error at getting animos.txt")
-            # logging.error("Error at getting animos.txt")
+        except Exception:
+            log.error("Error: {}".format(Exception))
 
     @lightbulb.check(
         lightbulb.has_guild_permissions(permissions.Permissions.ADMINISTRATOR)
@@ -116,9 +116,8 @@ class Roast(lightbulb.Plugin):
                 f.write(animo + "\n")
             f.close()
             await context.channel.send("animo/s añadido/s")
-        except FileNotFoundError:
-            print("Error at getting animos.txt")
-            # logging.error("Error at getting animos.txt")
+        except Exception:
+            log.error("Error: {}".format(Exception))
 
 
 def load(bot):

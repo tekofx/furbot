@@ -23,9 +23,9 @@ class Administration(lightbulb.Plugin):
         try:
             await self.bot.update_presence(activity=activity)
 
-        except error:
-            await ctx.respond("Error: {}".format(error))
-            log.error("Error: ".format(error))
+        except Exception:
+            await ctx.respond("Error: Contacte con un administrador")
+            log.error("Error: ".format(Exception))
 
         await ctx.respond("Cambiada actividad a " + activity_name)
         log.info("Changed activity to " + activity_name)
