@@ -101,5 +101,7 @@ os.chdir(working_dir)
 # Set process name
 setproctitle.setproctitle("furbot")
 
+load_dotenv()
+token = os.getenv("DISCORD_TOKEN")
 bot = Bot(token)
 bot.run()
