@@ -1,7 +1,11 @@
+import logging
+from os import error
 import hikari
 import lightbulb
 from hikari import permissions
 from functions import yaml_f
+
+log = logging.getLogger(__name__)
 
 
 class Administration(lightbulb.Plugin):
@@ -19,10 +23,12 @@ class Administration(lightbulb.Plugin):
         try:
             await self.bot.update_presence(activity=activity)
 
-        except FileNotFoundError:
-            await ctx.respond("Error: No se ha podido establecer la actividad")
+        except error:
+            await ctx.respond("Error: {}".format(error))
+            log.error("Error: ".format(error))
 
         await ctx.respond("Cambiada actividad a " + activity_name)
+        log.info("Changed activity to " + activity_name)
 
     @lightbulb.check(
         lightbulb.has_guild_permissions(permissions.Permissions.ADMINISTRATOR)
@@ -36,11 +42,12 @@ class Administration(lightbulb.Plugin):
         """
         yaml_f.add_specie(specie.name, specie.id)
         await ctx.respond("Especie {} añadida".format(specie.mention))
+        log.info("Added specie " + specie.name)
 
 
 def load(bot: lightbulb.Bot):
     bot.add_plugin(Administration(bot))
 
 
-def unload(bot:lightbulb.Bot):
+def unload(bot: lightbulb.Bot):
     bot.remove_plugin("Administration")

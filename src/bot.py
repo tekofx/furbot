@@ -7,7 +7,10 @@ import os
 from dotenv import load_dotenv
 from functions import yaml_f
 import setproctitle
-from slash_commands import init
+import logging
+
+
+log = logging.getLogger(__name__)
 
 
 class Bot(lightbulb.Bot):
@@ -45,7 +48,7 @@ class Bot(lightbulb.Bot):
         for c in commands:
             mod = import_module(f"slash_commands.{c.stem}")
             mod.load(self)
-            print(f"Loaded slash commands from {c.stem}")
+            log.info(f"Loaded slash commands from {c.stem}")
 
     async def on_started(self, event: hikari.StartedEvent):
         # Load plugins
@@ -54,17 +57,25 @@ class Bot(lightbulb.Bot):
 
             mod = import_module(f"plugins.{c.stem}")
             mod.load(self)
-            print(f"Loaded plugin {c.stem}")
+            log.info(f"Loaded plugin {c.stem}")
 
         # Set activity
         activity = hikari.Activity(name=yaml_f.get_activity())
         await self.update_presence(activity=activity)
+        log.info("Set activity to: " + activity.name)
+
+    async def on_command_invoked(self, event: lightbulb.events.CommandInvocationEvent):
+        user = event.context.author.username
+        log.info(user + " used command " + event.command.name)
 
     def run(self):
         self.event_manager.subscribe(hikari.StartingEvent, self.on_starting)
         self.event_manager.subscribe(hikari.StartedEvent, self.on_started)
         self.event_manager.subscribe(
             hikari.GuildMessageCreateEvent, self.on_new_guild_message
+        )
+        self.event_manager.subscribe(
+            lightbulb.events.CommandInvocationEvent, self.on_command_invoked
         )
 
         super().run()
