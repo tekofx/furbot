@@ -34,7 +34,7 @@ class Administration(lightbulb.Plugin):
         Uso:
             fur addspecie <rol>
         """
-        yaml_f.add_specie(specie.name, specie.id)
+        yaml_f.add_species(specie.name, specie.id)
         await ctx.respond("Especie {} añadida".format(specie.mention))
 
 
@@ -42,5 +42,5 @@ def load(bot: lightbulb.Bot):
     bot.add_plugin(Administration(bot))
 
 
-def unload(bot:lightbulb.Bot):
+def unload(bot: lightbulb.Bot):
     bot.remove_plugin("Administration")
