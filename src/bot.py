@@ -4,20 +4,27 @@ import hikari
 from importlib import import_module
 from pathlib import Path
 import os
+import logging
 from dotenv import load_dotenv
 from functions import yaml_f
 import setproctitle
-from slash_commands import init
+import asyncio
+
+log = logging.getLogger("bot")
+# Get .env
+load_dotenv()
+token = os.getenv("DISCORD_TOKEN")
 
 
 class Bot(lightbulb.Bot):
     def __init__(self, discord_token: str) -> None:
 
         super().__init__(
-            prefix=["fur", "Fur", "FUR"],
+            prefix="-",
             token=discord_token,
             intents=Intents.GUILD_MEMBERS | Intents.GUILDS | Intents.GUILD_MESSAGES,
         )
+        self.tasks = None
 
     async def on_new_guild_message(self, event: hikari.GuildMessageCreateEvent):
         if event.content and not event.message.author.is_bot:  # If message has text
@@ -41,11 +48,11 @@ class Bot(lightbulb.Bot):
 
     async def on_starting(self, event: hikari.StartingEvent):
         # Load commands
-        commands = Path("./src/slash_commands").glob("*.py")
+        """commands = Path("./src/slash_commands").glob("*.py")
         for c in commands:
             mod = import_module(f"slash_commands.{c.stem}")
             mod.load(self)
-            print(f"Loaded slash commands from {c.stem}")
+            log.info(f"Loaded slash commands from {c.stem}")"""
 
     async def on_started(self, event: hikari.StartedEvent):
         # Load plugins
@@ -54,11 +61,18 @@ class Bot(lightbulb.Bot):
 
             mod = import_module(f"plugins.{c.stem}")
             mod.load(self)
-            print(f"Loaded plugin {c.stem}")
+            log.info(f"Loaded plugin {c.stem}")
 
         # Set activity
         activity = hikari.Activity(name=yaml_f.get_activity())
         await self.update_presence(activity=activity)
+
+        log.info("Bot ready")
+
+    async def on_stopping(self, event: hikari.StoppingEvent):
+        log.info("Stopping bot")
+        self.tasks.cancel()
+        asyncio.get_event_loop().close()
 
     def run(self):
         self.event_manager.subscribe(hikari.StartingEvent, self.on_starting)
@@ -66,7 +80,7 @@ class Bot(lightbulb.Bot):
         self.event_manager.subscribe(
             hikari.GuildMessageCreateEvent, self.on_new_guild_message
         )
-
+        self.event_manager.subscribe(hikari.StoppingEvent, self.on_stopping)
         super().run()
 
 
@@ -75,9 +89,6 @@ if os.name != "nt":
 
     uvloop.install()
 
-# Get .env
-load_dotenv()
-token = os.getenv("DISCORD_TOKEN")
 
 # Set workdir
 path = os.path.dirname(os.path.abspath(__file__))
