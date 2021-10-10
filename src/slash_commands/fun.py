@@ -1,14 +1,10 @@
-from os import path
-from lightbulb import slash_commands
+from lightbulb import slash_commands, Option
 import lightbulb
-from lightbulb import Option
 import random
 import hikari
 import typing
 import sys
 import inspect
-from functions import stickers_path, get_files_in_directory
-from pathlib import Path
 
 
 class Penis(slash_commands.SlashCommand):
@@ -124,7 +120,8 @@ def load(bot: lightbulb.Bot):
         if issubclass(obj, slash_commands.SlashCommand):
             bot.add_slash_command(obj)
 
-def unload(bot:lightbulb.Bot):
+
+def unload(bot: lightbulb.Bot):
     for _, obj in inspect.getmembers(sys.modules[__name__], inspect.isclass):
         if issubclass(obj, slash_commands.SlashCommand):
             bot.remove_slash_command(obj)

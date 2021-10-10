@@ -8,12 +8,10 @@ import logging
 from dotenv import load_dotenv
 from functions import yaml_f
 import setproctitle
-import asyncio
+import logging
+
 
 log = logging.getLogger("bot")
-# Get .env
-load_dotenv()
-token = os.getenv("DISCORD_TOKEN")
 
 
 class Bot(lightbulb.Bot):
@@ -24,7 +22,6 @@ class Bot(lightbulb.Bot):
             token=discord_token,
             intents=Intents.GUILD_MEMBERS | Intents.GUILDS | Intents.GUILD_MESSAGES,
         )
-        self.tasks = None
 
     async def on_new_guild_message(self, event: hikari.GuildMessageCreateEvent):
         if event.content and not event.message.author.is_bot:  # If message has text
@@ -48,11 +45,11 @@ class Bot(lightbulb.Bot):
 
     async def on_starting(self, event: hikari.StartingEvent):
         # Load commands
-        """commands = Path("./src/slash_commands").glob("*.py")
+        commands = Path("./src/slash_commands").glob("*.py")
         for c in commands:
             mod = import_module(f"slash_commands.{c.stem}")
             mod.load(self)
-            log.info(f"Loaded slash commands from {c.stem}")"""
+            log.info(f"Loaded slash commands from {c.stem}")
 
     async def on_started(self, event: hikari.StartedEvent):
         # Load plugins
@@ -66,13 +63,16 @@ class Bot(lightbulb.Bot):
         # Set activity
         activity = hikari.Activity(name=yaml_f.get_activity())
         await self.update_presence(activity=activity)
+        log.info("Set activity to: " + activity.name)
+
+    async def on_command_invoked(self, event: lightbulb.events.CommandInvocationEvent):
+        user = event.context.author.username
+        log.info(user + " used command " + event.command.name)
 
         log.info("Bot ready")
 
     async def on_stopping(self, event: hikari.StoppingEvent):
         log.info("Stopping bot")
-        self.tasks.cancel()
-        asyncio.get_event_loop().close()
 
     def run(self):
         self.event_manager.subscribe(hikari.StartingEvent, self.on_starting)
@@ -80,7 +80,10 @@ class Bot(lightbulb.Bot):
         self.event_manager.subscribe(
             hikari.GuildMessageCreateEvent, self.on_new_guild_message
         )
-        self.event_manager.subscribe(hikari.StoppingEvent, self.on_stopping)
+        self.event_manager.subscribe(
+            lightbulb.events.CommandInvocationEvent, self.on_command_invoked
+        )
+
         super().run()
 
 

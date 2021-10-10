@@ -12,6 +12,8 @@ villafurrense_id = os.getenv("VILLAFURRENSE")
 general_channel_id = os.getenv("GENERAL_CHANNEL")
 memes_channel_id = os.getenv("MEMES_CHANNEL")
 
+log = logging.getLogger(__name__)
+
 
 class Tasks(lightbulb.Plugin):
     def __init__(self, bot: lightbulb.Bot):
@@ -27,15 +29,14 @@ class Tasks(lightbulb.Plugin):
         self.memes_channel = await self.bot.rest.fetch_channel(memes_channel_id)
         self.vf_server = await self.bot.rest.fetch_guild(villafurrense_id)
 
-        # Seconds until its oclock
-        time = (60 - datetime.datetime.now().minute) * 60
-
         while True:
-            await asyncio.sleep(time)
-            await self.save_users()
-            await self.cumpleaños()
-            await self.meme()
-            await self.es_viernes()
+            if datetime.datetime.now().min == 0:
+                log.info("Executing tasks")
+                await self.save_users()
+                await self.cumpleaños()
+                await self.meme()
+                await self.es_viernes()
+                await asyncio.sleep(50)
 
     async def meme(self):
         if datetime.datetime.now().hour % 2 == 0:
@@ -55,6 +56,7 @@ class Tasks(lightbulb.Plugin):
             )
 
         await self.memes_channel.send(attachment=meme)
+        log.info("Sent meme")
 
     async def es_viernes(self):
         """Sends es_viernes.mp4 every friday at 9:00"""
@@ -64,7 +66,7 @@ class Tasks(lightbulb.Plugin):
         ):
             # logging.info("Es viernes sent")
             await self.general_channel.send(attachment="resources/es_viernes.mp4")
-        await asyncio.sleep(50)
+            log.info("Sent es_viernes.mp4")
 
     async def cumpleaños(self):
         now = datetime.datetime.now()
@@ -90,6 +92,7 @@ class Tasks(lightbulb.Plugin):
                     await self.general_channel.send(
                         "Es el cumple de " + member.mention + ". Felicidades!!!!!!!!!"
                     )
+                    log.info("Sent birthday message of " + member.username)
 
     async def save_users(self):
         """Saves users in Villafurrense to yaml file"""
@@ -101,6 +104,7 @@ class Tasks(lightbulb.Plugin):
                 output.update(users)
 
         yaml_f.set_user_list(output)
+        log.info("Saved user list")
 
 
 def load(bot: lightbulb.Bot):
