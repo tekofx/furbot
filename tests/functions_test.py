@@ -134,7 +134,6 @@ def test_get_files_in_directory_with_substring():
     )
 
 
-# TODO
 def test_write_in_file():
     file = "tests/dir/d"
     string1 = "hola mundo"

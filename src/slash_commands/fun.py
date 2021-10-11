@@ -17,7 +17,6 @@ class Penis(slash_commands.SlashCommand):
     async def callback(self, context: slash_commands.SlashCommandContext):
 
         num = random.randint(1, 15)
-        context.options.user
 
         usuario = await self.bot.rest.fetch_member(
             context.guild_id, int(context.options.user)
@@ -41,7 +40,6 @@ class Communism(slash_commands.SlashCommand):
     async def callback(self, context: slash_commands.SlashCommandContext):
 
         num = random.randint(1, 15)
-        context.options.user
 
         usuario = await self.bot.rest.fetch_member(
             context.guild_id, int(context.options.user)
@@ -62,7 +60,6 @@ class Capitalist(slash_commands.SlashCommand):
     async def callback(self, context: slash_commands.SlashCommandContext):
 
         num = random.randint(1, 15)
-        context.options.user
 
         usuario = await self.bot.rest.fetch_member(
             context.guild_id, int(context.options.user)
@@ -83,7 +80,6 @@ class Gay(slash_commands.SlashCommand):
     async def callback(self, context: slash_commands.SlashCommandContext):
 
         num = random.randint(1, 15)
-        context.options.user
 
         usuario = await self.bot.rest.fetch_member(
             context.guild_id, int(context.options.user)
@@ -104,7 +100,6 @@ class Str8(slash_commands.SlashCommand):
     async def callback(self, context: slash_commands.SlashCommandContext):
 
         num = random.randint(1, 15)
-        context.options.user
 
         usuario = await self.bot.rest.fetch_member(
             context.guild_id, int(context.options.user)

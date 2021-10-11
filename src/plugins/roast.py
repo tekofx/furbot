@@ -55,7 +55,6 @@ class Roast(lightbulb.Plugin):
             await context.respond(content=output, reply=True)
         except Exception:
             log.error("Error: {}".format(Exception))
-            pass
 
     @lightbulb.check(
         lightbulb.has_guild_permissions(permissions.Permissions.ADMINISTRATOR)
