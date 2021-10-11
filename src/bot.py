@@ -5,11 +5,8 @@ from importlib import import_module
 from pathlib import Path
 import os
 import logging
-from dotenv import load_dotenv
 from functions import yaml_f
-import setproctitle
 import logging
-
 
 log = logging.getLogger("bot")
 
@@ -22,6 +19,9 @@ class Bot(lightbulb.Bot):
             token=discord_token,
             intents=Intents.GUILD_MEMBERS | Intents.GUILDS | Intents.GUILD_MESSAGES,
         )
+        self.villafurrense_id = os.getenv("VILLAFURRENSE")
+        self.general_channel_id = os.getenv("GENERAL_CHANNEL")
+        self.memes_channel_id = os.getenv("MEMES_CHANNEL")
 
     async def on_new_guild_message(self, event: hikari.GuildMessageCreateEvent):
         if event.content and not event.message.author.is_bot:  # If message has text
@@ -83,23 +83,3 @@ class Bot(lightbulb.Bot):
         )
 
         super().run()
-
-
-if os.name != "nt":
-    import uvloop
-
-    uvloop.install()
-
-
-# Set workdir
-path = os.path.dirname(os.path.abspath(__file__))
-working_dir = os.path.dirname(path)
-os.chdir(working_dir)
-
-# Set process name
-setproctitle.setproctitle("furbot")
-
-load_dotenv()
-token = os.getenv("DISCORD_TOKEN_TESTS")
-bot = Bot(token)
-bot.run()

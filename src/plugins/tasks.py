@@ -1,16 +1,8 @@
 import logging
-from hikari.messages import Attachment
 import lightbulb
 import datetime
 import asyncio
-import os
-from dotenv import load_dotenv
 from functions import get_hot_subreddit_image, reddit_memes_history_txt, yaml_f
-
-load_dotenv()
-villafurrense_id = os.getenv("VILLAFURRENSE")
-general_channel_id = os.getenv("GENERAL_CHANNEL")
-memes_channel_id = os.getenv("MEMES_CHANNEL")
 
 log = logging.getLogger(__name__)
 
@@ -25,12 +17,16 @@ class Tasks(lightbulb.Plugin):
         self.tasks_manager_task = self.loop.create_task(self.tasks_manager())
 
     async def tasks_manager(self):
-        self.general_channel = await self.bot.rest.fetch_channel(general_channel_id)
-        self.memes_channel = await self.bot.rest.fetch_channel(memes_channel_id)
-        self.vf_server = await self.bot.rest.fetch_guild(villafurrense_id)
+        self.general_channel = await self.bot.rest.fetch_channel(
+            self.bot.general_channel_id
+        )
+        self.memes_channel = await self.bot.rest.fetch_channel(
+            self.bot.memes_channel_id
+        )
+        self.vf_server = await self.bot.rest.fetch_guild(self.bot.villafurrense_id)
 
         while True:
-            if datetime.datetime.now().minute == 0:
+            if datetime.datetime.now().minute == 45:
                 log.info("Executing tasks")
                 await self.save_users()
                 await self.cumpleaños()

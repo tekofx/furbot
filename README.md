@@ -8,23 +8,32 @@
 
 
 - [Ejecución en docker:](#ejecución-en-docker)
-  - [Construir](#construir)
-  - [Ejecutar](#ejecutar)
-  - [Ejecucion automatica al reinicar el sistema](#ejecucion-automatica-al-reinicar-el-sistema)
+  - [Mediante script](#mediante-script)
+  - [Ejecución manual](#ejecución-manual)
+    - [Construir](#construir)
+    - [Ejecutar](#ejecutar)
   - [Iniciar reiniciar y detener](#iniciar-reiniciar-y-detener)
 - [Ejecucion sin docker](#ejecucion-sin-docker)
+  - [Ejecución normal](#ejecución-normal)
+  - [Ejecución para pruebas](#ejecución-para-pruebas)
 # Ejecución en docker:
 
 
 
 Si es la primera vez que se ejecuta:
+## Mediante script
+```sh
+python3 run_in_docker.py
+```
 
-## Construir
+## Ejecución manual
+
+### Construir
 
 ```sh
 docker build --no-cache -t furbot .
 ```
-## Ejecutar
+### Ejecutar
 ```sh
 docker run -d \           
   --env-file <env_file> \
@@ -33,11 +42,6 @@ docker run -d \
   --mount type=bind,src=<furbot_folder>/src/,dst=/bot/src \
   --restart=unless-stopped \
   -p 80:80 furbot
-```
-
-## Ejecucion automatica al reinicar el sistema
-```sh
-docker update --restart=unless-stopped furbot
 ```
 
 
@@ -52,7 +56,11 @@ docker stop furbot # Detener docker
 ```
 
 # Ejecucion sin docker
-- Añadir a la carpeta del bot el archivo .env
+## Ejecución normal
 ```sh
 python3 src/main.py
+```
+## Ejecución para pruebas
+```sh
+python3 src/main.py -t
 ```

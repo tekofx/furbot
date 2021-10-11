@@ -12,3 +12,4 @@ tests/__pycache__/*
 __pycache__/
 src/test.py
 files/resources/config.yaml
+src/tests.env
