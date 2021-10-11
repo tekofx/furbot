@@ -799,9 +799,48 @@ class Memes(lightbulb.Plugin):
 
         await ctx.respond(string)
 
+    @lightbulb.command()
+    async def skeletor(self, ctx: lightbulb.Context, text1: str, text2: str):
+        """Datos perturbadores de Skeletor
+
+        Uso:
+            fur skeletor <text1> <text2>
+        """
+        meme_width = 994
+        meme_hegiht = 680
+        txtPic1 = Image.new("RGBA", (meme_width, meme_hegiht))
+        pic = Image.open(meme_templates_path + "skeletor.png").convert("RGBA")
+        font = ImageFont.truetype(meme_templates_path + "impact.ttf", 60)
+        d = ImageDraw.Draw(txtPic1)
+
+        # Write text1
+        lines = textwrap.wrap(text1.upper(), width=35)
+        textY = 0
+        for line in lines:
+            width, height = font.getsize(line)
+
+            d.text(((meme_width - width) / 2, textY), line, font=font, fill=None)
+            textY += height
+
+        lines = textwrap.wrap(text2.upper(), width=35)
+        textY = 520
+        for line in lines:
+            width, height = font.getsize(line)
+
+            d.text(((meme_width - width) / 2, textY), line, font=font, fill=None)
+            textY += height
+
+        pic.paste(txtPic1, (10, 440), txtPic1)
+
+        pic.save(meme_templates_path + "output.png", "PNG")
+
+        await ctx.respond(attachment=meme_templates_path + "output.png")
+        os.remove(meme_templates_path + "output.png")
+
 
 def load(bot: lightbulb.Bot):
     bot.add_plugin(Memes(bot))
 
-def unload(bot:lightbulb.Bot):
+
+def unload(bot: lightbulb.Bot):
     bot.remove_plugin("Memes")
