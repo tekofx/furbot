@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Comando stats
 - Comando addspecie
 - Comando arctic
+- Comando skeletor
 - Task save_users que guarda la lista de usuarios
 - Script para construir y ejecutar en docker
 - Furry_irl en task memes

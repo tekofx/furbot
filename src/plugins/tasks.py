@@ -30,13 +30,13 @@ class Tasks(lightbulb.Plugin):
         self.vf_server = await self.bot.rest.fetch_guild(villafurrense_id)
 
         while True:
-            if datetime.datetime.now().min == 0:
+            if datetime.datetime.now().minute == 0:
                 log.info("Executing tasks")
                 await self.save_users()
                 await self.cumpleaños()
                 await self.meme()
                 await self.es_viernes()
-            await asyncio.sleep(50)
+            await asyncio.sleep(40)
 
     async def meme(self):
         if datetime.datetime.now().hour % 2 == 0:

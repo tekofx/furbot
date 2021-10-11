@@ -512,13 +512,11 @@ def get_hot_subreddit_image(
                     write_in_file(history_file, post.url + "\n")
                     return post.url
             else:
-                print("a")
                 if (
                     (not post.link_flair_text or not_flair in post.link_flair_text)
                     and post.url.endswith("jpg")
                     and not exists_string_in_file(history_file, post.url)
                 ):
-                    print("b")
                     write_in_file(history_file, post.url + "\n")
                     return post.url
 
