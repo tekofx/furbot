@@ -69,8 +69,6 @@ class Bot(lightbulb.Bot):
         user = event.context.author.username
         log.info(user + " used command " + event.command.name)
 
-        log.info("Bot ready")
-
     async def on_stopping(self, event: hikari.StoppingEvent):
         log.info("Stopping bot")
 
@@ -102,6 +100,6 @@ os.chdir(working_dir)
 setproctitle.setproctitle("furbot")
 
 load_dotenv()
-token = os.getenv("DISCORD_TOKEN")
+token = os.getenv("DISCORD_TOKEN_TESTS")
 bot = Bot(token)
 bot.run()
