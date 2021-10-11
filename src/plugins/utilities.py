@@ -321,6 +321,36 @@ class Utilites(lightbulb.Plugin):
         await ctx._message.delete()
 
     @lightbulb.command()
+    async def evento(
+        self,
+        ctx: lightbulb.Context,
+        nombre: str,
+        descripcion: str,
+        autor: hikari.Member,
+    ):
+        """Crea un mensaje para un evento
+
+        Uso:
+
+            fur evento <nombre_evento> <descripcion> <autor_evento>
+        """
+        embed = hikari.Embed(
+            title=nombre,
+            colour=hikari.Colour(0x563275),
+            description=descripcion,
+        )
+        embed.set_author(name=autor.username, icon=autor.avatar_url)
+
+        embed.add_field(
+            name="Instrucciones",
+            value="Reacciona a ⭕ en este mensaje si vas a participar en el evento",
+        )
+        message = await ctx.respond(embed)
+        await message.add_reaction("⭕")
+        await ctx._message.delete()
+        await ctx.respond()
+
+    @lightbulb.command()
     async def resultados(self, ctx: lightbulb.Context):
         """Obtiene un ganador de un mensaje de sorteo
 
