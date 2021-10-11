@@ -1,3 +1,4 @@
+import enum
 import lightbulb
 import hikari
 from PIL import Image
@@ -251,15 +252,12 @@ class Utilites(lightbulb.Plugin):
 
         output = "No existe el cumpleaños de " + user.username
         data = yaml_f.get_cumpleaños()
-        user_names = data[0]
         user_ids = data[1]
         dates = data[2]
-        for x in range(len(dates)):
-            if user_ids[x] == user.id:
-                output = "El cumpleaños de {user} es el {cumple}".format(
-                    user=user.username, cumple=dates[x]
-                )
-                break
+        index = user_ids.index(user.id)
+        output = "El cumpleaños de {user} es el {cumple}".format(
+            user=user.username, cumple=dates[index]
+        )
         await ctx.respond(output)
 
     @lightbulb.command()

@@ -40,7 +40,7 @@ class Tasks(lightbulb.Plugin):
             )
             wait_seconds = (hour - now).seconds + 5
 
-            log.info("Waiting {} until next task".format(hour))
+            log.info("Waiting until {} to run tasks".format(hour))
             await asyncio.sleep(wait_seconds)
 
     async def meme(self):
@@ -74,10 +74,11 @@ class Tasks(lightbulb.Plugin):
             log.info("Sent es_viernes.mp4")
 
     async def cumpleaños(self):
+        """Checks if today is somebody's birthday"""
         now = datetime.datetime.now()
         hour = now.hour
 
-        if hour == 9:
+        if hour == 8:
             # Get month and day
             month = str(now.month)
             day = str(now.day)
@@ -91,13 +92,12 @@ class Tasks(lightbulb.Plugin):
             content = yaml_f.get_cumpleaños()
             user_ids = content[1]
             dates = content[2]
-            for x in range(len(dates)):
-                if today == dates[x]:
-                    member = await self.bot.rest.fetch_user(user_ids[x])
-                    await self.general_channel.send(
-                        "Es el cumple de " + member.mention + ". Felicidades!!!!!!!!!"
-                    )
-                    log.info("Sent birthday message of " + member.username)
+            index = dates.index(today)
+            member = await self.bot.rest.fetch_user(user_ids[index])
+            await self.general_channel.send(
+                "Es el cumple de " + member.mention + ". Felicidades!!!!!!!!!"
+            )
+            log.info("Sent birthday message of " + member.username)
 
     async def save_users(self):
         """Saves users in Villafurrense to yaml file"""
