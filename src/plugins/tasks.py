@@ -25,14 +25,23 @@ class Tasks(lightbulb.Plugin):
         )
         self.vf_server = await self.bot.rest.fetch_guild(self.bot.villafurrense_id)
 
+        # The tasks will be run every hour at minute 0
+        minute = 0
         while True:
-            if datetime.datetime.now().minute == 0:
+            if datetime.datetime.now().minute == minute:
                 log.info("Executing tasks")
                 await self.save_users()
                 await self.cumpleaños()
                 await self.meme()
                 await self.es_viernes()
-            await asyncio.sleep(40)
+            now = datetime.datetime.now()
+            hour = datetime.datetime(
+                now.year, now.month, now.day, now.hour + 1, minute, 0
+            )
+            wait_seconds = (hour - now).seconds + 5
+
+            log.info("Waiting {} until next task".format(hour))
+            await asyncio.sleep(wait_seconds)
 
     async def meme(self):
         if datetime.datetime.now().hour % 2 == 0:
