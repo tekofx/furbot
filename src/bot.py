@@ -18,7 +18,7 @@ class Bot(lightbulb.Bot):
     def __init__(self, discord_token: str) -> None:
 
         super().__init__(
-            prefix="-",
+            prefix=["fur ", "Fur ", "FUR "],
             token=discord_token,
             intents=Intents.GUILD_MEMBERS | Intents.GUILDS | Intents.GUILD_MESSAGES,
         )
