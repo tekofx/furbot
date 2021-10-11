@@ -25,10 +25,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Task save_users que guarda la lista de usuarios
 - Script para construir y ejecutar en docker
 - Furry_irl en task memes
-
+- Ejecución en modo pruebas o modo normal
 ### Cambiado 
 - Actualizados comandos fox y wolf
 - Añadida eliminacion de contenedor anterior a run_in_docker
+
 
 ## [2.5] - 2021-9-29
 

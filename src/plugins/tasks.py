@@ -26,7 +26,7 @@ class Tasks(lightbulb.Plugin):
         self.vf_server = await self.bot.rest.fetch_guild(self.bot.villafurrense_id)
 
         while True:
-            if datetime.datetime.now().minute == 45:
+            if datetime.datetime.now().minute == 0:
                 log.info("Executing tasks")
                 await self.save_users()
                 await self.cumpleaños()
