@@ -29,7 +29,7 @@ del os.environ["MEMES_CHANNEL"]
 
 if "-t" in sys.argv:
     print(colorama.Fore.MAGENTA + "Executing in TEST mode")
-    load_dotenv("/home/teko/repos/furbot/src/tests.env")
+    load_dotenv("src/tests.env")
 else:
     print(colorama.Fore.MAGENTA + "Executing in NORMAL mode")
 

@@ -35,10 +35,9 @@ class Tasks(lightbulb.Plugin):
                 await self.meme()
                 await self.es_viernes()
             now = datetime.datetime.now()
-            hour = datetime.datetime(
-                now.year, now.month, now.day, now.hour + 1, minute, 0
-            )
-            wait_seconds = (hour - now).seconds + 5
+            var = datetime.timedelta(hours=1)
+            hour = (now + var).replace(minute=0, second=5)
+            wait_seconds = (hour - now).seconds
 
             log.info("Waiting until {} to run tasks".format(hour))
             await asyncio.sleep(wait_seconds)
