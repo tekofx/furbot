@@ -1,5 +1,6 @@
 import hikari
 import lightbulb
+from lightbulb.help import HelpCommand
 
 
 class Listeners(lightbulb.Plugin):
@@ -10,6 +11,7 @@ class Listeners(lightbulb.Plugin):
     @lightbulb.listener(lightbulb.events.CommandErrorEvent)
     async def on_command_error(self, event: lightbulb.events.CommandErrorEvent):
         error = event.exception
+        command = event.command
         if isinstance(error, lightbulb.errors.CommandIsOnCooldown):
             return await event.message.reply("Command is on cooldown")
 
@@ -31,7 +33,13 @@ class Listeners(lightbulb.Plugin):
             )
 
         if isinstance(error, lightbulb.errors.NotEnoughArguments):
-            return await event.message.respond("Error: Faltan argumentos")
+            await event.message.respond(
+                "Error: Faltan argumentos, comprueba como se usa el comando {}".format(
+                    command.name
+                )
+            )
+            await lightbulb.HelpCommand.send_command_help(self, event.context, command)
+            return
 
 
 def load(bot: lightbulb.Bot):
