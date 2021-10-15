@@ -1,9 +1,9 @@
 import logging
-from os import error
 import hikari
 import lightbulb
 from hikari import permissions
 from functions import yaml_f
+from asyncio import sleep
 
 log = logging.getLogger(__name__)
 
@@ -43,6 +43,23 @@ class Administration(lightbulb.Plugin):
         yaml_f.add_species(specie.name, specie.id)
         await ctx.respond("Especie {} añadida".format(specie.mention))
         log.info("Added specie " + specie.name)
+
+    @lightbulb.check(
+        lightbulb.has_guild_permissions(permissions.Permissions.ADMINISTRATOR)
+    )
+    @lightbulb.command()
+    async def clear(self, ctx: lightbulb.Context, num: int):
+        """Elimina mensajes de un canal"""
+        messages = ctx.get_channel().fetch_history()
+        count = 0
+        async for i, message in messages.enumerate():
+            if count == num:
+                break
+            await message.delete()
+            count += 1
+        message = await ctx.respond("Eliminados {} mensajes".format(num))
+        await sleep(5)
+        await message.delete()
 
 
 def load(bot: lightbulb.Bot):
