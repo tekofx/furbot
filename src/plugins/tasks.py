@@ -26,21 +26,27 @@ class Tasks(lightbulb.Plugin):
         self.vf_server = await self.bot.rest.fetch_guild(self.bot.villafurrense_id)
 
         # The tasks will be run every hour at minute 0
-        minute = 0
         while True:
-            if datetime.datetime.now().minute == minute:
-                log.info("Executing tasks")
-                await self.save_users()
-                await self.cumpleaños()
-                await self.meme()
-                await self.es_viernes()
+            # Wait until time
+            # FIXME: Does not work
             now = datetime.datetime.now()
-            var = datetime.timedelta(hours=1)
-            hour = (now + var).replace(minute=0, second=5)
-            wait_seconds = (hour - now).seconds
+            hour = now.hour + 1
+            hour = now.hour
 
-            log.info("Waiting until {} to run tasks".format(hour))
-            await asyncio.sleep(wait_seconds)
+            minute = now.minute
+            minute = now.minute + 1
+
+            log.info(
+                "Waiting until {} to run tasks".format(str(hour) + ":" + str(minute))
+            )
+            await wait_until_hour(hour, minute, 5)
+
+            # Execute tasks
+            log.info("Executing tasks")
+            await self.save_users()
+            await self.cumpleaños()
+            await self.meme()
+            await self.es_viernes()
 
     async def meme(self):
         if datetime.datetime.now().hour % 2 == 0:
@@ -110,6 +116,22 @@ class Tasks(lightbulb.Plugin):
         yaml_f.set_user_list(output)
         log.info("Saved user list")
 
+    @lightbulb.command()
+    async def remindme(self, ctx: lightbulb.Context, text: str, time: str):
+        """Crea un recordatorio para una hora concreta
+
+        Uso:\n
+            fur remindme "Comprar leche" 17:45
+        """
+        hour = int(time.split(":")[0])
+        minute = int(time.split(":")[1])
+        log.info(
+            "Waiting until {} to remind {} {}".format(time, ctx.member.username, text)
+        )
+        await ctx.respond("Ok, te recordaré {} a las {}".format(text, time))
+        await wait_until_hour(hour, minute)
+        await ctx.member.send("Recordatorio: " + text)
+
 
 def load(bot: lightbulb.Bot):
     bot.add_plugin(Tasks(bot))
@@ -117,3 +139,32 @@ def load(bot: lightbulb.Bot):
 
 def unload(bot: lightbulb.Bot):
     bot.remove_plugin("Tasks")
+
+
+async def wait_until_hour(hour: int, minute: int, second: int):
+    """Waits until a time
+
+    Args:
+        hour (int): hour of time
+        minute (int): minute of time
+        second (int): second of time
+    """
+    now = datetime.datetime.now()
+    var = datetime.datetime(now.year, now.month, now.day, hour, minute, second)
+    wait_seconds = (var - now).seconds
+    await asyncio.sleep(wait_seconds)
+
+
+async def wait_time(hours: int, minutes: int, seconds: int):
+    """Wait a determine time
+
+    Args:
+        hours (int): hours to wait
+        minutes (int): minutes to wait
+        seconds (int): seconds to wait
+    """
+    now = datetime.datetime.now()
+    var = datetime.timedelta(hours=1)
+    hour = (now + var).replace(minute=0, second=5)
+    wait_seconds = (hour - now).seconds
+    await asyncio.sleep(wait_seconds)
