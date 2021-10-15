@@ -17,7 +17,10 @@ class Bot(lightbulb.Bot):
         super().__init__(
             prefix=["fur ", "Fur ", "FUR "],
             token=discord_token,
-            intents=Intents.GUILD_MEMBERS | Intents.GUILDS | Intents.GUILD_MESSAGES,
+            intents=Intents.GUILD_MEMBERS
+            | Intents.GUILDS
+            | Intents.GUILD_MESSAGES
+            | Intents.GUILD_BANS,
         )
         self.villafurrense_id = os.getenv("VILLAFURRENSE")
         self.general_channel_id = os.getenv("GENERAL_CHANNEL")

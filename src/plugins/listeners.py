@@ -1,6 +1,8 @@
 import hikari
 import lightbulb
-from lightbulb.help import HelpCommand
+import logging
+
+log = logging.getLogger(__name__)
 
 
 class Listeners(lightbulb.Plugin):
@@ -15,24 +17,24 @@ class Listeners(lightbulb.Plugin):
         if isinstance(error, lightbulb.errors.CommandIsOnCooldown):
             return await event.message.reply("Command is on cooldown")
 
-        if isinstance(error, lightbulb.errors.CommandNotFound):
+        elif isinstance(error, lightbulb.errors.CommandNotFound):
             return await event.message.respond("Comando no existente")
 
-        if isinstance(error, lightbulb.errors.BotMissingRequiredPermission):
+        elif isinstance(error, lightbulb.errors.BotMissingRequiredPermission):
             missing_perms = ", ".join(c for c in error.permissions)
             print(f"bot - {missing_perms}")
             return await event.message.reply(
                 f":no_entry_sign: Command failed, i'm missing `{missing_perms}` permissions!"
             )
 
-        if isinstance(error, lightbulb.errors.MissingRequiredPermission):
+        elif isinstance(error, lightbulb.errors.MissingRequiredPermission):
             missing_perms = ", ".join(c for c in error.permissions)
             print(f"user - {missing_perms}")
             return await event.message.reply(
                 f":no_entry_sign: Error, no dispones del permiso `{missing_perms}` "
             )
 
-        if isinstance(error, lightbulb.errors.NotEnoughArguments):
+        elif isinstance(error, lightbulb.errors.NotEnoughArguments):
             await event.message.respond(
                 "Error: Faltan argumentos, comprueba como se usa el comando {}".format(
                     command.name

@@ -1,4 +1,3 @@
-import enum
 import lightbulb
 import hikari
 from PIL import Image
@@ -6,8 +5,6 @@ from PIL import ImageFont
 from PIL import ImageDraw
 import qrcode
 import random
-import datetime
-from asyncio import sleep
 from pyrae import dle
 from hikari import permissions
 import requests
@@ -220,24 +217,6 @@ class Utilites(lightbulb.Plugin):
             await tmp.edit(content="Termino no encontrado")
         else:
             await tmp.edit(content=output)
-
-    @lightbulb.check(
-        lightbulb.has_guild_permissions(permissions.Permissions.ADMINISTRATOR)
-    )
-    @lightbulb.command()
-    async def addcumple(
-        self, ctx: lightbulb.Context, birthday: str, user: hikari.Member
-    ):
-        """[Admin] Añade el cumpleaños de alguien al bot
-
-        Uso:
-            fur addcumple <dia>-<mes> @<usuario>
-
-        Ejemplo:
-            fur addcumple 16-1 @Teko
-        """
-        yaml_f.add_birthday(int(user.id), user.username, birthday)
-        await ctx.respond("Añadido cumpleaños de " + user.username)
 
     @lightbulb.command()
     async def cumple(self, ctx: lightbulb.Context, user: hikari.Member):
