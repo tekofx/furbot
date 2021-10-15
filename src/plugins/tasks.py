@@ -28,13 +28,9 @@ class Tasks(lightbulb.Plugin):
         # The tasks will be run every hour at minute 0
         while True:
             # Wait until time
-            # FIXME: Does not work
             now = datetime.datetime.now()
             hour = now.hour + 1
-            hour = now.hour
-
-            minute = now.minute
-            minute = now.minute + 1
+            minute = 0
 
             log.info(
                 "Waiting until {} to run tasks".format(str(hour) + ":" + str(minute))
