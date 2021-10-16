@@ -4,8 +4,10 @@ from dotenv import load_dotenv
 import os
 import tweepy as tw
 import requests
+import logging
 
 animal_history_txt = "files/resources/data/animal_history.txt"
+log = logging.getLogger(__name__)
 
 load_dotenv()
 consumer_key = os.getenv("TWITTER_CONSUMER_KEY")
@@ -49,6 +51,18 @@ class Animal(lightbulb.Plugin):
         os.remove("files/image.jpg")
         await message.delete()
 
+    @lightbulb.command()
+    async def bird(self, ctx: lightbulb.Context):
+        """Fotos de pajaritos"""
+        try:
+            message = await ctx.respond("Buscando fotos de pajaritos")
+            get_twitter_image(self.api, "eugeniogarciac2")
+            await ctx.respond(attachment="files/" + "image.jpg")
+            os.remove("files/image.jpg")
+            await message.delete()
+        except Exception as error:
+            log.info("Error ocurred: {}".format(error))
+
 
 def load(bot):
     bot.add_plugin(Animal(bot))
@@ -60,15 +74,13 @@ def unload(bot: lightbulb.Bot):
 
 def get_twitter_image(api: tw.API, username: str):
     tweets = api.user_timeline(
-        screen_name=username,
-        count=200,
-        include_rts=False,
+        screen_name=username, count=200, include_rts=False, tweet_mode="extended"
     )
-
     for tweet in tweets:
-        tweet_image_url = tweet.entities["media"][0]["media_url"]
-        if not exists_string_in_file(animal_history_txt, tweet_image_url):
-            write_in_file(animal_history_txt, tweet_image_url + "\n")
-            r = requests.get(tweet_image_url, allow_redirects=True)
-            open("files/" + "image.jpg", "wb").write(r.content)
-            break
+        if "media" in tweet.entities:
+            tweet_image_url = tweet.entities["media"][0]["media_url"]
+            if not exists_string_in_file(animal_history_txt, tweet_image_url):
+                write_in_file(animal_history_txt, tweet_image_url + "\n")
+                r = requests.get(tweet_image_url, allow_redirects=True)
+                open("files/" + "image.jpg", "wb").write(r.content)
+                break
