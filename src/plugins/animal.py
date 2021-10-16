@@ -63,6 +63,18 @@ class Animal(lightbulb.Plugin):
         except Exception as error:
             log.info("Error ocurred: {}".format(error))
 
+    @lightbulb.command()
+    async def pigeon(self, ctx: lightbulb.Context):
+        """Fotos de palomas achuchables"""
+        try:
+            message = await ctx.respond("Buscando fotos de palomas achuchables")
+            get_twitter_image(self.api, "a_london_pigeon")
+            await ctx.respond(attachment="files/" + "image.jpg")
+            os.remove("files/image.jpg")
+            await message.delete()
+        except Exception as error:
+            log.info("Error ocurred: {}".format(error))
+
 
 def load(bot):
     bot.add_plugin(Animal(bot))
