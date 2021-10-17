@@ -5,7 +5,7 @@ from importlib import import_module
 from pathlib import Path
 import os
 import logging
-from functions import yaml_f
+from utils.functions import yaml_f
 import logging
 
 log = logging.getLogger("bot")

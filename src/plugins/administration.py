@@ -3,7 +3,7 @@ from re import template
 import hikari
 import lightbulb
 from hikari import permissions
-from functions import yaml_f
+from utils.functions import yaml_f
 from asyncio import sleep
 
 log = logging.getLogger(__name__)

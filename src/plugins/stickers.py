@@ -1,5 +1,5 @@
 import lightbulb
-from functions import stickers_path, stickerSize
+from utils.functions import stickers_path, stickerSize
 import requests
 import os
 from PIL import Image

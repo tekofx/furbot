@@ -3,7 +3,7 @@ import textwrap
 import time
 from PIL import ImageFont, ImageDraw
 import hikari
-from functions import (
+from utils.functions import (
     create_meme,
     get_user,
     delete_files,

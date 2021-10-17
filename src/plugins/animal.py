@@ -1,5 +1,5 @@
 import lightbulb
-from functions import exists_string_in_file, write_in_file
+from utils.functions import exists_string_in_file, write_in_file
 from dotenv import load_dotenv
 import os
 import tweepy as tw

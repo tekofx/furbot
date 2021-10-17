@@ -1,7 +1,7 @@
 from lightbulb import slash_commands, Option
 import typing
 import hikari
-from functions import (
+from utils.functions import (
     get_random_line_of_file,
     insults_txt,
     animos_txt,

@@ -1,6 +1,5 @@
 /files/memes/
 /files/resources/data/
-/src/.env
 furbot.code-workspace
 /.vscode
 files/stickers/
@@ -12,4 +11,5 @@ tests/__pycache__/*
 __pycache__/
 src/test.py
 files/resources/config.yaml
-src/tests.env
+src/utils/.env
+src/utils/tests.env

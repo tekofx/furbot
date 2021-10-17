@@ -1,7 +1,7 @@
 import os
 import setproctitle
 from dotenv import load_dotenv
-from bot import Bot
+from utils.bot import Bot
 import sys
 import logging
 import colorama
@@ -29,11 +29,11 @@ del os.environ["MEMES_CHANNEL"]
 
 if "-t" in sys.argv:
     print(colorama.Fore.MAGENTA + "Executing in TEST mode")
-    load_dotenv("src/tests.env")
+    load_dotenv("src/utils/tests.env")
 else:
     print(colorama.Fore.MAGENTA + "Executing in NORMAL mode")
 
-    load_dotenv("src/.env")
+    load_dotenv("src/utils/.env")
 
 token = os.getenv("DISCORD_TOKEN")
 bot = Bot(token)

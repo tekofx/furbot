@@ -8,7 +8,7 @@ import random
 from pyrae import dle
 from hikari import permissions
 import requests
-from functions import (
+from utils.functions import (
     get_user,
     get_user_species,
     get_user_color,
@@ -19,8 +19,8 @@ from functions import (
     delete_files,
     yaml_f,
 )
-from functions import magnet_id, angel_id
-from functions import (
+from utils.functions import magnet_id, angel_id
+from utils.functions import (
     get_user,
     get_user_color,
     get_user_roles,
@@ -32,9 +32,9 @@ from functions import (
 )
 
 
-class Utilites(lightbulb.Plugin):
+class Utilities(lightbulb.Plugin):
     def __init__(self, bot: lightbulb.Bot) -> None:
-        super().__init__(name="Utilites")
+        super().__init__(name="Utilities")
         self.bot = bot
 
     @lightbulb.command()
@@ -383,7 +383,7 @@ class Utilites(lightbulb.Plugin):
 
 
 def load(bot: lightbulb.Bot):
-    bot.add_plugin(Utilites(bot))
+    bot.add_plugin(Utilities(bot))
 
 
 def unload(bot: lightbulb.Bot):

@@ -4,8 +4,8 @@ import lightbulb
 from time import sleep
 import hikari
 import logging
-from functions import magnet_id
-from functions import get_random_line_of_file, insults_txt, animos_txt
+from utils.functions import magnet_id
+from utils.functions import get_random_line_of_file, insults_txt, animos_txt
 
 log = logging.getLogger(__name__)
 

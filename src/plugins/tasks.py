@@ -2,7 +2,7 @@ import logging
 import lightbulb
 import datetime
 import asyncio
-from functions import get_hot_subreddit_image, reddit_memes_history_txt, yaml_f
+from utils.functions import get_hot_subreddit_image, reddit_memes_history_txt, yaml_f
 
 log = logging.getLogger(__name__)
 
