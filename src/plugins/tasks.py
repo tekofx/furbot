@@ -32,21 +32,25 @@ class Tasks(lightbulb.Plugin):
             now = datetime.now()
             hour = now.hour + 1
             minute = 0
+            second = 5
 
             log.info(
-                "Waiting until {} to run tasks".format(str(hour) + ":" + str(minute))
+                "Waiting until {} to run tasks".format(
+                    str(hour) + ":" + str(minute) + ":" + str(second)
+                )
             )
-            await wait_until_hour(hour, minute, 5)
+            await wait_until_hour(hour, minute, second)
 
             # Execute tasks
             log.info("Executing tasks")
             await self.save_users()
             await self.cumpleaños()
             await self.meme()
+            log.info
             await self.es_viernes()
 
     async def meme(self):
-        num = random.random(0, 2)
+        num = random.randint(0, 2)
         if num == 0:
             subreddit = "dankmemes"
             not_flair = None
