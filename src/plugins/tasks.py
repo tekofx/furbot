@@ -1,6 +1,6 @@
 import logging
 import lightbulb
-import datetime
+from datetime import datetime, timedelta
 import asyncio
 from utils.functions import get_hot_subreddit_image, reddit_memes_history_txt, yaml_f
 
@@ -145,8 +145,12 @@ async def wait_until_hour(hour: int, minute: int, second: int):
         minute (int): minute of time
         second (int): second of time
     """
-    now = datetime.datetime.now()
-    var = datetime.datetime(now.year, now.month, now.day, hour, minute, second)
+    now = datetime.now()
+    now_after = now + timedelta(hours=hour, minutes=minute, seconds=second)
+
+    if now_after.day != now.day:  # The hour is on following day
+        now = now + timedelta(days=1)
+    var = datetime(now.year, now.month, now.day, hour, minute, second)
     wait_seconds = (var - now).seconds
     await asyncio.sleep(wait_seconds)
 
@@ -159,8 +163,7 @@ async def wait_time(hours: int, minutes: int, seconds: int):
         minutes (int): minutes to wait
         seconds (int): seconds to wait
     """
-    now = datetime.datetime.now()
-    var = datetime.timedelta(hours=1)
-    hour = (now + var).replace(minute=0, second=5)
-    wait_seconds = (hour - now).seconds
+    wait_seconds = timedelta(
+        hours=hours, minutes=minutes, seconds=seconds
+    ).total_seconds()
     await asyncio.sleep(wait_seconds)
