@@ -3,7 +3,7 @@ from PIL import Image
 import pytest
 import lightbulb
 import hikari
-from src.functions import (
+from src.utils.functions import (
     convert_pic,
     count_files_in_dir,
     count_lines_in_file,
