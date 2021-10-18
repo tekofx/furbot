@@ -12,3 +12,4 @@ uvloop
 pytest
 graphviz
 tweepy
+apscheduler

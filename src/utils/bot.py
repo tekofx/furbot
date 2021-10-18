@@ -1,3 +1,4 @@
+import datetime
 from hikari import Intents
 import lightbulb
 import hikari
@@ -7,12 +8,16 @@ import os
 import logging
 from utils.functions import yaml_f
 import logging
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from pytz import utc
 
 log = logging.getLogger("bot")
 
 
 class Bot(lightbulb.Bot):
     def __init__(self, discord_token: str) -> None:
+        self.scheduler = AsyncIOScheduler()
+        self.scheduler.configure(timezone=utc)
 
         super().__init__(
             prefix=["fur ", "Fur ", "FUR "],
