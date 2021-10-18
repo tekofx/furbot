@@ -3,6 +3,7 @@ import lightbulb
 from datetime import datetime, timedelta
 import asyncio
 from utils.functions import get_hot_subreddit_image, reddit_memes_history_txt, yaml_f
+import random
 
 log = logging.getLogger(__name__)
 
@@ -28,7 +29,7 @@ class Tasks(lightbulb.Plugin):
         # The tasks will be run every hour at minute 0
         while True:
             # Wait until time
-            now = datetime.datetime.now()
+            now = datetime.now()
             hour = now.hour + 1
             minute = 0
 
@@ -45,38 +46,39 @@ class Tasks(lightbulb.Plugin):
             await self.es_viernes()
 
     async def meme(self):
-        if datetime.datetime.now().hour % 2 == 0:
-            meme = get_hot_subreddit_image(
-                sub_reddit="dankmemes",
-                posts_limit=1000,
-                history_file=reddit_memes_history_txt,
-                not_flair=None,
-            )
+        num = random.random(0, 2)
+        if num == 0:
+            subreddit = "dankmemes"
+            not_flair = None
+
+        elif num == 1:
+            subreddit = "furry_irl"
+            not_flair = "Actual Yiff"
 
         else:
-            meme = get_hot_subreddit_image(
-                sub_reddit="furry_irl",
-                posts_limit=1000,
-                history_file=reddit_memes_history_txt,
-                not_flair="Actual Yiff",
-            )
+            subreddit = "SpanishMeme"
+            not_flair = None
+
+        meme = get_hot_subreddit_image(
+            sub_reddit=subreddit,
+            posts_limit=1000,
+            history_file=reddit_memes_history_txt,
+            not_flair=not_flair,
+        )
 
         await self.memes_channel.send(attachment=meme)
         log.info("Sent meme")
 
     async def es_viernes(self):
         """Sends es_viernes.mp4 every friday at 9:00"""
-        if (
-            datetime.datetime.today().weekday() == 4
-            and datetime.datetime.now().time().hour == 9
-        ):
+        if datetime.today().weekday() == 4 and datetime.now().time().hour == 9:
             # logging.info("Es viernes sent")
             await self.general_channel.send(attachment="resources/es_viernes.mp4")
             log.info("Sent es_viernes.mp4")
 
     async def cumpleaños(self):
         """Checks if today is somebody's birthday"""
-        now = datetime.datetime.now()
+        now = datetime.now()
         hour = now.hour
 
         if hour == 8:
