@@ -837,6 +837,42 @@ class Memes(lightbulb.Plugin):
         await ctx.respond(attachment=meme_templates_path + "output.png")
         os.remove(meme_templates_path + "output.png")
 
+    @lightbulb.command()
+    async def undertale(self, ctx: lightbulb.Context, texto: str):
+        # Get image
+        character_image_size = 200
+        r = requests.get(ctx.author.avatar_url, allow_redirects=True)
+        open(meme_templates_path + "01.webp", "wb").write(r.content)
+        convert_pic(meme_templates_path + "01.webp", "01", 200)
+
+        # Open resources
+        image = Image.open(meme_templates_path + "dialogue_box.png")
+        font = ImageFont.truetype(
+            meme_templates_path + "Determination-Sans.otf", size=60
+        )
+        txtPic1 = Image.new("RGBA", (800, 270))
+        draw = ImageDraw.Draw(txtPic1)
+
+        # Convert character picture
+        sprite = Image.open(meme_templates_path + "01.png").convert("L")
+        wpercent = character_image_size / float(sprite.size[0])
+        hsize = int((float(sprite.size[1]) * float(wpercent)))
+        sprite = sprite.resize((character_image_size, hsize), Image.ANTIALIAS)
+        image.paste(sprite, (70, 90))
+
+        # Add text
+        lines = textwrap.wrap(texto, width=25)
+        Y = 20
+        for line in lines:
+            width, height = font.getsize(line)
+            draw.text(((10, Y)), line, font=font, fill=(255, 255, 255, 255))
+            Y = Y + height
+
+        image.paste(txtPic1, (350, 50), txtPic1)
+        image.save(meme_templates_path + "output.png", "PNG")
+        await ctx.respond(attachment=meme_templates_path + "output.png")
+        delete_files(("output.png", "01.png", "01.webp"))
+
 
 def load(bot: lightbulb.Bot):
     bot.add_plugin(Memes(bot))
