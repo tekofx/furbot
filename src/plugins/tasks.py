@@ -18,16 +18,16 @@ class Tasks(lightbulb.Plugin):
         self.tasks_manager_task = self.loop.create_task(self.tasks_manager())
 
     async def tasks_manager(self):
-        self.general_channel = await self.bot.rest.fetch_channel(
-            self.bot.general_channel_id
-        )
-        self.memes_channel = await self.bot.rest.fetch_channel(
-            self.bot.memes_channel_id
-        )
-        self.vf_server = await self.bot.rest.fetch_guild(self.bot.villafurrense_id)
 
         # The tasks will be run every hour at minute 0
         while True:
+            self.general_channel = await self.bot.rest.fetch_channel(
+                self.bot.general_channel_id
+            )
+            self.memes_channel = await self.bot.rest.fetch_channel(
+                self.bot.memes_channel_id
+            )
+            self.vf_server = await self.bot.rest.fetch_guild(self.bot.villafurrense_id)
             # Wait until time
             now = datetime.now()
             hour = now.hour + 1
@@ -46,11 +46,10 @@ class Tasks(lightbulb.Plugin):
             await self.save_users()
             await self.cumpleaños()
             await self.meme()
-            log.info
-            await self.es_viernes()
 
     async def meme(self):
         num = random.randint(0, 2)
+        log.info("Randon number: {}".format(num))
         if num == 0:
             subreddit = "dankmemes"
             not_flair = None
@@ -62,7 +61,6 @@ class Tasks(lightbulb.Plugin):
         else:
             subreddit = "SpanishMeme"
             not_flair = None
-
         meme = get_hot_subreddit_image(
             sub_reddit=subreddit,
             posts_limit=1000,
@@ -71,14 +69,7 @@ class Tasks(lightbulb.Plugin):
         )
 
         await self.memes_channel.send(attachment=meme)
-        log.info("Sent meme")
-
-    async def es_viernes(self):
-        """Sends es_viernes.mp4 every friday at 9:00"""
-        if datetime.today().weekday() == 4 and datetime.now().time().hour == 9:
-            # logging.info("Es viernes sent")
-            await self.general_channel.send(attachment="resources/es_viernes.mp4")
-            log.info("Sent es_viernes.mp4")
+        log.info("Sent meme from {}".format(subreddit))
 
     async def cumpleaños(self):
         """Checks if today is somebody's birthday"""
@@ -117,22 +108,6 @@ class Tasks(lightbulb.Plugin):
 
         yaml_f.set_user_list(output)
         log.info("Saved user list")
-
-    @lightbulb.command()
-    async def remindme(self, ctx: lightbulb.Context, text: str, time: str):
-        """Crea un recordatorio para una hora concreta
-
-        Uso:\n
-            fur remindme "Comprar leche" 17:45
-        """
-        hour = int(time.split(":")[0])
-        minute = int(time.split(":")[1])
-        log.info(
-            "Waiting until {} to remind {} {}".format(time, ctx.member.username, text)
-        )
-        await ctx.respond("Ok, te recordaré {} a las {}".format(text, time))
-        await wait_until_hour(hour, minute)
-        await ctx.member.send("Recordatorio: " + text)
 
 
 def load(bot: lightbulb.Bot):
