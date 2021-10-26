@@ -69,6 +69,7 @@ class Administration(lightbulb.Plugin):
     @lightbulb.command()
     async def clear(self, ctx: lightbulb.Context, num: int):
         """[Admin] Elimina mensajes de un canal"""
+        await ctx.message.delete()
         messages = ctx.get_channel().fetch_history()
         count = 0
         async for i, message in messages.enumerate():
