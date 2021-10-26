@@ -260,6 +260,7 @@ reddit = praw.Reddit(
     client_id=os.getenv("REDDIT_CLIENT_ID"),
     client_secret=os.getenv("REDDIT_CLIENT_SECRET"),
     user_agent=os.getenv("REDDIT_USER_AGENT"),
+    check_for_async=False,
 )
 
 
@@ -503,22 +504,23 @@ def get_hot_subreddit_image(
     posts = reddit.subreddit(sub_reddit).hot(limit=posts_limit)
     try:
         for post in posts:
+            if post.over_18 is False:  # Check if post is SFW
 
-            if not_flair is None:
+                if not_flair is None:
 
-                if post.url.endswith("jpg") and not exists_string_in_file(
-                    history_file, post.url
-                ):
-                    write_in_file(history_file, post.url + "\n")
-                    return post.url
-            else:
-                if (
-                    (not post.link_flair_text or not_flair in post.link_flair_text)
-                    and post.url.endswith("jpg")
-                    and not exists_string_in_file(history_file, post.url)
-                ):
-                    write_in_file(history_file, post.url + "\n")
-                    return post.url
+                    if post.url.endswith("jpg") and not exists_string_in_file(
+                        history_file, post.url
+                    ):
+                        write_in_file(history_file, post.url + "\n")
+                        return post.url
+                else:
+                    if (
+                        (not post.link_flair_text or not_flair in post.link_flair_text)
+                        and post.url.endswith("jpg")
+                        and not exists_string_in_file(history_file, post.url)
+                    ):
+                        write_in_file(history_file, post.url + "\n")
+                        return post.url
 
     except Exception as error:
         logging.error("Error in get_hot_subreddit_image: {}".format(error))
