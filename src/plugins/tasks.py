@@ -17,16 +17,16 @@ class Tasks(lightbulb.Plugin):
 
         # Tasks
         self.get_channels_tasks = self.bot.scheduler.add_job(
-            self.get_channels, CronTrigger(minute=55, second=0)
+            self.get_channels, CronTrigger(minute=0, second=0)
         )
         self.meme_task = self.bot.scheduler.add_job(
-            self.meme, CronTrigger(minute=55, second=10)
+            self.meme, CronTrigger(minute=0, second=10)
         )
         self.cumpleaños_task = self.bot.scheduler.add_job(
             self.cumpleaños, CronTrigger(hour=8, minute=10, second=0)
         )
         self.save_users_task = self.bot.scheduler.add_job(
-            self.save_users, CronTrigger(minute=55, second=30)
+            self.save_users, CronTrigger(minute=0, second=30)
         )
 
     async def get_channels(self):
@@ -95,8 +95,8 @@ class Tasks(lightbulb.Plugin):
         async for i, member in members.enumerate():
             if not member.is_bot:
                 users = {
-                    member.username: {
-                        "id": int(member.id),
+                    int(member.id): {
+                        "name": member.username,
                         "times_joined": 0,
                         "joined_date": member.joined_at,
                     }
