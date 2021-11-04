@@ -94,7 +94,11 @@ class Bot(lightbulb.Bot):
                     )
                 )
 
-                log.info("User {} banned due to exceading max times of joins")
+                log.info(
+                    "User {} banned due to exceading max times of joins".format(
+                        event.member.username
+                    )
+                )
 
             await self.audit_channel.send(message)
 
@@ -117,12 +121,16 @@ class Bot(lightbulb.Bot):
             mod = import_module(f"plugins.{c.stem}")
             mod.load(self)
             log.info(f"Loaded plugin {c.stem}")
+
+        # Start scheduler
         self.scheduler.start()
+
         # Set activity
         activity = hikari.Activity(name=yaml_f.get_activity())
         await self.update_presence(activity=activity)
         log.info("Set activity to: " + activity.name)
-        print(self.audit_channel_id)
+
+        # Get channels
         self.audit_channel = await self.rest.fetch_channel(self.audit_channel_id)
 
     async def on_command_invoked(self, event: lightbulb.events.CommandInvocationEvent):
@@ -131,6 +139,8 @@ class Bot(lightbulb.Bot):
 
     async def on_stopping(self, event: hikari.StoppingEvent):
         log.info("Stopping bot")
+
+        # Stop scheduler
         self.scheduler.shutdown()
 
     def run(self):
