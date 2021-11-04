@@ -12,6 +12,8 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 log = logging.getLogger("bot")
 
+MAX_JOINED_TIMES = 3
+
 
 class Bot(lightbulb.Bot):
     def __init__(self, discord_token: str) -> None:
@@ -21,12 +23,14 @@ class Bot(lightbulb.Bot):
             intents=Intents.GUILD_MEMBERS
             | Intents.GUILDS
             | Intents.GUILD_MESSAGES
-            | Intents.GUILD_BANS,
+            | Intents.GUILD_BANS
+            | Intents.DM_MESSAGES,
         )
         self.scheduler = AsyncIOScheduler()
         self.villafurrense_id = os.getenv("VILLAFURRENSE")
         self.general_channel_id = os.getenv("GENERAL_CHANNEL")
         self.memes_channel_id = os.getenv("MEMES_CHANNEL")
+        self.audit_channel_id = os.getenv("AUDIT_CHANNEL")
 
     async def on_new_guild_message(self, event: hikari.GuildMessageCreateEvent):
         if event.content and not event.message.author.is_bot:  # If message has text
@@ -46,6 +50,55 @@ class Bot(lightbulb.Bot):
                 await event.message.respond("Muu muuu!")
 
     async def on_new_member(self, event: hikari.MemberCreateEvent):
+
+        times_joined = yaml_f.get_times_joined(int(event.member.id))
+        log.info("User {} joined VF".format(event.member.username))
+
+        if not event.member.is_bot:
+
+            # If user not in user list add it
+            if times_joined == 0:
+                log.info(
+                    "User {} not exists in user list".format(event.member.username)
+                )
+                user_data = {
+                    "name": event.member.username,
+                    "times_joined": 1,
+                    "joined_date": event.member.joined_at,
+                }
+                yaml_f.add_user_to_user_list(int(event.member.id), user_data)
+                log.info("User {} added to list".format(event.member.username))
+                message = "Se ha unido el usuario {}. Veces que se ha unido: {}".format(
+                    event.member.username, str(times_joined + 1)
+                )
+
+            elif times_joined < MAX_JOINED_TIMES:
+                # increase
+                yaml_f.increase_joined_times(event.member)
+                log.info(
+                    "User {} already in list, increasing its joined times to {}".format(
+                        event.member.username, times_joined + 1
+                    )
+                )
+                message = "Se ha unido el usuario {}. Veces que se ha unido: {}".format(
+                    event.member.username, str(times_joined + 1)
+                )
+            else:
+                # Ban user
+                user_name = event.member.username
+                await event.member.ban(reason="Se unió y salió del server 3 veces")
+
+                message = (
+                    "Se ha baneado al usuario {} por unirse e irse {} veces".format(
+                        user_name, str(MAX_JOINED_TIMES)
+                    )
+                )
+
+                log.info("User {} banned due to exceading max times of joins")
+
+            await self.audit_channel.send(message)
+
+    async def on_leave_member(self, event: hikari.MemberDeleteEvent):
         pass
 
     async def on_starting(self, event: hikari.StartingEvent):
@@ -69,6 +122,8 @@ class Bot(lightbulb.Bot):
         activity = hikari.Activity(name=yaml_f.get_activity())
         await self.update_presence(activity=activity)
         log.info("Set activity to: " + activity.name)
+        print(self.audit_channel_id)
+        self.audit_channel = await self.rest.fetch_channel(self.audit_channel_id)
 
     async def on_command_invoked(self, event: lightbulb.events.CommandInvocationEvent):
         user = event.context.author.username
@@ -87,5 +142,7 @@ class Bot(lightbulb.Bot):
         self.event_manager.subscribe(
             lightbulb.events.CommandInvocationEvent, self.on_command_invoked
         )
+        self.event_manager.subscribe(hikari.MemberCreateEvent, self.on_new_member)
+        self.event_manager.subscribe(hikari.MemberDeleteEvent, self.on_leave_member)
 
         super().run()

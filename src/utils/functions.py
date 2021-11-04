@@ -170,6 +170,43 @@ class yaml_functions:
         with open(self.yaml_file, "w") as f:
             yaml.dump(content, f, allow_unicode=True)
 
+    def add_user_to_user_list(self, user_id: int, data: dict):
+        """Adds a user to a user list
+
+        Args:
+            user_id (int): id of user
+            data (dict): info of user. Must be a dict with the form {"name":<value>, "joined_date": <value>,"times_joined":<value>}
+        """
+        with open(self.yaml_file, "r") as yml:
+            content = yaml.safe_load(yml)
+            aux = content["user_list"]
+            var = {user_id: data}
+
+            aux.update(var)
+        with open(self.yaml_file, "w") as f:
+            yaml.dump(content, f, allow_unicode=True)
+
+    def increase_joined_times(self, member: hikari.Member):
+        user_id = int(member.id)
+        # Increase joined times
+        joined_times = self.get_times_joined(user_id) + 1
+
+        # Remove user from list
+        with open(self.yaml_file, "r") as yml:
+            content = yaml.safe_load(yml)
+            del content["user_list"][user_id]
+
+        with open(self.yaml_file, "w") as f:
+            yaml.dump(content, f, allow_unicode=True)
+
+        # Create user in list with joined times updated
+        user_data = {
+            "name": member.username,
+            "times_joined": joined_times,
+            "joined_date": member.joined_at,
+        }
+        self.add_user_to_user_list(user_id, user_data)
+
     def add_birthday(self, user_id: int, user_name: str, date: str):
         """Adds a birthday to the yaml_file
         Args:
@@ -209,6 +246,24 @@ class yaml_functions:
             aux.update(data)
         with open(self.yaml_file, "w") as f:
             yaml.dump(content, f, allow_unicode=True)
+
+    def get_times_joined(self, user_id: int):
+        """Gets the number of times a user has joined
+
+        Args:
+            user_id (int): [description]
+
+        Returns:
+            0: user not in list
+            int: times of user joins
+        """
+        with open(self.yaml_file, "r") as yml:
+            content = yaml.safe_load(yml)
+            for key, value in content["user_list"].items():
+                if int(key) == user_id:
+                    return value["times_joined"]
+
+        return 0
 
     def add_rank(self, rank_name: str, rank_id: int):
         # TODO: Implement

@@ -26,6 +26,8 @@ del os.environ["DISCORD_TOKEN"]
 del os.environ["VILLAFURRENSE"]
 del os.environ["GENERAL_CHANNEL"]
 del os.environ["MEMES_CHANNEL"]
+del os.environ["AUDIT_CHANNEL"]
+
 
 if "-t" in sys.argv:
     print(colorama.Fore.MAGENTA + "Executing in TEST mode")
