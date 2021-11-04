@@ -13,3 +13,4 @@ pytest
 graphviz
 tweepy
 colorama
+apscheduler
