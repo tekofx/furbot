@@ -97,7 +97,7 @@ class Tasks(lightbulb.Plugin):
                 users = {
                     int(member.id): {
                         "name": member.username,
-                        "times_joined": 0,
+                        "times_joined": 1,
                         "joined_date": member.joined_at,
                     }
                 }
