@@ -8,6 +8,7 @@ import os
 import logging
 from utils.functions import yaml_f
 import logging
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 log = logging.getLogger("bot")
 
@@ -22,6 +23,7 @@ class Bot(lightbulb.Bot):
             | Intents.GUILD_MESSAGES
             | Intents.GUILD_BANS,
         )
+        self.scheduler = AsyncIOScheduler()
         self.villafurrense_id = os.getenv("VILLAFURRENSE")
         self.general_channel_id = os.getenv("GENERAL_CHANNEL")
         self.memes_channel_id = os.getenv("MEMES_CHANNEL")
@@ -62,7 +64,7 @@ class Bot(lightbulb.Bot):
             mod = import_module(f"plugins.{c.stem}")
             mod.load(self)
             log.info(f"Loaded plugin {c.stem}")
-
+        self.scheduler.start()
         # Set activity
         activity = hikari.Activity(name=yaml_f.get_activity())
         await self.update_presence(activity=activity)
@@ -74,6 +76,7 @@ class Bot(lightbulb.Bot):
 
     async def on_stopping(self, event: hikari.StoppingEvent):
         log.info("Stopping bot")
+        self.scheduler.shutdown()
 
     def run(self):
         self.event_manager.subscribe(hikari.StartingEvent, self.on_starting)

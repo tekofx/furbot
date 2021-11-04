@@ -4,6 +4,8 @@ from datetime import datetime, timedelta
 import asyncio
 from utils.functions import get_hot_subreddit_image, reddit_memes_history_txt, yaml_f
 import random
+from apscheduler.triggers.cron import CronTrigger
+from apscheduler.schedulers.base import BaseScheduler
 
 log = logging.getLogger(__name__)
 
@@ -14,42 +16,32 @@ class Tasks(lightbulb.Plugin):
         self.bot = bot
 
         # Tasks
-        self.loop = asyncio.get_event_loop()
-        self.tasks_manager_task = self.loop.create_task(self.tasks_manager())
+        self.get_channels_tasks = self.bot.scheduler.add_job(
+            self.get_channels, CronTrigger(minute=55, second=0)
+        )
+        self.meme_task = self.bot.scheduler.add_job(
+            self.meme, CronTrigger(minute=55, second=10)
+        )
+        self.cumpleaños_task = self.bot.scheduler.add_job(
+            self.cumpleaños, CronTrigger(hour=8, minute=10, second=0)
+        )
+        self.save_users_task = self.bot.scheduler.add_job(
+            self.save_users, CronTrigger(minute=55, second=30)
+        )
 
-    async def tasks_manager(self):
-
-        # The tasks will be run every hour at minute 0
-        while True:
-            self.general_channel = await self.bot.rest.fetch_channel(
-                self.bot.general_channel_id
-            )
-            self.memes_channel = await self.bot.rest.fetch_channel(
-                self.bot.memes_channel_id
-            )
-            self.vf_server = await self.bot.rest.fetch_guild(self.bot.villafurrense_id)
-            # Wait until time
-            now = datetime.now()
-            hour = now.hour + 1
-            minute = 0
-            second = 5
-
-            log.info(
-                "Waiting until {} to run tasks".format(
-                    str(hour) + ":" + str(minute) + ":" + str(second)
-                )
-            )
-            await wait_until_hour(hour, minute, second)
-
-            # Execute tasks
-            log.info("Executing tasks")
-            await self.save_users()
-            await self.cumpleaños()
-            await self.meme()
+    async def get_channels(self):
+        """Get channels objects"""
+        self.general_channel = await self.bot.rest.fetch_channel(
+            self.bot.general_channel_id
+        )
+        self.memes_channel = await self.bot.rest.fetch_channel(
+            self.bot.memes_channel_id
+        )
+        self.vf_server = await self.bot.rest.fetch_guild(self.bot.villafurrense_id)
 
     async def meme(self):
+        """Sends a random meme"""
         num = random.randint(0, 2)
-        log.info("Randon number: {}".format(num))
         if num == 0:
             subreddit = "dankmemes"
             not_flair = None
@@ -76,26 +68,25 @@ class Tasks(lightbulb.Plugin):
         now = datetime.now()
         hour = now.hour
 
-        if hour == 8:
-            # Get month and day
-            month = str(now.month)
-            day = str(now.day)
-            if len(month) == 1:
-                month = "0" + month
-            if len(day) == 1:
-                day = "0" + day
-            today = month + "-" + day
+        # Get month and day
+        month = str(now.month)
+        day = str(now.day)
+        if len(month) == 1:
+            month = "0" + month
+        if len(day) == 1:
+            day = "0" + day
+        today = month + "-" + day
 
-            # Get yaml info
-            content = yaml_f.get_cumpleaños()
-            user_ids = content[1]
-            dates = content[2]
-            index = dates.index(today)
-            member = await self.bot.rest.fetch_user(user_ids[index])
-            await self.general_channel.send(
-                "Es el cumple de " + member.mention + ". Felicidades!!!!!!!!!"
-            )
-            log.info("Sent birthday message of " + member.username)
+        # Get yaml info
+        content = yaml_f.get_cumpleaños()
+        user_ids = content[1]
+        dates = content[2]
+        index = dates.index(today)
+        member = await self.bot.rest.fetch_user(user_ids[index])
+        await self.general_channel.send(
+            "Es el cumple de " + member.mention + ". Felicidades!!!!!!!!!"
+        )
+        log.info("Sent birthday message of " + member.username)
 
     async def save_users(self):
         """Saves users in Villafurrense to yaml file"""
@@ -103,11 +94,16 @@ class Tasks(lightbulb.Plugin):
         output = {}
         async for i, member in members.enumerate():
             if not member.is_bot:
-                users = {member.username: int(member.id)}
+                users = {
+                    member.username: {
+                        "id": int(member.id),
+                        "times_joined": 0,
+                        "joined_date": member.joined_at,
+                    }
+                }
                 output.update(users)
 
         yaml_f.set_user_list(output)
-        log.info("Saved user list")
 
 
 def load(bot: lightbulb.Bot):
