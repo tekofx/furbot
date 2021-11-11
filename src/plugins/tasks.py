@@ -17,10 +17,10 @@ class Tasks(lightbulb.Plugin):
 
         # Tasks
         self.meme_task = self.bot.scheduler.add_job(
-            self.meme, CronTrigger(minute=47, second=10)
+            self.meme, CronTrigger(minute=0, second=10)
         )
         self.cumpleaños_task = self.bot.scheduler.add_job(
-            self.cumpleaños, CronTrigger(hour=8, minute=10, second=0)
+            self.cumpleaños, CronTrigger(hour=8, minute=0, second=0)
         )
 
     async def meme(self):
