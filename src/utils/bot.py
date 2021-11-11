@@ -27,10 +27,6 @@ class Bot(lightbulb.Bot):
             | Intents.DM_MESSAGES,
         )
         self.scheduler = AsyncIOScheduler()
-        self.villafurrense_id = os.getenv("VILLAFURRENSE")
-        self.general_channel_id = os.getenv("GENERAL_CHANNEL")
-        self.memes_channel_id = os.getenv("MEMES_CHANNEL")
-        self.audit_channel_id = os.getenv("AUDIT_CHANNEL")
 
     async def on_new_guild_message(self, event: hikari.GuildMessageCreateEvent):
         if event.content and not event.message.author.is_bot:  # If message has text
@@ -131,7 +127,14 @@ class Bot(lightbulb.Bot):
         log.info("Set activity to: " + activity.name)
 
         # Get channels
-        self.audit_channel = await self.rest.fetch_channel(self.audit_channel_id)
+        self.audit_channel = await self.rest.fetch_channel(os.getenv("AUDIT_CHANNEL"))
+        self.general_channel = await self.rest.fetch_channel(
+            os.getenv("GENERAL_CHANNEL")
+        )
+        self.memes_channel = await self.rest.fetch_channel(os.getenv("MEMES_CHANNEL"))
+
+        # Get server
+        self.vf_server = await self.rest.fetch_guild(os.getenv("VILLAFURRENSE"))
 
     async def on_command_invoked(self, event: lightbulb.events.CommandInvocationEvent):
         user = event.context.author.username
