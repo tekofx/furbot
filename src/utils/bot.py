@@ -9,6 +9,8 @@ import logging
 from utils.functions import yaml_f
 import logging
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from apscheduler.events import EVENT_JOB_ERROR
+
 
 log = logging.getLogger("bot")
 
@@ -98,6 +100,14 @@ class Bot(lightbulb.Bot):
 
             await self.audit_channel.send(message)
 
+    def tasks_listener(self, event):
+        log.error("Error in tasks, restarting them")
+        self.remove_plugin("Tasks")
+        log.info("Removed tasks plugin")
+        tasks = import_module("../plugins/tasks.py")
+        tasks.load(self)
+        log.info("Loaded tasks plugin")
+
     async def on_leave_member(self, event: hikari.MemberDeleteEvent):
         pass
 
@@ -120,21 +130,12 @@ class Bot(lightbulb.Bot):
 
         # Start scheduler
         self.scheduler.start()
+        self.scheduler.add_listener(self.tasks_listener, EVENT_JOB_ERROR)
 
         # Set activity
         activity = hikari.Activity(name=yaml_f.get_activity())
         await self.update_presence(activity=activity)
         log.info("Set activity to: " + activity.name)
-
-        # Get channels
-        self.audit_channel = await self.rest.fetch_channel(os.getenv("AUDIT_CHANNEL"))
-        self.general_channel = await self.rest.fetch_channel(
-            os.getenv("GENERAL_CHANNEL")
-        )
-        self.memes_channel = await self.rest.fetch_channel(os.getenv("MEMES_CHANNEL"))
-
-        # Get server
-        self.vf_server = await self.rest.fetch_guild(os.getenv("VILLAFURRENSE"))
 
     async def on_command_invoked(self, event: lightbulb.events.CommandInvocationEvent):
         user = event.context.author.username
