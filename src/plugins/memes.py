@@ -325,8 +325,6 @@ class Memes(lightbulb.Plugin):
         pic.save(meme_templates_path + "output.png", "PNG")
 
         await ctx.respond(attachment=meme_templates_path + "output.png")
-        sleep(10)
-        await ctx._message.delete()
 
         delete_files(("01.webp", "output.png", "01.png"))
 
