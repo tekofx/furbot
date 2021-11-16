@@ -10,6 +10,8 @@ from utils.functions import yaml_f
 import logging
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.events import EVENT_JOB_ERROR
+import plugins.tasks as tasks
+import colorama
 
 
 log = logging.getLogger("bot")
@@ -101,18 +103,35 @@ class Bot(lightbulb.Bot):
             await self.audit_channel.send(message)
 
     def tasks_listener(self, event):
-        log.error("Error in tasks, restarting them")
+        log.error(colorama.Fore.RED + "Error in tasks, restarting them")
         self.remove_plugin("Tasks")
         log.info("Removed tasks plugin")
-        tasks = import_module("../plugins/tasks.py")
-        tasks.load(self)
-        log.info("Loaded tasks plugin")
+        try:
+            log.info("Restarting scheduler")
+            self.scheduler.shutdown()
+            self.scheduler.start()
+
+        except Exception as error:
+            log.error(
+                colorama.Fore.RED + "Error while restarting scheduler: {}".format(error)
+            )
+
+        try:
+            log.info("Loading tasks plugin")
+            tasks.load(self)
+        except Exception as error:
+            log.error(
+                colorama.Fore.RED + "Error while loading tasks plugin: {}".format(error)
+            )
+        else:
+            log.info("Loaded tasks plugin successfully")
 
     async def on_leave_member(self, event: hikari.MemberDeleteEvent):
         pass
 
     async def on_starting(self, event: hikari.StartingEvent):
         # Load commands
+        log.error(colorama.Fore.RED + "a")
         log.info("Loading slash commands")
         commands = Path("./src/slash_commands").glob("*.py")
         for c in commands:
