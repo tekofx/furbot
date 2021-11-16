@@ -6,7 +6,6 @@ from PIL import ImageDraw
 import qrcode
 import random
 from pyrae import dle
-from hikari import permissions
 import requests
 from utils.functions import (
     get_user,
@@ -26,7 +25,6 @@ from utils.functions import (
     get_user_roles,
     get_user_species,
     get_user_ranks,
-    yaml_functions,
     magnet_id,
     angel_id,
 )

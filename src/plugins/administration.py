@@ -27,7 +27,7 @@ class Administration(lightbulb.Plugin):
 
         except Exception:
             await ctx.respond("Error: Contacte con un administrador")
-            log.error(colorama.Fore.RED + "Error: ".format(Exception))
+            log.error("Error: ".format(Exception))
 
         await ctx.respond("Cambiada actividad a " + activity_name)
         log.info("Changed activity to " + activity_name)

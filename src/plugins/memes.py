@@ -25,7 +25,6 @@ import unicodedata
 import requests
 from PIL import Image
 import lightbulb
-from time import sleep
 
 
 class Memes(lightbulb.Plugin):

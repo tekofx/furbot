@@ -1,5 +1,4 @@
 import lightbulb
-from time import sleep
 import hikari
 import random
 

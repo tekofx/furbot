@@ -1,11 +1,9 @@
 import logging
 import lightbulb
-from datetime import datetime, timedelta
-import asyncio
+from datetime import datetime
 from utils.functions import get_hot_subreddit_image, reddit_memes_history_txt, yaml_f
 import random
 from apscheduler.triggers.cron import CronTrigger
-from apscheduler.schedulers.base import BaseScheduler
 
 log = logging.getLogger(__name__)
 

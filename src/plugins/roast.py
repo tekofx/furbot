@@ -1,12 +1,9 @@
-from logging import error
 from hikari import permissions
 import lightbulb
-from time import sleep
 import hikari
 import logging
 from utils.functions import magnet_id
 from utils.functions import get_random_line_of_file, insults_txt, animos_txt
-import colorama
 
 log = logging.getLogger(__name__)
 
@@ -55,7 +52,7 @@ class Roast(lightbulb.Plugin):
             output = usuario + " " + get_random_line_of_file(insults_txt)
             await context.respond(content=output, reply=True)
         except Exception:
-            log.error(colorama.Fore.RED + "Error: {}".format(Exception))
+            log.error("Error: {}".format(Exception))
 
     @lightbulb.check(
         lightbulb.has_guild_permissions(permissions.Permissions.ADMINISTRATOR)
@@ -79,7 +76,7 @@ class Roast(lightbulb.Plugin):
             f.close()
             await context.respond("Insulto/s añadido/s")
         except Exception:
-            log.error(colorama.Fore.RED + "Error: {}".format(Exception))
+            log.error("Error: {}".format(Exception))
 
     @lightbulb.command()
     async def animo(self, context, user: hikari.User = None):
@@ -93,7 +90,7 @@ class Roast(lightbulb.Plugin):
             output = usuario + get_random_line_of_file(animos_txt)
             await context.respond(content=output, reply=True)
         except Exception:
-            log.error(colorama.Fore.RED + "Error: {}".format(Exception))
+            log.error("Error: {}".format(Exception))
 
     @lightbulb.check(
         lightbulb.has_guild_permissions(permissions.Permissions.ADMINISTRATOR)
@@ -117,7 +114,7 @@ class Roast(lightbulb.Plugin):
             f.close()
             await context.channel.send("animo/s añadido/s")
         except Exception:
-            log.error(colorama.Fore.RED + "Error: {}".format(Exception))
+            log.error("Error: {}".format(Exception))
 
 
 def load(bot):
