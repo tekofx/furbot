@@ -3,10 +3,11 @@ import setproctitle
 from dotenv import load_dotenv
 from utils.bot import Bot
 import sys
-import logging
-import colorama
+import coloredlogs, logging, colorama
 
-log = logging.getLogger("main")
+coloredlogs.install()
+log = logging.getLogger(__name__)
+log.setLevel("INFO")
 
 
 if os.name != "nt":
@@ -44,10 +45,7 @@ for var in env_vars:
     if var in os.environ:
         del os.environ[var]
     else:
-        log.error(
-            colorama.Fore.RED
-            + "Error: Missing environmental variable {} in .env file".format(var)
-        )
+        log.error("Error: Missing environmental variable {} in .env file".format(var))
         sys.exit()
 
 

@@ -1,4 +1,3 @@
-import datetime
 from hikari import Intents
 import lightbulb
 import hikari
@@ -11,12 +10,10 @@ import logging
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.events import EVENT_JOB_ERROR
 import plugins.tasks as tasks
-import colorama
-
-
-log = logging.getLogger("bot")
 
 MAX_JOINED_TIMES = 3
+
+log = logging.getLogger(__name__)
 
 
 class Bot(lightbulb.Bot):
@@ -24,6 +21,7 @@ class Bot(lightbulb.Bot):
         super().__init__(
             prefix=["fur ", "Fur ", "FUR "],
             token=discord_token,
+            logs=None,
             intents=Intents.GUILD_MEMBERS
             | Intents.GUILDS
             | Intents.GUILD_MESSAGES
@@ -107,7 +105,7 @@ class Bot(lightbulb.Bot):
             await owner.send(message)
 
     async def tasks_listener(self, event):
-        log.error(colorama.Fore.RED + "Error in tasks, restarting them")
+        log.error("Error in tasks, restarting them")
         self.remove_plugin("Tasks")
         log.info("Removed tasks plugin")
         try:
@@ -117,7 +115,7 @@ class Bot(lightbulb.Bot):
 
         except Exception as error:
             message = "Error while restarting scheduler: {}".format(error)
-            log.error(colorama.Fore.RED + message)
+            log.error(message)
             await self.send_DM_to_owners(message)
 
         try:
@@ -125,7 +123,7 @@ class Bot(lightbulb.Bot):
             tasks.load(self)
         except Exception as error:
             message = "Error while loading tasks plugin: {}".format(error)
-            log.error(colorama.Fore.RED + message)
+            log.error(message)
             await self.send_DM_to_owners(message)
 
         else:
@@ -135,6 +133,11 @@ class Bot(lightbulb.Bot):
         pass
 
     async def on_starting(self, event: hikari.StartingEvent):
+        log.info("Starting")
+        log.error("Starting")
+
+        log.warning("Starting")
+
         # Fetch bot owners users
         await self.fetch_owner_ids()
         owners = []
@@ -203,3 +206,26 @@ class Bot(lightbulb.Bot):
         self.event_manager.subscribe(hikari.MemberDeleteEvent, self.on_leave_member)
 
         super().run()
+
+
+def build_logger(name=__name__, level=logging.DEBUG):
+    logger = logging.getLogger(name)
+    logger.setLevel(level)
+
+    console_handler = logging.StreamHandler()
+    console_handler.setLevel(level)
+
+    file_handler = logging.FileHandler("bot.log", mode="a")
+    file_handler.setLevel(level)
+
+    formatter = logging.Formatter(
+        fmt="{levelname} - {asctime} in {name}:\n{message}",
+        datefmt="%b %d %H:%M:%S",
+        style="{",
+    )
+
+    file_handler.setFormatter(formatter)
+    console_handler.setFormatter(formatter)
+    logger.addHandler(console_handler)
+    logger.addHandler(file_handler)
+    return logger
