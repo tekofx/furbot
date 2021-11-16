@@ -133,10 +133,7 @@ class Bot(lightbulb.Bot):
         pass
 
     async def on_starting(self, event: hikari.StartingEvent):
-        log.info("Starting")
-        log.error("Starting")
-
-        log.warning("Starting")
+        log.info("Starting event")
 
         # Fetch bot owners users
         await self.fetch_owner_ids()
@@ -166,6 +163,8 @@ class Bot(lightbulb.Bot):
         log.info("Loaded audit channel\n")
 
     async def on_started(self, event: hikari.StartedEvent):
+        log.info("Started event")
+
         # Load plugins
         plugins = Path("./src/plugins").glob("*.py")
         for c in plugins:
