@@ -102,7 +102,11 @@ class Bot(lightbulb.Bot):
 
             await self.audit_channel.send(message)
 
-    def tasks_listener(self, event):
+    async def send_DM_to_owners(self, message):
+        for owner in self.owners:
+            await owner.send(message)
+
+    async def tasks_listener(self, event):
         log.error(colorama.Fore.RED + "Error in tasks, restarting them")
         self.remove_plugin("Tasks")
         log.info("Removed tasks plugin")
@@ -112,17 +116,18 @@ class Bot(lightbulb.Bot):
             self.scheduler.start()
 
         except Exception as error:
-            log.error(
-                colorama.Fore.RED + "Error while restarting scheduler: {}".format(error)
-            )
+            message = "Error while restarting scheduler: {}".format(error)
+            log.error(colorama.Fore.RED + message)
+            await self.send_DM_to_owners(message)
 
         try:
             log.info("Loading tasks plugin")
             tasks.load(self)
         except Exception as error:
-            log.error(
-                colorama.Fore.RED + "Error while loading tasks plugin: {}".format(error)
-            )
+            message = "Error while loading tasks plugin: {}".format(error)
+            log.error(colorama.Fore.RED + message)
+            await self.send_DM_to_owners(message)
+
         else:
             log.info("Loaded tasks plugin successfully")
 
@@ -130,8 +135,15 @@ class Bot(lightbulb.Bot):
         pass
 
     async def on_starting(self, event: hikari.StartingEvent):
+        # Fetch bot owners users
+        await self.fetch_owner_ids()
+        owners = []
+        for owner_id in self.owner_ids:
+            user = await self.rest.fetch_user(owner_id)
+            owners.append(user)
+        self.owners = owners
+
         # Load commands
-        log.error(colorama.Fore.RED + "a")
         log.info("Loading slash commands")
         commands = Path("./src/slash_commands").glob("*.py")
         for c in commands:
