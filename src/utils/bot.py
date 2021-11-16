@@ -113,11 +113,23 @@ class Bot(lightbulb.Bot):
 
     async def on_starting(self, event: hikari.StartingEvent):
         # Load commands
+        log.info("Loading slash commands")
         commands = Path("./src/slash_commands").glob("*.py")
         for c in commands:
             mod = import_module(f"slash_commands.{c.stem}")
             mod.load(self)
             log.info(f"Loaded slash commands from {c.stem}")
+
+        # Get channels
+        log.info("Fetching needed channels")
+        self.general_channel = await self.rest.fetch_channel(
+            os.getenv("GENERAL_CHANNEL")
+        )
+        log.info("Loaded general channel")
+        self.memes_channel = await self.rest.fetch_channel(os.getenv("MEMES_CHANNEL"))
+        log.info("Loaded memes channel")
+        self.audit_channel = await self.rest.fetch_channel(os.getenv("AUDIT_CHANNEL"))
+        log.info("Loaded audit channel\n")
 
     async def on_started(self, event: hikari.StartedEvent):
         # Load plugins
