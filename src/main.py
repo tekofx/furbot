@@ -22,11 +22,33 @@ os.chdir(working_dir)
 
 # Set process name
 setproctitle.setproctitle("furbot")
-del os.environ["DISCORD_TOKEN"]
-del os.environ["VILLAFURRENSE"]
-del os.environ["GENERAL_CHANNEL"]
-del os.environ["MEMES_CHANNEL"]
-del os.environ["AUDIT_CHANNEL"]
+env_vars = [
+    "DISCORD_TOKEN",
+    "VILLAFURRENSE",
+    "GENERAL_CHANNEL",
+    "MEMES_CHANNEL",
+    "AUDIT_CHANNEL",
+    "REDDIT_CLIENT_ID",
+    "REDDIT_CLIENT_SECRET",
+    "REDDIT_USER_AGENT",
+    "TWITTER_CONSUMER_KEY",
+    "TWITTER_CONSUMER_SECRET",
+    "TWITTER_ACCESS_TOKEN",
+    "TWITTER_ACCESS_TOKEN_SECRET",
+]
+
+
+# Remove previous env variables from environment
+# and check if any missing env variable
+for var in env_vars:
+    if var in os.environ:
+        del os.environ[var]
+    else:
+        log.error(
+            colorama.Fore.RED
+            + "Error: Missing environmental variable {} in .env file".format(var)
+        )
+        sys.exit()
 
 
 if "-t" in sys.argv:
