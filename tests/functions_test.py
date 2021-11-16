@@ -170,14 +170,3 @@ def test_delete_content_in_file():
     assert f.readline() == ""
 
     f.close()
-
-
-def test_get_random_line_of_file():
-    assert get_random_line_of_file("tests/dir/b") in [
-        "a\n",
-        "b\n",
-        "c\n",
-        "d\n",
-        "e\n",
-        "f\n",
-    ]
