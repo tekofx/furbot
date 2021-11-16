@@ -5,6 +5,7 @@ import lightbulb
 from hikari import permissions
 from utils.functions import yaml_f
 from asyncio import sleep
+import colorama
 
 log = logging.getLogger(__name__)
 
@@ -26,7 +27,7 @@ class Administration(lightbulb.Plugin):
 
         except Exception:
             await ctx.respond("Error: Contacte con un administrador")
-            log.error("Error: ".format(Exception))
+            log.error(colorama.Fore.RED + "Error: ".format(Exception))
 
         await ctx.respond("Cambiada actividad a " + activity_name)
         log.info("Changed activity to " + activity_name)
