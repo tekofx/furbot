@@ -14,43 +14,40 @@ class Roast(lightbulb.Plugin):
         self.bot = bot
 
     @lightbulb.command()
-    async def garich(self, context: lightbulb.Context):
-        """Gala rich"""
-        output = "Gala rich porque compra Axe, tiene 5 Alexas, tiene una limpiadora que le regala cosas y tiene una tele 4k"
-        await context.respond(output)
-
-    @lightbulb.command()
-    async def tecute(self, context: lightbulb.Context):
+    async def tecute(self, ctx: lightbulb.Context):
         """Teko cute"""
-        if context.author.id is magnet_id:
-            await context.respond("Teko cute")
+        await self.bot.rest.trigger_typing(ctx.get_channel())
+        if ctx.author.id is magnet_id:
+            await ctx.respond("Teko cute")
         else:
-            await context.respond("Teko NO cute")
+            await ctx.respond("Teko NO cute")
 
     @lightbulb.command()
-    async def teodio(self, context: lightbulb.Context, user: hikari.User = None):
+    async def teodio(self, ctx: lightbulb.Context, user: hikari.User = None):
         """Muestra tu odio al bot"""
+        await self.bot.rest.trigger_typing(ctx.get_channel())
         if user is None:
-            usuario = context.author.mention
+            usuario = ctx.author.mention
         else:
             usuario = user.mention
         output = "{} %s " % ("Yo te odio mas pedazo de basura")
-        await context.respond(content=output.format(usuario), reply=True)
+        await ctx.respond(content=output.format(usuario), reply=True)
 
     @lightbulb.command()
-    async def insult(self, context: lightbulb.Context, user: hikari.User = None):
+    async def insult(self, ctx: lightbulb.Context, user: hikari.User = None):
         """Insulta gente 7w7
 
         Genera un insulto aleatorio
         """
+        await self.bot.rest.trigger_typing(ctx.get_channel())
         if user is None:
-            usuario = context.author.mention
+            usuario = ctx.author.mention
         else:
             usuario = user.mention
 
         try:
             output = usuario + " " + get_random_line_of_file(insults_txt)
-            await context.respond(content=output, reply=True)
+            await ctx.respond(content=output, reply=True)
         except Exception:
             log.error("Error: {}".format(Exception))
 
@@ -58,7 +55,7 @@ class Roast(lightbulb.Plugin):
         lightbulb.has_guild_permissions(permissions.Permissions.ADMINISTRATOR)
     )
     @lightbulb.command()
-    async def addinsult(self, context, *insults: str):
+    async def addinsult(self, ctx, *insults: str):
         """[ADMIN] Añade insulto
 
         Uso:
@@ -68,27 +65,29 @@ class Roast(lightbulb.Plugin):
         Ejemplo:
             fur addinsulto "feo" "horrible"
         """
+        await self.bot.rest.trigger_typing(ctx.get_channel())
         try:
             f = open(insults_txt, "a")
             for insult in insults:
                 insult = insult.replace('"', "")
                 f.write(insult + "\n")
             f.close()
-            await context.respond("Insulto/s añadido/s")
+            await ctx.respond("Insulto/s añadido/s")
         except Exception:
             log.error("Error: {}".format(Exception))
 
     @lightbulb.command()
-    async def animo(self, context, user: hikari.User = None):
+    async def animo(self, ctx, user: hikari.User = None):
         """Anima a la gente"""
+        await self.bot.rest.trigger_typing(ctx.get_channel())
         if user is None:
-            usuario = context.author.mention
+            usuario = ctx.author.mention
         else:
             usuario = user.mention
 
         try:
             output = usuario + get_random_line_of_file(animos_txt)
-            await context.respond(content=output, reply=True)
+            await ctx.respond(content=output, reply=True)
         except Exception:
             log.error("Error: {}".format(Exception))
 
@@ -96,7 +95,7 @@ class Roast(lightbulb.Plugin):
         lightbulb.has_guild_permissions(permissions.Permissions.ADMINISTRATOR)
     )
     @lightbulb.command()
-    async def addanimo(self, context, *animos: str):
+    async def addanimo(self, ctx, *animos: str):
         """[ADMIN] Añade animos
 
         Uso:
@@ -106,13 +105,14 @@ class Roast(lightbulb.Plugin):
         Ejemplo:
             fur addanimo "guapo" "hermoso"
         """
+        await self.bot.rest.trigger_typing(ctx.get_channel())
         try:
             f = open(animos_txt, "a")
             for animo in animos:
                 animo = animo.replace('"', "")
                 f.write(animo + "\n")
             f.close()
-            await context.channel.send("animo/s añadido/s")
+            await ctx.channel.send("animo/s añadido/s")
         except Exception:
             log.error("Error: {}".format(Exception))
 
