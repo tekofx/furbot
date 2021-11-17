@@ -19,6 +19,7 @@ class Stickers(lightbulb.Plugin):
         Uso: seleccionar una imagen y en el cuadro de "añadir comentario"
         poner fur add <nombre_sticker>
         """
+        await self.bot.rest.trigger_typing(ctx.get_channel())
 
         # If not image provided
         if not ctx.attachments:
@@ -52,6 +53,7 @@ class Stickers(lightbulb.Plugin):
     @lightbulb.command()
     async def list(self, ctx: lightbulb.Context):
         """Nombre de los stickers añadidos"""
+        await self.bot.rest.trigger_typing(ctx.get_channel())
         output = os.listdir(stickers_path)
         output.sort()
         output[:] = [s.replace(".png", "") for s in output]
@@ -64,6 +66,7 @@ class Stickers(lightbulb.Plugin):
 
         Uso: fur s <nombre_sticker>
         """
+        await self.bot.rest.trigger_typing(ctx.get_channel())
         if Path(stickers_path + sticker + ".png").is_file():
             stickerName = stickers_path
             stickerName += sticker
@@ -93,6 +96,7 @@ class Stickers(lightbulb.Plugin):
     @lightbulb.command(name="rm")
     async def remove_sticker(self, ctx: lightbulb.Context, sticker):
         """[ADMIN] Borra un sticker"""
+        await self.bot.rest.trigger_typing(ctx.get_channel())
         os.remove(stickers_path + sticker + ".png")
         # logging.info("Sticker " + sticker + " deleted")
         await ctx.respond("Sticker " + sticker + " eliminado")
@@ -103,6 +107,7 @@ class Stickers(lightbulb.Plugin):
     @lightbulb.command(name="edit")
     async def edit_sticker(self, ctx: lightbulb.Context, sticker_before, sticker_after):
         """[ADMIN] Cambia nombre a un sticker"""
+        await self.bot.rest.trigger_typing(ctx.get_channel())
         old_name = stickers_path + sticker_before + ".png"
         new_name = stickers_path + sticker_after + ".png"
         os.rename(old_name, new_name)

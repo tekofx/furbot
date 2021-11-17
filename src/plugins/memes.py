@@ -35,6 +35,7 @@ class Memes(lightbulb.Plugin):
     @lightbulb.command()
     async def addmeme(self, ctx: lightbulb.Context, meme_name: str):
         """Añade un meme al bot"""
+        await self.bot.rest.trigger_typing(ctx.get_channel())
         meme_extension = "." + ctx.attachments[0].url.split(".")[-1]
         count = 1
 
@@ -110,6 +111,7 @@ class Memes(lightbulb.Plugin):
         """
 
         # If all memes have been sent, delete history
+        await self.bot.rest.trigger_typing(ctx.get_channel())
         try:
             if count_files_in_dir(meme_path) <= 30 + count_lines_in_file(
                 memes_history_txt
@@ -172,6 +174,7 @@ class Memes(lightbulb.Plugin):
 
         Uso: fur horny "@<usuario>
         """
+        await self.bot.rest.trigger_typing(ctx.get_channel())
         # Get user avatar
         avatarUrl = get_user(ctx, user).avatar_url
 
@@ -190,6 +193,7 @@ class Memes(lightbulb.Plugin):
 
         Uso: fur patada "@<usuario>
         """
+        await self.bot.rest.trigger_typing(ctx.get_channel())
         # Get user avatar
         avatarUrl = get_user(ctx, user).avatar_url
 
@@ -207,6 +211,7 @@ class Memes(lightbulb.Plugin):
     @lightbulb.command()
     async def shef(self, ctx: lightbulb.Context, user: hikari.Member = None):
         """shef"""
+        await self.bot.rest.trigger_typing(ctx.get_channel())
         # Get user avatar
         avatarUrl = get_user(ctx, user).avatar_url
 
@@ -234,6 +239,7 @@ class Memes(lightbulb.Plugin):
         Ejemplo: fur quote "Gala:'Hola que ase'/Enana:'He reparido' "Gala, antiracistas" @Gala
         """
         # Variables
+        await self.bot.rest.trigger_typing(ctx.get_channel())
         userName = get_user(ctx, user)
         avatarSize = 300
         txtSize = 40
@@ -330,6 +336,7 @@ class Memes(lightbulb.Plugin):
     @lightbulb.command()
     async def impostor(self, ctx: lightbulb.Context, user: hikari.Member = None):
         """Quién es el impostor?"""
+        await self.bot.rest.trigger_typing(ctx.get_channel())
         avatarUrl = get_user(ctx, user).avatar_url
 
         create_meme(("impostor", "01"), avatarUrl, 205, (0, 0, 323, 175), True)
@@ -343,6 +350,7 @@ class Memes(lightbulb.Plugin):
     @lightbulb.command()
     async def stonks(self, ctx: lightbulb.Context, user: hikari.Member = None):
         """Stonks"""
+        await self.bot.rest.trigger_typing(ctx.get_channel())
         # Get user avatar
         avatarUrl = get_user(ctx, user).avatar_url
 
@@ -357,6 +365,7 @@ class Memes(lightbulb.Plugin):
     @lightbulb.command()
     async def jojo(self, ctx: lightbulb.Context, user: hikari.Member):
         """Za warudo"""
+        await self.bot.rest.trigger_typing(ctx.get_channel())
 
         # Get user avatar
         avatarUrl = get_user(ctx, user).avatar_url
@@ -379,6 +388,7 @@ class Memes(lightbulb.Plugin):
     @lightbulb.command()
     async def cute(self, ctx: lightbulb.Context, user: hikari.Member = None):
         """You are cute"""
+        await self.bot.rest.trigger_typing(ctx.get_channel())
 
         # Get user avatar
         avatarUrl = get_user(ctx, user).avatar_url
@@ -394,6 +404,7 @@ class Memes(lightbulb.Plugin):
     @lightbulb.command()
     async def suicidio(self, ctx: lightbulb.Context):
         """Es hora del suisidio"""
+        await self.bot.rest.trigger_typing(ctx.get_channel())
 
         # Get user avatar
         avatarUrl = ctx.author.avatar_url
@@ -409,6 +420,7 @@ class Memes(lightbulb.Plugin):
     @lightbulb.command()
     async def coding(self, ctx: lightbulb.Context, user: hikari.Member = None):
         """Programa como un pro hacker"""
+        await self.bot.rest.trigger_typing(ctx.get_channel())
 
         # Get user avatar
         avatarUrl = get_user(ctx, user).avatar_url
@@ -424,6 +436,7 @@ class Memes(lightbulb.Plugin):
     @lightbulb.command()
     async def unsee(self, ctx: lightbulb.Context, user: hikari.Member = None):
         """No por favor"""
+        await self.bot.rest.trigger_typing(ctx.get_channel())
 
         # Get user avatar
         avatarUrl = get_user(ctx, user).avatar_url
@@ -439,6 +452,7 @@ class Memes(lightbulb.Plugin):
     @lightbulb.command()
     async def palomitas(self, ctx: lightbulb.Context, user: hikari.Member = None):
         """Este drama está interesante"""
+        await self.bot.rest.trigger_typing(ctx.get_channel())
 
         # Get user avatar
         avatarUrl = get_user(ctx, user).avatar_url
@@ -456,6 +470,7 @@ class Memes(lightbulb.Plugin):
         self, ctx: lightbulb.Context, text1: str, text2: str, user: hikari.Member = None
     ):
         """Quien ha sido?"""
+        await self.bot.rest.trigger_typing(ctx.get_channel())
         Y = 20
         Y_aux = 10
 
@@ -487,6 +502,7 @@ class Memes(lightbulb.Plugin):
     @lightbulb.command()
     async def cojones(self, ctx: lightbulb.Context, text: str, user: hikari.Member):
         """Si, los cojones"""
+        await self.bot.rest.trigger_typing(ctx.get_channel())
 
         # Get user avatar
         avatarUrl = user.avatar_url
@@ -523,6 +539,7 @@ class Memes(lightbulb.Plugin):
     @lightbulb.command()
     async def palanca(self, ctx: lightbulb.Context, user: hikari.Member):
         """Tira de la palanca Cronk"""
+        await self.bot.rest.trigger_typing(ctx.get_channel())
 
         # Get author avatar url
         author_avatar_url = ctx.author.avatar_url
@@ -550,6 +567,7 @@ class Memes(lightbulb.Plugin):
     @lightbulb.command()
     async def tren(self, ctx: lightbulb.Context, user: hikari.Member):
         """Atropella gente con un tren"""
+        await self.bot.rest.trigger_typing(ctx.get_channel())
 
         # Get author avatar url
         author_avatar_url = ctx.author.avatar_url
@@ -597,6 +615,7 @@ class Memes(lightbulb.Plugin):
            squirrel stegosaurus stimpy supermilker surgery threeeyes
            turkey turtle tux udder vader vaderkoala www
         """
+        await self.bot.rest.trigger_typing(ctx.get_channel())
         if character is None:
             cow_cls = cow.get_cow("default")
         else:
@@ -612,6 +631,7 @@ class Memes(lightbulb.Plugin):
     @lightbulb.command()
     async def slap(self, ctx: lightbulb.Context, user: hikari.Member = None):
         """slap"""
+        await self.bot.rest.trigger_typing(ctx.get_channel())
 
         # Get user avatar
         avatarUrl = get_user(ctx, user).avatar_url
@@ -627,6 +647,7 @@ class Memes(lightbulb.Plugin):
     @lightbulb.command()
     async def reviento(self, ctx: lightbulb.Context, user: hikari.Member = None):
         """a que me reviento"""
+        await self.bot.rest.trigger_typing(ctx.get_channel())
 
         # Get user avatar
         avatarUrl = get_user(ctx, user).avatar_url
@@ -642,6 +663,7 @@ class Memes(lightbulb.Plugin):
     @lightbulb.command()
     async def radiopatio(self, ctx: lightbulb.Context, user: hikari.Member):
         """Es hora del cotilleo"""
+        await self.bot.rest.trigger_typing(ctx.get_channel())
 
         # Get user avatar
         avatarUrl = get_user(ctx, user).avatar_url
@@ -657,6 +679,7 @@ class Memes(lightbulb.Plugin):
     @lightbulb.command()
     async def omni(self, ctx: lightbulb.Context, user: hikari.Member = None):
         """Omniman"""
+        await self.bot.rest.trigger_typing(ctx.get_channel())
 
         # Get user avatar
         avatarUrl = get_user(ctx, user).avatar_url
@@ -672,6 +695,7 @@ class Memes(lightbulb.Plugin):
     @lightbulb.command()
     async def mierda(self, ctx: lightbulb.Context, user: hikari.Member = None):
         """Menudo montón de mierda"""
+        await self.bot.rest.trigger_typing(ctx.get_channel())
 
         # Get user avatar
         avatarUrl = get_user(ctx, user).avatar_url
@@ -702,6 +726,7 @@ class Memes(lightbulb.Plugin):
             fur coche "Gala eres rich?" "Si, tengo 5 alexas" "Fuera de mi coche" @Gala
 
         """
+        await self.bot.rest.trigger_typing(ctx.get_channel())
 
         # Get images
         r = requests.get(ctx.author.avatar_url, allow_redirects=True)
@@ -774,6 +799,7 @@ class Memes(lightbulb.Plugin):
     @lightbulb.command()
     async def sus(self, ctx: lightbulb.Context, user: hikari.Member = None):
         """Its kinda sus"""
+        await self.bot.rest.trigger_typing(ctx.get_channel())
         string = """. 　　　。　　　　•　 　ﾟ　　。 　　.
 
             　　　.　　　 　　.　　　　　。　　 。　. 　
@@ -803,6 +829,7 @@ class Memes(lightbulb.Plugin):
         Uso:
             fur skeletor <text1> <text2>
         """
+        await self.bot.rest.trigger_typing(ctx.get_channel())
         meme_width = 994
         meme_hegiht = 680
         txtPic1 = Image.new("RGBA", (meme_width, meme_hegiht))
@@ -836,6 +863,7 @@ class Memes(lightbulb.Plugin):
 
     @lightbulb.command()
     async def undertale(self, ctx: lightbulb.Context, texto: str):
+        await self.bot.rest.trigger_typing(ctx.get_channel())
         # Get image
         character_image_size = 200
         r = requests.get(ctx.author.avatar_url, allow_redirects=True)

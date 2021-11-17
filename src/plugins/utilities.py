@@ -38,6 +38,7 @@ class Utilities(lightbulb.Plugin):
     @lightbulb.command()
     async def ping(self, ctx: lightbulb.Context):
         """Comprueba si el bot está online"""
+        await self.bot.rest.trigger_typing(ctx.get_channel())
         await ctx.respond("Pim pam trucu trucu")
 
     @lightbulb.command()
@@ -53,6 +54,7 @@ class Utilities(lightbulb.Plugin):
 
         Diseños: 1,2
         """
+        await self.bot.rest.trigger_typing(ctx.get_channel())
 
         # Get user info
         usr = user
@@ -194,6 +196,7 @@ class Utilities(lightbulb.Plugin):
     @lightbulb.command()
     async def avatar(self, ctx: lightbulb.Context, user: hikari.User = None):
         """Obtén la imagen de perfil de alguien"""
+        await self.bot.rest.trigger_typing(ctx.get_channel())
 
         avatar_url = get_user(ctx, user).avatar_url
 
@@ -207,6 +210,7 @@ class Utilities(lightbulb.Plugin):
     @lightbulb.command()
     async def rae(self, ctx: lightbulb.Context, search: str):
         """Obtén la imagen de perfil de alguien"""
+        await self.bot.rest.trigger_typing(ctx.get_channel())
         tmp = await ctx.respond("Buscando en la RAE")
 
         output = str(dle.search_by_word(search))
@@ -226,6 +230,7 @@ class Utilities(lightbulb.Plugin):
         Ejemplo:
             fur cumple @Teko
         """
+        await self.bot.rest.trigger_typing(ctx.get_channel())
 
         output = "No existe el cumpleaños de " + user.username
         data = yaml_f.get_cumpleaños()
@@ -245,6 +250,7 @@ class Utilities(lightbulb.Plugin):
 
             fur votacion <titulo> <opcion_1> <emoji_1> <opcion_2> <emoji_2>...
         """
+        await self.bot.rest.trigger_typing(ctx.get_channel())
 
         values = []
         reactions = []
@@ -280,6 +286,7 @@ class Utilities(lightbulb.Plugin):
 
             fur sorteo <nombre_sorteo> <descripcion> <autor_sorteo>
         """
+        await self.bot.rest.trigger_typing(ctx.get_channel())
         embed = hikari.Embed(
             title=nombre,
             colour=hikari.Colour(0x563275),
@@ -309,6 +316,7 @@ class Utilities(lightbulb.Plugin):
 
             fur evento <nombre_evento> <descripcion> <autor_evento>
         """
+        await self.bot.rest.trigger_typing(ctx.get_channel())
         embed = hikari.Embed(
             title=nombre,
             colour=hikari.Colour(0x563275),
@@ -332,6 +340,7 @@ class Utilities(lightbulb.Plugin):
         Uso
             - Responder al mensaje con fur resultados
         """
+        await self.bot.rest.trigger_typing(ctx.get_channel())
         sorteo_message = ctx.message.referenced_message
 
         # Get users who replied with ⭕
@@ -354,6 +363,7 @@ class Utilities(lightbulb.Plugin):
     @lightbulb.command(name="stats")
     async def server_stats(self, ctx: lightbulb.Context):
         """Muestra los stats del server"""
+        await self.bot.rest.trigger_typing(ctx.get_channel())
         guild = ctx.get_guild()
         members = self.bot.rest.fetch_members(guild)
         member_count = 0

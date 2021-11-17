@@ -27,6 +27,7 @@ class Animal(lightbulb.Plugin):
     @lightbulb.command()
     async def fox(self, ctx: lightbulb.Context):
         """Fotos de zorros hermosos"""
+        await self.bot.rest.trigger_typing(ctx.get_channel())
         message = await ctx.respond("Buscando fotos de zorros hermosos")
         get_twitter_image(self.api, "hourlyFox")
         await ctx.respond(attachment="files/" + "image.jpg")
@@ -36,6 +37,7 @@ class Animal(lightbulb.Plugin):
     @lightbulb.command(name="arctic")
     async def arctic_fox(self, ctx: lightbulb.Context):
         """Fotos de zorros hermosos"""
+        await self.bot.rest.trigger_typing(ctx.get_channel())
         message = await ctx.respond("Buscando fotos de zorros hermosos")
         get_twitter_image(self.api, "DailyArcticFox")
         await ctx.respond(attachment="files/" + "image.jpg")
@@ -45,6 +47,7 @@ class Animal(lightbulb.Plugin):
     @lightbulb.command()
     async def wolf(self, ctx: lightbulb.Context):
         """Fotos de lobos lobitos lobones"""
+        await self.bot.rest.trigger_typing(ctx.get_channel())
         message = await ctx.respond("Buscando fotos de lobos lobitos lobones")
         get_twitter_image(self.api, "hourlywolvesbot")
         await ctx.respond(attachment="files/" + "image.jpg")
@@ -54,6 +57,7 @@ class Animal(lightbulb.Plugin):
     @lightbulb.command()
     async def bird(self, ctx: lightbulb.Context):
         """Fotos de pajaritos"""
+        await self.bot.rest.trigger_typing(ctx.get_channel())
         try:
             message = await ctx.respond("Buscando fotos de pajaritos")
             get_twitter_image(self.api, "eugeniogarciac2")
@@ -66,6 +70,7 @@ class Animal(lightbulb.Plugin):
     @lightbulb.command()
     async def pigeon(self, ctx: lightbulb.Context):
         """Fotos de palomas achuchables"""
+        await self.bot.rest.trigger_typing(ctx.get_channel())
         try:
             message = await ctx.respond("Buscando fotos de palomas achuchables")
             get_twitter_image(self.api, "a_london_pigeon")

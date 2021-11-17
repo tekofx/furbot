@@ -18,6 +18,7 @@ class Administration(lightbulb.Plugin):
     @lightbulb.command(name="activity")
     async def change_activity(self, ctx: lightbulb.Context, activity_name: str):
         """[Admin] Cambiar actividad del bot"""
+        await self.bot.rest.trigger_typing(ctx.get_channel())
 
         yaml_f.change_activity(activity_name)
         activity = hikari.Activity(name=activity_name)
@@ -42,6 +43,7 @@ class Administration(lightbulb.Plugin):
         Uso:
             fur addspecie <rol>
         """
+        await self.bot.rest.trigger_typing(ctx.get_channel())
         yaml_f.add_species(specie.name, specie.id)
         await ctx.respond("Especie {} añadida".format(specie.mention))
         log.info("Added specie " + specie.name)
@@ -61,6 +63,7 @@ class Administration(lightbulb.Plugin):
         Ejemplo:
             fur addcumple 16-1 @Teko
         """
+        await self.bot.rest.trigger_typing(ctx.get_channel())
         yaml_f.add_birthday(int(user.id), user.username, birthday)
         await ctx.respond("Añadido cumpleaños de " + user.username)
 
@@ -70,6 +73,7 @@ class Administration(lightbulb.Plugin):
     @lightbulb.command()
     async def clear(self, ctx: lightbulb.Context, num: int):
         """[Admin] Elimina mensajes de un canal"""
+        await self.bot.rest.trigger_typing(ctx.get_channel())
         await ctx.message.delete()
         messages = ctx.get_channel().fetch_history()
         count = 0
@@ -95,6 +99,7 @@ class Administration(lightbulb.Plugin):
             fur ban <user_1> <user_2>... <user_n> <motivo>
 
         """
+        await self.bot.rest.trigger_typing(ctx.get_channel())
         for user in users:
 
             if motivo is None:
@@ -118,6 +123,7 @@ class Administration(lightbulb.Plugin):
         Uso:\n
             fur kick <user_1> <user_2>... <user_n> <motivo>
         """
+        await self.bot.rest.trigger_typing(ctx.get_channel())
         for user in users:
             if motivo is None:
                 await user.kick()
