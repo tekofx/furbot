@@ -104,7 +104,7 @@ class Bot(lightbulb.Bot):
         for owner in self.owners:
             await owner.send(message)
 
-    async def tasks_listener(self, event):
+    def tasks_listener(self, event):
         log.error("Error in tasks, restarting them")
         self.remove_plugin("Tasks")
         log.info("Removed tasks plugin")
@@ -116,7 +116,7 @@ class Bot(lightbulb.Bot):
         except Exception as error:
             message = "Error while restarting scheduler: {}".format(error)
             log.error(message)
-            await self.send_DM_to_owners(message)
+            #await self.send_DM_to_owners(message)
 
         try:
             log.info("Loading tasks plugin")
@@ -124,7 +124,7 @@ class Bot(lightbulb.Bot):
         except Exception as error:
             message = "Error while loading tasks plugin: {}".format(error)
             log.error(message)
-            await self.send_DM_to_owners(message)
+            #await self.send_DM_to_owners(message)
 
         else:
             log.info("Loaded tasks plugin successfully")
