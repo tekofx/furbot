@@ -9,24 +9,20 @@ from pyrae import dle
 import requests
 from utils.functions import (
     get_user,
-    get_user_species,
-    get_user_color,
-    get_user_ranks,
-    get_user_roles,
     convert_pic,
     meme_templates_path,
     delete_files,
     yaml_f,
 )
 from utils.functions import magnet_id, angel_id
-from utils.functions import (
-    get_user,
-    get_user_color,
-    get_user_roles,
-    get_user_species,
-    get_user_ranks,
-    magnet_id,
-    angel_id,
+
+
+from utils.database import (
+    create_connection,
+    get_birthday,
+    get_colors,
+    get_ranks,
+    get_species,
 )
 
 
@@ -62,8 +58,7 @@ class Utilities(lightbulb.Plugin):
         species = get_user_species(usr)
         rank = get_user_ranks(usr)
         roles = get_user_roles(usr)
-        color = get_user_color(usr)
-        color = yaml_f.get_color_code(color)  #
+        color = get_user_color_code(usr)
 
         if int(usr.id) == magnet_id:
             date = "24-01-2021"
@@ -184,7 +179,7 @@ class Utilities(lightbulb.Plugin):
                 carnet_design.paste(booster, (10, 10), booster)
 
             # Add color to carnet
-            output = Image.new("RGB", (1100, 1700), (color[0], color[1], color[2]))
+            output = Image.new("RGB", (1100, 1700), color)
             output.paste(carnet_design, (0, 0), carnet_design)
 
             # Save carnet
@@ -231,14 +226,16 @@ class Utilities(lightbulb.Plugin):
             fur cumple @Teko
         """
         await self.bot.rest.trigger_typing(ctx.get_channel())
+        con = create_connection(str(ctx.guild_id))
 
         output = "No existe el cumpleaños de " + user.username
-        data = yaml_f.get_cumpleaños()
-        user_ids = data[1]
-        dates = data[2]
-        index = user_ids.index(user.id)
+        birthday = get_birthday(con, user.id).split("-")
+        day = birthday[2]
+        month = birthday[1]
+        birthday = str(day) + "-" + str(month)
+
         output = "El cumpleaños de {user} es el {cumple}".format(
-            user=user.username, cumple=dates[index]
+            user=user.username, cumple=birthday
         )
         await ctx.respond(output)
 
@@ -396,3 +393,90 @@ def load(bot: lightbulb.Bot):
 
 def unload(bot: lightbulb.Bot):
     bot.remove_plugin("Utilities")
+
+
+def get_user_species(user: hikari.Member):
+    """Get user roles that are species
+
+    Args:
+        user (hikari.User): user to search for roles
+
+    Returns:
+        str: String containing roles
+    """
+    con = create_connection(user.guild_id)
+    server_species = get_species(con)
+    mention = []
+    roles = user.get_roles()
+    for role in roles:
+        if role.id in server_species:
+            mention.append(role.name)
+
+    b = ", ".join(mention)
+    return b
+
+
+def get_user_roles(user: hikari.Member):
+    """Get user roles that are not ranks
+
+    Args:
+        user (hikari.User): user to search for roles
+
+    Returns:
+        str: String containing roles
+    """
+    con = create_connection(user.guild_id)
+
+    server_ranks = get_ranks(con)
+    mention = []
+    roles = user.get_roles()
+
+    for role in roles:
+        if role.id in server_ranks:
+            mention.append(role.name)
+
+    b = ", ".join(mention)
+    return str(b)
+
+
+def get_user_ranks(user: hikari.Member):
+    """Get ranks from a user
+
+    Args:
+        user (hikari.User): user to search for roles
+
+    Returns:
+        str: String containing all ranks
+    """
+    con = create_connection(user.guild_id)
+    server_ranks = get_ranks(con)
+    output = []
+    roles = user.get_roles()
+
+    for role in roles:
+        if role.id in server_ranks:
+            output.append(role.name)
+    if output:
+        b = ", ".join(output)
+    else:
+        return "Admin"
+    return str(b)
+
+
+def get_user_color_code(user: hikari.Member):
+    """Get user roles that are not ranks
+
+    Args:
+        user (hikari.User): user to search for roles
+
+    Returns:
+        str: String containing roles
+    """
+    con = create_connection(user.guild_id)
+
+    server_colors = get_colors(con)
+    roles = user.get_roles()
+
+    for role in roles:
+        if role.id in server_colors:
+            return role.color.rgb

@@ -6,7 +6,7 @@ qrcode
 setproctitle
 cowpy
 pyyaml
-hikari[speedups]==2.00.dev100
+hikari[speedups]
 hikari-lightbulb
 uvloop
 pytest
@@ -15,3 +15,4 @@ tweepy
 colorama
 apscheduler
 coloredlogs
+sqlite

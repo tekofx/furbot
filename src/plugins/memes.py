@@ -4,7 +4,6 @@ import time
 from PIL import ImageFont, ImageDraw
 import hikari
 from utils.functions import (
-    create_meme,
     get_user,
     delete_files,
     convert_pic,
@@ -38,12 +37,6 @@ class Memes(lightbulb.Plugin):
         await self.bot.rest.trigger_typing(ctx.get_channel())
         meme_extension = "." + ctx.attachments[0].url.split(".")[-1]
         count = 1
-
-        # TODO: Check raise error with hikari
-        # If meme_name is user
-        # if "@" in meme_extension:
-        #    logging.error("Argument provided is a user")
-        #    raise commands.CommandError("argument_is_user")
 
         # Remove "
         meme_name = meme_name.replace('"', "")
@@ -905,3 +898,52 @@ def load(bot: lightbulb.Bot):
 
 def unload(bot: lightbulb.Bot):
     bot.remove_plugin("Memes")
+
+
+def create_meme(
+    pictures: list, avatar_url: str, avatar_size: int, position: list, invert: bool
+):
+    """Crea un meme
+
+    Args:
+        pictures (list): lista de imagenes, siendo pictures[0] el meme y el resto avatares
+        avatar_url (str): url del avatar a añadir al meme
+        avatar_size (int): tamañao al que convertir el avatar de webp a png
+        position (list): posiciones en las que colocar las imagenes, siendo position[0] y position[1] la x,y del meme
+        invert (bool): Si es True usa el meme como canvas, en caso contrario, usa el avatar
+    """
+
+    r = requests.get(avatar_url, allow_redirects=True)
+    open(meme_templates_path + "01.webp", "wb").write(r.content)
+
+    # Convert avatar
+    convert_pic(meme_templates_path + "01.webp", "01", avatar_size)
+
+    if not invert:  # burn
+        canvas = pictures[1]
+        width, height = (
+            Image.open(meme_templates_path + canvas + ".png").convert("RGBA").size
+        )
+    else:  # cringe
+        canvas = pictures[0]
+        width, height = (
+            Image.open(meme_templates_path + canvas + ".png").convert("RGBA").size
+        )
+
+    output = Image.new("RGBA", (width, height))  # Create picture
+    meme = Image.open(meme_templates_path + pictures[0] + ".png").convert(
+        "RGBA"
+    )  # Open meme picture
+
+    # Add avatar pictures
+    i = 2
+    for x in pictures[1:]:
+        img = Image.open(meme_templates_path + x + ".png").convert("RGBA")
+        output.paste(img, (position[i], position[i + 1]), img)
+        i += 2
+
+    # Add meme picture
+    output.paste(meme, (position[0], position[1]), meme)
+
+    # Save final meme
+    output.save(meme_templates_path + "output.png", "PNG")

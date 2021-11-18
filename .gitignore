@@ -13,3 +13,4 @@ src/test.py
 files/resources/config.yaml
 src/utils/.env
 src/utils/tests.env
+databases/*

@@ -38,19 +38,6 @@ class yaml_functions:
             except yaml.YAMLError as exc:
                 print("Error loading YAML: " + exc)
 
-    def get_ranks(self):
-        """Get ranks names
-
-        Returns:
-            list: list of ranks names
-        """
-        content = self.get_content_yaml()
-        output = []
-        for x, y in content["ranks"].items():
-            output.append(x)
-
-        return output
-
     def get_ranks_ids(self):
         """Get ranks ids
 
@@ -61,52 +48,6 @@ class yaml_functions:
         output = []
         for x, y in content["ranks"].items():
             output.append(y)
-
-        return output
-
-    def get_colors(self):
-        """Get colors names
-
-        Returns:
-            list: containing color names
-        """
-        content = self.get_content_yaml()
-        output = []
-        for key, value in content["colors"].items():
-            output.append(key)
-        return output
-
-    def get_color_code(self, color: str):
-        """Gets color code of a color
-
-        Args:
-            color (str): color name
-
-        Returns:
-            list: contains RGB values
-        """
-        content = self.get_content_yaml()
-
-        for key, value in content["colors"].items():
-            if key == color:
-                output = value.split(" ")
-                # Delete \n from last element
-                output = [s.replace("\n", "") for s in output]
-
-                # Convert all elements into int
-                output = list(map(int, output))
-                return output
-
-    def get_species(self):
-        """Gets species
-
-        Returns:
-            list: contains species names
-        """
-        content = self.get_content_yaml()
-        output = []
-        for x in content["species"]:
-            output.append(x)
 
         return output
 
@@ -130,152 +71,6 @@ class yaml_functions:
             content["activity"] = activity
         with open(self.yaml_file, "w") as f:
             yaml.dump(content, f, allow_unicode=True)
-
-    def get_cumpleaños(self):
-        """Gets birthdays from YAML file
-
-        Returns:
-            list: containing 3 lists
-                - user names
-                - user ids
-                - dates
-        """
-        content = self.get_content_yaml()
-        output = []
-        user_names = []
-        dates = []
-        user_ids = []
-        for entry in content["birthdays"].items():
-            user_names.append(entry[0])
-            for key, value in entry[1].items():
-                dates.append(key)
-                user_ids.append(value)
-        output.append(user_names)
-        output.append(user_ids)
-        output.append(dates)
-        return output
-
-    def set_user_list(self, data: dict):
-        """Set user list of Villafurrense server
-
-        Args:
-            data (dict): dict containing usernames and user ids
-        """
-
-        with open(self.yaml_file, "r") as yml:
-            content = yaml.safe_load(yml)
-            del content["user_list"]
-            data = {"user_list": data}
-            content.update(data)
-        with open(self.yaml_file, "w") as f:
-            yaml.dump(content, f, allow_unicode=True)
-
-    def add_user_to_user_list(self, user_id: int, data: dict):
-        """Adds a user to a user list
-
-        Args:
-            user_id (int): id of user
-            data (dict): info of user. Must be a dict with the form {"name":<value>, "joined_date": <value>,"times_joined":<value>}
-        """
-        with open(self.yaml_file, "r") as yml:
-            content = yaml.safe_load(yml)
-            aux = content["user_list"]
-            var = {user_id: data}
-
-            aux.update(var)
-        with open(self.yaml_file, "w") as f:
-            yaml.dump(content, f, allow_unicode=True)
-
-    def increase_joined_times(self, member: hikari.Member):
-        user_id = int(member.id)
-        # Increase joined times
-        joined_times = self.get_times_joined(user_id) + 1
-
-        # Remove user from list
-        with open(self.yaml_file, "r") as yml:
-            content = yaml.safe_load(yml)
-            del content["user_list"][user_id]
-
-        with open(self.yaml_file, "w") as f:
-            yaml.dump(content, f, allow_unicode=True)
-
-        # Create user in list with joined times updated
-        user_data = {
-            "name": member.username,
-            "times_joined": joined_times,
-            "joined_date": member.joined_at,
-        }
-        self.add_user_to_user_list(user_id, user_data)
-
-    def add_birthday(self, user_id: int, user_name: str, date: str):
-        """Adds a birthday to the yaml_file
-        Args:
-            user_id(int): user id
-            user_name (str): user name
-            date (str): birthday with format dd-mm
-        """
-        date = date.split("-")
-        day = date[0]
-        month = date[1]
-        if len(day) == 1:
-            day = "0" + day
-        if len(month) == 1:
-            month = "0" + month
-
-        date = month + "-" + day
-        with open(self.yaml_file, "r") as yml:
-            content = yaml.safe_load(yml)
-            aux = content["birthdays"]
-            data = {user_name: {date: user_id}}
-            aux.update(data)
-
-        with open(self.yaml_file, "w") as f:
-            yaml.dump(content, f, allow_unicode=True)
-
-    def add_species(self, specie_name: str, specie_id: int):
-        """Adds an specie to yaml_file
-
-        Args:
-            specie_name (str): name of specie
-            specie_id (int): id of specie role
-        """
-        with open(self.yaml_file, "r") as yml:
-            content = yaml.safe_load(yml)
-            aux = content["species"]
-            data = {str(specie_name): int(specie_id)}
-            aux.update(data)
-        with open(self.yaml_file, "w") as f:
-            yaml.dump(content, f, allow_unicode=True)
-
-    def get_times_joined(self, user_id: int):
-        """Gets the number of times a user has joined
-
-        Args:
-            user_id (int): [description]
-
-        Returns:
-            0: user not in list
-            int: times of user joins
-        """
-        with open(self.yaml_file, "r") as yml:
-            content = yaml.safe_load(yml)
-            for key, value in content["user_list"].items():
-                if int(key) == user_id:
-                    return value["times_joined"]
-
-        return 0
-
-    def add_rank(self, rank_name: str, rank_id: int):
-        # TODO: Implement
-        pass
-
-    def remove_species(self, specie_name: str, specie_id: int):
-        # TODO: Implement
-        pass
-
-    def remove_rank(self, rank_name: str, rank_id: int):
-        # TODO: Implement
-        pass
 
 
 yaml_f = yaml_functions()
@@ -400,142 +195,7 @@ def get_user(ctx: lightbulb.Context, user: hikari.User = None):
     return output
 
 
-def create_meme(
-    pictures: list, avatar_url: str, avatar_size: int, position: list, invert: bool
-):
-    """Crea un meme
-
-    Args:
-        pictures (list): lista de imagenes, siendo pictures[0] el meme y el resto avatares
-        avatar_url (str): url del avatar a añadir al meme
-        avatar_size (int): tamañao al que convertir el avatar de webp a png
-        position (list): posiciones en las que colocar las imagenes, siendo position[0] y position[1] la x,y del meme
-        invert (bool): Si es True usa el meme como canvas, en caso contrario, usa el avatar
-    """
-
-    r = requests.get(avatar_url, allow_redirects=True)
-    open(meme_templates_path + "01.webp", "wb").write(r.content)
-
-    # Convert avatar
-    convert_pic(meme_templates_path + "01.webp", "01", avatar_size)
-
-    if not invert:  # burn
-        canvas = pictures[1]
-        width, height = (
-            Image.open(meme_templates_path + canvas + ".png").convert("RGBA").size
-        )
-    else:  # cringe
-        canvas = pictures[0]
-        width, height = (
-            Image.open(meme_templates_path + canvas + ".png").convert("RGBA").size
-        )
-
-    output = Image.new("RGBA", (width, height))  # Create picture
-    meme = Image.open(meme_templates_path + pictures[0] + ".png").convert(
-        "RGBA"
-    )  # Open meme picture
-
-    # Add avatar pictures
-    i = 2
-    for x in pictures[1:]:
-        img = Image.open(meme_templates_path + x + ".png").convert("RGBA")
-        output.paste(img, (position[i], position[i + 1]), img)
-        i += 2
-
-    # Add meme picture
-    output.paste(meme, (position[0], position[1]), meme)
-
-    # Save final meme
-    output.save(meme_templates_path + "output.png", "PNG")
-
-
 ############################# Carnet functions ##############################
-def get_user_ranks(user: hikari.Member):
-    """Get ranks from a user
-
-    Args:
-        user (hikari.User): user to search for roles
-
-    Returns:
-        str: String containing all ranks
-    """
-    server_ranks = yaml_f.get_ranks()
-    output = []
-    roles = user.get_roles()
-
-    for role in roles:
-        if str(role.name) in server_ranks:
-            output.append(role.name)
-    if output:
-        b = ", ".join(output)
-    else:
-        return "Admin"
-    return str(b)
-
-
-def get_user_roles(user: hikari.Member):
-    """Get user roles that are not ranks
-
-    Args:
-        user (hikari.User): user to search for roles
-
-    Returns:
-        str: String containing roles
-    """
-    server_ranks = yaml_f.get_ranks()
-    mention = []
-    roles = user.get_roles()
-
-    for role in roles:
-        if (
-            role.name != "@everyone"
-            and str(role.name) not in server_ranks
-            and separator not in str(role)
-        ):
-            mention.append(role.name)
-
-    b = ", ".join(mention)
-    return str(b)
-
-
-def get_user_species(user: hikari.Member):
-    """Get user roles that are species
-
-    Args:
-        user (hikari.User): user to search for roles
-
-    Returns:
-        str: String containing roles
-    """
-    server_species = yaml_f.get_species()
-    mention = []
-    roles = user.get_roles()
-    for role in roles:
-        if str(role.name) in server_species:
-            mention.append(role.name)
-
-    b = ", ".join(mention)
-    return b
-
-
-def get_user_color(user: hikari.Member):
-    """Get user role that is a color
-
-    Args:
-        user (hikari.User): user to search for color
-
-    Returns:
-        str: String with color
-    """
-    server_colors = yaml_f.get_colors()
-    output = "blanco"
-    roles = user.get_roles()
-    for role in roles:
-        if str(role.name) in server_colors:
-            output = role.name
-            break
-
-    return str(output)
 
 
 ############################### Reddit functions ###############################
@@ -630,34 +290,6 @@ def count_files_in_dir(directory: str):
     return output
 
 
-# TODO: cambiar argumentos a solo el path del archivo
-def exists_file(file: str, directory: str):
-    """Checks if exists a file with a given name
-
-    Args:
-        file (str): name of the file
-        directory (str): folder to search for file
-
-    Returns:
-        [Bool]: true if exists, false if not
-    """
-    output = False
-    files = os.listdir(directory)
-    if file in files:
-        output = True
-    return output
-
-
-# TODO: cambiar argumentos a solo el path del archivo
-def exists_substring_in_file(substring: str, directory: str):
-    output = False
-    files = os.listdir(directory)
-    for file in files:
-        if substring in file:
-            output = True
-    return output
-
-
 def get_files_in_directory(directory: str):
     """Get a list of files in a directory
 
@@ -670,24 +302,6 @@ def get_files_in_directory(directory: str):
     return os.listdir(directory)
 
 
-def get_files_in_directory_with_substring(substring: str, directory: str):
-    """Get a string with files in a directory that contain a substring in its name
-
-    Args:
-        directory (str): directory to search
-
-    Returns:
-        [files]: list of files in dir
-    """
-    output = ""
-    files = os.listdir(directory)
-    for file in files:
-        if substring in file:
-            output += str(file[:-4]) + ", "
-    output = output[:-2]
-    return output
-
-
 def write_in_file(file: str, string: str):
     """Writes text in a file
 
@@ -698,15 +312,6 @@ def write_in_file(file: str, string: str):
     f = open(file, "a")
     f.write(string)
     f.close()
-
-
-def delete_content_in_file(file: str):
-    """Deletes contents of a file
-
-    Args:
-        file (str): File to delete contents
-    """
-    open(file, "w").close()
 
 
 def get_random_line_of_file(file: str):
@@ -735,6 +340,3 @@ def delete_files(elements: list):
         if os.path.isfile(meme_templates_path + x):
             os.remove(meme_templates_path + x)
     logging.info("Removed dependencies")
-
-
-############################ YAML #########################

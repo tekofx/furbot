@@ -10,6 +10,13 @@ import logging
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.events import EVENT_JOB_ERROR
 import plugins.tasks as tasks
+from utils.database import (
+    create_connection,
+    create_user,
+    get_times_joined,
+    set_times_joined,
+    setup_database,
+)
 
 MAX_JOINED_TIMES = 3
 
@@ -49,8 +56,10 @@ class Bot(lightbulb.Bot):
 
     async def on_new_member(self, event: hikari.MemberCreateEvent):
 
-        times_joined = yaml_f.get_times_joined(int(event.member.id))
         log.info("User {} joined VF".format(event.member.username))
+        con = create_connection(event.guild_id)
+        new_member = event.member
+        times_joined = get_times_joined(con, new_member.id)
 
         if not event.member.is_bot:
 
@@ -59,20 +68,21 @@ class Bot(lightbulb.Bot):
                 log.info(
                     "User {} not exists in user list".format(event.member.username)
                 )
-                user_data = {
-                    "name": event.member.username,
-                    "times_joined": 1,
-                    "joined_date": event.member.joined_at,
-                }
-                yaml_f.add_user_to_user_list(int(event.member.id), user_data)
-                log.info("User {} added to list".format(event.member.username))
+                user_data = [
+                    new_member.id,
+                    new_member.username,
+                    new_member.joined_at,
+                    1,
+                ]
+                create_user(con, user_data)
+                log.info("User {} added to list".format(new_member.username))
                 message = "Se ha unido el usuario {}. Veces que se ha unido: {}".format(
-                    event.member.username, str(times_joined + 1)
+                    new_member.username, str(times_joined + 1)
                 )
 
             elif times_joined < MAX_JOINED_TIMES:
                 # increase
-                yaml_f.increase_joined_times(event.member)
+                set_times_joined(con, new_member.id, times_joined + 1)
                 log.info(
                     "User {} already in list, increasing its joined times to {}".format(
                         event.member.username, times_joined + 1
@@ -144,7 +154,7 @@ class Bot(lightbulb.Bot):
             mod.load(self)
             log.info(f"Loaded slash commands from {c.stem}")
 
-        # Get channels
+        # Get channels and server
         log.info("Fetching needed channels")
         self.general_channel = await self.rest.fetch_channel(
             os.getenv("GENERAL_CHANNEL")
@@ -154,6 +164,7 @@ class Bot(lightbulb.Bot):
         log.info("Loaded memes channel")
         self.audit_channel = await self.rest.fetch_channel(os.getenv("AUDIT_CHANNEL"))
         log.info("Loaded audit channel\n")
+        self.server = await self.rest.fetch_guild(os.getenv("VILLAFURRENSE"))
 
     async def on_started(self, event: hikari.StartedEvent):
         log.info("Started event")
@@ -174,6 +185,13 @@ class Bot(lightbulb.Bot):
         activity = hikari.Activity(name=yaml_f.get_activity())
         await self.update_presence(activity=activity)
         log.info("Set activity to: " + activity.name)
+
+        # Set database
+        log.info("Database configured")
+        guilds = self.rest.fetch_my_guilds().enumerate()
+        async for num, guild in guilds:
+            server = str(guild.id)
+            con = setup_database(server)
 
     async def on_command_invoked(self, event: lightbulb.events.CommandInvocationEvent):
         user = event.context.author.username
