@@ -73,8 +73,8 @@ class Administration(lightbulb.Plugin):
         con = create_connection(server)
         specie_data = [rank.id, rank.name]
         create_rank(con, specie_data)
-        await ctx.respond("Especie {} añadida".format(rank.mention))
-        log.info("Added specie " + rank.name)
+        await ctx.respond("Rango {} añadida".format(rank.mention))
+        log.info("Added rank " + rank.name)
 
     @lightbulb.check(
         lightbulb.has_guild_permissions(permissions.Permissions.ADMINISTRATOR)
