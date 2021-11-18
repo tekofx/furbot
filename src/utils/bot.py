@@ -100,31 +100,24 @@ class Bot(lightbulb.Bot):
 
             await self.audit_channel.send(message)
 
-    async def send_DM_to_owners(self, message):
-        for owner in self.owners:
-            await owner.send(message)
-
     def tasks_listener(self, event):
-        log.error("Error in tasks, restarting them")
-        self.remove_plugin("Tasks")
-        log.info("Removed tasks plugin")
+        log.error("Error in tasks")
+
         try:
-            log.info("Restarting scheduler")
-            self.scheduler.shutdown()
-            self.scheduler.start()
+            log.info("Removing tasks")
+            self.scheduler.remove_all_jobs(jobstore="default")
 
         except Exception as error:
             message = "Error while restarting scheduler: {}".format(error)
             log.error(message)
-            #await self.send_DM_to_owners(message)
 
         try:
-            log.info("Loading tasks plugin")
+            log.info("Reloading tasks plugin")
+            tasks.unload(self)
             tasks.load(self)
         except Exception as error:
             message = "Error while loading tasks plugin: {}".format(error)
             log.error(message)
-            #await self.send_DM_to_owners(message)
 
         else:
             log.info("Loaded tasks plugin successfully")
