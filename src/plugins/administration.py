@@ -6,6 +6,7 @@ from utils.functions import yaml_f
 from asyncio import sleep
 from utils.database import (
     create_color,
+    get_colors,
     set_birthday,
     check_entry_in_database,
     create_connection,
@@ -18,15 +19,13 @@ log = logging.getLogger(__name__)
 
 
 class Administration(lightbulb.Plugin):
-    def __init__(self, bot: lightbulb.Bot):
+    def __init__(self):
         super().__init__(name="Administration")
-        self.bot = bot
 
-    @lightbulb.command(name="activity")
-    async def change_activity(self, ctx: lightbulb.Context, activity_name: str):
+    @lightbulb.command("activity", "[Admin] Cambiar actividad del bot")
+    async def change_activity(self, ctx: lightbulb.context.Context, activity_name: str):
         """[Admin] Cambiar actividad del bot"""
         await self.bot.rest.trigger_typing(ctx.get_channel())
-
         yaml_f.change_activity(activity_name)
         activity = hikari.Activity(name=activity_name)
 
@@ -40,11 +39,11 @@ class Administration(lightbulb.Plugin):
         await ctx.respond("Cambiada actividad a " + activity_name)
         log.info("Changed activity to " + activity_name)
 
-    @lightbulb.check(
-        lightbulb.has_guild_permissions(permissions.Permissions.ADMINISTRATOR)
+    @lightbulb.add_checks(
+        lightbulb.has_role_permissions(hikari.Permissions.ADMINISTRATOR)
     )
-    @lightbulb.command(name="addspecie")
-    async def add_species(self, ctx: lightbulb.Context, specie: hikari.Role):
+    @lightbulb.command("addspecie", "[Admin] Añade una especie al bot")
+    async def add_species(self, ctx: lightbulb.context.Context, specie: hikari.Role):
         """[Admin] Añade una especie al bot
 
         Uso:
@@ -58,11 +57,11 @@ class Administration(lightbulb.Plugin):
         await ctx.respond("Especie {} añadida".format(specie.mention))
         log.info("Added specie " + specie.name)
 
-    @lightbulb.check(
-        lightbulb.has_guild_permissions(permissions.Permissions.ADMINISTRATOR)
+    @lightbulb.add_checks(
+        lightbulb.has_role_permissions(hikari.Permissions.ADMINISTRATOR)
     )
-    @lightbulb.command(name="addrank")
-    async def add_rank(self, ctx: lightbulb.Context, rank: hikari.Role):
+    @lightbulb.command("addrank", "[Admin] Añade una especie al bot")
+    async def add_rank(self, ctx: lightbulb.context.Context, rank: hikari.Role):
         """[Admin] Añade una especie al bot
 
         Uso:
@@ -76,15 +75,15 @@ class Administration(lightbulb.Plugin):
         await ctx.respond("Rango {} añadida".format(rank.mention))
         log.info("Added rank " + rank.name)
 
-    @lightbulb.check(
-        lightbulb.has_guild_permissions(permissions.Permissions.ADMINISTRATOR)
+    @lightbulb.add_checks(
+        lightbulb.has_role_permissions(hikari.Permissions.ADMINISTRATOR)
     )
-    @lightbulb.command(name="addcolor")
-    async def add_color(self, ctx: lightbulb.Context, color: hikari.Role):
-        """[Admin] Añade una especie al bot
+    @lightbulb.command("addcolor", "[Admin] Añade una especie al bot")
+    async def add_color(self, ctx: lightbulb.context.Context, color: hikari.Role):
+        """[Admin] Añade un color al bot
 
         Uso:
-            fur addspecie <rol>
+            fur addcolor <rol>
         """
         await self.bot.rest.trigger_typing(ctx.get_channel())
         server = str(ctx.guild_id)
@@ -94,11 +93,14 @@ class Administration(lightbulb.Plugin):
         await ctx.respond("Color {} añadido".format(color.mention))
         log.info("Added color " + color.name)
 
-    @lightbulb.check(
-        lightbulb.has_guild_permissions(permissions.Permissions.ADMINISTRATOR)
+    @lightbulb.add_checks(
+        lightbulb.has_role_permissions(hikari.Permissions.ADMINISTRATOR)
     )
-    @lightbulb.command(name="upuser")
-    async def update_users(self, ctx: lightbulb.Context):
+    @lightbulb.command(
+        "upuser",
+        "[Admin] Actualiza la lista de usuarios con los usuarios que no existen",
+    )
+    async def update_users(self, ctx: lightbulb.context.Context):
         """[Admin] Actualiza la lista de usuarios con los usuarios que no existen\n"""
         await self.bot.rest.trigger_typing(ctx.get_channel())
         users = await self.bot.rest.fetch_members(ctx.get_guild())
@@ -113,12 +115,12 @@ class Administration(lightbulb.Plugin):
         await ctx.respond("Actualizada lista de usuarios")
         log.info("Updated users in database")
 
-    @lightbulb.check(
-        lightbulb.has_guild_permissions(permissions.Permissions.ADMINISTRATOR)
+    @lightbulb.add_checks(
+        lightbulb.has_role_permissions(hikari.Permissions.ADMINISTRATOR)
     )
-    @lightbulb.command()
+    @lightbulb.command("addcumple", "[Admin] Añade el cumpleaños de alguien al bot")
     async def addcumple(
-        self, ctx: lightbulb.Context, birthday: str, user: hikari.Member
+        self, ctx: lightbulb.context.Context, birthday: str, user: hikari.Member
     ):
         """[Admin] Añade el cumpleaños de alguien al bot
 
@@ -133,11 +135,11 @@ class Administration(lightbulb.Plugin):
         set_birthday(con, user.id, birthday)
         await ctx.respond("Añadido cumpleaños de " + user.username)
 
-    @lightbulb.check(
-        lightbulb.has_guild_permissions(permissions.Permissions.ADMINISTRATOR)
+    @lightbulb.add_checks(
+        lightbulb.has_role_permissions(hikari.Permissions.ADMINISTRATOR)
     )
-    @lightbulb.command()
-    async def clear(self, ctx: lightbulb.Context, num: int):
+    @lightbulb.command("clear", "[Admin] Elimina mensajes de un canal")
+    async def clear(self, ctx: lightbulb.context.Context, num: int):
         """[Admin] Elimina mensajes de un canal"""
         await self.bot.rest.trigger_typing(ctx.get_channel())
         await ctx.message.delete()
@@ -152,12 +154,12 @@ class Administration(lightbulb.Plugin):
         await sleep(5)
         await message.delete()
 
-    @lightbulb.check(
-        lightbulb.has_guild_permissions(permissions.Permissions.ADMINISTRATOR)
+    @lightbulb.add_checks(
+        lightbulb.has_role_permissions(hikari.Permissions.ADMINISTRATOR)
     )
-    @lightbulb.command()
+    @lightbulb.command("ban", "[Admin] Banea a un usuario")
     async def ban(
-        self, ctx: lightbulb.Context, *users: hikari.Member, motivo: str = None
+        self, ctx: lightbulb.context.Context, *users: hikari.Member, motivo: str = None
     ):
         """[Admin] Banea a un usuario\n\n
 
@@ -177,12 +179,12 @@ class Administration(lightbulb.Plugin):
 
             await ctx.respond(output)
 
-    @lightbulb.check(
-        lightbulb.has_guild_permissions(permissions.Permissions.ADMINISTRATOR)
+    @lightbulb.add_checks(
+        lightbulb.has_role_permissions(hikari.Permissions.ADMINISTRATOR)
     )
-    @lightbulb.command()
+    @lightbulb.command("kick", "[Admin] Kickea a un usuario")
     async def kick(
-        self, ctx: lightbulb.Context, *users: hikari.Member, motivo: str = None
+        self, ctx: lightbulb.context.Context, *users: hikari.Member, motivo: str = None
     ):
         """[Admin] Kickea a un usuario\n\n
 
@@ -201,9 +203,9 @@ class Administration(lightbulb.Plugin):
             await ctx.respond(output)
 
 
-def load(bot: lightbulb.Bot):
-    bot.add_plugin(Administration(bot))
+def load(bot: lightbulb.BotApp):
+    bot.add_plugin(Administration())
 
 
-def unload(bot: lightbulb.Bot):
+def unload(bot: lightbulb.BotApp):
     bot.remove_plugin("Administration")

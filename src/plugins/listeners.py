@@ -6,9 +6,8 @@ log = logging.getLogger(__name__)
 
 
 class Listeners(lightbulb.Plugin):
-    def __init__(self, bot: lightbulb.Bot):
+    def __init__(self):
         super().__init__(name="listeners")
-        self.bot = bot
 
     @lightbulb.listener(lightbulb.events.CommandErrorEvent)
     async def on_command_error(self, event: lightbulb.events.CommandErrorEvent):
@@ -44,9 +43,9 @@ class Listeners(lightbulb.Plugin):
             return
 
 
-def load(bot: lightbulb.Bot):
-    bot.add_plugin(Listeners(bot))
+def load(bot: lightbulb.BotApp):
+    bot.add_plugin(Listeners())
 
 
-def unload(bot: lightbulb.Bot):
+def unload(bot: lightbulb.BotApp):
     bot.remove_plugin("Listeners")
