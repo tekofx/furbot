@@ -28,6 +28,7 @@ env_vars = [
     "VILLAFURRENSE",
     "GENERAL_CHANNEL",
     "MEMES_CHANNEL",
+    "NSFW_MEMES_CHANNEL",
     "AUDIT_CHANNEL",
     "REDDIT_CLIENT_ID",
     "REDDIT_CLIENT_SECRET",
@@ -70,12 +71,18 @@ for file in files:
 
 # Remove previous env variables from environment
 # and check if any missing env variable
+
 for var in env_vars:
     if var in os.environ:
         del os.environ[var]
     else:
-        log.error("Error: Missing environmental variable {} in .env file".format(var))
-        sys.exit()
+        try:
+            os.getenv(var)
+        except:
+            log.error(
+                "Error: Missing environmental variable {} in .env file".format(var)
+            )
+            sys.exit()
 
 
 if "-t" in sys.argv:
