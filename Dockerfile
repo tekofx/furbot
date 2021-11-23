@@ -6,7 +6,7 @@ ENV TZ="Europe/Madrid"
 RUN apt-get update && apt-get install -y --no-install-recommends \
         build-essential libffi-dev  \
         libtiff-dev libfreetype6-dev \
-        libwebp-dev \
+        libwebp-dev sqlite\
         && apt-get clean \
         && rm -rf /var/lib/apt/lists/* \
         && pip3 install -r /tmp/requirements.txt --no-cache-dir \

@@ -59,6 +59,7 @@ docker_run = """ docker run -d \
     --name furbot \
     --mount type=bind,src={path}/files/,dst=/bot/files/  \
     --mount type=bind,src={path}/src/,dst=/bot/src \
+    --mount type=bind,src={path}/databases,dst=/databases/ \
     --restart=unless-stopped \
     -p {port}:80 furbot """
 docker_run = docker_run.format(path=path, port=port)

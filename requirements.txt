@@ -15,4 +15,3 @@ tweepy
 colorama
 apscheduler
 coloredlogs
-sqlite
