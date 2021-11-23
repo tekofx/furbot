@@ -177,7 +177,7 @@ def convert_pic(picture: str, imgName: str, imgSize: str = None):
     img.save(meme_templates_path + imgName + ".png")
 
 
-def get_user(ctx: lightbulb.Context, user: hikari.User = None):
+def get_user(ctx: lightbulb.context.Context, user: hikari.User = None):
     """Gets user from a message
 
     Args:
