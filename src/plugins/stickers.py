@@ -1,3 +1,4 @@
+import hikari
 import lightbulb
 from utils.functions import stickers_path, stickerSize
 import requests
@@ -8,12 +9,11 @@ from hikari import permissions
 
 
 class Stickers(lightbulb.Plugin):
-    def __init__(self, bot: lightbulb.Bot):
+    def __init__(self):
         super().__init__(name="Stickers")
-        self.bot = bot
 
-    @lightbulb.command(name="addsticker")
-    async def add_sticker(self, ctx: lightbulb.Context, sticker_name: str):
+    @lightbulb.command("addsticker", "Añade un sticker")
+    async def add_sticker(self, ctx: lightbulb.context.Context, sticker_name: str):
         """Añade un sticker
 
         Uso: seleccionar una imagen y en el cuadro de "añadir comentario"
@@ -50,9 +50,9 @@ class Stickers(lightbulb.Plugin):
             os.remove(stickers_path + sticker_fileName)
         await ctx.respond("Sticker " + sticker_name + " añadido")
 
-    @lightbulb.command()
-    async def list(self, ctx: lightbulb.Context):
-        """Nombre de los stickers añadidos"""
+    @lightbulb.command("list", "Lista de los stickers añadidos")
+    async def list_stickers(self, ctx: lightbulb.context.Context):
+        """Lista de los stickers añadidos"""
         await self.bot.rest.trigger_typing(ctx.get_channel())
         output = os.listdir(stickers_path)
         output.sort()
@@ -60,8 +60,8 @@ class Stickers(lightbulb.Plugin):
         output = ", ".join(output)
         await ctx.respond(output)
 
-    @lightbulb.command(name="s")
-    async def use_sticker(self, ctx: lightbulb.Context, sticker):
+    @lightbulb.command("s", "Usar un sticker")
+    async def use_sticker(self, ctx: lightbulb.context.Context, sticker):
         """Usar un sticker
 
         Uso: fur s <nombre_sticker>
@@ -90,22 +90,24 @@ class Stickers(lightbulb.Plugin):
             #    raise commands.CommandError("use_list_as_sticker")
             # logging.error("Sticker " + sticker + " does not exist")
 
-    @lightbulb.check(
-        lightbulb.has_guild_permissions(permissions.Permissions.ADMINISTRATOR)
+    @lightbulb.add_checks(
+        lightbulb.has_role_permissions(hikari.Permissions.ADMINISTRATOR)
     )
-    @lightbulb.command(name="rm")
-    async def remove_sticker(self, ctx: lightbulb.Context, sticker):
+    @lightbulb.command("rm", "[ADMIN] Borra un sticker")
+    async def remove_sticker(self, ctx: lightbulb.context.Context, sticker):
         """[ADMIN] Borra un sticker"""
         await self.bot.rest.trigger_typing(ctx.get_channel())
         os.remove(stickers_path + sticker + ".png")
         # logging.info("Sticker " + sticker + " deleted")
         await ctx.respond("Sticker " + sticker + " eliminado")
 
-    @lightbulb.check(
-        lightbulb.has_guild_permissions(permissions.Permissions.ADMINISTRATOR)
+    @lightbulb.add_checks(
+        lightbulb.has_role_permissions(hikari.Permissions.ADMINISTRATOR)
     )
-    @lightbulb.command(name="edit")
-    async def edit_sticker(self, ctx: lightbulb.Context, sticker_before, sticker_after):
+    @lightbulb.command("edit", "[ADMIN] Cambia nombre a un sticker")
+    async def edit_sticker(
+        self, ctx: lightbulb.context.Context, sticker_before, sticker_after
+    ):
         """[ADMIN] Cambia nombre a un sticker"""
         await self.bot.rest.trigger_typing(ctx.get_channel())
         old_name = stickers_path + sticker_before + ".png"
@@ -153,9 +155,9 @@ def check_sticker(stickerName: str, stickerExtension: str):
         return 1
 
 
-def load(bot: lightbulb.Bot):
-    bot.add_plugin(Stickers(bot))
+def load(bot: lightbulb.BotApp):
+    bot.add_plugin(Stickers())
 
 
-def unload(bot: lightbulb.Bot):
+def unload(bot: lightbulb.BotApp):
     bot.remove_plugin("Stickers")

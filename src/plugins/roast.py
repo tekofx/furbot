@@ -9,12 +9,11 @@ log = logging.getLogger(__name__)
 
 
 class Roast(lightbulb.Plugin):
-    def __init__(self, bot: lightbulb.Bot):
+    def __init__(self):
         super().__init__(name="Roast")
-        self.bot = bot
 
-    @lightbulb.command()
-    async def tecute(self, ctx: lightbulb.Context):
+    @lightbulb.command("tecute", "Teko cute")
+    async def tecute(self, ctx: lightbulb.context.Context):
         """Teko cute"""
         await self.bot.rest.trigger_typing(ctx.get_channel())
         if ctx.author.id is magnet_id:
@@ -22,8 +21,8 @@ class Roast(lightbulb.Plugin):
         else:
             await ctx.respond("Teko NO cute")
 
-    @lightbulb.command()
-    async def teodio(self, ctx: lightbulb.Context, user: hikari.User = None):
+    @lightbulb.command("teodio", "Muestra tu odio al bot")
+    async def teodio(self, ctx: lightbulb.context.Context, user: hikari.User = None):
         """Muestra tu odio al bot"""
         await self.bot.rest.trigger_typing(ctx.get_channel())
         if user is None:
@@ -33,8 +32,8 @@ class Roast(lightbulb.Plugin):
         output = "{} %s " % ("Yo te odio mas pedazo de basura")
         await ctx.respond(content=output.format(usuario), reply=True)
 
-    @lightbulb.command()
-    async def insult(self, ctx: lightbulb.Context, user: hikari.User = None):
+    @lightbulb.command("insult", "Insulta gente 7w7")
+    async def insult(self, ctx: lightbulb.context.Context, user: hikari.User = None):
         """Insulta gente 7w7
 
         Genera un insulto aleatorio
@@ -51,10 +50,10 @@ class Roast(lightbulb.Plugin):
         except Exception:
             log.error("Error: {}".format(Exception))
 
-    @lightbulb.check(
-        lightbulb.has_guild_permissions(permissions.Permissions.ADMINISTRATOR)
+    @lightbulb.add_checks(
+        lightbulb.has_role_permissions(hikari.Permissions.ADMINISTRATOR)
     )
-    @lightbulb.command()
+    @lightbulb.command("addinsult", "[ADMIN] Añade insulto")
     async def addinsult(self, ctx, *insults: str):
         """[ADMIN] Añade insulto
 
@@ -76,7 +75,7 @@ class Roast(lightbulb.Plugin):
         except Exception:
             log.error("Error: {}".format(Exception))
 
-    @lightbulb.command()
+    @lightbulb.command("animo", "Anima a la gente")
     async def animo(self, ctx, user: hikari.User = None):
         """Anima a la gente"""
         await self.bot.rest.trigger_typing(ctx.get_channel())
@@ -91,10 +90,10 @@ class Roast(lightbulb.Plugin):
         except Exception:
             log.error("Error: {}".format(Exception))
 
-    @lightbulb.check(
-        lightbulb.has_guild_permissions(permissions.Permissions.ADMINISTRATOR)
+    @lightbulb.add_checks(
+        lightbulb.has_role_permissions(hikari.Permissions.ADMINISTRATOR)
     )
-    @lightbulb.command()
+    @lightbulb.command("addanimo", "[ADMIN] Añade animos")
     async def addanimo(self, ctx, *animos: str):
         """[ADMIN] Añade animos
 
@@ -117,9 +116,9 @@ class Roast(lightbulb.Plugin):
             log.error("Error: {}".format(Exception))
 
 
-def load(bot):
-    bot.add_plugin(Roast(bot))
+def load(bot: lightbulb.BotApp):
+    bot.add_plugin(Roast())
 
 
-def unload(bot: lightbulb.Bot):
+def unload(bot: lightbulb.BotApp):
     bot.remove_plugin("Roast")

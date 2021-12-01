@@ -1,12 +1,16 @@
 from hikari import Intents
+from hikari.impl import bot
 import lightbulb
 import hikari
 from importlib import import_module
 from pathlib import Path
 import os
 import logging
+
+from lightbulb.app import BotApp
 from utils.functions import yaml_f
 import logging
+import sys
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.events import EVENT_JOB_ERROR
 import plugins.tasks as tasks
@@ -17,13 +21,14 @@ from utils.database import (
     set_times_joined,
     setup_database,
 )
+from utils.twitter import Twitter
 
 MAX_JOINED_TIMES = 3
 
 log = logging.getLogger(__name__)
 
 
-class Bot(lightbulb.Bot):
+class Bot(lightbulb.BotApp):
     def __init__(self, discord_token: str) -> None:
         super().__init__(
             prefix=["fur ", "Fur ", "FUR "],
@@ -36,6 +41,41 @@ class Bot(lightbulb.Bot):
             | Intents.DM_MESSAGES,
         )
         self.scheduler = AsyncIOScheduler()
+        self.twitter = Twitter()
+
+    async def on_command_error(self, event: lightbulb.CommandErrorEvent):
+        error = event.exception
+        command = event.context.command
+        event.context
+        print(error)
+        if isinstance(error, lightbulb.errors.CommandIsOnCooldown):
+            return await event.context.respond("Command is on cooldown")
+
+        elif isinstance(error, lightbulb.CommandNotFound):
+            return await event.context.respond("Comando no existente")
+
+        elif isinstance(error, lightbulb.errors.BotMissingRequiredPermission):
+            missing_perms = ", ".join(c for c in error.permissions)
+            print(f"bot - {missing_perms}")
+            return await event.context.respond(
+                f":no_entry_sign: Command failed, i'm missing `{missing_perms}` permissions!"
+            )
+
+        elif isinstance(error, lightbulb.errors.MissingRequiredPermission):
+            missing_perms = ", ".join(c for c in error.permissions)
+            print(f"user - {missing_perms}")
+            return await event.context.respond(
+                f":no_entry_sign: Error, no dispones del permiso `{missing_perms}` "
+            )
+
+        elif isinstance(error, lightbulb.errors.NotEnoughArguments):
+            await event.message.respond(
+                "Error: Faltan argumentos, comprueba como se usa el comando {}".format(
+                    command.name
+                )
+            )
+            await lightbulb.HelpCommand.send_command_help(self, event.context, command)
+            return
 
     async def on_new_guild_message(self, event: hikari.GuildMessageCreateEvent):
         if event.content and not event.message.author.is_bot:  # If message has text
@@ -149,10 +189,11 @@ class Bot(lightbulb.Bot):
         # Load commands
         log.info("Loading slash commands")
         commands = Path("./src/slash_commands").glob("*.py")
-        for c in commands:
+        """ for c in commands:
+
             mod = import_module(f"slash_commands.{c.stem}")
             mod.load(self)
-            log.info(f"Loaded slash commands from {c.stem}")
+            log.info(f"Loaded slash commands from {c.stem}") """
 
         # Get channels and server
         log.info("Fetching needed channels")
@@ -165,6 +206,9 @@ class Bot(lightbulb.Bot):
         self.audit_channel = await self.rest.fetch_channel(os.getenv("AUDIT_CHANNEL"))
         log.info("Loaded audit channel\n")
         self.server = await self.rest.fetch_guild(os.getenv("VILLAFURRENSE"))
+        self.nsfw_memes_channel = await self.rest.fetch_channel(
+            os.getenv("NSFW_MEMES_CHANNEL")
+        )
 
     async def on_started(self, event: hikari.StartedEvent):
         log.info("Started event")
@@ -172,10 +216,15 @@ class Bot(lightbulb.Bot):
         # Load plugins
         plugins = Path("./src/plugins").glob("*.py")
         for c in plugins:
+            try:
+                mod = import_module(f"plugins.{c.stem}")
+                mod.load(self)
+                log.info(f"Loaded plugin {c.stem}")
+            except Exception as error:
+                log.error("Error loading plugin {}".format(c.stem))
+                log.error("Error caused by: {}".format(error))
 
-            mod = import_module(f"plugins.{c.stem}")
-            mod.load(self)
-            log.info(f"Loaded plugin {c.stem}")
+                sys.exit()
 
         # Start scheduler
         self.scheduler.start()
@@ -193,10 +242,6 @@ class Bot(lightbulb.Bot):
             server = str(guild.id)
             con = setup_database(server)
 
-    async def on_command_invoked(self, event: lightbulb.events.CommandInvocationEvent):
-        user = event.context.author.username
-        log.info(user + " used command " + event.command.name)
-
     async def on_stopping(self, event: hikari.StoppingEvent):
         log.info("Stopping bot")
 
@@ -209,10 +254,10 @@ class Bot(lightbulb.Bot):
         self.event_manager.subscribe(
             hikari.GuildMessageCreateEvent, self.on_new_guild_message
         )
-        self.event_manager.subscribe(
+        """ self.event_manager.subscribe(
             lightbulb.events.CommandInvocationEvent, self.on_command_invoked
-        )
+        ) """
         self.event_manager.subscribe(hikari.MemberCreateEvent, self.on_new_member)
         self.event_manager.subscribe(hikari.MemberDeleteEvent, self.on_leave_member)
-
+        # self.event_manager.subscribe(lightbulb.CommandErrorEvent, self.on_command_error)
         super().run()

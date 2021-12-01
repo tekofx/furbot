@@ -9,15 +9,15 @@ log = logging.getLogger(__name__)
 
 
 class Tasks(lightbulb.Plugin):
-    def __init__(self, bot: lightbulb.Bot):
+    def __init__(self, bot: lightbulb.BotApp):
         super().__init__(name="Tasks")
-        self.bot = bot
+        self.bot_client = bot
 
         # Tasks
-        self.meme_task = self.bot.scheduler.add_job(
+        self.meme_task = self.bot_client.scheduler.add_job(
             self.meme, CronTrigger(minute=0, second=10)
         )
-        self.cumpleaños_task = self.bot.scheduler.add_job(
+        self.cumpleaños_task = self.bot_client.scheduler.add_job(
             self.cumpleaños, CronTrigger(hour=8, minute=0, second=0)
         )
 
@@ -70,9 +70,9 @@ class Tasks(lightbulb.Plugin):
         log.info("Sent birthday message of " + member.username)
 
 
-def load(bot: lightbulb.Bot):
+def load(bot: lightbulb.BotApp):
     bot.add_plugin(Tasks(bot))
 
 
-def unload(bot: lightbulb.Bot):
+def unload(bot: lightbulb.BotApp):
     bot.remove_plugin("Tasks")

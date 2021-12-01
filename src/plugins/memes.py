@@ -27,12 +27,11 @@ import lightbulb
 
 
 class Memes(lightbulb.Plugin):
-    def __init__(self, bot: lightbulb.Bot):
+    def __init__(self):
         super().__init__(name="Memes")
-        self.bot = bot
 
-    @lightbulb.command()
-    async def addmeme(self, ctx: lightbulb.Context, meme_name: str):
+    @lightbulb.command("addmeme", "Añade un meme al bot")
+    async def addmeme(self, ctx: lightbulb.context.Context, meme_name: str):
         """Añade un meme al bot"""
         await self.bot.rest.trigger_typing(ctx.get_channel())
         meme_extension = "." + ctx.attachments[0].url.split(".")[-1]
@@ -94,8 +93,10 @@ class Memes(lightbulb.Plugin):
         logging.info("Meme " + newname + " added by" + str(ctx.author))
         await ctx.respond("Meme " + newname + " añadido")
 
-    @lightbulb.command()
-    async def meme(self, ctx: lightbulb.Context, name: str = None, tipo: str = None):
+    @lightbulb.command("meme", "Meme random de los nuestros")
+    async def meme(
+        self, ctx: lightbulb.context.Context, name: str = None, tipo: str = None
+    ):
         """Meme random de los nuestros
 
         Uso:
@@ -156,13 +157,13 @@ class Memes(lightbulb.Plugin):
             await ctx.respond(attachment=meme_path + output)
         logging.info("Meme " + output + " sent")
 
-    @lightbulb.command(name="countmemes")
-    async def count_memes(self, ctx: lightbulb.Context):
+    @lightbulb.command("countmemes", "Número de memes añadidos al bot")
+    async def count_memes(self, ctx: lightbulb.context.Context):
         """Número de memes añadidos al bot"""
         await ctx.respond(count_files_in_dir(meme_path))
 
-    @lightbulb.command()
-    async def horny(self, ctx: lightbulb.Context, user: hikari.Member = None):
+    @lightbulb.command("horny", "Mucho horny")
+    async def horny(self, ctx: lightbulb.context.Context, user: hikari.Member = None):
         """Mucho horny
 
         Uso: fur horny "@<usuario>
@@ -180,8 +181,8 @@ class Memes(lightbulb.Plugin):
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
 
-    @lightbulb.command()
-    async def patada(self, ctx: lightbulb.Context, user: hikari.Member = None):
+    @lightbulb.command("patada", "Te vas a comer mi pie")
+    async def patada(self, ctx: lightbulb.context.Context, user: hikari.Member = None):
         """Te vas a comer mi pie
 
         Uso: fur patada "@<usuario>
@@ -201,8 +202,8 @@ class Memes(lightbulb.Plugin):
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
 
-    @lightbulb.command()
-    async def shef(self, ctx: lightbulb.Context, user: hikari.Member = None):
+    @lightbulb.command("shef", "shef")
+    async def shef(self, ctx: lightbulb.context.Context, user: hikari.Member = None):
         """shef"""
         await self.bot.rest.trigger_typing(ctx.get_channel())
         # Get user avatar
@@ -216,9 +217,13 @@ class Memes(lightbulb.Plugin):
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
 
-    @lightbulb.command()
+    @lightbulb.command("quote", "Crea una quote en imagen")
     async def quote(
-        self, ctx: lightbulb.Context, quote: str, title: str, user: hikari.Member = None
+        self,
+        ctx: lightbulb.context.Context,
+        quote: str,
+        title: str,
+        user: hikari.Member = None,
     ):
         """Crea una quote en imagen
 
@@ -326,8 +331,10 @@ class Memes(lightbulb.Plugin):
 
         delete_files(("01.webp", "output.png", "01.png"))
 
-    @lightbulb.command()
-    async def impostor(self, ctx: lightbulb.Context, user: hikari.Member = None):
+    @lightbulb.command("impostor", "Quién es el impostor?")
+    async def impostor(
+        self, ctx: lightbulb.context.Context, user: hikari.Member = None
+    ):
         """Quién es el impostor?"""
         await self.bot.rest.trigger_typing(ctx.get_channel())
         avatarUrl = get_user(ctx, user).avatar_url
@@ -340,8 +347,8 @@ class Memes(lightbulb.Plugin):
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
 
-    @lightbulb.command()
-    async def stonks(self, ctx: lightbulb.Context, user: hikari.Member = None):
+    @lightbulb.command("stonks", "Stonks")
+    async def stonks(self, ctx: lightbulb.context.Context, user: hikari.Member = None):
         """Stonks"""
         await self.bot.rest.trigger_typing(ctx.get_channel())
         # Get user avatar
@@ -355,8 +362,8 @@ class Memes(lightbulb.Plugin):
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
 
-    @lightbulb.command()
-    async def jojo(self, ctx: lightbulb.Context, user: hikari.Member):
+    @lightbulb.command("jojo", "za warudo")
+    async def jojo(self, ctx: lightbulb.context.Context, user: hikari.Member):
         """Za warudo"""
         await self.bot.rest.trigger_typing(ctx.get_channel())
 
@@ -378,8 +385,8 @@ class Memes(lightbulb.Plugin):
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png", "02.png", "02.webp"))
 
-    @lightbulb.command()
-    async def cute(self, ctx: lightbulb.Context, user: hikari.Member = None):
+    @lightbulb.command("cute", "You are cute")
+    async def cute(self, ctx: lightbulb.context.Context, user: hikari.Member = None):
         """You are cute"""
         await self.bot.rest.trigger_typing(ctx.get_channel())
 
@@ -394,8 +401,8 @@ class Memes(lightbulb.Plugin):
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
 
-    @lightbulb.command()
-    async def suicidio(self, ctx: lightbulb.Context):
+    @lightbulb.command("suicidio", "Es hora del suisidio")
+    async def suicidio(self, ctx: lightbulb.context.Context):
         """Es hora del suisidio"""
         await self.bot.rest.trigger_typing(ctx.get_channel())
 
@@ -410,8 +417,8 @@ class Memes(lightbulb.Plugin):
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
 
-    @lightbulb.command()
-    async def coding(self, ctx: lightbulb.Context, user: hikari.Member = None):
+    @lightbulb.command("coding", "Programa como un pro hacker")
+    async def coding(self, ctx: lightbulb.context.Context, user: hikari.Member = None):
         """Programa como un pro hacker"""
         await self.bot.rest.trigger_typing(ctx.get_channel())
 
@@ -426,8 +433,8 @@ class Memes(lightbulb.Plugin):
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
 
-    @lightbulb.command()
-    async def unsee(self, ctx: lightbulb.Context, user: hikari.Member = None):
+    @lightbulb.command("unsee", "No por favor")
+    async def unsee(self, ctx: lightbulb.context.Context, user: hikari.Member = None):
         """No por favor"""
         await self.bot.rest.trigger_typing(ctx.get_channel())
 
@@ -442,8 +449,10 @@ class Memes(lightbulb.Plugin):
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
 
-    @lightbulb.command()
-    async def palomitas(self, ctx: lightbulb.Context, user: hikari.Member = None):
+    @lightbulb.command("palomitas", "Este drama está interesante")
+    async def palomitas(
+        self, ctx: lightbulb.context.Context, user: hikari.Member = None
+    ):
         """Este drama está interesante"""
         await self.bot.rest.trigger_typing(ctx.get_channel())
 
@@ -458,9 +467,13 @@ class Memes(lightbulb.Plugin):
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
 
-    @lightbulb.command()
+    @lightbulb.command("quien", "Quien ha sido?")
     async def quien(
-        self, ctx: lightbulb.Context, text1: str, text2: str, user: hikari.Member = None
+        self,
+        ctx: lightbulb.context.Context,
+        text1: str,
+        text2: str,
+        user: hikari.Member = None,
     ):
         """Quien ha sido?"""
         await self.bot.rest.trigger_typing(ctx.get_channel())
@@ -492,8 +505,10 @@ class Memes(lightbulb.Plugin):
         time.sleep(1)
         delete_files(("01.webp", "output.png", "01.png", "output2.png"))
 
-    @lightbulb.command()
-    async def cojones(self, ctx: lightbulb.Context, text: str, user: hikari.Member):
+    @lightbulb.command("cojones", "Si, los cojones")
+    async def cojones(
+        self, ctx: lightbulb.context.Context, text: str, user: hikari.Member
+    ):
         """Si, los cojones"""
         await self.bot.rest.trigger_typing(ctx.get_channel())
 
@@ -529,8 +544,8 @@ class Memes(lightbulb.Plugin):
             ("01.webp", "output.png", "01.png", "02.png", "02.webp", "output2.png")
         )
 
-    @lightbulb.command()
-    async def palanca(self, ctx: lightbulb.Context, user: hikari.Member):
+    @lightbulb.command("palanca", "Tira de la palanca Cronk")
+    async def palanca(self, ctx: lightbulb.context.Context, user: hikari.Member):
         """Tira de la palanca Cronk"""
         await self.bot.rest.trigger_typing(ctx.get_channel())
 
@@ -557,8 +572,8 @@ class Memes(lightbulb.Plugin):
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png", "02.png", "02.webp"))
 
-    @lightbulb.command()
-    async def tren(self, ctx: lightbulb.Context, user: hikari.Member):
+    @lightbulb.command("tren", "Atropella gente con un tren")
+    async def tren(self, ctx: lightbulb.context.Context, user: hikari.Member):
         """Atropella gente con un tren"""
         await self.bot.rest.trigger_typing(ctx.get_channel())
 
@@ -584,8 +599,8 @@ class Memes(lightbulb.Plugin):
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png", "02.png", "02.webp"))
 
-    @lightbulb.command()
-    async def dankmeme(self, ctx: lightbulb.Context):
+    @lightbulb.command("dankmemes", "Top memes de r/dankmemes")
+    async def dankmeme(self, ctx: lightbulb.context.Context):
         """Top memes de r/dankmemes"""
         message = await ctx.respond("buscando dankmeme")
         await ctx.respond(
@@ -593,8 +608,10 @@ class Memes(lightbulb.Plugin):
         )
         await message.delete()
 
-    @lightbulb.command()
-    async def cowsay(self, ctx: lightbulb.Context, text: str, character: str = None):
+    @lightbulb.command("cowsay", "Una vaca dice cosas")
+    async def cowsay(
+        self, ctx: lightbulb.context.Context, text: str, character: str = None
+    ):
         """Una vaca dice cosas
 
         Uso:
@@ -621,8 +638,8 @@ class Memes(lightbulb.Plugin):
 
         await ctx.respond(output)
 
-    @lightbulb.command()
-    async def slap(self, ctx: lightbulb.Context, user: hikari.Member = None):
+    @lightbulb.command("slap", "slap")
+    async def slap(self, ctx: lightbulb.context.Context, user: hikari.Member = None):
         """slap"""
         await self.bot.rest.trigger_typing(ctx.get_channel())
 
@@ -637,8 +654,10 @@ class Memes(lightbulb.Plugin):
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
 
-    @lightbulb.command()
-    async def reviento(self, ctx: lightbulb.Context, user: hikari.Member = None):
+    @lightbulb.command("reviento", "a que me reviento")
+    async def reviento(
+        self, ctx: lightbulb.context.Context, user: hikari.Member = None
+    ):
         """a que me reviento"""
         await self.bot.rest.trigger_typing(ctx.get_channel())
 
@@ -653,8 +672,8 @@ class Memes(lightbulb.Plugin):
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
 
-    @lightbulb.command()
-    async def radiopatio(self, ctx: lightbulb.Context, user: hikari.Member):
+    @lightbulb.command("radiopatio", "Es hora del cotilleo")
+    async def radiopatio(self, ctx: lightbulb.context.Context, user: hikari.Member):
         """Es hora del cotilleo"""
         await self.bot.rest.trigger_typing(ctx.get_channel())
 
@@ -669,8 +688,8 @@ class Memes(lightbulb.Plugin):
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
 
-    @lightbulb.command()
-    async def omni(self, ctx: lightbulb.Context, user: hikari.Member = None):
+    @lightbulb.command("omni", "Omniman")
+    async def omni(self, ctx: lightbulb.context.Context, user: hikari.Member = None):
         """Omniman"""
         await self.bot.rest.trigger_typing(ctx.get_channel())
 
@@ -685,8 +704,8 @@ class Memes(lightbulb.Plugin):
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
 
-    @lightbulb.command()
-    async def mierda(self, ctx: lightbulb.Context, user: hikari.Member = None):
+    @lightbulb.command("mierda", "Menudo montón de mierda")
+    async def mierda(self, ctx: lightbulb.context.Context, user: hikari.Member = None):
         """Menudo montón de mierda"""
         await self.bot.rest.trigger_typing(ctx.get_channel())
 
@@ -701,10 +720,10 @@ class Memes(lightbulb.Plugin):
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
 
-    @lightbulb.command()
+    @lightbulb.command("coche", "Fuera de mi coche")
     async def coche(
         self,
-        ctx: lightbulb.Context,
+        ctx: lightbulb.context.Context,
         text1: str,
         text2: str,
         text3: str,
@@ -789,8 +808,8 @@ class Memes(lightbulb.Plugin):
 
         delete_files(("01.webp", "02.webp", "01.png", "02.png", "03.png", "output.png"))
 
-    @lightbulb.command()
-    async def sus(self, ctx: lightbulb.Context, user: hikari.Member = None):
+    @lightbulb.command("sus", "Kinda sus")
+    async def sus(self, ctx: lightbulb.context.Context, user: hikari.Member = None):
         """Its kinda sus"""
         await self.bot.rest.trigger_typing(ctx.get_channel())
         string = """. 　　　。　　　　•　 　ﾟ　　。 　　.
@@ -815,8 +834,8 @@ class Memes(lightbulb.Plugin):
 
         await ctx.respond(string)
 
-    @lightbulb.command()
-    async def skeletor(self, ctx: lightbulb.Context, text1: str, text2: str):
+    @lightbulb.command("skeletor", "Datos perturbadores de Skeletor")
+    async def skeletor(self, ctx: lightbulb.context.Context, text1: str, text2: str):
         """Datos perturbadores de Skeletor
 
         Uso:
@@ -854,8 +873,8 @@ class Memes(lightbulb.Plugin):
         await ctx.respond(attachment=meme_templates_path + "output.png")
         os.remove(meme_templates_path + "output.png")
 
-    @lightbulb.command()
-    async def undertale(self, ctx: lightbulb.Context, texto: str):
+    @lightbulb.command("undertale", "Nyehehehehe")
+    async def undertale(self, ctx: lightbulb.context.Context, texto: str):
         await self.bot.rest.trigger_typing(ctx.get_channel())
         # Get image
         character_image_size = 200
@@ -892,11 +911,11 @@ class Memes(lightbulb.Plugin):
         delete_files(("output.png", "01.png", "01.webp"))
 
 
-def load(bot: lightbulb.Bot):
-    bot.add_plugin(Memes(bot))
+def load(bot: lightbulb.BotApp):
+    bot.add_plugin(Memes())
 
 
-def unload(bot: lightbulb.Bot):
+def unload(bot: lightbulb.BotApp):
     bot.remove_plugin("Memes")
 
 
