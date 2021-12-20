@@ -8,8 +8,10 @@ from utils.database import (
     create_rank,
     create_specie,
     create_user,
+    set_birthday,
 )
 from utils.functions import yaml_f
+from asyncio import sleep
 
 log = logging.getLogger(__name__)
 
@@ -101,6 +103,33 @@ class administration(commands.Cog):
         #
         await ctx.send("Actualizada lista de usuarios")
         log.info("Updated users in database")
+
+    @commands.command()
+    async def addcumple(
+        self, ctx: commands.Context, birthday: str, user: nextcord.Member
+    ):
+        """[Admin] Añade el cumpleaños de alguien al bot
+
+        Uso:
+            fur addcumple <dia>-<mes> @<usuario>
+
+        Ejemplo:
+            fur addcumple 16-1 @Teko
+        """
+        con = create_connection(str(ctx.guild.id))
+        set_birthday(con, user.id, birthday)
+        await ctx.send("Añadido cumpleaños de " + user.display_name)
+
+    @commands.command()
+    async def clear(self, ctx: commands.Context, num: int):
+        """[Admin] Elimina mensajes de un canal"""
+        messages_to_delete = []
+        async for message in ctx.channel.history(limit=num):
+            messages_to_delete.append(message)
+        await ctx.channel.delete_messages(messages_to_delete)
+        message = await ctx.send("Eliminados {} mensajes".format(num))
+        await sleep(5)
+        await message.delete()
 
 
 def setup(bot: commands.Bot):
