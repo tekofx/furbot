@@ -40,6 +40,7 @@ class administration(commands.Cog):
         log.info("Changed activity to " + activity_name)
 
     @commands.command(name="addspecie")
+    @commands.has_permissions(administrator=True)
     async def add_species(self, ctx: commands.Context, specie: nextcord.Role):
         """[Admin] Añade una especie al bot
 
@@ -54,6 +55,7 @@ class administration(commands.Cog):
         log.info("Added specie " + specie.name)
 
     @commands.command(name="addrank")
+    @commands.has_permissions(administrator=True)
     async def add_rank(self, ctx: commands.Context, rank: nextcord.Role):
         """[Admin] Añade un rank al bot
 
@@ -68,6 +70,7 @@ class administration(commands.Cog):
         log.info("Added rank " + rank.name)
 
     @commands.command(name="addcolor")
+    @commands.has_permissions(administrator=True)
     async def add_color(self, ctx: commands.Context, color: nextcord.Role):
         """[Admin] Añade un color al bot
 
@@ -82,6 +85,7 @@ class administration(commands.Cog):
         log.info("Added color " + color.name)
 
     @commands.command(name="upuser")
+    @commands.has_permissions(administrator=True)
     async def update_users(self, ctx: commands.Context):
         """[Admin] Actualiza la lista de usuarios con los usuarios que no existen\n"""
         guild = await self.bot.fetch_guild(ctx.guild.id)
@@ -105,6 +109,7 @@ class administration(commands.Cog):
         log.info("Updated users in database")
 
     @commands.command()
+    @commands.has_permissions(administrator=True)
     async def addcumple(
         self, ctx: commands.Context, birthday: str, user: nextcord.Member
     ):
@@ -121,6 +126,7 @@ class administration(commands.Cog):
         await ctx.send("Añadido cumpleaños de " + user.display_name)
 
     @commands.command()
+    @commands.has_permissions(administrator=True)
     async def clear(self, ctx: commands.Context, num: int):
         """[Admin] Elimina mensajes de un canal"""
         messages_to_delete = []
