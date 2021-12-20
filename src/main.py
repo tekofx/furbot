@@ -1,25 +1,20 @@
 import os
 import setproctitle
 from dotenv import load_dotenv
-from utils.bot import Bot
 import sys
 import coloredlogs, logging, colorama
+from utils.bot import Bot
 
 coloredlogs.install()
 log = logging.getLogger(__name__)
 log.setLevel("INFO")
 
 
-if os.name != "nt":
-    import uvloop
-
-    uvloop.install()
-
-
 # Set workdir
 path = os.path.dirname(os.path.abspath(__file__))
 working_dir = os.path.dirname(path)
 os.chdir(working_dir)
+print(os.getcwd())
 
 # Set process name
 setproctitle.setproctitle("furbot")
