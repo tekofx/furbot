@@ -6,12 +6,9 @@ qrcode
 setproctitle
 cowpy
 pyyaml
-hikari[speedups]
-hikari-lightbulb
 uvloop
-pytest
 graphviz
 tweepy
 colorama
-apscheduler
 coloredlogs
+nextcord
