@@ -1,7 +1,14 @@
 import logging
 from nextcord.ext import commands
 import nextcord
-from utils.database import create_color, create_connection, create_rank, create_specie
+from utils.database import (
+    check_entry_in_database,
+    create_color,
+    create_connection,
+    create_rank,
+    create_specie,
+    create_user,
+)
 from utils.functions import yaml_f
 
 log = logging.getLogger(__name__)
@@ -71,6 +78,29 @@ class administration(commands.Cog):
         create_color(con, color_data)
         await ctx.send("Color {} añadido".format(color.mention))
         log.info("Added color " + color.name)
+
+    @commands.command(name="upuser")
+    async def update_users(self, ctx: commands.Context):
+        """[Admin] Actualiza la lista de usuarios con los usuarios que no existen\n"""
+        guild = await self.bot.fetch_guild(ctx.guild.id)
+        server = str(ctx.guild.id)
+        con = create_connection(server)
+        try:
+
+            members = guild.fetch_members()
+            async for member in members:
+                print(member)
+                if not member.bot and not check_entry_in_database(
+                    con, "users", member.id
+                ):
+                    member_data = [member.id, member.display_name, member.joined_at, 1]
+                    create_user(con, member_data)
+        except Exception as error:
+            log.error("{}".format(error))
+
+        #
+        await ctx.send("Actualizada lista de usuarios")
+        log.info("Updated users in database")
 
 
 def setup(bot: commands.Bot):
