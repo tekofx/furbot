@@ -74,6 +74,7 @@ class roast(commands.Cog):
             log.error("Error: {}".format(Exception))
 
     @commands.command()
+    @commands.has_permissions(administrator=True)
     async def addanimo(self, ctx: commands.Context, *animos: str):
         """[ADMIN] Añade animos
 
