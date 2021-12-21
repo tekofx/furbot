@@ -5,7 +5,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased - 2021-9-29
+## Unreleased - 2021-12-21
+
+Se ha cambiado la librería hikari por nextcord
 
 ### Corregido
 
@@ -21,15 +23,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Comando stats
 - Comando addspecie
 - Comando arctic
-- Comando skeletor
 - Comando clear
-- Comando remindme
 - Comando skeletor
-- Comando ban
-- Comando kick
 - Comando bird
 - Comando pigeon
-- Task save_users que guarda la lista de usuarios
 - Script para construir y ejecutar en docker
 - Furry_irl en task memes
 - Ejecución en modo pruebas o modo normal
@@ -38,6 +35,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Actualizados comandos fox y wolf
 - Añadida eliminacion de contenedor anterior a run_in_docker
+
+### Eliminado
+
+- Comando sus
 
 ## [2.5] - 2021-9-29
 

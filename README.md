@@ -6,7 +6,6 @@
 
 ![Demo](assets/demo.gif)
 
-
 - [Ejecución en docker:](#ejecución-en-docker)
   - [Mediante script](#mediante-script)
   - [Ejecución manual](#ejecución-manual)
@@ -16,12 +15,13 @@
 - [Ejecucion sin docker](#ejecucion-sin-docker)
   - [Ejecución normal](#ejecución-normal)
   - [Ejecución para pruebas](#ejecución-para-pruebas)
+
 # Ejecución en docker:
 
-
-
 Si es la primera vez que se ejecuta:
+
 ## Mediante script
+
 ```sh
 python3 run_in_docker.py
 ```
@@ -33,9 +33,11 @@ python3 run_in_docker.py
 ```sh
 docker build --no-cache -t furbot .
 ```
+
 ### Ejecutar
+
 ```sh
-docker run -d \           
+docker run -d \
   --env-file <env_file> \
   --name furbot \
   --mount type=bind,src=<furbot_folder>/files/,dst=/bot/files/  \
@@ -43,7 +45,6 @@ docker run -d \
   --restart=unless-stopped \
   -p 80:80 furbot
 ```
-
 
 ## Iniciar reiniciar y detener
 
@@ -56,11 +57,15 @@ docker stop furbot # Detener docker
 ```
 
 # Ejecucion sin docker
+
 ## Ejecución normal
+
 ```sh
 python3 src/main.py
 ```
+
 ## Ejecución para pruebas
+
 ```sh
 python3 src/main.py -t
 ```
