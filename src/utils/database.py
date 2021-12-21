@@ -425,12 +425,9 @@ def get_birthdays(con):
         info = cur.fetchall()
     except Exception as error:
         log.error("Error: could not query birthdays: {}".format(error))
+    else:
 
-    output = []
-    for x in info:
-        output.append(x[0])
-
-    return output
+        return info
 
 
 def get_ranks(con):
