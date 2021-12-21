@@ -9,8 +9,6 @@ import praw
 import random
 import requests
 import yaml
-import lightbulb
-import hikari
 
 
 class yaml_functions:
