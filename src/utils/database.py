@@ -334,7 +334,7 @@ def get_times_joined(con, user_id: int):
         FROM users
         WHERE id=?
         """
-    if not check_entry_in_database(con, user_id):
+    if not check_entry_in_database(con, "users", user_id):
         return 0
 
     var = [user_id]
