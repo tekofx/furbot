@@ -3,7 +3,6 @@ import requests
 import tweepy as tw
 import os
 from utils.functions import write_in_file, exists_string_in_file
-from plugins.animal import animal_history_txt
 
 
 log = logging.getLogger(__name__)
@@ -31,4 +30,5 @@ class Twitter:
         )
         for tweet in tweets:
             if "media" in tweet.entities:
-                return tweet
+
+                return tweet.entities["media"][0]["media_url"]
