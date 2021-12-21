@@ -4,15 +4,21 @@ from nextcord.ext import commands, tasks
 import os
 from pathlib import Path
 import logging
-from utils.database import setup_database
+from utils.database import (
+    check_entry_in_database,
+    create_connection,
+    create_user,
+    get_times_joined,
+    set_times_joined,
+    setup_database,
+)
 from utils.functions import yaml_f
 from nextcord import Intents
-
 from utils.twitter import Twitter
 
 log = logging.getLogger(__name__)
-
 token = os.getenv("DISCORD_TOKEN")
+MAX_JOIN_TIMES = 3
 
 
 class Bot(commands.Bot):
@@ -40,7 +46,6 @@ class Bot(commands.Bot):
         self.server = await self.fetch_guild(os.getenv("VILLAFURRENSE"))
         log.info("Loaded VF server")
 
-
         # Load cogs
         cogs = os.listdir("src/cogs/")
 
@@ -57,6 +62,45 @@ class Bot(commands.Bot):
             con = setup_database(server)
 
         log.info("We have logged in as {}".format(self.user))
+
+    async def on_member_join(self, member: nextcord.Member):
+        con = create_connection(str(member.guild.id))
+        author_id = member.id
+        author_name = member.display_name
+        entry_in_database = check_entry_in_database(con, "users", member.id)
+        if not entry_in_database:
+            user_data = [
+                author_id,
+                author_name,
+                member.joined_at,
+                1,
+            ]
+            create_user(con, user_data)
+            log.info("Created user {} with id {}".format(author_name, author_id))
+        else:
+            times_joined = get_times_joined(con, author_id)
+            if times_joined == MAX_JOIN_TIMES:
+                reason = "Maximo numero de veces de volverse a unir alcanzado"
+                try:
+                    await member.ban(reason=reason)
+                except Exception as error:
+                    log.error(
+                        "Error baning user for entering max_total_times: {}".format(
+                            error
+                        )
+                    )
+            else:
+                try:
+                    times_joined = get_times_joined(con, author_id) + 1
+                    set_times_joined(con, author_id, times_joined)
+
+                    log.info(
+                        "Increased joined times of {} to {}".format(
+                            author_name, str(times_joined)
+                        )
+                    )
+                except Exception as error:
+                    log.error("{}".format(error))
 
     def run(self):
         # Set activity
