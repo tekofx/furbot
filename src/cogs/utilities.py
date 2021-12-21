@@ -185,8 +185,7 @@ class utilities(commands.Cog):
             await tmp.edit(content=output)
 
     @commands.command()
-    async def cumple(ctx: commands.Context, user: nextcord.Member):
-        # TODO: error con base de datos
+    async def cumple(self, ctx: commands.Context, user: nextcord.Member):
         con = create_connection(str(ctx.guild.id))
 
         output = "No existe el cumpleaños de " + user.display_name
@@ -198,7 +197,7 @@ class utilities(commands.Cog):
         output = "El cumpleaños de {user} es el {cumple}".format(
             user=user.display_name, cumple=birthday
         )
-        await ctx.respond(output)
+        await ctx.send(output)
 
 
 def setup(bot: commands.Bot):
