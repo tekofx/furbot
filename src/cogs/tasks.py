@@ -4,6 +4,7 @@ import nextcord
 from nextcord.ext import commands, tasks
 from datetime import datetime, timedelta
 import random
+from utils.database import create_connection, get_birthdays
 from utils.functions import get_hot_subreddit_image, reddit_memes_history_txt, yaml_f
 
 log = logging.getLogger(__name__)
@@ -11,15 +12,11 @@ log = logging.getLogger(__name__)
 
 class tasks(commands.Cog):
     def __init__(self, bot: commands.Bot):
-        self.index = 0
         self.bot = bot
 
         # Start tasks
         self.meme.start()
-        # self.birthday.start()
-
-    def cog_unload(self):
-        self.printer.cancel()
+        self.birthday.start()
 
     @tasks.loop(hours=1)
     async def meme(self):
@@ -54,7 +51,6 @@ class tasks(commands.Cog):
     @tasks.loop(hours=1)
     async def birthday(self):
         """Checks if today is somebody's birthday"""
-        # TODO: Fix database problems
         try:
 
             now = datetime.now()
@@ -69,14 +65,15 @@ class tasks(commands.Cog):
             today = month + "-" + day
 
             # Get yaml info
-            content = yaml_f.get_cumpleaños()
-            user_ids = content[1]
-            dates = content[2]
-            index = dates.index(today)
-            member = await self.bot.fetch_user(user_ids[index])
-            await self.bot.general_channel.send(
-                "Es el cumple de " + member.mention + ". Felicidades!!!!!!!!!"
-            )
+            con = create_connection(str(self.bot.server.id))
+            birthdays = get_birthdays(con)
+            for id, birthday in birthdays:
+                if birthday != None and today in birthday:
+                    member = await self.bot.fetch_user(id)
+                    await self.bot.general_channel.send(
+                        "Es el cumple de " + member.mention + ". Felicidades!!!!!!!!!"
+                    )
+
         except Exception as error:
             log.error("Error ocured on task birthday: {}".format(error))
         else:
