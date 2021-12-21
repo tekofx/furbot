@@ -3,6 +3,8 @@ from PIL import Image
 import os
 import logging
 from dotenv import load_dotenv
+import nextcord
+from nextcord.ext import commands
 import praw
 import random
 import requests
@@ -177,7 +179,7 @@ def convert_pic(picture: str, imgName: str, imgSize: str = None):
     img.save(meme_templates_path + imgName + ".png")
 
 
-def get_user(ctx: lightbulb.context.Context, user: hikari.User = None) -> hikari.Member:
+def get_user(ctx: commands.Context, user: nextcord.Member = None) -> nextcord.Member:
     """Gets user from a message
 
     Args:
