@@ -1,0 +1,11 @@
+version: '1'
+services:
+  furbot:
+    build: .
+    container_name: furbot
+
+    volumes:
+      - /home/teko/bots/furbot/files:/bot/files/
+      - /home/teko/bots/furbot/src:/bot/src
+      - /home/teko/bots/furbot/databases:/bot/databases
+    restart: unless-stopped
