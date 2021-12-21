@@ -37,6 +37,9 @@ class Bot(commands.Bot):
         log.info("Loaded memes channel")
         self.audit_channel = await self.fetch_channel(os.getenv("AUDIT_CHANNEL"))
         log.info("Loaded audit channel\n")
+        self.server = await self.fetch_guild(os.getenv("VILLAFURRENSE"))
+        log.info("Loaded VF server")
+
 
         # Load cogs
         cogs = os.listdir("src/cogs/")
