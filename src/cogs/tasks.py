@@ -51,33 +51,35 @@ class tasks(commands.Cog):
     @tasks.loop(hours=1)
     async def birthday(self):
         """Checks if today is somebody's birthday"""
-        try:
 
-            now = datetime.now()
+        now = datetime.now()
+        if now.hour == 8:
+            try:
+                # Get month and day
+                month = str(now.month)
+                day = str(now.day)
+                if len(month) == 1:
+                    month = "0" + month
+                if len(day) == 1:
+                    day = "0" + day
+                today = month + "-" + day
 
-            # Get month and day
-            month = str(now.month)
-            day = str(now.day)
-            if len(month) == 1:
-                month = "0" + month
-            if len(day) == 1:
-                day = "0" + day
-            today = month + "-" + day
+                # Get yaml info
+                con = create_connection(str(self.bot.server.id))
+                birthdays = get_birthdays(con)
+                for id, birthday in birthdays:
+                    print(id, birthday)
+                    if birthday != None and today in birthday:
+                        member = await self.bot.fetch_user(id)
+                        await self.bot.general_channel.send(
+                            "Es el cumple de "
+                            + member.mention
+                            + ". Felicidades!!!!!!!!!"
+                        )
+                        log.info("Sent birthday message of " + member.display_name)
 
-            # Get yaml info
-            con = create_connection(str(self.bot.server.id))
-            birthdays = get_birthdays(con)
-            for id, birthday in birthdays:
-                if birthday != None and today in birthday:
-                    member = await self.bot.fetch_user(id)
-                    await self.bot.general_channel.send(
-                        "Es el cumple de " + member.mention + ". Felicidades!!!!!!!!!"
-                    )
-
-        except Exception as error:
-            log.error("Error ocured on task birthday: {}".format(error))
-        else:
-            log.info("Sent birthday message of " + member.username)
+            except Exception as error:
+                log.error("Error ocured on task birthday: {}".format(error))
 
     @meme.before_loop
     @birthday.before_loop
