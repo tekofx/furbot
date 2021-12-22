@@ -41,7 +41,7 @@ class administration(commands.Cog):
 
     @commands.command(name="addspecie")
     @commands.has_permissions(administrator=True)
-    async def add_species(self, ctx: commands.Context, specie: nextcord.Role):
+    async def add_species(self, ctx: commands.Context, *species: nextcord.Role):
         """[Admin] Añade una especie al bot
 
         Uso:
@@ -49,14 +49,15 @@ class administration(commands.Cog):
         """
         server = str(ctx.guild.id)
         con = create_connection(server)
-        specie_data = [specie.id, specie.name]
-        create_specie(con, specie_data)
-        await ctx.send("Especie {} añadida".format(specie.mention))
-        log.info("Added specie " + specie.name)
+        for specie in species:
+            specie_data = [specie.id, specie.name]
+            create_specie(con, specie_data)
+            await ctx.send("Especie {} añadida".format(specie.mention))
+            log.info("Added specie " + specie.name)
 
     @commands.command(name="addrank")
     @commands.has_permissions(administrator=True)
-    async def add_rank(self, ctx: commands.Context, rank: nextcord.Role):
+    async def add_rank(self, ctx: commands.Context, *ranks: nextcord.Role):
         """[Admin] Añade un rank al bot
 
         Uso:
@@ -64,14 +65,15 @@ class administration(commands.Cog):
         """
         server = str(ctx.guild.id)
         con = create_connection(server)
-        rank_data = [rank.id, rank.name]
-        create_rank(con, rank_data)
-        await ctx.send("Rank {} añadido".format(rank.mention))
-        log.info("Added rank " + rank.name)
+        for rank in ranks:
+            rank_data = [rank.id, rank.name]
+            create_rank(con, rank_data)
+            await ctx.send("Rank {} añadido".format(rank.mention))
+            log.info("Added rank " + rank.name)
 
     @commands.command(name="addcolor")
     @commands.has_permissions(administrator=True)
-    async def add_color(self, ctx: commands.Context, color: nextcord.Role):
+    async def add_color(self, ctx: commands.Context, *colors: nextcord.Role):
         """[Admin] Añade un color al bot
 
         Uso:
@@ -79,10 +81,11 @@ class administration(commands.Cog):
         """
         server = str(ctx.guild.id)
         con = create_connection(server)
-        color_data = [color.id, color.name]
-        create_color(con, color_data)
-        await ctx.send("Color {} añadido".format(color.mention))
-        log.info("Added color " + color.name)
+        for color in colors:
+            color_data = [color.id, color.name]
+            create_color(con, color_data)
+            await ctx.send("Color {} añadido".format(color.mention))
+            log.info("Added color " + color.name)
 
     @commands.command(name="upuser")
     @commands.has_permissions(administrator=True)
