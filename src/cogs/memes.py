@@ -1,4 +1,5 @@
 import nextcord
+from nextcord import widget
 from nextcord.ext import commands
 import random
 import textwrap
@@ -856,6 +857,70 @@ class memes(commands.Cog):
         image.save(meme_templates_path + "output.png", "PNG")
         await ctx.send(file=nextcord.File(meme_templates_path + "output.png"))
         delete_files(("output.png", "01.png", "01.webp"))
+
+    @commands.command()
+    async def huracan(
+        self,
+        ctx: commands.Context,
+        user1: nextcord.Member,
+        user2: nextcord.Member,
+        user3: nextcord.Member,
+    ):
+        """Jaja huracán
+
+        Uso: fur huracan <user1> <user2> <user3>
+
+        """
+
+        # Get user avatars
+        r = requests.get(user1.avatar.url, allow_redirects=True)
+        open(meme_templates_path + "01.webp", "wb").write(r.content)
+        r = requests.get(user2.avatar.url, allow_redirects=True)
+        open(meme_templates_path + "02.webp", "wb").write(r.content)
+        r = requests.get(user3.avatar.url, allow_redirects=True)
+        open(meme_templates_path + "03.webp", "wb").write(r.content)
+
+        # Convert avatars
+        convert_pic(meme_templates_path + "01.webp", "01", 265)
+        convert_pic(meme_templates_path + "02.webp", "02", 230)
+        convert_pic(meme_templates_path + "03.webp", "03", 170)
+
+        # Open meme image
+        meme = Image.open(meme_templates_path + "huracan" + ".png").convert("RGBA")
+
+        # Get width and height
+        width, height = meme.size
+
+        # Create base image
+        output = Image.new("RGBA", (width, height))
+
+        # Paste images
+        img1 = Image.open(meme_templates_path + "01" + ".png").convert("RGBA")
+        output.paste(img1, (683, 473), img1)
+        img2 = Image.open(meme_templates_path + "02" + ".png").convert("RGBA")
+        output.paste(img2, (420, 630), img2)
+        img3 = Image.open(meme_templates_path + "03" + ".png").convert("RGBA")
+        output.paste(img3, (650, 870), img3)
+
+        # Paste meme image
+        output.paste(meme, (0, 0), meme)
+        output.save(meme_templates_path + "output.png", "PNG")
+
+        # Send meme
+        await ctx.send(file=nextcord.File(meme_templates_path + "output.png"))
+
+        # Delete user avatar and output
+        delete_files(
+            (
+                "01.webp",
+                "02.webp",
+                "03.webp",
+                "output.png",
+                "01.png",
+                "02.png",
+                "03.png",
+            )
+        )
 
 
 def create_meme(
