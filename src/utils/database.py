@@ -416,7 +416,7 @@ def set_birthday(con, user_id: int, date: int):
 
 
 def get_birthdays(con):
-    sql = """ SELECT birthday
+    sql = """ SELECT id,birthday
         FROM users
         """
     cur = con.cursor()
