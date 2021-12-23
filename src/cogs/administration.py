@@ -112,7 +112,6 @@ class administration(commands.Cog):
         log.info("Updated users in database")
 
     @commands.command()
-    @commands.has_permissions(administrator=True)
     async def addcumple(
         self, ctx: commands.Context, birthday: str, user: nextcord.Member
     ):
