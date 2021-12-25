@@ -100,7 +100,7 @@ class Bot(commands.Bot):
         # Add to database
         con = create_connection(str(member.guild.id))
         author_id = member.id
-        author_name = member.display_name
+        author_name = member.name
         entry_in_database = check_entry_in_database(con, "users", member.id)
 
         if not entry_in_database and member.bot:

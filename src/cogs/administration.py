@@ -9,6 +9,7 @@ from utils.database import (
     create_specie,
     create_user,
     set_birthday,
+    set_name,
 )
 from utils.functions import yaml_f
 from asyncio import sleep
@@ -94,23 +95,28 @@ class administration(commands.Cog):
         """[Admin] Actualiza la lista de usuarios con los usuarios que no existen\n"""
         guild = await self.bot.fetch_guild(ctx.guild.id)
         server = str(ctx.guild.id)
+
         con = create_connection(server)
         try:
 
             members = guild.fetch_members()
             async for member in members:
-                print(member)
+                set_name(member.id, member.name)
+
                 if not member.bot and not check_entry_in_database(
                     con, "users", member.id
                 ):
-                    member_data = [member.id, member.display_name, member.joined_at]
+                    member_data = [member.id, member.name, member.joined_at]
                     create_user(con, member_data)
+                else:
+                    set_name(member.id, member.name)
+
         except Exception as error:
             log.error("{}".format(error))
+        else:
 
-        #
-        await ctx.send("Actualizada lista de usuarios")
-        log.info("Updated users in database")
+            await ctx.send("Actualizada lista de usuarios")
+            log.info("Updated users in database")
 
     @commands.command()
     async def addcumple(
