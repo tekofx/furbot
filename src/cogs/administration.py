@@ -103,7 +103,7 @@ class administration(commands.Cog):
                 if not member.bot and not check_entry_in_database(
                     con, "users", member.id
                 ):
-                    member_data = [member.id, member.display_name, member.joined_at, 1]
+                    member_data = [member.id, member.display_name, member.joined_at]
                     create_user(con, member_data)
         except Exception as error:
             log.error("{}".format(error))

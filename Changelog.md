@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Cambiado
 
 - Nombre de arctic_fox a arctic
+- Cambios en on_member_join
+- Eliminado valor times_joined de la tabla usuarios de sqlite
 
 ## [3.1] - 2021-12-25
 

@@ -8,8 +8,7 @@ users_table = """ CREATE TABLE IF NOT EXISTS users (
                                     id integer PRIMARY KEY,
                                     name text NOT NULL,
                                     joined_date date,
-                                    birthday date,
-                                    times_joined integer
+                                    birthday date
                                 ); """
 
 ranks_table = """ CREATE TABLE IF NOT EXISTS ranks (
@@ -102,8 +101,8 @@ def create_user(conn, user_data):
         user (tuple): info to add
     """
 
-    sql = """ INSERT INTO users(id,name,joined_date,times_joined)
-              VALUES(?,?,?,?) """
+    sql = """ INSERT INTO users(id,name,joined_date)
+              VALUES(?,?,?) """
 
     cur = conn.cursor()
     try:
@@ -113,10 +112,10 @@ def create_user(conn, user_data):
                 user=user_data[1], id=user_data[0]
             )
         )
-    except:
+    except Exception as error:
         log.error(
-            "Error: Could not create user {id} {name}".format(
-                id=user_data[0], name=user_data[1]
+            "Error: Could not create user {id} {name}: {error}".format(
+                id=user_data[0], name=user_data[1], error=error
             )
         )
 
@@ -326,48 +325,6 @@ def set_name(con, user_id: int, name: str):
         log.info("Updated name of user {}".format(user_id))
     except:
         log.error("Error: Could not update name of user {}".format(user_id))
-    con.commit()
-
-
-def get_times_joined(con, user_id: int):
-    sql = """ SELECT times_joined
-        FROM users
-        WHERE id=?
-        """
-    if not check_entry_in_database(con, "users", user_id):
-        return 0
-
-    var = [user_id]
-    cur = con.cursor()
-    try:
-        cur.execute(sql, var)
-    except:
-        log.error("Error: could not query the times_joined of user {}".format(user_id))
-    info = cur.fetchone()
-    num_messages = int(info[0])
-
-    return num_messages
-
-
-def set_times_joined(con, user_id: int, times: int):
-    """Sets times joined
-
-    Args:
-        con ([type]): [description]
-        user_id (int): id of user
-        times (int): new value of times_joines
-    """
-    sql = """ UPDATE users  
-              SET times_joined = ?
-              WHERE id = ?"""
-
-    cur = con.cursor()
-    var = [times, user_id]
-    try:
-        cur.execute(sql, var)
-        log.info("Updated times_joined of user {}".format(user_id))
-    except:
-        log.error("Error: Could not update times_joined of user {}".format(user_id))
     con.commit()
 
 

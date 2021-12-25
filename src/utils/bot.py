@@ -6,8 +6,6 @@ from utils.database import (
     check_entry_in_database,
     create_connection,
     create_user,
-    get_times_joined,
-    set_times_joined,
     setup_database,
 )
 from utils.functions import yaml_f
@@ -35,17 +33,44 @@ class Bot(commands.Bot):
     def twitter(self) -> Twitter:
         return self._twitter
 
+    @property
+    def general_channel(self):
+        return self._general_channel
+
+    @property
+    def memes_channel(self):
+        return self._memes_channel
+
+    @property
+    def audit_channel(self):
+        return self._audit_channel
+
+    @property
+    def lobby_channel(self):
+        return self._lobby_channel
+
+    @property
+    def server(self):
+        return self._server
+
     async def on_ready(self):
         """Performs an action when the bot is ready"""
         # Get channels and server
         log.info("Fetching needed channels")
-        self.general_channel = await self.fetch_channel(os.getenv("GENERAL_CHANNEL"))
+
+        self._general_channel = await self.fetch_channel(os.getenv("GENERAL_CHANNEL"))
         log.info("Loaded general channel")
-        self.memes_channel = await self.fetch_channel(os.getenv("MEMES_CHANNEL"))
+
+        self._memes_channel = await self.fetch_channel(os.getenv("MEMES_CHANNEL"))
         log.info("Loaded memes channel")
-        self.audit_channel = await self.fetch_channel(os.getenv("AUDIT_CHANNEL"))
+
+        self._audit_channel = await self.fetch_channel(os.getenv("AUDIT_CHANNEL"))
         log.info("Loaded audit channel\n")
-        self.server = await self.fetch_guild(os.getenv("VILLAFURRENSE"))
+
+        self._lobby_channel = await self.fetch_channel(os.getenv("LOBBY_CHANNEL"))
+        log.info("Loaded lobby channel\n")
+
+        self._server = await self.fetch_guild(os.getenv("VILLAFURRENSE"))
         log.info("Loaded VF server")
 
         # Load cogs
@@ -66,43 +91,31 @@ class Bot(commands.Bot):
         log.info("We have logged in as {}".format(self.user))
 
     async def on_member_join(self, member: nextcord.Member):
+        # Message in lobby
+        mensaje_lobby = """Bienvenid@ a Villa Furrense {}. No olvides mirar el canal de normas y pasarlo bien""".format(
+            member.mention
+        )
+        await self.lobby_channel.send(mensaje_lobby)
+
+        # Add to database
         con = create_connection(str(member.guild.id))
         author_id = member.id
         author_name = member.display_name
         entry_in_database = check_entry_in_database(con, "users", member.id)
-        if not entry_in_database:
+
+        if not entry_in_database and member.bot:
             user_data = [
                 author_id,
                 author_name,
                 member.joined_at,
-                1,
             ]
-            create_user(con, user_data)
-            log.info("Created user {} with id {}".format(author_name, author_id))
-        else:
-            times_joined = get_times_joined(con, author_id)
-            if times_joined == MAX_JOIN_TIMES:
-                reason = "Maximo numero de veces de volverse a unir alcanzado"
-                try:
-                    await member.ban(reason=reason)
-                except Exception as error:
-                    log.error(
-                        "Error baning user for entering max_total_times: {}".format(
-                            error
-                        )
-                    )
+            try:
+                create_user(con, user_data)
+            except Exception as error:
+                log.error("Error creating user on join: {}".format(error))
             else:
-                try:
-                    times_joined = get_times_joined(con, author_id) + 1
-                    set_times_joined(con, author_id, times_joined)
-
-                    log.info(
-                        "Increased joined times of {} to {}".format(
-                            author_name, str(times_joined)
-                        )
-                    )
-                except Exception as error:
-                    log.error("{}".format(error))
+                log.info("Created user {} with id {}".format(author_name, author_id))
+            await self.audit_channel.send("{} se ha unido".format(member.name))
 
     def run(self):
         # Set activity
