@@ -26,6 +26,18 @@ class yaml_functions:
         """
         self.yaml_file = yaml_file
 
+    def get_content_yaml(self):
+        """Gets the content of yaml_file
+
+        Returns:
+            any: content of yaml_file
+        """
+        with open(self.yaml_file, "r") as stream:
+            try:
+                return yaml.safe_load(stream)
+            except yaml.YAMLError as exc:
+                print("Error loading YAML: " + exc)
+
     def get_activity(self):
         """Gets activity from yaml_file
 
