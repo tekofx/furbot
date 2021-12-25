@@ -2,7 +2,10 @@ version: '1'
 services:
   furbot:
     build: .
+    image: furbot
     container_name: furbot
+    ports:
+      - "100:80"
 
     volumes:
       - /home/teko/bots/furbot/files:/bot/files/
