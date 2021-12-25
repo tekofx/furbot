@@ -38,7 +38,7 @@ class animal(commands.Cog):
         os.remove("files/image.jpg")
         await message.delete()
 
-    @commands.command()
+    @commands.command(name="arctic")
     async def arctic_fox(self, ctx: commands.Context):
         """Fotos de zorros articos"""
         message = await ctx.send("Buscando fotos de zorros árticos hermosos")
