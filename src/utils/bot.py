@@ -1,8 +1,6 @@
 import nextcord
-from nextcord import activity
-from nextcord.ext import commands, tasks
+from nextcord.ext import commands
 import os
-from pathlib import Path
 import logging
 from utils.database import (
     check_entry_in_database,
@@ -13,7 +11,6 @@ from utils.database import (
     setup_database,
 )
 from utils.functions import yaml_f
-from nextcord import Intents
 from utils.twitter import Twitter
 
 log = logging.getLogger(__name__)
@@ -30,6 +27,7 @@ class Bot(commands.Bot):
             description="uwu",
             intents=intents,
         )
+
         self.token = token
         self._twitter = Twitter()
 
@@ -55,8 +53,8 @@ class Bot(commands.Bot):
 
         for c in cogs:
             if c.endswith(".py"):
-                log.info("Loaded {}".format(c))
                 self.load_extension("cogs." + c[:-3])
+                log.info("Loaded {}".format(c))
 
         # Setup databases
         guilds = self.fetch_guilds()

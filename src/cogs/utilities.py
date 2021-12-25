@@ -1,7 +1,5 @@
 import nextcord
 from nextcord.ext import commands
-from os import name
-import logging
 from PIL import Image
 from PIL import ImageFont
 from PIL import ImageDraw
@@ -9,11 +7,9 @@ import qrcode
 from pyrae import dle
 import requests
 from utils.functions import (
-    get_user,
     convert_pic,
     meme_templates_path,
     delete_files,
-    yaml_f,
 )
 from utils.functions import magnet_id, angel_id
 

@@ -1,8 +1,7 @@
 import logging
-import requests
 import tweepy as tw
 import os
-from utils.functions import write_in_file, exists_string_in_file
+from utils.functions import exists_string_in_file
 
 
 log = logging.getLogger(__name__)

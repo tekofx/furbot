@@ -1,5 +1,4 @@
 import nextcord
-from nextcord import widget
 from nextcord.ext import commands
 import random
 import textwrap
