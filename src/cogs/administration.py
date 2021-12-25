@@ -131,6 +131,7 @@ class administration(commands.Cog):
             fur addcumple 16-1 @Teko
         """
         con = create_connection(str(ctx.guild.id))
+
         set_birthday(con, user.id, birthday)
         await ctx.send("Añadido cumpleaños de " + user.display_name)
 
