@@ -31,7 +31,11 @@ class Bot(commands.Bot):
             intents=intents,
         )
         self.token = token
-        self.twitter = Twitter()
+        self._twitter = Twitter()
+
+    @property
+    def twitter(self) -> Twitter:
+        return self._twitter
 
     async def on_ready(self):
         """Performs an action when the bot is ready"""

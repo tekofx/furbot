@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Comando huracan
 
+### Corregido
+
+- Error que repetia las imagenes de animals
+
 ## [3.0] - 2021-12-22
 
 Se ha cambiado la librería hikari por nextcord
