@@ -7,10 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] - 2021-12-25
 
-### Arreglado 
+### Arreglado
+
 - Error en clear que borraba un mensaje menos de los que debería
+- Error al añadir memes
 
 ### Cambiado
+
 - Nombre de arctic_fox a arctic
 
 ## [3.1] - 2021-12-25

@@ -36,8 +36,8 @@ class memes(commands.Cog):
     @commands.command()
     async def addmeme(self, ctx: commands.Context, meme_name: str):
         """Añade un meme al bot"""
-
-        meme_extension = "." + ctx.message.attachments[0]
+        meme_extension = "." + ctx.message.attachments[0].filename
+        meme_extension = meme_extension[-4:]
         count = 1
 
         # Remove "
