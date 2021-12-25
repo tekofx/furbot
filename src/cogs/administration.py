@@ -133,7 +133,7 @@ class administration(commands.Cog):
     async def clear(self, ctx: commands.Context, num: int):
         """[Admin] Elimina mensajes de un canal"""
         messages_to_delete = []
-        async for message in ctx.channel.history(limit=num):
+        async for message in ctx.channel.history(limit=num + 1):
             messages_to_delete.append(message)
         await ctx.channel.delete_messages(messages_to_delete)
         message = await ctx.send("Eliminados {} mensajes".format(num))
