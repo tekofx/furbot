@@ -5,7 +5,6 @@ import os
 import requests
 from utils.functions import write_in_file
 from utils.bot import Bot
-import asyncio
 
 log = logging.getLogger(__name__)
 

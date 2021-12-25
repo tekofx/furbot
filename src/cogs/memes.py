@@ -25,12 +25,13 @@ from cowpy import cow
 import unicodedata
 import requests
 from PIL import Image
+from utils.bot import Bot
 
 log = logging.getLogger(__name__)
 
 
 class memes(commands.Cog):
-    def __init__(self, bot: commands.Bot) -> None:
+    def __init__(self, bot: Bot) -> None:
         self.bot = bot
 
     @commands.command()

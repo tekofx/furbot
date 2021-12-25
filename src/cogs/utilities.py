@@ -24,10 +24,11 @@ from utils.database import (
     get_ranks,
     get_species,
 )
+from utils.bot import Bot
 
 
 class utilities(commands.Cog):
-    def __init__(self, bot: commands.Bot) -> None:
+    def __init__(self, bot: Bot) -> None:
         self.bot = bot
 
     @commands.command()

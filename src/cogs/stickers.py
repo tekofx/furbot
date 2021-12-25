@@ -5,12 +5,13 @@ from nextcord.ext import commands
 import requests
 from utils.functions import stickers_path, convert_pic
 import os
+from utils.bot import Bot
 
 log = logging.getLogger(__name__)
 
 
 class stickers(commands.Cog):
-    def __init__(self, bot: commands.Bot) -> None:
+    def __init__(self, bot: Bot) -> None:
         self.bot = bot
 
     @commands.command(name="addsticker")

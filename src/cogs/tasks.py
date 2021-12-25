@@ -6,12 +6,13 @@ from datetime import datetime, timedelta
 import random
 from utils.database import create_connection, get_birthdays
 from utils.functions import get_hot_subreddit_image, reddit_memes_history_txt, yaml_f
+from utils.bot import Bot
 
 log = logging.getLogger(__name__)
 
 
 class tasks(commands.Cog):
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: Bot):
         self.bot = bot
 
         # Start tasks
