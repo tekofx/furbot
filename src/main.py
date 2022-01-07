@@ -31,7 +31,6 @@ env_vars = [
     "TWITTER_ACCESS_TOKEN",
     "TWITTER_ACCESS_TOKEN_SECRET",
 ]
-print('a')
 
 # Check for folders
 folders = [
@@ -82,7 +81,7 @@ print(os.path.isfile("env/furbot.env"))
 
 if "-t" in sys.argv:
     print(colorama.Fore.MAGENTA + "Executing in TEST mode")
-    load_dotenv("env/furbot.env")
+    load_dotenv("env/tests.env")
 else:
     print(colorama.Fore.MAGENTA + "Executing in NORMAL mode")
 
