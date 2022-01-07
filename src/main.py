@@ -9,7 +9,6 @@ coloredlogs.install()
 log = logging.getLogger(__name__)
 log.setLevel("INFO")
 
-
 # Set workdir
 path = os.path.dirname(os.path.abspath(__file__))
 working_dir = os.path.dirname(path)
@@ -32,6 +31,7 @@ env_vars = [
     "TWITTER_ACCESS_TOKEN",
     "TWITTER_ACCESS_TOKEN_SECRET",
 ]
+print('a')
 
 # Check for folders
 folders = [
@@ -77,15 +77,16 @@ for var in env_vars:
                 "Error: Missing environmental variable {} in .env file".format(var)
             )
             sys.exit()
-
+print(os.environ)
+print(os.path.isfile("env/furbot.env"))
 
 if "-t" in sys.argv:
     print(colorama.Fore.MAGENTA + "Executing in TEST mode")
-    load_dotenv("src/utils/tests.env")
+    load_dotenv("env/furbot.env")
 else:
     print(colorama.Fore.MAGENTA + "Executing in NORMAL mode")
 
-    load_dotenv("src/utils/.env")
+    load_dotenv("env/furbot.env")
 
 token = os.getenv("DISCORD_TOKEN")
 bot = Bot(token)
