@@ -8,7 +8,6 @@ from utils.functions import (
     get_user,
     delete_files,
     convert_pic,
-    get_hot_subreddit_image,
     meme_path,
     meme_templates_path,
     count_files_in_dir,
@@ -588,7 +587,9 @@ class memes(commands.Cog):
         """Top memes de r/dankmemes"""
         message = await ctx.send("buscando dankmeme")
         await ctx.send(
-            get_hot_subreddit_image("dankmemes", 100, reddit_memes_history_txt, None)
+            self.bot.reddit.get_hot_subreddit_image(
+                "dankmemes", 100, reddit_memes_history_txt, None
+            )
         )
         await message.delete()
 

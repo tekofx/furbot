@@ -11,7 +11,6 @@ from utils.functions import (
     meme_templates_path,
     delete_files,
 )
-from utils.functions import magnet_id, angel_id
 
 from utils.database import (
     create_connection,
@@ -42,15 +41,15 @@ class utilities(commands.Cog):
         roles = get_user_roles(usr)
         color = get_user_color_code(usr)
 
-        if int(usr.id) == magnet_id:
+        """ if int(usr.id) == magnet_id:
             date = "24-01-2021"
         elif int(usr.id) == angel_id:
             date = "17-03-2020"
-        else:
-            date = str(usr.created_at)
-            date = date.split()
-            date = date[0].split("-")
-            date = date[2] + "-" + date[1] + "-" + date[0]
+        else: """
+        date = str(usr.created_at)
+        date = date.split()
+        date = date[0].split("-")
+        date = date[2] + "-" + date[1] + "-" + date[0]
 
         # Create qr code
         qr_text = (

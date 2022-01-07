@@ -5,7 +5,7 @@ from nextcord.ext import commands, tasks
 from datetime import datetime, timedelta
 import random
 from utils.database import create_connection, get_birthdays
-from utils.functions import get_hot_subreddit_image, reddit_memes_history_txt, yaml_f
+from utils.functions import reddit_memes_history_txt
 from utils.bot import Bot
 
 log = logging.getLogger(__name__)
@@ -36,7 +36,7 @@ class tasks(commands.Cog):
             else:
                 subreddit = "SpanishMeme"
                 not_flair = None
-            meme = get_hot_subreddit_image(
+            meme = self.bot.reddit.get_hot_subreddit_image(
                 sub_reddit=subreddit,
                 posts_limit=1000,
                 history_file=reddit_memes_history_txt,

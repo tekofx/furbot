@@ -9,6 +9,7 @@ from utils.database import (
     setup_database,
 )
 from utils.functions import yaml_f
+from utils.reddit import Reddit
 from utils.twitter import Twitter
 
 log = logging.getLogger(__name__)
@@ -28,10 +29,15 @@ class Bot(commands.Bot):
 
         self.token = token
         self._twitter = Twitter()
+        self._reddit = Reddit()
 
     @property
     def twitter(self) -> Twitter:
         return self._twitter
+
+    @property
+    def reddit(self) -> Reddit:
+        return self._reddit
 
     @property
     def general_channel(self):

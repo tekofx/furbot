@@ -1,7 +1,7 @@
 import logging
 import nextcord
 from nextcord.ext import commands
-from utils.functions import get_random_line_of_file, magnet_id, insults_txt, animos_txt
+from utils.functions import get_random_line_of_file, insults_txt, animos_txt
 from utils.bot import Bot
 
 log = logging.getLogger(__name__)
