@@ -171,6 +171,12 @@ class utilities(commands.Cog):
 
     @commands.command()
     async def rae(self, ctx: commands.Context, palabra: str):
+        """Obtiene una definición de la RAE
+
+        Uso:
+            fur rae <palabra>
+        """
+
         tmp = await ctx.send("Buscando en la RAE")
 
         output = str(dle.search_by_word(palabra))
@@ -182,6 +188,11 @@ class utilities(commands.Cog):
 
     @commands.command()
     async def cumple(self, ctx: commands.Context, user: nextcord.Member):
+        """Obtiene el cumpleaños de un usuario
+
+        Uso:
+            fur cumple @<usuario>
+        """
         con = create_connection(str(ctx.guild.id))
 
         output = "No existe el cumpleaños de " + user.display_name

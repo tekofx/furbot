@@ -25,7 +25,11 @@ class administration(commands.Cog):
     @commands.command(name="activity")
     @commands.has_permissions(administrator=True)
     async def change_activity(self, ctx: commands.Context, activity_name: str):
-        """[Admin] Cambiar actividad del bot"""
+        """[Admin] Cambiar actividad del bot
+
+        Uso:
+            fur activity <texto>
+        """
         yaml_f.change_activity(activity_name)
         activity = nextcord.Game(activity_name)
 
@@ -92,7 +96,7 @@ class administration(commands.Cog):
     @commands.command(name="upuser")
     @commands.has_permissions(administrator=True)
     async def update_users(self, ctx: commands.Context):
-        """[Admin] Actualiza la lista de usuarios con los usuarios que no existen\n"""
+        """[Admin] Actualiza la base de datos de usuarios\n"""
         guild = await self.bot.fetch_guild(ctx.guild.id)
         server = str(ctx.guild.id)
 
@@ -138,7 +142,11 @@ class administration(commands.Cog):
     @commands.command()
     @commands.has_permissions(administrator=True)
     async def clear(self, ctx: commands.Context, num: int):
-        """[Admin] Elimina mensajes de un canal"""
+        """[Admin] Elimina mensajes de un canal
+
+        Uso:
+            fur clear <num_mensajes>
+        """
         messages_to_delete = []
         async for message in ctx.channel.history(limit=num + 1):
             messages_to_delete.append(message)

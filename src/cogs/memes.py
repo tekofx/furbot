@@ -34,7 +34,12 @@ class memes(commands.Cog):
 
     @commands.command()
     async def addmeme(self, ctx: commands.Context, meme_name: str):
-        """Añade un meme al bot"""
+        """Añade un meme al bot
+
+        Uso:
+            fur meme <nombres personas en el meme>
+
+        """
         meme_extension = "." + ctx.message.attachments[0].filename
         meme_extension = meme_extension[-4:]
         count = 1
@@ -100,8 +105,8 @@ class memes(commands.Cog):
         """Meme random de los nuestros
 
         Uso:
-            fur meme-->Meme random
-            fur meme <nombre>-->Meme random de <nombre>
+            fur meme
+            fur meme <nombre>
         """
 
         # If all memes have been sent, delete history
@@ -165,7 +170,7 @@ class memes(commands.Cog):
     async def horny(self, ctx: commands.Context, user: nextcord.Member = None):
         """Mucho horny
 
-        Uso: fur horny "@<usuario>
+        Uso: fur horny @<usuario>
         """
         # Get user avatar
         avatarUrl = get_user(ctx, user).avatar.url
@@ -202,7 +207,11 @@ class memes(commands.Cog):
 
     @commands.command()
     async def shef(self, ctx: commands.Context, user: nextcord.Member = None):
-        """shef"""
+        """shef
+
+        Uso:
+            fur shef @<usuario>
+        """
 
         # Get user avatar
         avatarUrl = get_user(ctx, user).avatar.url
@@ -226,8 +235,10 @@ class memes(commands.Cog):
         """Crea una quote en imagen
 
         Uso: fur quote "<quote>" "<titulo>" <@usuario para poner foto>
+
         - Si el quote tiene " reemplazar por '
         Ejemplo: fur quote "Gala: 'Ala Teko que racista'" "Gala, antiracistas" @Gala
+
         - Si se quiere poner algo tipo:
             Gala:"Hola que ase"
             Enana:"He reparido"
@@ -331,7 +342,11 @@ class memes(commands.Cog):
 
     @commands.command()
     async def impostor(self, ctx: commands.Context, user: nextcord.Member = None):
-        """Quién es el impostor?"""
+        """Quién es el impostor?
+
+        Uso:
+            fur impostor @<usuario>
+        """
 
         avatarUrl = get_user(ctx, user).avatar.url
 
@@ -345,7 +360,12 @@ class memes(commands.Cog):
 
     @commands.command()
     async def stonks(self, ctx: commands.Context, user: nextcord.Member = None):
-        """Stonks"""
+        """Stonks
+
+        Uso:
+            fur stonks @<usuario>
+
+        """
 
         # Get user avatar
         avatarUrl = get_user(ctx, user).avatar.url
@@ -360,7 +380,11 @@ class memes(commands.Cog):
 
     @commands.command()
     async def jojo(self, ctx: commands.Context, user: nextcord.Member):
-        """Za warudo"""
+        """Za warudo
+
+        Uso:
+            fur jojo @<usuario>
+        """
 
         # Get user avatar
         avatarUrl = get_user(ctx, user).avatar.url
@@ -382,7 +406,11 @@ class memes(commands.Cog):
 
     @commands.command()
     async def cute(self, ctx: commands.Context, user: nextcord.Member = None):
-        """You are cute"""
+        """You are cute
+
+        Uso:
+            fur cute @<usuario>
+        """
 
         # Get user avatar
         avatarUrl = get_user(ctx, user).avatar.url
@@ -397,7 +425,11 @@ class memes(commands.Cog):
 
     @commands.command()
     async def suicidio(self, ctx: commands.Context):
-        """Es hora del suisidio"""
+        """Es hora del suisidio
+
+        Uso:
+            fur suicidio @<usuario>
+        """
 
         # Get user avatar
         avatarUrl = ctx.author.avatar.url
@@ -412,7 +444,11 @@ class memes(commands.Cog):
 
     @commands.command()
     async def coding(self, ctx: commands.Context, user: nextcord.Member = None):
-        """Programa como un pro hacker"""
+        """Programa como un pro hacker
+
+        Uso:
+            fur coding @<usuario>
+        """
 
         # Get user avatar
         avatarUrl = get_user(ctx, user).avatar.url
@@ -427,7 +463,11 @@ class memes(commands.Cog):
 
     @commands.command()
     async def unsee(self, ctx: commands.Context, user: nextcord.Member = None):
-        """No por favor"""
+        """No por favor
+
+        Uso:
+            fur unsee @<usuario>
+        """
 
         # Get user avatar
         avatarUrl = get_user(ctx, user).avatar.url
@@ -442,7 +482,11 @@ class memes(commands.Cog):
 
     @commands.command()
     async def palomitas(self, ctx: commands.Context, user: nextcord.Member = None):
-        """Este drama está interesante"""
+        """Este drama está interesante
+
+        Uso:
+            fur palomitas @<usuario>
+        """
 
         # Get user avatar
         avatarUrl = get_user(ctx, user).avatar.url
@@ -463,7 +507,14 @@ class memes(commands.Cog):
         text2: str,
         user: nextcord.Member = None,
     ):
-        """Quien ha sido?"""
+        """Quien ha sido?
+
+        Uso:
+            fur quien <texto1> <texto2> @<usuario>
+
+        Ejemplo:
+            fur quien "Le gustan los chilenos?" "Si" @Thedax
+        """
 
         Y = 20
         Y_aux = 10
@@ -495,7 +546,11 @@ class memes(commands.Cog):
 
     @commands.command()
     async def cojones(self, ctx: commands.Context, text: str, user: nextcord.Member):
-        """Si, los cojones"""
+        """Si, los cojones
+
+        Uso:
+            fur cojones <texto> @<usuario>
+        """
 
         # Get user avatar
         avatarUrl = user.avatar.url
@@ -531,7 +586,12 @@ class memes(commands.Cog):
 
     @commands.command()
     async def palanca(self, ctx: commands.Context, user: nextcord.Member):
-        """Tira de la palanca Cronk"""
+        """Tira de la palanca Cronk
+
+        Uso:
+            fur palanca @<usuario>
+
+        """
 
         # Get author avatar url
         author_avatar_url = ctx.author.avatar.url
@@ -558,7 +618,11 @@ class memes(commands.Cog):
 
     @commands.command()
     async def tren(self, ctx: commands.Context, user: nextcord.Member):
-        """Atropella gente con un tren"""
+        """Atropella gente con un tren
+
+        Uso:
+            fur tren @<usuario>
+        """
 
         # Get author avatar url
         author_avatar_url = ctx.author.avatar.url
@@ -584,7 +648,11 @@ class memes(commands.Cog):
 
     @commands.command()
     async def dankmeme(self, ctx: commands.Context):
-        """Top memes de r/dankmemes"""
+        """Top memes de r/dankmemes
+
+        Uso:
+            fur dankmeme
+        """
         message = await ctx.send("buscando dankmeme")
         await ctx.send(
             self.bot.reddit.get_hot_subreddit_image(
@@ -601,7 +669,7 @@ class memes(commands.Cog):
            fur cowsay <texto>: Vaca dice <texto>
            fur cowsay <texto> <personaje>: <personaje> dice <texto>
 
-           Characters:
+           Personajes:
            beavis budfrogs bunny cheese cower daemon dragonandcow eyes flamingsheep ghostbusters
            hellokitty kiss kitty koala kosh lukekoala
            mechandcow meow milk moofasa moose mutilated ren satanic sheep skeleton small
@@ -623,7 +691,11 @@ class memes(commands.Cog):
 
     @commands.command()
     async def slap(self, ctx: commands.Context, user: nextcord.Member = None):
-        """slap"""
+        """slap
+
+        Uso:
+            fur slap @<usuario>
+        """
 
         # Get user avatar
         avatarUrl = get_user(ctx, user).avatar.url
@@ -638,7 +710,11 @@ class memes(commands.Cog):
 
     @commands.command()
     async def reviento(self, ctx: commands.Context, user: nextcord.Member = None):
-        """a que me reviento"""
+        """a que me reviento
+
+        Uso:
+            fur reviento @<usuario>
+        """
 
         # Get user avatar
         avatarUrl = get_user(ctx, user).avatar.url
@@ -653,7 +729,11 @@ class memes(commands.Cog):
 
     @commands.command()
     async def radiopatio(self, ctx: commands.Context, user: nextcord.Member):
-        """Es hora del cotilleo"""
+        """Es hora del cotilleo
+
+        Uso:
+            fur radiopatio @<usuario>
+        """
 
         # Get user avatar
         avatarUrl = get_user(ctx, user).avatar.url
@@ -668,7 +748,11 @@ class memes(commands.Cog):
 
     @commands.command()
     async def omni(self, ctx: commands.Context, user: nextcord.Member = None):
-        """Omniman"""
+        """Omniman
+
+        Uso:
+            fur omni @<usuario>
+        """
 
         # Get user avatar
         avatarUrl = get_user(ctx, user).avatar.url
@@ -683,7 +767,11 @@ class memes(commands.Cog):
 
     @commands.command()
     async def mierda(self, ctx: commands.Context, user: nextcord.Member = None):
-        """Menudo montón de mierda"""
+        """Menudo montón de mierda
+
+        Uso:
+            fur omni @<usuario>
+        """
 
         # Get user avatar
         avatarUrl = get_user(ctx, user).avatar.url
@@ -708,10 +796,10 @@ class memes(commands.Cog):
         """Fuera de mi coche
 
         Uso:
-            fur coche "Texto1" "Texto2" "Texto3" @usuario
+            fur coche <Texto1> <Texto2> <Texto3> @<usuario>
 
         Ejemplo:
-            fur coche "Gala eres rich?" "Si, tengo 5 alexas" "Fuera de mi coche" @Gala
+            fur coche "Eres de madrid?" "Si" "Fuera de mi coche" @Frank
 
         """
 
@@ -824,6 +912,11 @@ class memes(commands.Cog):
 
     @commands.command()
     async def undertale(self, ctx: commands.Context, texto: str):
+        """Bajo cuento
+
+        Uso:
+            fur undertale <texto>
+        """
 
         # Get image
         character_image_size = 200
@@ -869,7 +962,8 @@ class memes(commands.Cog):
     ):
         """Jaja huracán
 
-        Uso: fur huracan <user1> <user2> <user3>
+        Uso:
+            fur huracan <usuario1> <usuario2> <usuario3>
 
         """
 

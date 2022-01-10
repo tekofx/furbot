@@ -14,8 +14,8 @@ class fun(commands.Cog):
 
         Genera un pene de tamaño aleatorio.
         Uso:
-        fur penis            --> Tu tula
-        fur penis @<usuario> --> La tula de @<usuario>
+            fur penis
+            fur penis @<usuario>
         """
 
         num = random.randint(1, 15)
@@ -33,7 +33,12 @@ class fun(commands.Cog):
 
     @commands.command()
     async def communist(self, ctx: commands.Context, user: nextcord.Member = None):
-        """Serás un comunista bolivariano que apoya al Coletas?"""
+        """Serás un comunista bolivariano que apoya al Coletas?
+
+        Uso:
+            fur communist
+            fur communist @<usuario>
+        """
 
         num = random.randint(0, 100)
         output = "{} es {}% comunista"
@@ -45,7 +50,12 @@ class fun(commands.Cog):
 
     @commands.command()
     async def capitalist(self, ctx: commands.Context, user: nextcord.Member = None):
-        "Serás capitalista y te convertirás en el nuevo lobo de Wall Street?",
+        """Serás capitalista y te convertirás en el nuevo lobo de Wall Street?
+
+        Uso:
+            fur capitalist
+            fur capitalist @<usuario>
+        """
 
         num = random.randint(0, 100)
         output = "{} es {}% capitalista"
@@ -57,7 +67,12 @@ class fun(commands.Cog):
 
     @commands.command()
     async def gay(self, ctx: commands.Context, user: nextcord.Member = None):
-        """Maricon el ultimo"""
+        """Maricon el ultimo
+
+        Uso:
+            fur gay
+            fur gay @<usuario>
+        """
 
         num = random.randint(0, 100)
         output = "{} es {}% gay"
@@ -70,7 +85,13 @@ class fun(commands.Cog):
 
     @commands.command(name="str8")
     async def straight(self, ctx: commands.Context, user: nextcord.Member = None):
-        """Super str8 el ultimo"""
+        """Super str8 el ultimo
+
+        Uso:
+            fur str8
+            fur str8 @<usuario>
+
+        """
 
         num = random.randint(0, 100)
         output = "{} es {}% straight"
