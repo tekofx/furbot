@@ -1,15 +1,11 @@
 name: Build multiarch docker image
 
-on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+on: release
 
 jobs:
   ghr_push:
     runs-on: ubuntu-latest
-    if: github.event_name == 'push'
+   
 
     steps:
       - name: checkout
@@ -26,6 +22,7 @@ jobs:
         run: echo "${{ secrets.BUILD_IMAGE_TOKEN }}" | docker login https://ghcr.io -u ${{ github.actor }} --password-stdin
       
       - name: Get tag
+        id: tag
         run: echo "${{ github.ref_name }}"
 
       - name: Build and push container image
@@ -36,7 +33,7 @@ jobs:
           # Strip "v" prefix from tag name
           [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
           # when the branch is master, replace master with latest
-          [ "$VERSION" == "main" ] && VERSION=latest
+          #[ "$VERSION" == "main" ] && VERSION=latest
           echo IMAGE_ID=$IMAGE_ID
           echo VERSION=$VERSION
           # Build and Publish container image
