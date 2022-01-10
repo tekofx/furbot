@@ -38,4 +38,4 @@ jobs:
           tags: latest
           platforms: linux/amd64
           push: true
-          tags: tekofx/furbot:latest
+        
