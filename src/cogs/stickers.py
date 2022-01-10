@@ -18,8 +18,9 @@ class stickers(commands.Cog):
     async def add_sticker(self, ctx: commands.Context, sticker_name: str):
         """Añade un sticker
 
-        Uso: seleccionar una imagen y en el cuadro de "añadir comentario"
-        poner fur add <nombre_sticker>
+        Uso:
+            - seleccionar una imagen y en el cuadro de "añadir comentario" poner:
+            fur add <nombre_sticker>
         """
 
         # If not image provided
@@ -65,7 +66,8 @@ class stickers(commands.Cog):
     async def use_sticker(self, ctx: commands.Context, sticker):
         """Usar un sticker
 
-        Uso: fur s <nombre_sticker>
+        Uso:
+            fur s <nombre_sticker>
         """
         if Path(stickers_path + sticker + ".png").is_file():
             stickerName = stickers_path
@@ -74,8 +76,10 @@ class stickers(commands.Cog):
             await ctx.send(file=nextcord.File(stickerName))
             log.info("Sticker " + sticker + " sent")
         else:
-
             await ctx.send("No existe el sticker " + sticker)
+
+            if sticker in self.bot.all_commands:
+                await ctx.send("Igual quieres usar el comando `{}`".format(sticker))
 
 
 def setup(bot: commands.Bot):
