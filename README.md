@@ -10,3 +10,6 @@
 # Ejecución en docker-compose:
 - Poner en /env el archivo .env con las variables de entornos
 - `docker-compose up -d`
+
+
+
