@@ -24,6 +24,9 @@ jobs:
 
       - name: Log-in to ghcr.io
         run: echo "${{ secrets.BUILD_IMAGE_TOKEN }}" | docker login https://ghcr.io -u ${{ github.actor }} --password-stdin
+      
+      - name: Get tag
+        run: echo "${{ github.ref_name }}"
 
       - name: Build and push container image
         run: |
