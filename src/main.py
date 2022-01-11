@@ -76,8 +76,6 @@ for var in env_vars:
                 "Error: Missing environmental variable {} in .env file".format(var)
             )
             sys.exit()
-print(os.environ)
-print(os.path.isfile("env/furbot.env"))
 
 if "-t" in sys.argv:
     print(colorama.Fore.MAGENTA + "Executing in TEST mode")
