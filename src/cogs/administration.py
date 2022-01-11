@@ -93,35 +93,6 @@ class administration(commands.Cog):
             await ctx.send("Color {} añadido".format(color.mention))
             log.info("Added color " + color.name)
 
-    @commands.command(name="upuser")
-    @commands.has_permissions(administrator=True)
-    async def update_users(self, ctx: commands.Context):
-        """[Admin] Actualiza la base de datos de usuarios\n"""
-        guild = await self.bot.fetch_guild(ctx.guild.id)
-        server = str(ctx.guild.id)
-
-        con = create_connection(server)
-        try:
-
-            members = guild.fetch_members()
-            async for member in members:
-                set_name(member.id, member.name)
-
-                if not member.bot and not check_entry_in_database(
-                    con, "users", member.id
-                ):
-                    member_data = [member.id, member.name, member.joined_at]
-                    create_user(con, member_data)
-                else:
-                    set_name(member.id, member.name)
-
-        except Exception as error:
-            log.error("{}".format(error))
-        else:
-
-            await ctx.send("Actualizada lista de usuarios")
-            log.info("Updated users in database")
-
     @commands.command()
     async def addcumple(
         self, ctx: commands.Context, birthday: str, user: nextcord.Member
