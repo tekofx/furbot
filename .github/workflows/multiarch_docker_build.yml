@@ -1,6 +1,6 @@
 name: Build multiarch docker image
 
-on: release
+on: [release, push]
 
 jobs:
   ghr_push:
@@ -33,11 +33,10 @@ jobs:
           # Strip "v" prefix from tag name
           [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
           # when the branch is master, replace master with latest
-          #[ "$VERSION" == "main" ] && VERSION=latest
+          [ "$VERSION" == "main" ] && VERSION=latest
           echo IMAGE_ID=$IMAGE_ID
           echo VERSION=$VERSION
           # Build and Publish container image
           docker buildx build --push \
           --tag $IMAGE_ID:$VERSION \
-          --tag $IMAGE_ID:latest \
           --platform linux/amd64,linux/arm64/v8 .
