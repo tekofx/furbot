@@ -4,7 +4,12 @@ import nextcord
 from nextcord.ext import commands, tasks
 from datetime import datetime, timedelta
 import random
-from utils.database import create_connection, get_birthdays
+from utils.database import (
+    check_entry_in_database,
+    create_connection,
+    create_user,
+    get_birthdays,
+)
 from utils.functions import reddit_memes_history_txt
 from utils.bot import Bot
 
@@ -18,6 +23,33 @@ class tasks(commands.Cog):
         # Start tasks
         self.meme.start()
         self.birthday.start()
+        self.update_users.start()
+
+    @tasks.loop(hours=6)
+    async def update_users(self):
+        async for guild in self.bot.fetch_guilds():
+            members = await guild.fetch_members().flatten()
+            con = create_connection(str(guild.id))
+            for member in members:
+                entry_in_database = check_entry_in_database(con, "users", member.id)
+                if not entry_in_database and not member.bot:
+                    # Add to database
+                    author_id = member.id
+                    author_name = member.name
+
+                    user_data = [
+                        author_id,
+                        author_name,
+                        member.joined_at,
+                    ]
+                    try:
+                        create_user(con, user_data)
+                    except Exception as error:
+                        log.error("Error creating user on join: {}".format(error))
+                    else:
+                        log.info(
+                            "Created user {} with id {}".format(author_name, author_id)
+                        )
 
     @tasks.loop(hours=1)
     async def meme(self):
@@ -82,6 +114,7 @@ class tasks(commands.Cog):
             except Exception as error:
                 log.error("Error ocured on task birthday: {}".format(error))
 
+    @update_users.before_loop
     @meme.before_loop
     @birthday.before_loop
     async def prep(self):
