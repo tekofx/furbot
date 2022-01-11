@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Mensajes de ayuda de comandos
 - Mensaje de ayuda cuando se usa el nombre de un comando como el nombre de un sticker
 
+### Eliminado
+- Comando upuser
+- Task para actualizar la base de datos de usuarios
+
 ## [3.3] - 2022-1-10
 ### Añadido
 - Imagen de docker en ghcr
