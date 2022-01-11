@@ -103,13 +103,13 @@ class Bot(commands.Bot):
         )
         await self.lobby_channel.send(mensaje_lobby)
 
-        # Add to database
         con = create_connection(str(member.guild.id))
-        author_id = member.id
-        author_name = member.name
         entry_in_database = check_entry_in_database(con, "users", member.id)
-
         if not entry_in_database and member.bot:
+            # Add to database
+            author_id = member.id
+            author_name = member.name
+
             user_data = [
                 author_id,
                 author_name,
@@ -121,7 +121,8 @@ class Bot(commands.Bot):
                 log.error("Error creating user on join: {}".format(error))
             else:
                 log.info("Created user {} with id {}".format(author_name, author_id))
-            await self.audit_channel.send("{} se ha unido".format(member.name))
+        await self.audit_channel.send("{} se ha unido".format(member.name))
+        con.close()
 
     def run(self):
         # Set activity
@@ -131,25 +132,27 @@ class Bot(commands.Bot):
 
         super().run(token=self.token)
 
-    async def on_message(self, message):
+    async def on_message(self, message: nextcord.Message):
         """Action performed for every message in channels/DM's
         Args:
-            message ([discord.Message]): Message to check
+            message ([nextcord.Message]): Message to check
         """
-        if message.content.lower() == "owo":
-            await message.channel.send("OwO!")
-        if "vaca " in message.content.lower() and message.author != self.user:
-            await message.channel.send("Muuu!")
-        if "vacas " in message.content.lower():
-            await message.channel.send("Muuu Muuu!")
-        if message.content.lower() == "uwu":
-            await message.channel.send("UwU!")
-        if message.content.lower() == "7w7":
-            await message.channel.send(":eyes:")
-        if message.content.lower() == "ewe":
-            await message.channel.send("EwE!")
-        if message.content.lower() == "awa":
-            await message.channel.send("AwA!")
+        if not message.author.bot:
+
+            if message.content.lower() == "owo":
+                await message.channel.send("OwO!")
+            if "vaca " in message.content.lower():
+                await message.channel.send("Muuu!")
+            if "vacas " in message.content.lower():
+                await message.channel.send("Muuu Muuu!")
+            if message.content.lower() == "uwu":
+                await message.channel.send("UwU!")
+            if message.content.lower() == "7w7":
+                await message.channel.send(":eyes:")
+            if message.content.lower() == "ewe":
+                await message.channel.send("EwE!")
+            if message.content.lower() == "awa":
+                await message.channel.send("AwA!")
 
         await self.process_commands(message)
 
