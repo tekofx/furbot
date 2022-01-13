@@ -62,8 +62,7 @@ class roast(commands.Cog):
                 )
             else:
                 log.info("Added insult {}".format(insult))
-
-        await ctx.reply("Insulto/s añadido/s")
+                await ctx.reply("Insulto añadido")
 
     @commands.command()
     async def animo(self, ctx: commands.Context, user: nextcord.Member = None):
@@ -102,7 +101,7 @@ class roast(commands.Cog):
                 )
             else:
                 log.info("Added animo {}".format(animo))
-        await ctx.reply("Animo/s añadido/s")
+                await ctx.reply("Animo añadido")
 
 
 def setup(bot: commands.Bot):
