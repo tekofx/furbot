@@ -1,4 +1,5 @@
 import datetime
+import random
 import sqlite3
 import os
 import logging
@@ -27,8 +28,13 @@ colors_table = """ CREATE TABLE IF NOT EXISTS colors (
                                     name text NOT NULL
                                 ); """
 
+sentences_table = """ CREATE TABLE IF NOT EXISTS sentences (
+                                    id integer PRIMARY KEY,
+                                    type text NOT NULL,
+                                    sentence text NOT NULL
+                                ); """
 
-tables = [users_table, ranks_table, species_table, colors_table]
+tables = [users_table, ranks_table, species_table, colors_table, sentences_table]
 log = logging.getLogger(__name__)
 
 
@@ -44,7 +50,6 @@ def create_connection(db_file: str):
     conn = None
     try:
         conn = sqlite3.connect(database)
-        log.info("Connection with database {} successful".format(database))
         return conn
     except Exception as e:
         log.error("Error: Could not connect to database . {}".format(e))
@@ -282,6 +287,41 @@ def remove_color(con, color_id: int):
     con.commit()
 
 
+def create_sentence(conn, sentence_data: list):
+    """Creates a sentence in the sentences table
+    Args:
+        conn (sqlite3.Connection): Connection to database
+        sentence (list): info of sentence. Containing [type, sentence]
+    """
+
+    sql = """ INSERT INTO sentences(id,type,sentence)
+              VALUES(?,?,?) """
+
+    try:
+        id = get_id_latest_sentence(conn) + 1
+    except Exception as error:
+        log.error("Error: {}".format(error))
+        return
+    sentence_data.insert(0, id)
+
+    cur = conn.cursor()
+    try:
+        cur.execute(sql, sentence_data)
+        log.info(
+            "sentence {sentence} with id {id} was added to the database".format(
+                sentence=sentence_data[1], id=sentence_data[0]
+            )
+        )
+    except Exception as error:
+        log.error(
+            "Error: Could not create user {id} {name}: {error}".format(
+                id=sentence_data[0], name=sentence_data[1], error=error
+            )
+        )
+
+    conn.commit()
+
+
 ###################### Getters and setters ######################
 def get_name(con, user_id: int):
     """Gets the name of a user
@@ -437,6 +477,58 @@ def get_colors(con):
         output.append(x[0])
 
     return output
+
+
+def get_random_sentence(con, sentence_type: str) -> str:
+    """Gets a random sentence
+
+    Args:
+        con ([type]): [description]
+        type (str): type of sentence
+
+    Returns:
+        str: random sentence
+    """
+    sql = """ SELECT sentence
+        FROM sentences
+        WHERE type=?
+        """
+    cur = con.cursor()
+    sentence_type = [
+        sentence_type,
+    ]
+    try:
+        cur.execute(sql, sentence_type)
+        info = cur.fetchall()
+    except Exception as error:
+        log.error("Error: could not query sentences: {}".format(error))
+    else:
+        output = random.choice(info)
+        return output[0]
+
+
+def get_id_latest_sentence(con) -> int:
+    """Gets id of latest added sentence
+
+    Args:
+        con ([type]): [description]
+
+    Returns:
+        int: id of latest sentence
+    """
+    sql = """ SELECT id
+        FROM sentences
+        """
+    cur = con.cursor()
+    try:
+        cur.execute(sql)
+        info = cur.fetchall()
+    except Exception as error:
+        log.error("Error: could not query sentences: {}".format(error))
+    else:
+        if info == []:  # If theres no sentences
+            return 0
+        return info[-1][0]
 
 
 ################################## Checks ##########################################

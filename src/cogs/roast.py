@@ -4,6 +4,7 @@ from nextcord.ext import commands
 from utils.functions import get_random_line_of_file
 from utils.bot import Bot
 from utils.data import resources_path
+from utils.database import create_connection, create_sentence, get_random_sentence
 
 log = logging.getLogger(__name__)
 
@@ -36,7 +37,8 @@ class roast(commands.Cog):
         """
 
         try:
-            output = get_random_line_of_file(insults_txt)
+            con = create_connection(str(ctx.guild.id))
+            output = get_random_sentence(con, "insult")
             if user is None:
                 await ctx.reply(content=output)
             else:
@@ -46,7 +48,7 @@ class roast(commands.Cog):
 
     @commands.command()
     @commands.has_permissions(administrator=True)
-    async def addinsult(self, ctx, *insults: str):
+    async def addinsult(self, ctx: commands.Context, *insults: str):
         """[ADMIN] Añade insulto
 
         Uso:
@@ -57,20 +59,20 @@ class roast(commands.Cog):
             fur addinsulto "feo" "horrible"
         """
         try:
-            f = open(insults_txt, "a")
+            con = create_connection(str(ctx.guild.id))
+
             for insult in insults:
-                insult = insult.replace('"', "")
-                f.write(insult + "\n")
-            f.close()
+                create_sentence(con, ["insult", insult])
             await ctx.reply("Insulto/s añadido/s")
-        except Exception:
-            log.error("Error: {}".format(Exception))
+        except Exception as error:
+            log.error("Error: {}".format(error))
 
     @commands.command()
     async def animo(self, ctx: commands.Context, user: nextcord.Member = None):
         """Anima a la gente"""
         try:
-            output = get_random_line_of_file(animos_txt)
+            con = create_connection(str(ctx.guild.id))
+            output = get_random_sentence(con, "animo")
             if user is None:
                 await ctx.reply(content=output)
             else:
@@ -91,14 +93,13 @@ class roast(commands.Cog):
             fur addanimo "guapo" "hermoso"
         """
         try:
-            f = open(animos_txt, "a")
+            con = create_connection(str(ctx.guild.id))
+
             for animo in animos:
-                animo = animo.replace('"', "")
-                f.write(animo + "\n")
-            f.close()
-            await ctx.send("animo/s añadido/s")
-        except Exception:
-            log.error("Error: {}".format(Exception))
+                create_sentence(con, ["animo", animo])
+            await ctx.reply("Animo/s añadido/s")
+        except Exception as error:
+            log.error("Error: {}".format(error))
 
 
 def setup(bot: commands.Bot):
