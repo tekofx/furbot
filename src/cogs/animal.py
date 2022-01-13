@@ -5,10 +5,12 @@ import os
 import requests
 from utils.functions import write_in_file
 from utils.bot import Bot
+from utils.data import resources_path
+
 
 log = logging.getLogger(__name__)
 
-animal_history_txt = "files/resources/data/animal_history.txt"
+animal_history_txt = resources_path + "animal_history.txt"
 
 
 class animal(commands.Cog):

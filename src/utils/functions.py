@@ -9,7 +9,7 @@ import praw
 import random
 import requests
 import yaml
-from main import resources_path, meme_resources_path
+from utils.data import resources_path, meme_resources_path
 
 
 def get_user_avatar(url: str, name: str):

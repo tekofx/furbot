@@ -7,6 +7,7 @@ log = logging.getLogger(__name__)
 
 
 class Reddit:
+    # TODO: Añadir reddit memes history
     def __init__(self) -> None:
         self.reddit = praw.Reddit(
             client_id=os.getenv("REDDIT_CLIENT_ID"),

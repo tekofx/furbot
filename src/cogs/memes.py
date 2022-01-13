@@ -8,14 +8,10 @@ from utils.functions import (
     get_user,
     delete_files,
     convert_pic,
-    meme_path,
-    meme_resources_path,
     count_files_in_dir,
-    memes_history_txt,
     exists_string_in_file,
     write_in_file,
     count_lines_in_file,
-    reddit_memes_history_txt,
 )
 import os
 import logging
@@ -24,6 +20,7 @@ import unicodedata
 import requests
 from PIL import Image
 from utils.bot import Bot
+from utils.data import meme_resources_path, memes_path, memes_history_txt
 
 log = logging.getLogger(__name__)
 
@@ -65,13 +62,13 @@ class memes(commands.Cog):
 
         # Count the number to add to the name
         if meme_extension == ".png" or meme_extension == ".jpg":
-            for x in os.listdir(meme_path):
+            for x in os.listdir(memes_path):
                 aux2 = x.split(" (", 1)
                 if "jpg" in aux2[1] and aux2[0] == meme_name:
                     count = count + 1
 
         if meme_extension == ".mp4":
-            for x in os.listdir(meme_path):
+            for x in os.listdir(memes_path):
                 aux2 = x.split(" (", 1)
                 if "mp4" in x and aux2[0] == meme_name:
                     count = count + 1
@@ -84,18 +81,18 @@ class memes(commands.Cog):
         meme_url = ctx.message.attachments[0].url
 
         r = requests.get(meme_url, allow_redirects=True)
-        open(meme_path + meme_name + meme_extension, "wb").write(r.content)
+        open(memes_path + meme_name + meme_extension, "wb").write(r.content)
 
         if meme_extension == ".png":
-            im = Image.open(meme_path + meme_name + meme_extension)
+            im = Image.open(memes_path + meme_name + meme_extension)
             rgb_im = im.convert("RGB")
             meme_extension = ".jpg"
-            rgb_im.save(meme_path + meme_name + meme_extension)
-            os.remove(meme_path + meme_name + ".png")
+            rgb_im.save(memes_path + meme_name + meme_extension)
+            os.remove(memes_path + meme_name + ".png")
 
-        old = meme_path + meme_name + meme_extension
+        old = memes_path + meme_name + meme_extension
         newname = meme_name.replace("_", " ")
-        new = meme_path + newname + meme_extension
+        new = memes_path + newname + meme_extension
         os.rename(old, new)
         logging.info("Meme " + newname + " added by" + str(ctx.author))
         await ctx.send("Meme " + newname + " añadido")
@@ -111,7 +108,7 @@ class memes(commands.Cog):
 
         # If all memes have been sent, delete history
         try:
-            if count_files_in_dir(meme_path) <= 30 + count_lines_in_file(
+            if count_files_in_dir(memes_path) <= 30 + count_lines_in_file(
                 memes_history_txt
             ):
                 open(memes_history_txt, "w").close()
@@ -120,16 +117,16 @@ class memes(commands.Cog):
             return 0
 
         if name is None:
-            output = random.choice(os.listdir(meme_path))
+            output = random.choice(os.listdir(memes_path))
             while exists_string_in_file(memes_history_txt, output):
-                output = random.choice(os.listdir(meme_path))
+                output = random.choice(os.listdir(memes_path))
 
             write_in_file(memes_history_txt, output + "\n")
-            await ctx.send(file=nextcord.File(meme_path + output))
+            await ctx.send(file=nextcord.File(memes_path + output))
 
         else:
             uwu = []
-            for filenames in os.listdir(meme_path):
+            for filenames in os.listdir(memes_path):
                 if name.lower() in filenames.lower():
                     uwu.append(filenames)
             # check if exists a meme with the filters
@@ -158,13 +155,13 @@ class memes(commands.Cog):
 
                 # Check if there are any memes with the name
 
-            await ctx.send(file=nextcord.File(meme_path + output))
+            await ctx.send(file=nextcord.File(memes_path + output))
         logging.info("Meme " + output + " sent")
 
     @commands.command()
     async def count_memes(self, ctx: commands.Context):
         """Número de memes añadidos al bot"""
-        await ctx.send(count_files_in_dir(meme_path))
+        await ctx.send(count_files_in_dir(memes_path))
 
     @commands.command()
     async def horny(self, ctx: commands.Context, user: nextcord.Member = None):

@@ -1,10 +1,14 @@
 import logging
 import nextcord
 from nextcord.ext import commands
-from utils.functions import get_random_line_of_file, insults_txt, animos_txt
+from utils.functions import get_random_line_of_file
 from utils.bot import Bot
+from utils.data import resources_path
 
 log = logging.getLogger(__name__)
+
+animos_txt = resources_path + "animos.txt"
+insults_txt = resources_path + "insults.txt"
 
 
 class roast(commands.Cog):

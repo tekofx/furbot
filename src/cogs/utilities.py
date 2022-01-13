@@ -8,7 +8,6 @@ from pyrae import dle
 import requests
 from utils.functions import (
     convert_pic,
-    meme_resources_path,
     delete_files,
 )
 
@@ -20,6 +19,7 @@ from utils.database import (
     get_species,
 )
 from utils.bot import Bot
+from utils.data import meme_resources_path
 
 
 class utilities(commands.Cog):

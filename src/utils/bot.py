@@ -1,6 +1,7 @@
 import nextcord
 from nextcord.ext import commands
 import os
+import yaml
 import logging
 from utils.database import (
     check_entry_in_database,
@@ -8,9 +9,9 @@ from utils.database import (
     create_user,
     setup_database,
 )
-from utils.functions import yaml_f
 from utils.reddit import Reddit
 from utils.twitter import Twitter
+from utils.data import resources_path
 
 log = logging.getLogger(__name__)
 token = os.getenv("DISCORD_TOKEN")
@@ -127,7 +128,15 @@ class Bot(commands.Bot):
     def run(self):
         # Set activity
         self.status = nextcord.Status.online
-        activity = nextcord.Game(yaml_f.get_activity())
+
+        # Get activity
+        with open(resources_path + "config.yaml", "r") as stream:
+            try:
+                content = yaml.safe_load(stream)
+            except yaml.YAMLError as error:
+                log.error("Error at getting YAML content: {}".format(error))
+
+        activity = nextcord.Game(content["activity"])
         self.activity = activity
 
         super().run(token=self.token)

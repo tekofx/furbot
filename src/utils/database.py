@@ -2,8 +2,9 @@ import datetime
 import sqlite3
 import os
 import logging
+from utils.data import databases_path
 
-database_path = "databases/"
+
 users_table = """ CREATE TABLE IF NOT EXISTS users (
                                     id integer PRIMARY KEY,
                                     name text NOT NULL,
@@ -38,7 +39,7 @@ def create_connection(db_file: str):
     Returns:
         sqlite3.Connection: connection to database
     """
-    database = database_path + str(db_file) + ".db"
+    database = databases_path + str(db_file) + ".db"
 
     conn = None
     try:
@@ -75,7 +76,7 @@ def setup_database(db_file: str):
     Returns:
         sqlite3.Connection: connection to database
     """
-    database = database_path + db_file + ".db"
+    database = databases_path + db_file + ".db"
 
     # Create db files
     if not os.path.isfile(database):

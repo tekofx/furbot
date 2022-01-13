@@ -11,9 +11,10 @@ from utils.database import (
     set_birthday,
     set_name,
 )
-from utils.functions import yaml_f
 from asyncio import sleep
+from utils.data import config_yaml
 from utils.bot import Bot
+import yaml
 
 log = logging.getLogger(__name__)
 
@@ -30,20 +31,28 @@ class administration(commands.Cog):
         Uso:
             fur activity <texto>
         """
-        yaml_f.change_activity(activity_name)
         activity = nextcord.Game(activity_name)
 
+        # Change activity in config.yaml
+        with open(config_yaml, "r") as f:
+            content = yaml.safe_load(f)
+            content["activity"] = activity_name
+        with open(config_yaml, "w") as f:
+            yaml.dump(content, f, allow_unicode=True)
+
+        # Change activity in bot
         try:
             await self.bot.change_presence(
                 status=nextcord.Status.online, activity=activity
             )
 
-        except Exception:
-            await ctx.respond("Error: Contacte con un administrador")
-            log.error("Error: ".format(Exception))
-
-        await ctx.respond("Cambiada actividad a " + activity_name)
-        log.info("Changed activity to " + activity_name)
+        except Exception as error:
+            await ctx.send("Error: Contacte con un administrador")
+            log.error("Error: ".format(error))
+            return
+        else:
+            await ctx.send("Cambiada actividad a " + activity_name)
+            log.info("Changed activity to " + activity_name)
 
     @commands.command(name="addspecie")
     @commands.has_permissions(administrator=True)

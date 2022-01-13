@@ -10,7 +10,7 @@ from utils.database import (
     create_user,
     get_birthdays,
 )
-from utils.functions import reddit_memes_history_txt
+from utils.data import reddit_memes_history_txt
 from utils.bot import Bot
 
 log = logging.getLogger(__name__)

@@ -3,7 +3,8 @@ from pathlib import Path
 import nextcord
 from nextcord.ext import commands
 import requests
-from utils.functions import stickers_path, convert_pic
+from utils.functions import convert_pic
+from utils.data import stickers_path
 import os
 from utils.bot import Bot
 
@@ -30,7 +31,6 @@ class stickers(commands.Cog):
 
         # Checks if a picture is correct
         sticker_extension = ctx.message.attachments[0].url.split(".")[-1]
-        print(ctx.message.attachments[0].url)
         if check_sticker(sticker_name, sticker_extension) == 0:
             await ctx.send(
                 "Error: Ya existe un sticker con el nombre {}".format(sticker_name)

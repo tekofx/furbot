@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Eliminado
 - Comando upuser
 - Task para actualizar la base de datos de usuarios
+- Comando dankmeme
 
 ## [3.3] - 2022-1-10
 ### Añadido
