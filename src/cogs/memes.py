@@ -9,7 +9,7 @@ from utils.functions import (
     delete_files,
     convert_pic,
     meme_path,
-    meme_templates_path,
+    meme_resources_path,
     count_files_in_dir,
     memes_history_txt,
     exists_string_in_file,
@@ -179,7 +179,7 @@ class memes(commands.Cog):
         create_meme(("horny", "01"), avatarUrl, 300, (0, 0, 410, 180), True)
 
         # Send meme
-        await ctx.send(file=nextcord.File(meme_templates_path + "output.png"))
+        await ctx.send(file=nextcord.File(meme_resources_path + "output.png"))
 
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
@@ -200,7 +200,7 @@ class memes(commands.Cog):
         )
 
         # Send meme
-        await ctx.send(file=nextcord.File(meme_templates_path + "output.png"))
+        await ctx.send(file=nextcord.File(meme_resources_path + "output.png"))
 
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
@@ -219,7 +219,7 @@ class memes(commands.Cog):
         create_meme(("shef", "01"), avatarUrl, 120, (0, 0, 280, 87), True)
 
         # Send meme
-        await ctx.send(file=nextcord.File(meme_templates_path + "output.png"))
+        await ctx.send(file=nextcord.File(meme_resources_path + "output.png"))
 
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
@@ -264,18 +264,18 @@ class memes(commands.Cog):
         quote = '"' + quote + '"'
 
         r = requests.get(userName.avatar.url, allow_redirects=True)
-        open(meme_templates_path + "01.webp", "wb").write(r.content)
+        open(meme_resources_path + "01.webp", "wb").write(r.content)
 
-        convert_pic(meme_templates_path + "01.webp", "01", avatarSize)
+        convert_pic(meme_resources_path + "01.webp", "01", avatarSize)
 
         # Open images
         txtPic = Image.new("RGBA", (620, 500))
-        pic = Image.open(meme_templates_path + "quote.png").convert("RGBA")
-        avatar = Image.open(meme_templates_path + "01" + ".png").convert("L")
+        pic = Image.open(meme_resources_path + "quote.png").convert("RGBA")
+        avatar = Image.open(meme_resources_path + "01" + ".png").convert("L")
 
         # Set up fonts
-        fontQuote = ImageFont.truetype(meme_templates_path + "Sofia.ttf", txtSize)
-        fontTitle = ImageFont.truetype(meme_templates_path + "Calibri.ttf", txtSize - 5)
+        fontQuote = ImageFont.truetype(meme_resources_path + "Sofia.ttf", txtSize)
+        fontTitle = ImageFont.truetype(meme_resources_path + "Calibri.ttf", txtSize - 5)
         d = ImageDraw.Draw(txtPic)
 
         # Write quote
@@ -334,9 +334,9 @@ class memes(commands.Cog):
         pic.paste(txtPic, (textOffsetX, int(220 - 20 * cont)), txtPic)
 
         # Save picture
-        pic.save(meme_templates_path + "output.png", "PNG")
+        pic.save(meme_resources_path + "output.png", "PNG")
 
-        await ctx.send(file=nextcord.File(meme_templates_path + "output.png"))
+        await ctx.send(file=nextcord.File(meme_resources_path + "output.png"))
 
         delete_files(("01.webp", "output.png", "01.png"))
 
@@ -353,7 +353,7 @@ class memes(commands.Cog):
         create_meme(("impostor", "01"), avatarUrl, 205, (0, 0, 323, 175), True)
 
         # Send meme
-        await ctx.send(file=nextcord.File(meme_templates_path + "output.png"))
+        await ctx.send(file=nextcord.File(meme_resources_path + "output.png"))
 
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
@@ -373,7 +373,7 @@ class memes(commands.Cog):
         create_meme(("stonks", "01"), avatarUrl, 236, (0, 0, 63, 25), True)
 
         # Send meme
-        await ctx.send(file=nextcord.File(meme_templates_path + "output.png"))
+        await ctx.send(file=nextcord.File(meme_resources_path + "output.png"))
 
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
@@ -390,16 +390,16 @@ class memes(commands.Cog):
         avatarUrl = get_user(ctx, user).avatar.url
 
         r = requests.get(ctx.author.avatar.url, allow_redirects=True)
-        open(meme_templates_path + "02.webp", "wb").write(r.content)
+        open(meme_resources_path + "02.webp", "wb").write(r.content)
 
-        convert_pic(meme_templates_path + "02.webp", "02", 65)
+        convert_pic(meme_resources_path + "02.webp", "02", 65)
 
         create_meme(
             ("jojo", "01", "02"), avatarUrl, 65, (0, 0, 162, 19, 469, 130), True
         )
 
         # Send meme
-        await ctx.send(file=nextcord.File(meme_templates_path + "output.png"))
+        await ctx.send(file=nextcord.File(meme_resources_path + "output.png"))
 
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png", "02.png", "02.webp"))
@@ -418,7 +418,7 @@ class memes(commands.Cog):
         create_meme(("cute", "01"), avatarUrl, 387, (0, 0, 210, 75), True)
 
         # Send meme
-        await ctx.send(file=nextcord.File(meme_templates_path + "output.png"))
+        await ctx.send(file=nextcord.File(meme_resources_path + "output.png"))
 
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
@@ -437,7 +437,7 @@ class memes(commands.Cog):
         create_meme(("suicidio", "01"), avatarUrl, 54, (0, 0, 172, 182), True)
 
         # Send meme
-        await ctx.send(file=nextcord.File(meme_templates_path + "output.png"))
+        await ctx.send(file=nextcord.File(meme_resources_path + "output.png"))
 
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
@@ -456,7 +456,7 @@ class memes(commands.Cog):
         create_meme(("coding", "01"), avatarUrl, 167, (0, 0, 218, 137), True)
 
         # Send meme
-        await ctx.send(file=nextcord.File(meme_templates_path + "output.png"))
+        await ctx.send(file=nextcord.File(meme_resources_path + "output.png"))
 
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
@@ -475,7 +475,7 @@ class memes(commands.Cog):
         create_meme(("unsee", "01"), avatarUrl, 108, (0, 0, 256, 112), True)
 
         # Send meme
-        await ctx.send(file=nextcord.File(meme_templates_path + "output.png"))
+        await ctx.send(file=nextcord.File(meme_resources_path + "output.png"))
 
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
@@ -494,7 +494,7 @@ class memes(commands.Cog):
         create_meme(("palomitas", "01"), avatarUrl, 125, (0, 0, 278, 67), True)
 
         # Send meme
-        await ctx.send(file=nextcord.File(meme_templates_path + "output.png"))
+        await ctx.send(file=nextcord.File(meme_resources_path + "output.png"))
 
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
@@ -524,9 +524,9 @@ class memes(commands.Cog):
 
         create_meme(("quien", "01"), avatarUrl, 130, (0, 0, 210, 570), True)
         txtPic = Image.new("RGBA", (200, 200))
-        img = Image.open(meme_templates_path + "output" + ".png").convert("RGBA")
+        img = Image.open(meme_resources_path + "output" + ".png").convert("RGBA")
         draw = ImageDraw.Draw(txtPic)
-        font = ImageFont.truetype(meme_templates_path + "Calibri.ttf", 24)
+        font = ImageFont.truetype(meme_resources_path + "Calibri.ttf", 24)
 
         lines = textwrap.wrap(text1, width=18)
         for line in lines:
@@ -535,10 +535,10 @@ class memes(commands.Cog):
 
         draw.text(((170, 170)), text2, font=font, fill=(0, 0, 0, 255))
         img.paste(txtPic, (180, 10), txtPic)
-        img.save(meme_templates_path + "output2.png", "PNG")
+        img.save(meme_resources_path + "output2.png", "PNG")
 
         # Send meme
-        await ctx.send(file=nextcord.File(meme_templates_path + "output.png"))
+        await ctx.send(file=nextcord.File(meme_resources_path + "output.png"))
 
         # Delete user avatar and output
         time.sleep(1)
@@ -557,27 +557,27 @@ class memes(commands.Cog):
 
         # Download author avatar
         r = requests.get(ctx.author.avatar.url, allow_redirects=True)
-        open(meme_templates_path + "02.webp", "wb").write(r.content)
+        open(meme_resources_path + "02.webp", "wb").write(r.content)
 
-        convert_pic(meme_templates_path + "02.webp", "02", 146)
+        convert_pic(meme_resources_path + "02.webp", "02", 146)
 
         create_meme(
             ("cojones", "01", "02"), avatarUrl, 175, (0, 0, 185, 431, 218, 6), True
         )
 
         # Add text to image
-        img = Image.open(meme_templates_path + "output" + ".png").convert("RGBA")
+        img = Image.open(meme_resources_path + "output" + ".png").convert("RGBA")
         txtPic = Image.new("RGBA", (600, 300))
         draw = ImageDraw.Draw(txtPic)
-        font = ImageFont.truetype(meme_templates_path + "Calibri.ttf", 45)
+        font = ImageFont.truetype(meme_resources_path + "Calibri.ttf", 45)
 
         draw.text(((10, 10)), text, font=font, fill=(0, 0, 0, 255))
         img.paste(txtPic, (720, 560), txtPic)
 
-        img.save(meme_templates_path + "output2.png", "PNG")
+        img.save(meme_resources_path + "output2.png", "PNG")
 
         # Send meme
-        await ctx.send(file=nextcord.File(meme_templates_path + "output.png"))
+        await ctx.send(file=nextcord.File(meme_resources_path + "output.png"))
 
         # Delete user avatar and output
         delete_files(
@@ -598,9 +598,9 @@ class memes(commands.Cog):
 
         # Download second avatar
         r = requests.get(user.avatar.url, allow_redirects=True)
-        open(meme_templates_path + "02.webp", "wb").write(r.content)
+        open(meme_resources_path + "02.webp", "wb").write(r.content)
 
-        convert_pic(meme_templates_path + "02.webp", "02", 57)
+        convert_pic(meme_resources_path + "02.webp", "02", 57)
 
         create_meme(
             ("palanca", "01", "02"),
@@ -611,7 +611,7 @@ class memes(commands.Cog):
         )
 
         # Send meme
-        await ctx.send(file=nextcord.File(meme_templates_path + "output.png"))
+        await ctx.send(file=nextcord.File(meme_resources_path + "output.png"))
 
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png", "02.png", "02.webp"))
@@ -628,9 +628,9 @@ class memes(commands.Cog):
         author_avatar_url = ctx.author.avatar.url
 
         r = requests.get(user.avatar.url, allow_redirects=True)
-        open(meme_templates_path + "02.webp", "wb").write(r.content)
+        open(meme_resources_path + "02.webp", "wb").write(r.content)
 
-        convert_pic(meme_templates_path + "02.webp", "02", 133)
+        convert_pic(meme_resources_path + "02.webp", "02", 133)
 
         create_meme(
             ("tren", "01", "02"),
@@ -641,7 +641,7 @@ class memes(commands.Cog):
         )
 
         # Send meme
-        await ctx.send(file=nextcord.File(meme_templates_path + "output.png"))
+        await ctx.send(file=nextcord.File(meme_resources_path + "output.png"))
 
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png", "02.png", "02.webp"))
@@ -703,7 +703,7 @@ class memes(commands.Cog):
         create_meme(("slap", "01"), avatarUrl, 160, (0, 0, 120, 88), True)
 
         # Send meme
-        await ctx.send(file=nextcord.File(meme_templates_path + "output.png"))
+        await ctx.send(file=nextcord.File(meme_resources_path + "output.png"))
 
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
@@ -722,7 +722,7 @@ class memes(commands.Cog):
         create_meme(("reviento", "01"), avatarUrl, 78, (0, 0, 315, 80), True)
 
         # Send meme
-        await ctx.send(file=nextcord.File(meme_templates_path + "output.png"))
+        await ctx.send(file=nextcord.File(meme_resources_path + "output.png"))
 
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
@@ -741,7 +741,7 @@ class memes(commands.Cog):
         create_meme(("radiopatio", "01"), avatarUrl, 88, (0, 0, 188, 45), True)
 
         # Send meme
-        await ctx.send(file=nextcord.File(meme_templates_path + "output.png"))
+        await ctx.send(file=nextcord.File(meme_resources_path + "output.png"))
 
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
@@ -760,7 +760,7 @@ class memes(commands.Cog):
         create_meme(("omni", "01"), avatarUrl, 470, (0, 0, 210, 388), True)
 
         # Send meme
-        await ctx.send(file=nextcord.File(meme_templates_path + "output.png"))
+        await ctx.send(file=nextcord.File(meme_resources_path + "output.png"))
 
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
@@ -779,7 +779,7 @@ class memes(commands.Cog):
         create_meme(("mierda", "01"), avatarUrl, 270, (0, 0, 476, 161), True)
 
         # Send meme
-        await ctx.send(file=nextcord.File(meme_templates_path + "output.png"))
+        await ctx.send(file=nextcord.File(meme_resources_path + "output.png"))
 
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
@@ -805,26 +805,26 @@ class memes(commands.Cog):
 
         # Get images
         r = requests.get(ctx.author.avatar.url, allow_redirects=True)
-        open(meme_templates_path + "01.webp", "wb").write(r.content)
+        open(meme_resources_path + "01.webp", "wb").write(r.content)
         r = requests.get(user.avatar.url, allow_redirects=True)
-        open(meme_templates_path + "02.webp", "wb").write(r.content)
+        open(meme_resources_path + "02.webp", "wb").write(r.content)
 
         # Convert images
-        convert_pic(meme_templates_path + "01.webp", "01", 205)  # author
-        convert_pic(meme_templates_path + "02.webp", "02", 205)  # user
-        convert_pic(meme_templates_path + "02.webp", "03", 120)  # user
+        convert_pic(meme_resources_path + "01.webp", "01", 205)  # author
+        convert_pic(meme_resources_path + "02.webp", "02", 205)  # user
+        convert_pic(meme_resources_path + "02.webp", "03", 120)  # user
 
         # Open new image
         width, height = (
-            Image.open(meme_templates_path + "coche.png").convert("RGBA").size
+            Image.open(meme_resources_path + "coche.png").convert("RGBA").size
         )
         output = Image.new("RGBA", (width, height))  # Create picture
 
         # Open other images
-        meme = Image.open(meme_templates_path + "coche.png").convert("RGBA")
-        author_image = Image.open(meme_templates_path + "01.png").convert("RGBA")
-        user_image = Image.open(meme_templates_path + "02.png").convert("RGBA")
-        user_image2 = Image.open(meme_templates_path + "03.png").convert("RGBA")
+        meme = Image.open(meme_resources_path + "coche.png").convert("RGBA")
+        author_image = Image.open(meme_resources_path + "01.png").convert("RGBA")
+        user_image = Image.open(meme_resources_path + "02.png").convert("RGBA")
+        user_image2 = Image.open(meme_resources_path + "03.png").convert("RGBA")
 
         # Paste images
         output.paste(author_image, (171, 0), author_image)
@@ -838,7 +838,7 @@ class memes(commands.Cog):
 
         txtPic1 = Image.new("RGBA", (450, 230))
         draw = ImageDraw.Draw(txtPic1)
-        font = ImageFont.truetype(meme_templates_path + "Calibri.ttf", 40)
+        font = ImageFont.truetype(meme_resources_path + "Calibri.ttf", 40)
         lines1 = textwrap.wrap(text1, width=25)
         for line in lines1:
             draw.text(((10, Y)), line, font=font, fill=(255, 255, 255, 255))
@@ -865,9 +865,9 @@ class memes(commands.Cog):
         output.paste(txtPic3, (188, 888), txtPic3)
 
         # Save image
-        output.save(meme_templates_path + "output.png", "PNG")
+        output.save(meme_resources_path + "output.png", "PNG")
 
-        await ctx.send(file=nextcord.File(meme_templates_path + "output.png"))
+        await ctx.send(file=nextcord.File(meme_resources_path + "output.png"))
 
         delete_files(("01.webp", "02.webp", "01.png", "02.png", "03.png", "output.png"))
 
@@ -882,8 +882,8 @@ class memes(commands.Cog):
         meme_width = 994
         meme_hegiht = 680
         txtPic1 = Image.new("RGBA", (meme_width, meme_hegiht))
-        pic = Image.open(meme_templates_path + "skeletor.png").convert("RGBA")
-        font = ImageFont.truetype(meme_templates_path + "impact.ttf", 60)
+        pic = Image.open(meme_resources_path + "skeletor.png").convert("RGBA")
+        font = ImageFont.truetype(meme_resources_path + "impact.ttf", 60)
         d = ImageDraw.Draw(txtPic1)
 
         # Write text1
@@ -905,10 +905,10 @@ class memes(commands.Cog):
 
         pic.paste(txtPic1, (10, 440), txtPic1)
 
-        pic.save(meme_templates_path + "output.png", "PNG")
+        pic.save(meme_resources_path + "output.png", "PNG")
 
-        await ctx.send(file=nextcord.File(meme_templates_path + "output.png"))
-        os.remove(meme_templates_path + "output.png")
+        await ctx.send(file=nextcord.File(meme_resources_path + "output.png"))
+        os.remove(meme_resources_path + "output.png")
 
     @commands.command()
     async def undertale(self, ctx: commands.Context, texto: str):
@@ -921,19 +921,19 @@ class memes(commands.Cog):
         # Get image
         character_image_size = 200
         r = requests.get(ctx.author.avatar.url, allow_redirects=True)
-        open(meme_templates_path + "01.webp", "wb").write(r.content)
-        convert_pic(meme_templates_path + "01.webp", "01", 200)
+        open(meme_resources_path + "01.webp", "wb").write(r.content)
+        convert_pic(meme_resources_path + "01.webp", "01", 200)
 
         # Open resources
-        image = Image.open(meme_templates_path + "dialogue_box.png")
+        image = Image.open(meme_resources_path + "dialogue_box.png")
         font = ImageFont.truetype(
-            meme_templates_path + "Determination-Sans.otf", size=60
+            meme_resources_path + "Determination-Sans.otf", size=60
         )
         txtPic1 = Image.new("RGBA", (800, 270))
         draw = ImageDraw.Draw(txtPic1)
 
         # Convert character picture
-        sprite = Image.open(meme_templates_path + "01.png").convert("L")
+        sprite = Image.open(meme_resources_path + "01.png").convert("L")
         wpercent = character_image_size / float(sprite.size[0])
         hsize = int((float(sprite.size[1]) * float(wpercent)))
         sprite = sprite.resize((character_image_size, hsize), Image.ANTIALIAS)
@@ -948,8 +948,8 @@ class memes(commands.Cog):
             Y = Y + height
 
         image.paste(txtPic1, (350, 50), txtPic1)
-        image.save(meme_templates_path + "output.png", "PNG")
-        await ctx.send(file=nextcord.File(meme_templates_path + "output.png"))
+        image.save(meme_resources_path + "output.png", "PNG")
+        await ctx.send(file=nextcord.File(meme_resources_path + "output.png"))
         delete_files(("output.png", "01.png", "01.webp"))
 
     @commands.command()
@@ -969,19 +969,19 @@ class memes(commands.Cog):
 
         # Get user avatars
         r = requests.get(user1.avatar.url, allow_redirects=True)
-        open(meme_templates_path + "01.webp", "wb").write(r.content)
+        open(meme_resources_path + "01.webp", "wb").write(r.content)
         r = requests.get(user2.avatar.url, allow_redirects=True)
-        open(meme_templates_path + "02.webp", "wb").write(r.content)
+        open(meme_resources_path + "02.webp", "wb").write(r.content)
         r = requests.get(user3.avatar.url, allow_redirects=True)
-        open(meme_templates_path + "03.webp", "wb").write(r.content)
+        open(meme_resources_path + "03.webp", "wb").write(r.content)
 
         # Convert avatars
-        convert_pic(meme_templates_path + "01.webp", "01", 265)
-        convert_pic(meme_templates_path + "02.webp", "02", 230)
-        convert_pic(meme_templates_path + "03.webp", "03", 170)
+        convert_pic(meme_resources_path + "01.webp", "01", 265)
+        convert_pic(meme_resources_path + "02.webp", "02", 230)
+        convert_pic(meme_resources_path + "03.webp", "03", 170)
 
         # Open meme image
-        meme = Image.open(meme_templates_path + "huracan" + ".png").convert("RGBA")
+        meme = Image.open(meme_resources_path + "huracan" + ".png").convert("RGBA")
 
         # Get width and height
         width, height = meme.size
@@ -990,19 +990,19 @@ class memes(commands.Cog):
         output = Image.new("RGBA", (width, height))
 
         # Paste images
-        img1 = Image.open(meme_templates_path + "01" + ".png").convert("RGBA")
+        img1 = Image.open(meme_resources_path + "01" + ".png").convert("RGBA")
         output.paste(img1, (683, 473), img1)
-        img2 = Image.open(meme_templates_path + "02" + ".png").convert("RGBA")
+        img2 = Image.open(meme_resources_path + "02" + ".png").convert("RGBA")
         output.paste(img2, (420, 630), img2)
-        img3 = Image.open(meme_templates_path + "03" + ".png").convert("RGBA")
+        img3 = Image.open(meme_resources_path + "03" + ".png").convert("RGBA")
         output.paste(img3, (650, 870), img3)
 
         # Paste meme image
         output.paste(meme, (0, 0), meme)
-        output.save(meme_templates_path + "output.png", "PNG")
+        output.save(meme_resources_path + "output.png", "PNG")
 
         # Send meme
-        await ctx.send(file=nextcord.File(meme_templates_path + "output.png"))
+        await ctx.send(file=nextcord.File(meme_resources_path + "output.png"))
 
         # Delete user avatar and output
         delete_files(
@@ -1032,31 +1032,31 @@ def create_meme(
     """
 
     r = requests.get(avatar_url, allow_redirects=True)
-    open(meme_templates_path + "01.webp", "wb").write(r.content)
+    open(meme_resources_path + "01.webp", "wb").write(r.content)
 
     # Convert avatar
-    convert_pic(meme_templates_path + "01.webp", "01", avatar_size)
+    convert_pic(meme_resources_path + "01.webp", "01", avatar_size)
 
     if not invert:  # burn
         canvas = pictures[1]
         width, height = (
-            Image.open(meme_templates_path + canvas + ".png").convert("RGBA").size
+            Image.open(meme_resources_path + canvas + ".png").convert("RGBA").size
         )
     else:  # cringe
         canvas = pictures[0]
         width, height = (
-            Image.open(meme_templates_path + canvas + ".png").convert("RGBA").size
+            Image.open(meme_resources_path + canvas + ".png").convert("RGBA").size
         )
 
     output = Image.new("RGBA", (width, height))  # Create picture
-    meme = Image.open(meme_templates_path + pictures[0] + ".png").convert(
+    meme = Image.open(meme_resources_path + pictures[0] + ".png").convert(
         "RGBA"
     )  # Open meme picture
 
     # Add avatar pictures
     i = 2
     for x in pictures[1:]:
-        img = Image.open(meme_templates_path + x + ".png").convert("RGBA")
+        img = Image.open(meme_resources_path + x + ".png").convert("RGBA")
         output.paste(img, (position[i], position[i + 1]), img)
         i += 2
 
@@ -1064,7 +1064,7 @@ def create_meme(
     output.paste(meme, (position[0], position[1]), meme)
 
     # Save final meme
-    output.save(meme_templates_path + "output.png", "PNG")
+    output.save(meme_resources_path + "output.png", "PNG")
 
 
 def setup(bot: commands.Bot):

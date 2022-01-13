@@ -62,12 +62,9 @@ class yaml_functions:
 
 yaml_f = yaml_functions()
 
-# .env data
-
-
 # Paths
 stickers_path = "files/stickers/"
-meme_templates_path = "files/resources/memes/"
+meme_resources_path = "files/resources/memes/"
 meme_path = "files/memes/"
 paths = [stickers_path, meme_path]
 
@@ -132,9 +129,9 @@ def get_user_avatar(url: str, name: str):
 
     r = requests.get(url, allow_redirects=True)
 
-    open(meme_templates_path + name, "wb").write(r.content)
+    open(meme_resources_path + name, "wb").write(r.content)
 
-    logging.info("Saved avatar with url " + url + " in " + meme_templates_path)
+    logging.info("Saved avatar with url " + url + " in " + meme_resources_path)
 
 
 def convert_pic(picture: str, imgName: str, imgSize: str = None):
@@ -152,7 +149,7 @@ def convert_pic(picture: str, imgName: str, imgSize: str = None):
         hsize = int((float(img.size[1]) * float(wpercent)))
         img = img.resize((imgSize, hsize), Image.ANTIALIAS)
 
-    img.save(meme_templates_path + imgName + ".png")
+    img.save(meme_resources_path + imgName + ".png")
 
 
 def get_user(ctx: commands.Context, user: nextcord.Member = None) -> nextcord.Member:
@@ -268,6 +265,6 @@ def delete_files(elements: list):
         elements (list): files used in a meme
     """
     for x in elements:
-        if os.path.isfile(meme_templates_path + x):
-            os.remove(meme_templates_path + x)
+        if os.path.isfile(meme_resources_path + x):
+            os.remove(meme_resources_path + x)
     logging.info("Removed dependencies")

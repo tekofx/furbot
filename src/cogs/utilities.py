@@ -8,7 +8,7 @@ from pyrae import dle
 import requests
 from utils.functions import (
     convert_pic,
-    meme_templates_path,
+    meme_resources_path,
     delete_files,
 )
 
@@ -70,17 +70,17 @@ class utilities(commands.Cog):
 
         # Get user avatar
         r = requests.get(usr.avatar_url, allow_redirects=True)
-        open(meme_templates_path + "01.webp", "wb").write(r.content)
+        open(meme_resources_path + "01.webp", "wb").write(r.content)
 
-        convert_pic(meme_templates_path + "01.webp", "01", 1000)
-        user_avatar = meme_templates_path + "01.png"
+        convert_pic(meme_resources_path + "01.webp", "01", 1000)
+        user_avatar = meme_resources_path + "01.png"
         avatar = Image.open(user_avatar)
 
         if design is None or design == "1":
             # Open carnet to draw
             output = Image.open("files/resources/utilities/carnet.png").convert("RGBA")
             draw = ImageDraw.Draw(output)
-            font = ImageFont.truetype(meme_templates_path + "Calibri.ttf", 40)
+            font = ImageFont.truetype(meme_resources_path + "Calibri.ttf", 40)
 
             # Draw name
             draw.text(((425, 266)), name, font=font, fill=(0, 0, 0, 255))
@@ -110,8 +110,8 @@ class utilities(commands.Cog):
             output.paste(img, (1030, 250))
 
             # Save carnet
-            output.save(meme_templates_path + "output.png", "PNG")
-            await ctx.respond(attachment=meme_templates_path + "output.png")
+            output.save(meme_resources_path + "output.png", "PNG")
+            await ctx.respond(attachment=meme_resources_path + "output.png")
         if design == "2":
             W = 1100
 
@@ -120,8 +120,8 @@ class utilities(commands.Cog):
                 "RGBA"
             )
             draw = ImageDraw.Draw(carnet_design)
-            font = ImageFont.truetype(meme_templates_path + "Calibri.ttf", 60)
-            font_bold = ImageFont.truetype(meme_templates_path + "Calibri_bold.ttf", 65)
+            font = ImageFont.truetype(meme_resources_path + "Calibri.ttf", 60)
+            font_bold = ImageFont.truetype(meme_resources_path + "Calibri_bold.ttf", 65)
 
             # Add avatar
             avatar = avatar.resize((400, 400))
@@ -164,8 +164,8 @@ class utilities(commands.Cog):
             output.paste(carnet_design, (0, 0), carnet_design)
 
             # Save carnet
-            output.save(meme_templates_path + "output.png", "PNG")
-            await ctx.respond(attachment=meme_templates_path + "output.png")
+            output.save(meme_resources_path + "output.png", "PNG")
+            await ctx.respond(attachment=meme_resources_path + "output.png")
 
         delete_files(("01.webp", "output.png", "01.png"))
 
