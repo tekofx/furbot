@@ -4,6 +4,7 @@ import random
 import textwrap
 import time
 from PIL import ImageFont, ImageDraw
+from utils.database import create_connection, create_record
 from utils.functions import (
     get_user,
     delete_files,
@@ -107,21 +108,10 @@ class memes(commands.Cog):
         """
 
         # If all memes have been sent, delete history
-        try:
-            if count_files_in_dir(memes_path) <= 30 + count_lines_in_file(
-                memes_history_txt
-            ):
-                open(memes_history_txt, "w").close()
-        except FileNotFoundError:
-            logging.error("Error:  memes_history_txt could not be readed")
-            return 0
 
         if name is None:
             output = random.choice(os.listdir(memes_path))
-            while exists_string_in_file(memes_history_txt, output):
-                output = random.choice(os.listdir(memes_path))
 
-            write_in_file(memes_history_txt, output + "\n")
             await ctx.send(file=nextcord.File(memes_path + output))
 
         else:
@@ -152,8 +142,6 @@ class memes(commands.Cog):
 
             else:
                 output = random.choice(uwu)
-
-                # Check if there are any memes with the name
 
             await ctx.send(file=nextcord.File(memes_path + output))
         logging.info("Meme " + output + " sent")
