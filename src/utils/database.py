@@ -38,7 +38,7 @@ sentences_table = """ CREATE TABLE IF NOT EXISTS sentences (
 records_table = """ CREATE TABLE IF NOT EXISTS records (
                                     id integer PRIMARY KEY,
                                     type text NOT NULL ,
-                                    record text NOT NULL,
+                                    record text NOT NULL
                                 ); """
 
 tables = [
