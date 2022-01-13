@@ -30,14 +30,14 @@ colors_table = """ CREATE TABLE IF NOT EXISTS colors (
 
 sentences_table = """ CREATE TABLE IF NOT EXISTS sentences (
                                     id integer PRIMARY KEY,
-                                    type text NOT NULL,
-                                    sentence text NOT NULL
+                                    type text NOT NULL ,
+                                    sentence text NOT NULL UNIQUE
                                 ); """
 
 records_table = """ CREATE TABLE IF NOT EXISTS records (
                                     id integer PRIMARY KEY,
-                                    type text NOT NULL,
-                                    record text NOT NULL
+                                    type text NOT NULL ,
+                                    record text NOT NULL UNIQUE
                                 ); """
 
 tables = [
@@ -331,10 +331,11 @@ def create_sentence(
         )
     except Exception as error:
         log.error(
-            "Error: Could not create user {id} {name}: {error}".format(
+            "Error: Could not create sentence {id} {name}: {error}".format(
                 id=sentence_data[0], name=sentence_data[1], error=error
             )
         )
+        raise error
 
     database_connection.commit()
 

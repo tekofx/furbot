@@ -50,14 +50,20 @@ class roast(commands.Cog):
         Ejemplo:
             fur addinsulto "feo" "horrible"
         """
-        try:
-            con = create_connection(str(ctx.guild.id))
+        con = create_connection(str(ctx.guild.id))
 
-            for insult in insults:
+        for insult in insults:
+            try:
                 create_sentence(con, ["insult", insult])
-            await ctx.reply("Insulto/s añadido/s")
-        except Exception as error:
-            log.error("Error: {}".format(error))
+            except Exception as error:
+                log.error("Error adding insult: {}".format(error))
+                await ctx.reply(
+                    "Error añadiendo insulto {}: insulto ya existente".format(insult)
+                )
+            else:
+                log.info("Added insult {}".format(insult))
+
+        await ctx.reply("Insulto/s añadido/s")
 
     @commands.command()
     async def animo(self, ctx: commands.Context, user: nextcord.Member = None):
@@ -84,14 +90,19 @@ class roast(commands.Cog):
         Ejemplo:
             fur addanimo "guapo" "hermoso"
         """
-        try:
-            con = create_connection(str(ctx.guild.id))
+        con = create_connection(str(ctx.guild.id))
 
-            for animo in animos:
+        for animo in animos:
+            try:
                 create_sentence(con, ["animo", animo])
-            await ctx.reply("Animo/s añadido/s")
-        except Exception as error:
-            log.error("Error: {}".format(error))
+            except Exception as error:
+                log.error("Error adding anim: {}".format(error))
+                await ctx.reply(
+                    "Error añadiendo animo {}: animo ya existente".format(animo)
+                )
+            else:
+                log.info("Added animo {}".format(animo))
+        await ctx.reply("Animo/s añadido/s")
 
 
 def setup(bot: commands.Bot):
