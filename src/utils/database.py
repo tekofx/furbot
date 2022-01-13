@@ -31,13 +31,14 @@ colors_table = """ CREATE TABLE IF NOT EXISTS colors (
 sentences_table = """ CREATE TABLE IF NOT EXISTS sentences (
                                     id integer PRIMARY KEY,
                                     type text NOT NULL ,
-                                    sentence text NOT NULL UNIQUE
+                                    sentence text NOT NULL, 
+                                    UNIQUE (type, sentence)
                                 ); """
 
 records_table = """ CREATE TABLE IF NOT EXISTS records (
                                     id integer PRIMARY KEY,
                                     type text NOT NULL ,
-                                    record text NOT NULL UNIQUE
+                                    record text NOT NULL,
                                 ); """
 
 tables = [
