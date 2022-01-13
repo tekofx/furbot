@@ -799,12 +799,17 @@ class memes(commands.Cog):
         os.remove(meme_resources_path + "output.png")
 
     @commands.command()
-    async def undertale(self, ctx: commands.Context, texto: str):
+    async def undertale(
+        self, ctx: commands.Context, texto: str, usuario: nextcord.Member = None
+    ):
         """Bajo cuento"""
+
+        # Get user
+        avatar_url = get_user(ctx, usuario).avatar.url
 
         # Get image
         character_image_size = 200
-        r = requests.get(ctx.author.avatar.url, allow_redirects=True)
+        r = requests.get(avatar_url, allow_redirects=True)
         open(meme_resources_path + "01.webp", "wb").write(r.content)
         convert_pic(meme_resources_path + "01.webp", "01", 200)
 
