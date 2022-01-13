@@ -2,14 +2,11 @@ import logging
 from nextcord.ext import commands
 import nextcord
 from utils.database import (
-    check_entry_in_database,
     create_color,
     create_connection,
     create_rank,
     create_specie,
-    create_user,
     set_birthday,
-    set_name,
 )
 from asyncio import sleep
 from utils.data import config_yaml

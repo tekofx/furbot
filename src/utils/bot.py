@@ -177,6 +177,7 @@ class Bot(commands.Bot):
             context ([type]): [Where the command was used]
             error ([type]): [Error of the command]
         """
+        print(type(error))
         message_content = str(context.message.content)
         message_content = message_content.split(" ")
         command_used = message_content[1]

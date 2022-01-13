@@ -1,4 +1,3 @@
-from distutils.command.config import config
 import os
 import logging
 
@@ -7,9 +6,8 @@ log = logging.getLogger(__name__)
 data_path = "data/"
 temp_path = data_path + "temp/"
 resources_path = data_path + "resources/"
-meme_resources_path = resources_path + "memes/"
-config_yaml = resources_path + "config.yaml"
 databases_path = data_path + "databases/"
+meme_resources_path = resources_path + "memes/"
 stickers_path = data_path + "stickers/"
 memes_path = data_path + "memes/"
 

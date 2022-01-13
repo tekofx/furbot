@@ -30,7 +30,7 @@ class utilities(commands.Cog):
     async def ping(self, context):
         await context.channel.send("Pim pam trucu trucu")
 
-    # TODO
+    # FIXME
     @commands.command()
     async def carnet(self, ctx: commands.Context, user: nextcord.Member, design: str):
         # Get user info

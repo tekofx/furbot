@@ -10,13 +10,7 @@ class fun(commands.Cog):
 
     @commands.command()
     async def penis(self, ctx: commands.Context, user: nextcord.Member = None):
-        """Buena tula
-
-        Genera un pene de tamaño aleatorio.
-        Uso:
-            fur penis
-            fur penis @<usuario>
-        """
+        """Buena tula"""
 
         num = random.randint(1, 15)
         output = "El pene de {}\n"
@@ -33,12 +27,7 @@ class fun(commands.Cog):
 
     @commands.command()
     async def communist(self, ctx: commands.Context, user: nextcord.Member = None):
-        """Serás un comunista bolivariano que apoya al Coletas?
-
-        Uso:
-            fur communist
-            fur communist @<usuario>
-        """
+        """Serás un comunista bolivariano que apoya al Coletas?"""
 
         num = random.randint(0, 100)
         output = "{} es {}% comunista"
@@ -50,12 +39,7 @@ class fun(commands.Cog):
 
     @commands.command()
     async def capitalist(self, ctx: commands.Context, user: nextcord.Member = None):
-        """Serás capitalista y te convertirás en el nuevo lobo de Wall Street?
-
-        Uso:
-            fur capitalist
-            fur capitalist @<usuario>
-        """
+        """Serás capitalista y te convertirás en el nuevo lobo de Wall Street?"""
 
         num = random.randint(0, 100)
         output = "{} es {}% capitalista"
@@ -67,12 +51,7 @@ class fun(commands.Cog):
 
     @commands.command()
     async def gay(self, ctx: commands.Context, user: nextcord.Member = None):
-        """Maricon el ultimo
-
-        Uso:
-            fur gay
-            fur gay @<usuario>
-        """
+        """Maricon el ultimo"""
 
         num = random.randint(0, 100)
         output = "{} es {}% gay"
@@ -85,13 +64,7 @@ class fun(commands.Cog):
 
     @commands.command(name="str8")
     async def straight(self, ctx: commands.Context, user: nextcord.Member = None):
-        """Super str8 el ultimo
-
-        Uso:
-            fur str8
-            fur str8 @<usuario>
-
-        """
+        """Super str8 el ultimo"""
 
         num = random.randint(0, 100)
         output = "{} es {}% straight"

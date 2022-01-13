@@ -2,14 +2,10 @@
 from PIL import Image
 import os
 import logging
-from dotenv import load_dotenv
 import nextcord
 from nextcord.ext import commands
-import praw
-import random
 import requests
-import yaml
-from utils.data import resources_path, meme_resources_path
+from utils.data import meme_resources_path
 
 
 def get_user_avatar(url: str, name: str):
@@ -64,91 +60,6 @@ def get_user(ctx: commands.Context, user: nextcord.Member = None) -> nextcord.Me
 
 
 ############################### Files functions ###############################
-def exists_string_in_file(file_name: str, string: str):
-    """Checks if string is contained as line in file_name
-
-    Args:
-        file_name (str): file to check
-        string (str): string to search
-
-    Returns:
-        bool: True if string is in file_name, False if not
-    """
-    with open(file_name, "r") as file:
-        for line in file:
-            if string + "\n" == line:
-                return True
-    return False
-
-
-def count_lines_in_file(file: str):
-    """Counts lines of a file
-
-    Args:
-        file (str): file to count lines from
-
-    Returns:
-        int: number of lines
-    """
-    output = 0
-    with open(file, "r") as f:
-        for line in f:
-            output += 1
-    return output
-
-
-def count_files_in_dir(directory: str):
-    """Counts files in a directory
-
-    Args:
-        directory (str): directory to count files from
-
-    Returns:
-        int: number of files in directory
-    """
-    files = os.listdir(directory)  # dir is your directory path
-    output = len(files)
-    return output
-
-
-def get_files_in_directory(directory: str):
-    """Get a list of files in a directory
-
-    Args:
-        directory (str): directory to search
-
-    Returns:
-        [list]: list of files in dir
-    """
-    return os.listdir(directory)
-
-
-def write_in_file(file: str, string: str):
-    """Writes text in a file
-
-    Args:
-        file (str): file to write
-        string (str): string to write
-    """
-    f = open(file, "a")
-    f.write(string)
-    f.close()
-
-
-def get_random_line_of_file(file: str):
-    """Gets random line of a file
-
-    Args:
-        file (str): file to get the line
-
-    Returns:
-        [str]: random line
-    """
-    with open(file) as f:
-        lines = f.readlines()
-    f.close()
-
-    return random.choice(lines)
 
 
 def delete_files(elements: list):

@@ -1,9 +1,7 @@
 import logging
 import nextcord
 from nextcord.ext import commands
-from utils.functions import get_random_line_of_file
 from utils.bot import Bot
-from utils.data import resources_path
 from utils.database import create_connection, create_sentence, get_random_sentence
 
 log = logging.getLogger(__name__)
@@ -28,10 +26,7 @@ class roast(commands.Cog):
 
     @commands.command()
     async def insult(self, ctx: commands.Context, user: nextcord.Member = None):
-        """Insulta gente 7w7
-
-        Genera un insulto aleatorio
-        """
+        """Insulta gente 7w7"""
 
         try:
             con = create_connection(str(ctx.guild.id))

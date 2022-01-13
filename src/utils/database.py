@@ -1,4 +1,3 @@
-from cmath import inf
 import datetime
 import random
 import sqlite3
@@ -52,35 +51,37 @@ tables = [
 log = logging.getLogger(__name__)
 
 
-def create_connection(db_file: str):
-    """Creates a connection to a database db_file
+def create_connection(db_file: str) -> sqlite3.Connection:
+    """Creates a connection with a db file
+
     Args:
-        db_file (str): database file to connect
+        db_file (str): database to connect to
+
     Returns:
-        sqlite3.Connection: connection to database
+        sqlite3.Connection
     """
     database = databases_path + str(db_file) + ".db"
 
-    conn = None
+    database_connection = None
     try:
-        conn = sqlite3.connect(database)
-        return conn
+        database_connection = sqlite3.connect(database)
+        return database_connection
     except Exception as e:
         log.error("Error: Could not connect to database . {}".format(e))
 
-    return conn
 
-
-def create_table(conn, table_sql_sentence: str):
+def create_table(
+    database_connection: sqlite3.Connection, table_sql_sentence: str
+) -> None:
     """Creates a table in the database
     Args:
-        conn (sqlite3.Connection): Connection to database
+        database_connection(sqlite3.Connection): Connection to database
         table_sql_sentence (str): sql sentence
     """
     database_name = table_sql_sentence.split()[5]
 
     try:
-        c = conn.cursor()
+        c = database_connection.cursor()
         c.execute(table_sql_sentence)
         log.info("Created table {}".format(database_name))
 
@@ -90,10 +91,11 @@ def create_table(conn, table_sql_sentence: str):
         )
 
 
-def setup_database(db_file: str):
-    """Creates the db file and stablish connection to it
-    Returns:
-        sqlite3.Connection: connection to database
+def setup_database(db_file: str) -> None:
+    """Creates a db file and connects to it
+
+    Args:
+        db_file (str): db file to create
     """
     database = databases_path + db_file + ".db"
 
@@ -104,27 +106,25 @@ def setup_database(db_file: str):
         f.close()
 
     # create a database connection
-    conn = create_connection(db_file)
+    database_connection = create_connection(db_file)
 
     # create tables
     for table in tables:
-        create_table(conn, table)
-
-    return conn
+        create_table(database_connection, table)
 
 
 ###################### Creates and removes ######################
-def create_user(conn, user_data):
+def create_user(database_connection: sqlite3.Connection, user_data) -> None:
     """Creates a user in the users table
     Args:
-        conn (sqlite3.Connection): Connection to database
-        user (tuple): info to add
+        database_connection(sqlite3.Connection): Connection to database
+        user (tuple): info to add. Containing: [user_id, user_name, user_joined_at]
     """
 
     sql = """ INSERT INTO users(id,name,joined_date)
               VALUES(?,?,?) """
 
-    cur = conn.cursor()
+    cur = database_connection.cursor()
     try:
         cur.execute(sql, user_data)
         log.info(
@@ -139,38 +139,38 @@ def create_user(conn, user_data):
             )
         )
 
-    conn.commit()
+    database_connection.commit()
 
 
-def remove_user(con, user_id: int):
+def remove_user(database_connection: sqlite3.Connection, user_id: int) -> None:
     """Removes a user from database
     Args:
-        conn (sqlite3.Connection): Connection to database
+        database_connection(sqlite3.Connection): Connection to database
         user_id (int): id of user to remove
     """
     sql = "DELETE FROM users WHERE id=?"
     var = [user_id]
-    cur = con.cursor()
+    cur = database_connection.cursor()
     try:
         cur.execute(sql, var)
         log.info("Deleted user {} from database".format(user_id))
     except:
         log.error("Error: Could not delete user {id} from database".format(user_id))
 
-    con.commit()
+    database_connection.commit()
 
 
-def create_rank(conn, rank_data):
+def create_rank(database_connection: sqlite3.Connection, rank_data) -> None:
     """Creates a rank in the ranks table
     Args:
-        conn (sqlite3.Connection): Connection to database
-        rank_data (tuple): info to add
+        database_connection(sqlite3.Connection): Connection to database
+        rank_data (tuple): info to add. Containing: [rank_id, name_id]
     """
 
     sql = """ INSERT INTO ranks(id,name)
               VALUES(?,?) """
 
-    cur = conn.cursor()
+    cur = database_connection.cursor()
     try:
         cur.execute(sql, rank_data)
         log.info(
@@ -185,39 +185,39 @@ def create_rank(conn, rank_data):
             )
         )
 
-    conn.commit()
+    database_connection.commit()
 
 
-def remove_rank(con, rank_id: int):
+def remove_rank(database_connection: sqlite3.Connection, rank_id: int) -> None:
     """Removes a rank entry
 
     Args:
-        con ([type]): [description]
-        rank_id (int): [id of the rank
+        database_connection(sqlite3.Connection): Connection to database
+        rank_id (int): id of the rank
     """
     sql = "DELETE FROM ranks WHERE id=?"
     var = [rank_id]
-    cur = con.cursor()
+    cur = database_connection.cursor()
     try:
         cur.execute(sql, var)
         log.info("Deleted rank {} from database".format(rank_id))
     except:
         log.error("Error: Could not delete rank {id} from database".format(rank_id))
 
-    con.commit()
+    database_connection.commit()
 
 
-def create_specie(conn, specie_data):
+def create_specie(database_connection: sqlite3.Connection, specie_data) -> None:
     """Creates a specie in the species table
     Args:
-        conn (sqlite3.Connection): Connection to database
-        user (tuple): info to add
+        database_connection(sqlite3.Connection): Connection to database
+        user (tuple): info to add. Containing [specie_id, name_id]
     """
 
     sql = """ INSERT INTO species(id,name)
               VALUES(?,?) """
 
-    cur = conn.cursor()
+    cur = database_connection.cursor()
     try:
         cur.execute(sql, specie_data)
         log.info(
@@ -232,39 +232,40 @@ def create_specie(conn, specie_data):
             )
         )
 
-    conn.commit()
+    database_connection.commit()
 
 
-def remove_specie(con, specie_id: int):
+def remove_specie(database_connection: sqlite3.Connection, specie_id: int) -> None:
     """Removes a specie entry
 
     Args:
-        con ([type]): [description]
-        specie_id (int): [id of the specie
+        database_connection(sqlite3.Connection): Connection to database
+
+        specie_id (int): id of the specie
     """
     sql = "DELETE FROM species WHERE id=?"
     var = [specie_id]
-    cur = con.cursor()
+    cur = database_connection.cursor()
     try:
         cur.execute(sql, var)
         log.info("Deleted specie {} from database".format(specie_id))
     except:
         log.error("Error: Could not delete specie {id} from database".format(specie_id))
 
-    con.commit()
+    database_connection.commit()
 
 
-def create_color(conn, color_data):
+def create_color(database_connection: sqlite3.Connection, color_data) -> None:
     """Creates a color in the colors table
     Args:
-        conn (sqlite3.Connection): Connection to database
-        user (tuple): info to add
+        database_connection(sqlite3.Connection): Connection to database
+        user (tuple): info from color. Containing [color_id, color_name]
     """
 
     sql = """ INSERT INTO colors(id,name)
               VALUES(?,?) """
 
-    cur = conn.cursor()
+    cur = database_connection.cursor()
     try:
         cur.execute(sql, color_data)
         log.info(
@@ -279,32 +280,34 @@ def create_color(conn, color_data):
             )
         )
 
-    conn.commit()
+    database_connection.commit()
 
 
-def remove_color(con, color_id: int):
+def remove_color(database_connection: sqlite3.Connection, color_id: int) -> None:
     """Removes a color entry
 
     Args:
-        con ([type]): [description]
-        color_id (int): [id of the color
+        database_connection(sqlite3.Connection): Connection to database
+        color_id (int): id of the color
     """
     sql = "DELETE FROM colors WHERE id=?"
     var = [color_id]
-    cur = con.cursor()
+    cur = database_connection.cursor()
     try:
         cur.execute(sql, var)
         log.info("Deleted color {} from database".format(color_id))
     except:
         log.error("Error: Could not delete color {id} from database".format(color_id))
 
-    con.commit()
+    database_connection.commit()
 
 
-def create_sentence(conn, sentence_data: list):
+def create_sentence(
+    database_connection: sqlite3.Connection, sentence_data: list
+) -> None:
     """Creates a sentence in the sentences table
     Args:
-        conn (sqlite3.Connection): Connection to database
+        database_connection(sqlite3.Connection): Connection to database
         sentence (list): info of sentence. Containing [type, sentence]
     """
 
@@ -312,13 +315,13 @@ def create_sentence(conn, sentence_data: list):
               VALUES(?,?,?) """
 
     try:
-        id = get_latest_id(conn, "sentences") + 1
+        id = get_latest_id(database_connection, "sentences") + 1
     except Exception as error:
         log.error("Error: {}".format(error))
         return
     sentence_data.insert(0, id)
 
-    cur = conn.cursor()
+    cur = database_connection.cursor()
     try:
         cur.execute(sql, sentence_data)
         log.info(
@@ -333,13 +336,13 @@ def create_sentence(conn, sentence_data: list):
             )
         )
 
-    conn.commit()
+    database_connection.commit()
 
 
-def create_record(conn, record_data: list):
+def create_record(database_connection: sqlite3.Connection, record_data: list) -> None:
     """Creates a record in the records table
     Args:
-        conn (sqlite3.Connection): Connection to database
+        database_connection(sqlite3.Connection): Connection to database
         record (list): info of record. Containing [type, record]
     """
 
@@ -347,13 +350,13 @@ def create_record(conn, record_data: list):
               VALUES(?,?,?) """
 
     try:
-        id = get_latest_id(conn, "records") + 1
+        id = get_latest_id(database_connection, "records") + 1
     except Exception as error:
         log.error("Error: {}".format(error))
         return
     record_data.insert(0, id)
 
-    cur = conn.cursor()
+    cur = database_connection.cursor()
     try:
         cur.execute(sql, record_data)
         log.info(
@@ -368,14 +371,14 @@ def create_record(conn, record_data: list):
             )
         )
 
-    conn.commit()
+    database_connection.commit()
 
 
 ###################### Getters and setters ######################
-def get_name(con, user_id: int):
+def get_name(database_connection: sqlite3.Connection, user_id: int) -> str:
     """Gets the name of a user
     Args:
-        con ([type]): [description]
+        database_connection(sqlite3.Connection): Connection to database
         user_id (int): id of user
     Returns:
         [str]: name of user
@@ -385,7 +388,7 @@ def get_name(con, user_id: int):
         WHERE id=?
         """
     var = [user_id]
-    cur = con.cursor()
+    cur = database_connection.cursor()
     try:
         cur.execute(sql, var)
         log.info("Query of name for user {id} successful".format(id=user_id))
@@ -397,10 +400,10 @@ def get_name(con, user_id: int):
     return num_messages
 
 
-def set_name(con, user_id: int, name: str):
+def set_name(database_connection: sqlite3.Connection, user_id: int, name: str) -> None:
     """Changes the name of a user
     Args:
-        conn (sqlite3.Connection): Connection to database
+        database_connection(sqlite3.Connection): Connection to database
         user_id (int): id of user
         name (str): new name for a user
     """
@@ -408,24 +411,34 @@ def set_name(con, user_id: int, name: str):
               SET name = ?
               WHERE id = ?"""
 
-    cur = con.cursor()
+    cur = database_connection.cursor()
     var = [name, user_id]
     try:
         cur.execute(sql, var)
         log.info("Updated name of user {}".format(user_id))
     except:
         log.error("Error: Could not update name of user {}".format(user_id))
-    con.commit()
+    database_connection.commit()
 
 
-def get_birthday(con, user_id: int):
+def get_birthday(database_connection: sqlite3.Connection, user_id: int) -> str:
+    """Gets the birthday of a user
+
+    Args:
+        database_connection(sqlite3.Connection): Connection to database
+        user_id (int): id of user
+
+    Returns:
+        str: birthday of user
+    """
+
     sql = """ SELECT birthday
         FROM users
         WHERE id=?
         """
 
     var = [user_id]
-    cur = con.cursor()
+    cur = database_connection.cursor()
     try:
         cur.execute(sql, var)
         info = cur.fetchone()
@@ -438,7 +451,16 @@ def get_birthday(con, user_id: int):
     return birthday
 
 
-def set_birthday(con, user_id: int, date: int):
+def set_birthday(
+    database_connection: sqlite3.Connection, user_id: int, date: str
+) -> None:
+    """Sets the birthday of a user
+
+    Args:
+        database_connection(sqlite3.Connection): Connection to database
+        user_id (int): id of user
+        date (str): birthday of user
+    """
     sql = """ UPDATE users  
               SET birthday = ?
               WHERE id = ?"""
@@ -454,19 +476,27 @@ def set_birthday(con, user_id: int, date: int):
 
     var = [birthday, user_id]
     try:
-        cur = con.cursor()
+        cur = database_connection.cursor()
         cur.execute(sql, var)
         log.info("Updated birthday of user {}".format(user_id))
     except:
         log.error("Error: Could not update birthday of user {}".format(user_id))
-    con.commit()
+    database_connection.commit()
 
 
-def get_birthdays(con):
+def get_birthdays(database_connection: sqlite3.Connection) -> list:
+    """Gets birtdays of all users
+
+    Args:
+        database_connection(sqlite3.Connection): Connection to database
+
+    Returns:
+        list: containing other lists with [user_id, birtday]
+    """
     sql = """ SELECT id,birthday
         FROM users
         """
-    cur = con.cursor()
+    cur = database_connection.cursor()
     try:
         cur.execute(sql)
         info = cur.fetchall()
@@ -477,11 +507,19 @@ def get_birthdays(con):
         return info
 
 
-def get_ranks(con):
+def get_ranks(database_connection: sqlite3.Connection) -> list:
+    """Gets a list with all ranks
+
+    Args:
+        database_connection (sqlite3.Connection): Connection to database
+
+    Returns:
+        list: containing ids of all ranks
+    """
     sql = """ SELECT id
         FROM ranks
         """
-    cur = con.cursor()
+    cur = database_connection.cursor()
     try:
         cur.execute(sql)
         info = cur.fetchall()
@@ -494,11 +532,19 @@ def get_ranks(con):
     return output
 
 
-def get_species(con):
+def get_species(database_connection: sqlite3.Connection) -> list:
+    """Get a list with all species
+
+    Args:
+        database_connection (sqlite3.Connection): Connection to database
+
+    Returns:
+        list: containing ids of all species
+    """
     sql = """ SELECT id
         FROM species
         """
-    cur = con.cursor()
+    cur = database_connection.cursor()
     try:
         cur.execute(sql)
         info = cur.fetchall()
@@ -511,11 +557,19 @@ def get_species(con):
     return output
 
 
-def get_colors(con):
+def get_colors(database_connection: sqlite3.Connection) -> list:
+    """Returns a list with all colors
+
+    Args:
+        database_connection (sqlite3.Connection): Connection to database
+
+    Returns:
+        list: containing ids of all colors
+    """
     sql = """ SELECT id
         FROM colors
         """
-    cur = con.cursor()
+    cur = database_connection.cursor()
     try:
         cur.execute(sql)
         info = cur.fetchall()
@@ -528,11 +582,13 @@ def get_colors(con):
     return output
 
 
-def get_random_sentence(con, sentence_type: str) -> str:
+def get_random_sentence(
+    database_connection: sqlite3.Connection, sentence_type: str
+) -> str:
     """Gets a random sentence
 
     Args:
-        con ([type]): [description]
+        database_connection (sqlite3.Connection): Connection to database
         type (str): type of sentence
 
     Returns:
@@ -542,7 +598,7 @@ def get_random_sentence(con, sentence_type: str) -> str:
         FROM sentences
         WHERE type=?
         """
-    cur = con.cursor()
+    cur = database_connection.cursor()
     sentence_type = [
         sentence_type,
     ]
@@ -556,12 +612,12 @@ def get_random_sentence(con, sentence_type: str) -> str:
         return output[0]
 
 
-def get_latest_id(con, table: str) -> int:
+def get_latest_id(database_connection: sqlite3.Connection, table: str) -> int:
     """Gets id of latest item in a table
 
     Args:
-        con ([type]): [description]
-        table ([str]): table to look
+        database_connection (sqlite3.Connection): Connection to database
+        table (str): table to look
 
     Returns:
         int: id of latest sentence
@@ -571,7 +627,7 @@ def get_latest_id(con, table: str) -> int:
         """.format(
         table
     )
-    cur = con.cursor()
+    cur = database_connection.cursor()
     try:
         cur.execute(sql)
         info = cur.fetchall()
@@ -585,18 +641,20 @@ def get_latest_id(con, table: str) -> int:
 
 
 ################################## Checks ##########################################
-def check_entry_in_database(con, table: str, entry_id: int):
+def check_entry_in_database(
+    database_connection: sqlite3.Connection, table: str, entry_id: int
+) -> bool:
     """Check if entry exists in table
 
     Args:
-        con ([type]): [description]
+        database_connection (sqlite3.Connection): Connection to database
         table (str): table to check
         entry_id (int): id of the entry
 
     Returns:
         bool: false if not exists, true on the contrary
     """
-    cursor = con.cursor()
+    cursor = database_connection.cursor()
     sql = "SELECT rowid FROM {} WHERE id = ?".format(table)
     var = [entry_id]
     try:
@@ -609,18 +667,18 @@ def check_entry_in_database(con, table: str, entry_id: int):
     return True
 
 
-def check_record_in_database(con, record: str) -> bool:
+def check_record_in_database(database_connection, record: str) -> bool:
     """Check if entry exists in table
 
     Args:
-        con ([type]): [description]
+        database_connection (sqlite3.Connection): Connection to database
         table (str): table to check
         entry_id (int): id of the entry
 
     Returns:
         bool: false if not exists, true on the contrary
     """
-    cursor = con.cursor()
+    cursor = database_connection.cursor()
     sql = "SELECT id FROM records WHERE record = ?"
     var = [record]
     try:

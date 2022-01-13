@@ -1,7 +1,6 @@
 import logging
 import sqlite3
 from utils.database import check_record_in_database, create_record
-from utils.functions import exists_string_in_file, write_in_file
 import praw
 import os
 
@@ -9,7 +8,6 @@ log = logging.getLogger(__name__)
 
 
 class Reddit:
-    # TODO: Añadir reddit memes history
     def __init__(self) -> None:
         self.reddit = praw.Reddit(
             client_id=os.getenv("REDDIT_CLIENT_ID"),
@@ -24,8 +22,15 @@ class Reddit:
         posts_limit: int,
         database_connection: sqlite3.Connection,
         not_flair: str = None,
-    ):
+    ) -> None:
+        """Returns the URL of a subreddit post that has an image
 
+        Args:
+            sub_reddit (str): subreddit to look for
+            posts_limit (int): limit of posts to load
+            database_connection (sqlite3.Connection): Connection to database
+            not_flair (str, optional): Flairs to avoid. Defaults to None.
+        """
         posts = self.reddit.subreddit(sub_reddit).hot(limit=posts_limit)
         try:
             for post in posts:

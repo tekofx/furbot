@@ -3,8 +3,7 @@ import nextcord
 from nextcord.ext import commands
 import os
 import requests
-from utils.database import check_record_in_database, create_connection, create_record
-from utils.functions import write_in_file
+from utils.database import create_connection, create_record
 from utils.bot import Bot
 from utils.data import resources_path, temp_path
 

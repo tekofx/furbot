@@ -1,7 +1,5 @@
 import asyncio
 import logging
-from venv import create
-import nextcord
 from nextcord.ext import commands, tasks
 from datetime import datetime, timedelta
 import random
@@ -27,6 +25,7 @@ class tasks(commands.Cog):
 
     @tasks.loop(hours=6)
     async def update_users(self):
+        """Updates the users database"""
         async for guild in self.bot.fetch_guilds():
             members = await guild.fetch_members().flatten()
             con = create_connection(str(guild.id))
@@ -120,6 +119,7 @@ class tasks(commands.Cog):
     @meme.before_loop
     @birthday.before_loop
     async def prep(self):
+        """Waits some time to execute tasks"""
         log.info("Waiting to execute tasks")
 
         hours_from_now = 1
