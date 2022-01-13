@@ -1,3 +1,4 @@
+from cmath import inf
 import datetime
 import random
 import sqlite3
@@ -34,7 +35,20 @@ sentences_table = """ CREATE TABLE IF NOT EXISTS sentences (
                                     sentence text NOT NULL
                                 ); """
 
-tables = [users_table, ranks_table, species_table, colors_table, sentences_table]
+records_table = """ CREATE TABLE IF NOT EXISTS records (
+                                    id integer PRIMARY KEY,
+                                    type text NOT NULL,
+                                    record text NOT NULL
+                                ); """
+
+tables = [
+    users_table,
+    ranks_table,
+    species_table,
+    colors_table,
+    sentences_table,
+    records_table,
+]
 log = logging.getLogger(__name__)
 
 
@@ -298,7 +312,7 @@ def create_sentence(conn, sentence_data: list):
               VALUES(?,?,?) """
 
     try:
-        id = get_id_latest_sentence(conn) + 1
+        id = get_latest_id(conn, "sentences") + 1
     except Exception as error:
         log.error("Error: {}".format(error))
         return
@@ -316,6 +330,41 @@ def create_sentence(conn, sentence_data: list):
         log.error(
             "Error: Could not create user {id} {name}: {error}".format(
                 id=sentence_data[0], name=sentence_data[1], error=error
+            )
+        )
+
+    conn.commit()
+
+
+def create_record(conn, record_data: list):
+    """Creates a record in the records table
+    Args:
+        conn (sqlite3.Connection): Connection to database
+        record (list): info of record. Containing [type, record]
+    """
+
+    sql = """ INSERT INTO records(id,type,record)
+              VALUES(?,?,?) """
+
+    try:
+        id = get_latest_id(conn, "records") + 1
+    except Exception as error:
+        log.error("Error: {}".format(error))
+        return
+    record_data.insert(0, id)
+
+    cur = conn.cursor()
+    try:
+        cur.execute(sql, record_data)
+        log.info(
+            "record {record} with id {id} was added to the database".format(
+                record=record_data[1], id=record_data[0]
+            )
+        )
+    except Exception as error:
+        log.error(
+            "Error: Could not create user {id} {name}: {error}".format(
+                id=record_data[0], name=record_data[1], error=error
             )
         )
 
@@ -507,24 +556,28 @@ def get_random_sentence(con, sentence_type: str) -> str:
         return output[0]
 
 
-def get_id_latest_sentence(con) -> int:
-    """Gets id of latest added sentence
+def get_latest_id(con, table: str) -> int:
+    """Gets id of latest item in a table
 
     Args:
         con ([type]): [description]
+        table ([str]): table to look
 
     Returns:
         int: id of latest sentence
     """
     sql = """ SELECT id
-        FROM sentences
-        """
+        FROM {}
+        """.format(
+        table
+    )
     cur = con.cursor()
     try:
         cur.execute(sql)
         info = cur.fetchall()
     except Exception as error:
         log.error("Error: could not query sentences: {}".format(error))
+        return
     else:
         if info == []:  # If theres no sentences
             return 0
@@ -550,6 +603,30 @@ def check_entry_in_database(con, table: str, entry_id: int):
         cursor.execute(sql, var)
     except:
         log.error("Error: Could not check if user {id} exists".format(id=entry_id))
+    data = cursor.fetchall()
+    if len(data) == 0:
+        return False
+    return True
+
+
+def check_record_in_database(con, record: str) -> bool:
+    """Check if entry exists in table
+
+    Args:
+        con ([type]): [description]
+        table (str): table to check
+        entry_id (int): id of the entry
+
+    Returns:
+        bool: false if not exists, true on the contrary
+    """
+    cursor = con.cursor()
+    sql = "SELECT id FROM records WHERE record = ?"
+    var = [record]
+    try:
+        cursor.execute(sql, var)
+    except:
+        log.error("Error: Could not check if user {id} exists".format(id=record))
     data = cursor.fetchall()
     if len(data) == 0:
         return False

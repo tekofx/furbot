@@ -3,9 +3,10 @@ import nextcord
 from nextcord.ext import commands
 import os
 import requests
+from utils.database import check_record_in_database, create_connection, create_record
 from utils.functions import write_in_file
 from utils.bot import Bot
-from utils.data import resources_path
+from utils.data import resources_path, temp_path
 
 
 log = logging.getLogger(__name__)
@@ -21,111 +22,121 @@ class animal(commands.Cog):
     async def fox(self, ctx: commands.Context):
         """Fotos de zorros hermosos"""
         message = await ctx.send("Buscando fotos de zorros hermosos")
+        con = create_connection(str(ctx.guild.id))
+
         with ctx.typing():
 
             # Image url
             tweet_image_url = self.bot.twitter.get_latest_image_not_repeated(
-                "hourlyFox", animal_history_txt
+                "hourlyFox", con
             )
 
             # Write in history
-            write_in_file(animal_history_txt, tweet_image_url + "\n")
+            create_record(con, ["twitter", tweet_image_url])
 
             # Download image
             r = requests.get(tweet_image_url, allow_redirects=True)
-            open("files/" + "image.jpg", "wb").write(r.content)
+            open(temp_path + "image.jpg", "wb").write(r.content)
 
-        image = nextcord.File("files/" + "image.jpg")
+        image = nextcord.File(temp_path + "image.jpg")
         await ctx.send(file=image)
-        os.remove("files/image.jpg")
+        os.remove(temp_path + "image.jpg")
         await message.delete()
 
     @commands.command(name="arctic")
     async def arctic_fox(self, ctx: commands.Context):
         """Fotos de zorros articos"""
         message = await ctx.send("Buscando fotos de zorros árticos hermosos")
+        con = create_connection(str(ctx.guild.id))
+
         with ctx.typing():
 
             # Image url
             tweet_image_url = self.bot.twitter.get_latest_image_not_repeated(
-                "DailyArcticFox", animal_history_txt
+                "DailyArcticFox", con
             )
 
             # Write in history
-            write_in_file(animal_history_txt, tweet_image_url + "\n")
+            create_record(con, ["twitter", tweet_image_url])
 
             # Download image
             r = requests.get(tweet_image_url, allow_redirects=True)
-            open("files/" + "image.jpg", "wb").write(r.content)
-        image = nextcord.File("files/" + "image.jpg")
+            open(temp_path + "image.jpg", "wb").write(r.content)
+        image = nextcord.File(temp_path + "image.jpg")
         await ctx.send(file=image)
-        os.remove("files/image.jpg")
+        os.remove(temp_path + "image.jpg")
         await message.delete()
 
     @commands.command()
     async def wolf(self, ctx: commands.Context):
         """Fotos de zorros hermosos"""
         message = await ctx.send("Buscando fotos de lobos lobitos lobones")
+        con = create_connection(str(ctx.guild.id))
+
         with ctx.typing():
 
             # Image url
             tweet_image_url = self.bot.twitter.get_latest_image_not_repeated(
-                "hourlywolvesbot", animal_history_txt
+                "hourlywolvesbot", con
             )
 
             # Write in history
-            write_in_file(animal_history_txt, tweet_image_url + "\n")
+            create_record(con, ["twitter", tweet_image_url])
 
             # Download image
             r = requests.get(tweet_image_url, allow_redirects=True)
-            open("files/" + "image.jpg", "wb").write(r.content)
-        image = nextcord.File("files/" + "image.jpg")
+            open(temp_path + "image.jpg", "wb").write(r.content)
+        image = nextcord.File(temp_path + "image.jpg")
         await ctx.send(file=image)
-        os.remove("files/image.jpg")
+        os.remove(temp_path + "image.jpg")
         await message.delete()
 
     @commands.command()
     async def bird(self, ctx: commands.Context):
         """Fotos de pajaros"""
         message = await ctx.send("Buscando fotos de pajaritos")
+        con = create_connection(str(ctx.guild.id))
+
         with ctx.typing():
 
             # Image url
             tweet_image_url = self.bot.twitter.get_latest_image_not_repeated(
-                "eugeniogarciac2", animal_history_txt
+                "eugeniogarcia2", con
             )
 
             # Write in history
-            write_in_file(animal_history_txt, tweet_image_url + "\n")
+            create_record(con, ["twitter", tweet_image_url])
 
             # Download image
             r = requests.get(tweet_image_url, allow_redirects=True)
-            open("files/" + "image.jpg", "wb").write(r.content)
-        image = nextcord.File("files/" + "image.jpg")
+            open(temp_path + "image.jpg", "wb").write(r.content)
+        image = nextcord.File(temp_path + "image.jpg")
         await ctx.send(file=image)
-        os.remove("files/image.jpg")
+        os.remove(temp_path + "image.jpg")
         await message.delete()
 
     @commands.command()
     async def pigeon(self, ctx: commands.Context):
         """Fotos de palomas"""
         message = await ctx.send("Buscando fotos de palomas")
+        con = create_connection(str(ctx.guild.id))
+
         with ctx.typing():
 
             # Image url
             tweet_image_url = self.bot.twitter.get_latest_image_not_repeated(
-                "a_london_pigeon", animal_history_txt
+                "a_london_pigeon", con
             )
 
             # Write in history
-            write_in_file(animal_history_txt, tweet_image_url + "\n")
+            create_record(con, ["twitter", tweet_image_url])
 
             # Download image
             r = requests.get(tweet_image_url, allow_redirects=True)
-            open("files/" + "image.jpg", "wb").write(r.content)
-        image = nextcord.File("files/" + "image.jpg")
+            open(temp_path + "image.jpg", "wb").write(r.content)
+        image = nextcord.File(temp_path + "image.jpg")
         await ctx.send(file=image)
-        os.remove("files/image.jpg")
+        os.remove(temp_path + "image.jpg")
         await message.delete()
 
 

@@ -1,6 +1,8 @@
 import logging
+import sqlite3
 import tweepy as tw
 import os
+from utils.database import check_record_in_database
 from utils.functions import exists_string_in_file
 
 
@@ -32,13 +34,15 @@ class Twitter:
 
                 return tweet.entities["media"][0]["media_url"]
 
-    def get_latest_image_not_repeated(self, username: str, history_file: str):
+    def get_latest_image_not_repeated(
+        self, username: str, database_connection: sqlite3.Connection
+    ):
         tweets = self.api.user_timeline(
             screen_name=username, count=200, include_rts=False, tweet_mode="extended"
         )
         for tweet in tweets:
-            if "media" in tweet.entities and not exists_string_in_file(
-                history_file, tweet.entities["media"][0]["media_url"]
+            if "media" in tweet.entities and not check_record_in_database(
+                database_connection, tweet.entities["media"][0]["media_url"]
             ):
 
                 return tweet.entities["media"][0]["media_url"]

@@ -8,9 +8,6 @@ from utils.database import create_connection, create_sentence, get_random_senten
 
 log = logging.getLogger(__name__)
 
-animos_txt = resources_path + "animos.txt"
-insults_txt = resources_path + "insults.txt"
-
 
 class roast(commands.Cog):
     def __init__(self, bot: Bot) -> None:

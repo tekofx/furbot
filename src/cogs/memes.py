@@ -21,7 +21,7 @@ import unicodedata
 import requests
 from PIL import Image
 from utils.bot import Bot
-from utils.data import meme_resources_path, memes_path, memes_history_txt
+from utils.data import meme_resources_path, memes_path
 
 log = logging.getLogger(__name__)
 
@@ -630,21 +630,6 @@ class memes(commands.Cog):
 
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png", "02.png", "02.webp"))
-
-    @commands.command()
-    async def dankmeme(self, ctx: commands.Context):
-        """Top memes de r/dankmemes
-
-        Uso:
-            fur dankmeme
-        """
-        message = await ctx.send("buscando dankmeme")
-        await ctx.send(
-            self.bot.reddit.get_hot_subreddit_image(
-                "dankmemes", 100, reddit_memes_history_txt, None
-            )
-        )
-        await message.delete()
 
     @commands.command()
     async def cowsay(self, ctx: commands.Context, text: str, character: str = None):

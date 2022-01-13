@@ -1,5 +1,6 @@
 import asyncio
 import logging
+from venv import create
 import nextcord
 from nextcord.ext import commands, tasks
 from datetime import datetime, timedelta
@@ -10,7 +11,6 @@ from utils.database import (
     create_user,
     get_birthdays,
 )
-from utils.data import reddit_memes_history_txt
 from utils.bot import Bot
 
 log = logging.getLogger(__name__)
@@ -68,10 +68,12 @@ class tasks(commands.Cog):
             else:
                 subreddit = "SpanishMeme"
                 not_flair = None
+
+            con = create_connection(str(self.bot.server.id))
             meme = self.bot.reddit.get_hot_subreddit_image(
                 sub_reddit=subreddit,
                 posts_limit=1000,
-                history_file=reddit_memes_history_txt,
+                database_connection=con,
                 not_flair=not_flair,
             )
 

@@ -4,3 +4,4 @@ data/stickers/
 env/
 *.pyc
 data/resources/*.txt
+data/resources/config.yaml

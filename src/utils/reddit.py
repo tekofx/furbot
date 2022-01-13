@@ -1,4 +1,6 @@
 import logging
+import sqlite3
+from utils.database import check_record_in_database, create_record
 from utils.functions import exists_string_in_file, write_in_file
 import praw
 import os
@@ -20,31 +22,22 @@ class Reddit:
         self,
         sub_reddit: str,
         posts_limit: int,
-        history_file: str,
+        database_connection: sqlite3.Connection,
         not_flair: str = None,
     ):
-        """Get a hot subreddit post image
 
-        Args:
-            sub_reddit (str): subreddit to get the image from
-            posts_limit (int): maxium number of posts to get
-            history_file (str): file to save the posts that where
-            not_flair (str): flair not present in post
-
-        Returns:
-            str: url of image
-        """
         posts = self.reddit.subreddit(sub_reddit).hot(limit=posts_limit)
         try:
             for post in posts:
+
                 if post.over_18 is False:  # Check if post is SFW
 
                     if not_flair is None:
 
-                        if post.url.endswith("jpg") and not exists_string_in_file(
-                            history_file, post.url
+                        if post.url.endswith("jpg") and not check_record_in_database(
+                            database_connection, post.url
                         ):
-                            write_in_file(history_file, post.url + "\n")
+                            create_record(database_connection, ["reddit", post.url])
                             return post.url
                     else:
                         if (
@@ -53,9 +46,12 @@ class Reddit:
                                 or not_flair in post.link_flair_text
                             )
                             and post.url.endswith("jpg")
-                            and not exists_string_in_file(history_file, post.url)
+                            and not check_record_in_database(
+                                database_connection, post.url
+                            )
                         ):
-                            write_in_file(history_file, post.url + "\n")
+                            create_record(database_connection, ["reddit", post.url])
+
                             return post.url
 
         except Exception as error:
