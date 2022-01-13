@@ -16,7 +16,6 @@ insults_txt = resources_path + "insults.txt"
 reddit_memes_history_txt = resources_path + "reddit_memes_history.txt"
 animos_txt = resources_path + "animos.txt"
 memes_history_txt = resources_path + "memes_history.txt"
-jojos_txt = resources_path + "jojos.txt"
 
 
 class Data:
@@ -33,7 +32,6 @@ class Data:
 
         # Datafiles
         self._files = [
-            jojos_txt,
             animos_txt,
             insults_txt,
             memes_history_txt,
