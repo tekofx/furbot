@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ## [] - 2022-1-10
+### Cambiado
+- Movidos insults y animos a base de datos
 ### Mejorado
 - Mensajes de ayuda de comandos
 - Mensaje de ayuda cuando se usa el nombre de un comando como el nombre de un sticker
@@ -15,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Comando upuser
 - Task para actualizar la base de datos de usuarios
 - Comando dankmeme
+- Jojos.txt
 
 ## [3.3] - 2022-1-10
 ### Añadido
