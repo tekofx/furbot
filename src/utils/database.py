@@ -13,20 +13,12 @@ users_table = """ CREATE TABLE IF NOT EXISTS users (
                                     birthday date
                                 ); """
 
-ranks_table = """ CREATE TABLE IF NOT EXISTS ranks (
-                                    id integer PRIMARY KEY,
-                                    name text NOT NULL
-                                ); """
 
-species_table = """ CREATE TABLE IF NOT EXISTS species (
+roles_table = """ CREATE TABLE IF NOT EXISTS roles (
                                     id integer PRIMARY KEY,
-                                    name text NOT NULL
-                                ); """
-
-colors_table = """ CREATE TABLE IF NOT EXISTS colors (
-                                    id integer PRIMARY KEY,
-                                    name text NOT NULL
-                                ); """
+                                    name text NOT NULL UNIQUE,
+                                    type text NOT NULL
+                                );"""
 
 sentences_table = """ CREATE TABLE IF NOT EXISTS sentences (
                                     id integer PRIMARY KEY,
@@ -43,9 +35,7 @@ records_table = """ CREATE TABLE IF NOT EXISTS records (
 
 tables = [
     users_table,
-    ranks_table,
-    species_table,
-    colors_table,
+    roles_table,
     sentences_table,
     records_table,
 ]
@@ -161,144 +151,58 @@ def remove_user(database_connection: sqlite3.Connection, user_id: int) -> None:
     database_connection.commit()
 
 
-def create_rank(database_connection: sqlite3.Connection, rank_data) -> None:
-    """Creates a rank in the ranks table
+def create_role(
+    database_connection: sqlite3.Connection,
+    id: int,
+    name: str,
+    role_type: str,
+) -> None:
+    """Creates a role in the roles table
+
     Args:
         database_connection(sqlite3.Connection): Connection to database
-        rank_data (tuple): info to add. Containing: [rank_id, name_id]
+        id (int): id of role
+        name (str): name of role
+        role_type (str): type of role
     """
 
-    sql = """ INSERT INTO ranks(id,name)
-              VALUES(?,?) """
+    sql = """ INSERT INTO roles(id,name, type)
+              VALUES(?,?,?) """
 
     cur = database_connection.cursor()
     try:
-        cur.execute(sql, rank_data)
+        cur.execute(sql, [id, name, role_type])
         log.info(
-            "Rank {rank} with id {id} was added to the database".format(
-                rank=rank_data[1], id=rank_data[0]
+            "Role {role} with id {id} was added to the database".format(
+                role=name, id=id
             )
         )
-    except:
+    except Exception as error:
         log.error(
-            "Error: Could not add rank {id} {name}".format(
-                id=rank_data[0], name=rank_data[1]
+            "Error: Could not add role {id} {name}: {error}".format(
+                id=id, name=name, error=error
             )
         )
+        raise error
 
     database_connection.commit()
 
 
-def remove_rank(database_connection: sqlite3.Connection, rank_id: int) -> None:
-    """Removes a rank entry
+def remove_role(database_connection: sqlite3.Connection, id: int) -> None:
+    """Removes a role entry
 
     Args:
         database_connection(sqlite3.Connection): Connection to database
-        rank_id (int): id of the rank
+        id (int): id of the role
     """
-    sql = "DELETE FROM ranks WHERE id=?"
-    var = [rank_id]
+    sql = "DELETE FROM roles WHERE id=?"
+    var = [id]
     cur = database_connection.cursor()
     try:
         cur.execute(sql, var)
-        log.info("Deleted rank {} from database".format(rank_id))
+        log.info("Deleted role {} from database".format(id))
     except:
-        log.error("Error: Could not delete rank {id} from database".format(rank_id))
-
-    database_connection.commit()
-
-
-def create_specie(database_connection: sqlite3.Connection, specie_data) -> None:
-    """Creates a specie in the species table
-    Args:
-        database_connection(sqlite3.Connection): Connection to database
-        user (tuple): info to add. Containing [specie_id, name_id]
-    """
-
-    sql = """ INSERT INTO species(id,name)
-              VALUES(?,?) """
-
-    cur = database_connection.cursor()
-    try:
-        cur.execute(sql, specie_data)
-        log.info(
-            "Specie {specie} with id {id} was added to the database".format(
-                specie=specie_data[1], id=specie_data[0]
-            )
-        )
-    except:
-        log.error(
-            "Error: Could not add specie {id} {name}".format(
-                id=specie_data[0], name=specie_data[1]
-            )
-        )
-
-    database_connection.commit()
-
-
-def remove_specie(database_connection: sqlite3.Connection, specie_id: int) -> None:
-    """Removes a specie entry
-
-    Args:
-        database_connection(sqlite3.Connection): Connection to database
-
-        specie_id (int): id of the specie
-    """
-    sql = "DELETE FROM species WHERE id=?"
-    var = [specie_id]
-    cur = database_connection.cursor()
-    try:
-        cur.execute(sql, var)
-        log.info("Deleted specie {} from database".format(specie_id))
-    except:
-        log.error("Error: Could not delete specie {id} from database".format(specie_id))
-
-    database_connection.commit()
-
-
-def create_color(database_connection: sqlite3.Connection, color_data) -> None:
-    """Creates a color in the colors table
-    Args:
-        database_connection(sqlite3.Connection): Connection to database
-        user (tuple): info from color. Containing [color_id, color_name]
-    """
-
-    sql = """ INSERT INTO colors(id,name)
-              VALUES(?,?) """
-
-    cur = database_connection.cursor()
-    try:
-        cur.execute(sql, color_data)
-        log.info(
-            "color {color} with id {id} was added to the database".format(
-                color=color_data[1], id=color_data[0]
-            )
-        )
-    except:
-        log.error(
-            "Error: Could not add color {id} {name}".format(
-                id=color_data[0], name=color_data[1]
-            )
-        )
-
-    database_connection.commit()
-
-
-def remove_color(database_connection: sqlite3.Connection, color_id: int) -> None:
-    """Removes a color entry
-
-    Args:
-        database_connection(sqlite3.Connection): Connection to database
-        color_id (int): id of the color
-    """
-    sql = "DELETE FROM colors WHERE id=?"
-    var = [color_id]
-    cur = database_connection.cursor()
-    try:
-        cur.execute(sql, var)
-        log.info("Deleted color {} from database".format(color_id))
-    except:
-        log.error("Error: Could not delete color {id} from database".format(color_id))
+        log.error("Error: Could not delete role {id} from database".format(id))
 
     database_connection.commit()
 

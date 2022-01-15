@@ -2,10 +2,8 @@ import logging
 from nextcord.ext import commands
 import nextcord
 from utils.database import (
-    create_color,
     create_connection,
-    create_rank,
-    create_specie,
+    create_role,
     set_birthday,
 )
 from asyncio import sleep
@@ -62,10 +60,18 @@ class administration(commands.Cog):
         server = str(ctx.guild.id)
         con = create_connection(server)
         for specie in species:
-            specie_data = [specie.id, specie.name]
-            create_specie(con, specie_data)
-            await ctx.send("Especie {} añadida".format(specie.mention))
-            log.info("Added specie " + specie.name)
+            try:
+                create_role(con, specie.id, specie.name, "specie")
+            except Exception as error:
+                if "UNIQUE constraint failed: roles.id" in error.args:
+                    await ctx.send(
+                        "No se pudo añadir la especie {}. Esa especie ya existe en la base de datos".format(
+                            specie.mention
+                        )
+                    )
+            else:
+                log.info("Added specie " + specie.name)
+                await ctx.send("Especie {} añadida".format(specie.mention))
 
     @commands.command(name="addrank")
     @commands.has_permissions(administrator=True)
@@ -78,10 +84,18 @@ class administration(commands.Cog):
         server = str(ctx.guild.id)
         con = create_connection(server)
         for rank in ranks:
-            rank_data = [rank.id, rank.name]
-            create_rank(con, rank_data)
-            await ctx.send("Rank {} añadido".format(rank.mention))
-            log.info("Added rank " + rank.name)
+            try:
+                create_role(con, rank.id, rank.name, "rank")
+            except Exception as error:
+                if "UNIQUE constraint failed: roles.id" in error.args:
+                    await ctx.send(
+                        "No se pudo añadir el rango {}. Ese rango ya existe en la base de datos".format(
+                            rank.mention
+                        )
+                    )
+            else:
+                log.info("Added rank " + rank.name)
+                await ctx.send("Rango {} añadido".format(rank.mention))
 
     @commands.command(name="addcolor")
     @commands.has_permissions(administrator=True)
@@ -94,10 +108,18 @@ class administration(commands.Cog):
         server = str(ctx.guild.id)
         con = create_connection(server)
         for color in colors:
-            color_data = [color.id, color.name]
-            create_color(con, color_data)
-            await ctx.send("Color {} añadido".format(color.mention))
-            log.info("Added color " + color.name)
+            try:
+                create_role(con, color.id, color.name, "color")
+            except Exception as error:
+                if "UNIQUE constraint failed: roles.id" in error.args:
+                    await ctx.send(
+                        "No se pudo añadir el color {}. Ese color ya existe en la base de datos".format(
+                            color.mention
+                        )
+                    )
+            else:
+                log.info("Added color " + color.name)
+                await ctx.send("Color {} añadido".format(color.mention))
 
     @commands.command()
     async def addcumple(
