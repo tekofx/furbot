@@ -1,4 +1,5 @@
 import asyncio
+from cgitb import text
 import nextcord
 from nextcord.ext import commands
 from nextcord.ui import Button, View
@@ -45,22 +46,39 @@ class ReactionRoles(commands.Cog):
         Returns:
             View: Reaction Role view
         """
-        view = View(timeout=None)
-        for role, emoji in zip(roles, emojis):
-            role = ctx.guild.get_role(role)
-            button = Button(
-                label=role.name, style=nextcord.ButtonStyle.primary, emoji=emoji
-            )
-            button.callback = self.callback
-            view.add_item(button)
-
-        return view
+        try:
+            view = View(timeout=None)
+            for role, emoji in zip(roles, emojis):
+                role = ctx.guild.get_role(role)
+                button = Button(
+                    label=role.name,
+                    style=nextcord.ButtonStyle.primary,
+                    emoji=emoji,
+                    custom_id=str(role.id),
+                )
+                button.callback = self.callback
+                view.add_item(button)
+        except commands.CommandError as error:
+            log.error("Command: {}".format(error))
+        else:
+            return view
 
     async def callback(self, interaction: nextcord.Interaction):
-        print("hola")
+        try:
+            role = interaction.guild.get_role(int(interaction.data["custom_id"]))
+            if role in interaction.user.roles:
+                message = "Se ha eliminado el rol {}".format(role.name)
+                await interaction.user.remove_roles(role)
+            else:
+                message = "Se ha añadido el rol {}".format(role.name)
+                await interaction.user.add_roles(role)
+
+            msg = await interaction.response.send_message(message)
+        except nextcord.errors.Forbidden as error:
+            raise error
 
     @commands.command(name="reactionrole")
-    async def create_reaction_role(self, ctx: commands.Context):
+    async def create_reaction_role(self, ctx: commands.Context, texto: str):
         def check_response(m: nextcord.Message):
             return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
 
@@ -76,9 +94,9 @@ class ReactionRoles(commands.Cog):
             await ctx.send("Se acabó el tiempo de espera")
             return
         except commands.CommandError:
-            log.error("a")
             raise commands.CommandError
         else:
+
             roles = []
             emojis = []
             for x in str(msg.content).split():
@@ -87,14 +105,13 @@ class ReactionRoles(commands.Cog):
                     x = x.replace("@", "")
                     x = x.replace(">", "")
                     x = x.replace("&", "")
-
                     roles.append(int(x))
 
                 else:  # emoji
                     emojis.append(x)
 
             view = self.create_view(roles, emojis, ctx)
-            await ctx.send("Elige los roles que quieras", view=view)
+            await ctx.send(texto, view=view)
 
         """ await view.wait()
         if view.value is None:
