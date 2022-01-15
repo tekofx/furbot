@@ -121,7 +121,6 @@ class ReactionRoles(commands.Cog):
                 )
             )
             raise commands.errors.UserInputError
-
         roles = []
         emojis = []
         for x in str(message.content).split():
@@ -137,5 +136,5 @@ class ReactionRoles(commands.Cog):
         return [roles, emojis]
 
 
-def setup(bot: commands.Bot):
+def setup(bot: Bot):
     bot.add_cog(ReactionRoles(bot))
