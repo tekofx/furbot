@@ -172,7 +172,7 @@ class Bot(commands.Bot):
         log.info(user + " used command " + command)
 
     async def on_command_error(
-        self, context: commands.Context, error: commands.errors
+        self, context: commands.Context, error: commands.CommandError
     ) -> None:
         """Checks error on commands
         Args:
@@ -184,7 +184,7 @@ class Bot(commands.Bot):
         command_used = message_content[1]
 
         if isinstance(error, commands.errors.UserInputError):
-            log.error("UserInputError: ")
+            log.error("UserInputError: {}".format(error))
             await context.send("Comprueba que la información introducida es correcta")
 
         # Argument missing
@@ -197,7 +197,6 @@ class Bot(commands.Bot):
             await context.send(
                 "Error: Comando no existente, escribe `fur help` para ver los comandos disponibles"
             )
-
             # Check if exists a similar command
             output = "Igual quisiste usar alguno de estos comandos:\n"
             for command in self.commands:
