@@ -171,26 +171,26 @@ class Bot(commands.Bot):
         command = str(ctx.command)
         log.info(user + " used command " + command)
 
-    async def on_command_error(self, context: commands.Context, error):
+    async def on_command_error(
+        self, context: commands.Context, error: commands.errors
+    ) -> None:
         """Checks error on commands
         Args:
             context ([type]): [Where the command was used]
             error ([type]): [Error of the command]
         """
-        print(type(error))
         message_content = str(context.message.content)
         message_content = message_content.split(" ")
         command_used = message_content[1]
-        if len(message_content) >= 3:
-            arg1 = message_content[2]
+
+        if isinstance(error, commands.errors.UserInputError):
+            log.error("UserInputError: ")
+            await context.send("Comprueba que la información introducida es correcta")
 
         # Argument missing
         if isinstance(error, commands.MissingRequiredArgument):
-            await context.send(
-                "Error: Faltan parámetros, escribe `fur help "
-                + command_used
-                + "` para ver ayuda sobre este comando"
-            )
+            await context.send("Error: Faltan parámetros")
+            await context.send_help(self.get_command(command_used))
 
         # Command does not exist
         if isinstance(error, commands.CommandNotFound):
