@@ -9,31 +9,10 @@ import logging
 log = logging.getLogger(__name__)
 
 
-class RoleView(nextcord.ui.View):
-    pass
-
-    def __init__(self, aux: str):
-        self.value = None
-        super().__init__(timeout=None)
-
-    @nextcord.ui.button(label="hola", style=nextcord.ButtonStyle.blurple)
-    async def hola(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
-        aux = nextcord.ui.View(timeout=None)
-        await interaction.response.send_message("hola que ase", ephemeral=True)
-        """ self.value = False
-        self.stop() """
-        pass
-
-
 class ReactionRoles(commands.Cog):
     def __init__(self, bot: Bot) -> None:
         self.bot = bot
         super().__init__()
-
-    @commands.Cog.listener()
-    async def on_ready(self):
-        # Run when cog is loaded
-        self.bot.add_view(RoleView())
 
     def create_view(self, roles: list, emojis: list, ctx: commands.Context) -> View:
         """Creates a view
@@ -64,6 +43,15 @@ class ReactionRoles(commands.Cog):
             return view
 
     async def callback(self, interaction: nextcord.Interaction):
+        """Response when a button is pressed
+
+        Args:
+            interaction (nextcord.Interaction): button interaction
+
+        Raises:
+            error: Forbidden Exception, may be caused because bot's role is bellow the role
+                    that wants to be assigned
+        """
         try:
             role = interaction.guild.get_role(int(interaction.data["custom_id"]))
             if role in interaction.user.roles:
@@ -73,13 +61,28 @@ class ReactionRoles(commands.Cog):
                 message = "Se ha añadido el rol {}".format(role.name)
                 await interaction.user.add_roles(role)
 
-            msg = await interaction.response.send_message(message)
+            await interaction.response.send_message(message)
         except nextcord.errors.Forbidden as error:
+            message = "Error al asignar rol {}. Comprueba que mi rol está por encima del rol que se quiere asignar".format(
+                role.name
+            )
+            await self.bot.audit_channel.send(message)
             raise error
 
     @commands.command(name="reactionrole")
     async def create_reaction_role(self, ctx: commands.Context, texto: str):
-        def check_response(m: nextcord.Message):
+        """Crea un reaction role"""
+
+        def check_response(m: nextcord.Message) -> bool:
+            """Checks if a response to the command is sent
+
+            Args:
+                m (nextcord.Message): message to wait
+
+            Returns:
+                bool: True if the message is a response (in the same channel and by the same author
+                that invoked the command)
+            """
             return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
 
         await ctx.send(
@@ -97,29 +100,41 @@ class ReactionRoles(commands.Cog):
             raise commands.CommandError
         else:
 
-            roles = []
-            emojis = []
-            for x in str(msg.content).split():
-                if "<@" in x:  # role
-                    x = x.replace("<", "")
-                    x = x.replace("@", "")
-                    x = x.replace(">", "")
-                    x = x.replace("&", "")
-                    roles.append(int(x))
-
-                else:  # emoji
-                    emojis.append(x)
+            roles, emojis = self.get_roles_and_emojis_from_msg(msg)
 
             view = self.create_view(roles, emojis, ctx)
             await ctx.send(texto, view=view)
 
-        """ await view.wait()
-        if view.value is None:
-            return
-        elif view.value:
-            await ctx.send("Pulsaste")
-        else:
-            await ctx.send("ksajdfñkjsdflkj") """
+    def get_roles_and_emojis_from_msg(self, message: nextcord.Message) -> list:
+        """Extracts roles and emojis from a message
+
+        Args:
+            message (nextcord.Message): message to extract from
+
+        Returns:
+            list: containing 2 list [roles, emojis]
+        """
+        if "<" and ">" and "@" and "&" not in str(message.content):
+            log.error(
+                "Error: not correct format in reaction roles message: {}".format(
+                    message.content
+                )
+            )
+            raise commands.errors.UserInputError
+
+        roles = []
+        emojis = []
+        for x in str(message.content).split():
+            if "<@" in x:  # role
+                x = x.replace("<", "")
+                x = x.replace("@", "")
+                x = x.replace(">", "")
+                x = x.replace("&", "")
+                roles.append(int(x))
+
+            else:  # emoji
+                emojis.append(x)
+        return [roles, emojis]
 
 
 def setup(bot: commands.Bot):
