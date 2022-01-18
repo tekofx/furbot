@@ -99,7 +99,8 @@ class Bot(commands.Bot):
 
     async def on_member_join(self, member: nextcord.Member):
         # Message in lobby
-        mensaje_lobby = """Bienvenid@ a Villa Furrense {}. No olvides mirar el canal de normas y pasarlo bien""".format(
+        mensaje_lobby = """Bienvenid@ a {} {}. No olvides mirar el canal de normas y pasarlo bien""".format(
+            member.guild.name,
             member.mention
         )
         await self.lobby_channel.send(mensaje_lobby)

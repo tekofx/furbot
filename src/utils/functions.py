@@ -8,20 +8,6 @@ import requests
 from utils.data import meme_resources_path
 
 
-def get_user_avatar(url: str, name: str):
-    """Downloads the avatar of a user
-
-    Args:
-        user (hikari.User): user to download avatar from
-        name (str): user to download avatar from
-    """
-
-    r = requests.get(url, allow_redirects=True)
-
-    open(meme_resources_path + name, "wb").write(r.content)
-
-    logging.info("Saved avatar with url " + url + " in " + meme_resources_path)
-
 
 def convert_pic(picture: str, imgName: str, imgSize: str = None):
     """Converts an image to PNG with a differents size
