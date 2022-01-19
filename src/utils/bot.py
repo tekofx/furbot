@@ -72,10 +72,10 @@ class Bot(commands.Bot):
         log.info("Loaded memes channel")
 
         self._audit_channel = await self.fetch_channel(os.getenv("AUDIT_CHANNEL"))
-        log.info("Loaded audit channel\n")
+        log.info("Loaded audit channel")
 
         self._lobby_channel = await self.fetch_channel(os.getenv("LOBBY_CHANNEL"))
-        log.info("Loaded lobby channel\n")
+        log.info("Loaded lobby channel")
 
         self._server = await self.fetch_guild(os.getenv("VILLAFURRENSE"))
         log.info("Loaded VF server")
@@ -100,8 +100,7 @@ class Bot(commands.Bot):
     async def on_member_join(self, member: nextcord.Member):
         # Message in lobby
         mensaje_lobby = """Bienvenid@ a {} {}. No olvides mirar el canal de normas y pasarlo bien""".format(
-            member.guild.name,
-            member.mention
+            member.guild.name, member.mention
         )
         await self.lobby_channel.send(mensaje_lobby)
 
