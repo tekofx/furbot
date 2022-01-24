@@ -103,10 +103,14 @@ class administration(commands.Cog):
                     channel.name,
                 ],
             )
-        except nextcord.Forbidden as e:
-            await ctx.send(
-                "Error, el bot no tiene permisos para ver el canal. Vuelve a ejecutar el comando cuando el bot tenga permiso de ver el canal."
-            )
+        except (nextcord.Forbidden, Exception) as e:
+            if isinstance(e, nextcord.Forbidden):
+                await ctx.send(
+                    "Error, el bot no tiene permisos para ver el canal. Vuelve a ejecutar el comando cuando el bot tenga permiso de ver el canal."
+                )
+            else:
+                log.error("Unkwon error: {}".format(e))
+
             con.close()
             return
         else:
