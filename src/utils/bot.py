@@ -87,7 +87,7 @@ class Bot(commands.Bot):
         mensaje_lobby = """Bienvenid@ a {} {}. No olvides mirar el canal de normas y pasarlo bien""".format(
             member.guild.name, member.mention
         )
-        await self.lobby_channel_send(member.guild, mensaje_lobby)
+        await self.channel_send(member.guild, "lobby", mensaje_lobby)
 
         con = create_connection(str(member.guild.id))
         entry_in_database = check_entry_in_database(con, "users", member.id)
@@ -156,81 +156,12 @@ class Bot(commands.Bot):
         command = str(ctx.command)
         log.info(user + " used command " + command)
 
-    async def audit_channel_send(self, server_id: int, msg: str):
-        # Create database connection
-        con = create_connection(str(server_id))
-
-        # Get audit_channel id
-        audit_id = get_channel(con, "audit")
-
-        if audit_id != 0:
-            try:
-                # Fetch audit_channel
-                audit_channel = await self.fetch_channel(audit_id)
-            except Forbidden as error:
-                log.error(
-                    "Error getting memes channel from server {}: {}".format(
-                        server_id, error
-                    )
-                )
-                return
-
-            # Send message
-            await audit_channel.send(msg)
-
-    async def lobby_channel_send(self, server_id: int, msg: str):
-        # Create database connection
-        con = create_connection(str(server_id))
-
-        # Get lobby_channel id
-        lobby_id = get_channel(con, "lobby")
-
-        if lobby_id != 0:
-            try:
-                # Fetch lobby_channel
-                lobby_channel = await self.fetch_channel(lobby_id)
-            except Forbidden as error:
-                log.error(
-                    "Error getting memes channel from server {}: {}".format(
-                        server_id, error
-                    )
-                )
-                return
-
-            # Fetch lobby_channel
-            lobby_channel = await self.fetch_channel(lobby_id)
-
-            # Send message
-            await lobby_channel.send(msg)
-
-    async def memes_channel_send(self, server_id: int, msg: str):
-        # Create database connection
-        con = create_connection(str(server_id))
-
-        # Get memes_channel id
-        memes_id = get_channel(con, "memes")
-
-        if memes_id != 0:
-            try:
-                # Fetch memes_channel
-                memes_channel = await self.fetch_channel(memes_id)
-            except Forbidden as error:
-                log.error(
-                    "Error getting memes channel from server {}: {}".format(
-                        server_id, error
-                    )
-                )
-                raise Forbidden
-
-            # Send message
-            await memes_channel.send(msg)
-
-    async def general_channel_send(self, server_id: int, msg: str):
+    async def channel_send(self, server_id: int, channel_type: str, msg: str):
         # Create database connection
         con = create_connection(str(server_id))
 
         # Get general_channel id
-        general_id = get_channel(con, "general")
+        general_id = get_channel(con, channel_type)
 
         if general_id != 0:
             try:
@@ -238,11 +169,11 @@ class Bot(commands.Bot):
                 general_channel = await self.fetch_channel(general_id)
             except Forbidden as error:
                 log.error(
-                    "Error getting memes channel from server {}: {}".format(
-                        server_id, error
+                    "Error getting {} channel from server {}: {}".format(
+                        channel_type, server_id, error
                     )
                 )
-                return
+                raise Forbidden
 
             # Send message
             await general_channel.send(msg)

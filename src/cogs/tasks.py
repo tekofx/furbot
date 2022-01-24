@@ -80,7 +80,7 @@ class tasks(commands.Cog):
                     not_flair=not_flair,
                 )
 
-                await self.bot.memes_channel_send(guild.id, meme)
+                await self.bot.channel_send(guild.id, "memes", meme)
                 con.close()
 
             except (Exception) as error:
@@ -110,8 +110,9 @@ class tasks(commands.Cog):
                     for id, birthday in birthdays:
                         if birthday != None and today in birthday:
                             member = await self.bot.fetch_user(id)
-                            await self.bot.general_channel_send(
+                            await self.bot.channel_send(
                                 guild.id,
+                                "general",
                                 "Es el cumple de "
                                 + member.mention
                                 + ". Felicidades!!!!!!!!!",
@@ -122,13 +123,15 @@ class tasks(commands.Cog):
             except (Exception, Forbidden) as error:
                 if isinstance(error, nextcord.Forbidden):
                     log.error("Forbidden error on task birthday: {}".format(error))
-                    await self.bot.general_channel_send(
-                        guild.id, "Error: El bot no tiene permiso para enviar mensajes"
+                    await self.bot.channel_send(
+                        guild.id,
+                        "general",
+                        "Error: El bot no tiene permiso para enviar mensajes",
                     )
                 else:
                     log.error("Unknown error on task birthday: {}".format(error))
-                    await self.bot.general_channel_send(
-                        guild.id, "Error desconocido, contacta al creador"
+                    await self.bot.channel_send(
+                        guild.id, "general", "Error desconocido, contacta al creador"
                     )
 
     @update_users.before_loop
