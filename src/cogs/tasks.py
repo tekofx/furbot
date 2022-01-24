@@ -1,5 +1,8 @@
 import asyncio
 import logging
+import discord
+import nextcord
+from nextcord.errors import Forbidden
 from nextcord.ext import commands, tasks
 from datetime import datetime, timedelta
 import random
@@ -54,22 +57,20 @@ class tasks(commands.Cog):
     async def meme(self):
         """Sends a random meme"""
 
+        num = random.randint(0, 2)
+        if num == 0:
+            subreddit = "dankmemes"
+            not_flair = None
+
+        elif num == 1:
+            subreddit = "furry_irl"
+            not_flair = "Actual Yiff"
+
+        else:
+            subreddit = "SpanishMeme"
+            not_flair = None
         for guild in self.bot.guilds:
-
             try:
-
-                num = random.randint(0, 2)
-                if num == 0:
-                    subreddit = "dankmemes"
-                    not_flair = None
-
-                elif num == 1:
-                    subreddit = "furry_irl"
-                    not_flair = "Actual Yiff"
-
-                else:
-                    subreddit = "SpanishMeme"
-                    not_flair = None
 
                 con = create_connection(str(guild.id))
                 meme = await self.bot.reddit.get_hot_subreddit_image(
@@ -80,9 +81,10 @@ class tasks(commands.Cog):
                 )
 
                 await self.bot.memes_channel_send(guild.id, meme)
+                con.close()
 
-            except Exception as error:
-                log.error("Error ocured on task meme: {}".format(error))
+            except (Exception) as error:
+                log.error("Error sending meme to {}: {}".format(guild.name, error))
             else:
                 log.info("Sent meme from {}".format(subreddit))
 
@@ -102,12 +104,10 @@ class tasks(commands.Cog):
                     day = "0" + day
                 today = month + "-" + day
 
-                # Get yaml info
                 for guild in self.bot.guilds:
                     con = create_connection(str(guild.id))
                     birthdays = get_birthdays(con)
                     for id, birthday in birthdays:
-                        print(id, birthday)
                         if birthday != None and today in birthday:
                             member = await self.bot.fetch_user(id)
                             await self.bot.general_channel_send(
@@ -119,8 +119,17 @@ class tasks(commands.Cog):
 
                             log.info("Sent birthday message of " + member.display_name)
 
-            except Exception as error:
-                log.error("Error ocured on task birthday: {}".format(error))
+            except (Exception, Forbidden) as error:
+                if isinstance(error, nextcord.Forbidden):
+                    log.error("Forbidden error on task birthday: {}".format(error))
+                    await self.bot.general_channel_send(
+                        guild.id, "Error: El bot no tiene permiso para enviar mensajes"
+                    )
+                else:
+                    log.error("Unknown error on task birthday: {}".format(error))
+                    await self.bot.general_channel_send(
+                        guild.id, "Error desconocido, contacta al creador"
+                    )
 
     @update_users.before_loop
     @meme.before_loop

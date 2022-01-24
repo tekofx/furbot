@@ -43,7 +43,6 @@ class Reddit:
                             database_connection, post.url
                         ):
                             create_record(database_connection, ["reddit", post.url])
-                            await self.reddit.close()
                             return post.url
                     else:
                         if (
@@ -57,7 +56,6 @@ class Reddit:
                             )
                         ):
                             create_record(database_connection, ["reddit", post.url])
-                            await self.reddit.close()
                             return post.url
 
         except Exception as error:

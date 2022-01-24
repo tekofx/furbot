@@ -1,4 +1,5 @@
 import nextcord
+from nextcord.errors import Forbidden
 from nextcord.ext import commands
 import os
 import yaml
@@ -163,9 +164,16 @@ class Bot(commands.Bot):
         audit_id = get_channel(con, "audit")
 
         if audit_id != 0:
-
-            # Fetch audit_channel
-            audit_channel = await self.fetch_channel(audit_id)
+            try:
+                # Fetch audit_channel
+                audit_channel = await self.fetch_channel(audit_id)
+            except Forbidden as error:
+                log.error(
+                    "Error getting memes channel from server {}: {}".format(
+                        server_id, error
+                    )
+                )
+                return
 
             # Send message
             await audit_channel.send(msg)
@@ -178,6 +186,17 @@ class Bot(commands.Bot):
         lobby_id = get_channel(con, "lobby")
 
         if lobby_id != 0:
+            try:
+                # Fetch lobby_channel
+                lobby_channel = await self.fetch_channel(lobby_id)
+            except Forbidden as error:
+                log.error(
+                    "Error getting memes channel from server {}: {}".format(
+                        server_id, error
+                    )
+                )
+                return
+
             # Fetch lobby_channel
             lobby_channel = await self.fetch_channel(lobby_id)
 
@@ -192,9 +211,16 @@ class Bot(commands.Bot):
         memes_id = get_channel(con, "memes")
 
         if memes_id != 0:
-
-            # Fetch memes_channel
-            memes_channel = await self.fetch_channel(memes_id)
+            try:
+                # Fetch memes_channel
+                memes_channel = await self.fetch_channel(memes_id)
+            except Forbidden as error:
+                log.error(
+                    "Error getting memes channel from server {}: {}".format(
+                        server_id, error
+                    )
+                )
+                raise Forbidden
 
             # Send message
             await memes_channel.send(msg)
@@ -207,9 +233,16 @@ class Bot(commands.Bot):
         general_id = get_channel(con, "general")
 
         if general_id != 0:
-
-            # Fetch general_channel
-            general_channel = await self.fetch_channel(general_id)
+            try:
+                # Fetch general_channel
+                general_channel = await self.fetch_channel(general_id)
+            except Forbidden as error:
+                log.error(
+                    "Error getting memes channel from server {}: {}".format(
+                        server_id, error
+                    )
+                )
+                return
 
             # Send message
             await general_channel.send(msg)
