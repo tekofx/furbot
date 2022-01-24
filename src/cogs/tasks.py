@@ -75,7 +75,7 @@ class tasks(commands.Cog):
                 con = create_connection(str(guild.id))
                 meme = await self.bot.reddit.get_hot_subreddit_image(
                     sub_reddit=subreddit,
-                    posts_limit=1000,
+                    posts_limit=20,
                     database_connection=con,
                     not_flair=not_flair,
                 )
@@ -155,7 +155,7 @@ class tasks(commands.Cog):
 
         log.info("Waiting {} seconds".format(delta))
 
-        await asyncio.sleep(delta)
+        # await asyncio.sleep(delta)
 
 
 def setup(bot: commands.Bot):

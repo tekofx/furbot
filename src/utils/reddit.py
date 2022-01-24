@@ -31,10 +31,14 @@ class Reddit:
             database_connection (sqlite3.Connection): Connection to database
             not_flair (str, optional): Flairs to avoid. Defaults to None.
         """
-        posts = await self.reddit.subreddit(sub_reddit)
-        try:
-            async for post in posts.hot(limit=posts_limit):
+        subreddit = await self.reddit.subreddit(sub_reddit)
+        hot_posts = subreddit.hot(limit=posts_limit)
+        posts = []
+        async for post in hot_posts:
+            posts.append(post)
 
+        try:
+            for post in posts:
                 if post.over_18 is False:  # Check if post is SFW
 
                     if not_flair is None:
@@ -59,6 +63,5 @@ class Reddit:
                             return post.url
 
         except Exception as error:
-            await self.reddit.close()
             logging.error("Error in get_hot_subreddit_image: {}".format(error))
             return "Error: {}".format(error)
