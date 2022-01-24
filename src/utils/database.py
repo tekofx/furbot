@@ -33,12 +33,14 @@ records_table = """ CREATE TABLE IF NOT EXISTS records (
                                     record text NOT NULL
                                 ); """
 
-tables = [
-    users_table,
-    roles_table,
-    sentences_table,
-    records_table,
-]
+channels_table = """ CREATE TABLE IF NOT EXISTS channels (
+                                    channel_id integer,
+                                    type text NOT NULL ,
+                                    name text NOT NULL,
+                                    PRIMARY KEY(channel_id, type )
+                                ); """
+
+tables = [users_table, roles_table, sentences_table, records_table, channels_table]
 log = logging.getLogger(__name__)
 
 
@@ -272,8 +274,36 @@ def create_record(database_connection: sqlite3.Connection, record_data: list) ->
         )
     except Exception as error:
         log.error(
-            "Error: Could not create user {id} {name}: {error}".format(
+            "Error: Could not create record {id} {name}: {error}".format(
                 id=record_data[0], name=record_data[1], error=error
+            )
+        )
+
+    database_connection.commit()
+
+
+def create_channel(database_connection: sqlite3.Connection, channel_data: list) -> None:
+    """Creates a channel in the channels table
+    Args:
+        database_connection(sqlite3.Connection): Connection to database
+        channel (list): info of channel. Containing [channel_id, type, channel]
+    """
+
+    sql = """ INSERT INTO channels(channel_id,type,name)
+              VALUES(?,?,?) """
+
+    cur = database_connection.cursor()
+    try:
+        cur.execute(sql, channel_data)
+        log.info(
+            "channel {channel} with id {id} was added to the database".format(
+                channel=channel_data[1], id=channel_data[0]
+            )
+        )
+    except Exception as error:
+        log.error(
+            "Error: Could not create channel {id} {name}: {error}".format(
+                id=channel_data[0], name=channel_data[1], error=error
             )
         )
 
@@ -544,6 +574,32 @@ def get_latest_id(database_connection: sqlite3.Connection, table: str) -> int:
         if info == []:  # If theres no sentences
             return 0
         return info[-1][0]
+
+
+def get_channel(database_connection: sqlite3.Connection, channel_type: str) -> int:
+    """Gets id of saved channels
+
+    Args:
+        database_connection (sqlite3.Connection): Connection to database
+        channel_type (str): type of channel. Can be general, memes, audit or lobby
+
+    Returns:
+        int: id of channel
+    """
+    sql = """ SELECT channel_id
+        FROM channels
+        WHERE type=?
+        """
+    var = [channel_type]
+    cur = database_connection.cursor()
+    try:
+        cur.execute(sql, var)
+    except:
+        log.error("Error: could not query the channel of type {}".format(channel_type))
+    info = cur.fetchone()
+    channel = int(info[0])
+
+    return channel
 
 
 ################################## Checks ##########################################
