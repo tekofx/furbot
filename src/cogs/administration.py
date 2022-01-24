@@ -39,7 +39,7 @@ class administration(commands.Cog):
             msg = await self.bot.wait_for("message", check=check)
             log.info(msg.content)
 
-            channel_id = msg.content.removeprefix("<#").removesuffix(">")
+            channel_id = msg.content.replace("<#", "").replace(">", "")
             channel = await self.bot.fetch_channel(channel_id)
 
             con = create_connection(str(ctx.guild.id))
@@ -57,10 +57,10 @@ class administration(commands.Cog):
             await ctx.send(
                 "Canal audit. Se usa para mostrar las acciones que hace el bot."
             )
-            msg = await self.bot.wait_for("message", check=check)
+            msg = str(await self.bot.wait_for("message", check=check))
             log.info(msg.content)
 
-            channel_id = msg.content.removeprefix("<#").removesuffix(">")
+            channel_id = msg.content.replace("<#", "").replace(">", "")
             channel = await self.bot.fetch_channel(channel_id)
 
             create_channel(
@@ -76,7 +76,7 @@ class administration(commands.Cog):
             await ctx.send("Canal memes. Para mandar memes cada hora")
             msg = await self.bot.wait_for("message", check=check)
 
-            channel_id = msg.content.removeprefix("<#").removesuffix(">")
+            channel_id = msg.content.replace("<#", "").replace(">", "")
             channel = await self.bot.fetch_channel(channel_id)
 
             create_channel(
@@ -92,7 +92,7 @@ class administration(commands.Cog):
             await ctx.send("Canal lobby. Se usa para mandar mensajes de bienvenida")
             msg = await self.bot.wait_for("message", check=check)
 
-            channel_id = msg.content.removeprefix("<#").removesuffix(">")
+            channel_id = msg.content.replace("<#", "").replace(">", "")
             channel = await self.bot.fetch_channel(channel_id)
 
             create_channel(
