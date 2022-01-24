@@ -53,34 +53,38 @@ class tasks(commands.Cog):
     @tasks.loop(hours=1)
     async def meme(self):
         """Sends a random meme"""
-        try:
 
-            num = random.randint(0, 2)
-            if num == 0:
-                subreddit = "dankmemes"
-                not_flair = None
+        for guild in self.bot.guilds:
 
-            elif num == 1:
-                subreddit = "furry_irl"
-                not_flair = "Actual Yiff"
+            try:
 
+                num = random.randint(0, 2)
+                if num == 0:
+                    subreddit = "dankmemes"
+                    not_flair = None
+
+                elif num == 1:
+                    subreddit = "furry_irl"
+                    not_flair = "Actual Yiff"
+
+                else:
+                    subreddit = "SpanishMeme"
+                    not_flair = None
+
+                con = create_connection(str(guild.id))
+                meme = await self.bot.reddit.get_hot_subreddit_image(
+                    sub_reddit=subreddit,
+                    posts_limit=1000,
+                    database_connection=con,
+                    not_flair=not_flair,
+                )
+
+                await self.bot.memes_channel_send(guild.id, meme)
+
+            except Exception as error:
+                log.error("Error ocured on task meme: {}".format(error))
             else:
-                subreddit = "SpanishMeme"
-                not_flair = None
-
-            con = create_connection(str(self.bot.server.id))
-            meme = await self.bot.reddit.get_hot_subreddit_image(
-                sub_reddit=subreddit,
-                posts_limit=1000,
-                database_connection=con,
-                not_flair=not_flair,
-            )
-
-            await self.bot.memes_channel.send(meme)
-        except Exception as error:
-            log.error("Error ocured on task meme: {}".format(error))
-        else:
-            log.info("Sent meme from {}".format(subreddit))
+                log.info("Sent meme from {}".format(subreddit))
 
     @tasks.loop(hours=1)
     async def birthday(self):
@@ -99,18 +103,21 @@ class tasks(commands.Cog):
                 today = month + "-" + day
 
                 # Get yaml info
-                con = create_connection(str(self.bot.server.id))
-                birthdays = get_birthdays(con)
-                for id, birthday in birthdays:
-                    print(id, birthday)
-                    if birthday != None and today in birthday:
-                        member = await self.bot.fetch_user(id)
-                        await self.bot.general_channel.send(
-                            "Es el cumple de "
-                            + member.mention
-                            + ". Felicidades!!!!!!!!!"
-                        )
-                        log.info("Sent birthday message of " + member.display_name)
+                for guild in self.bot.guilds:
+                    con = create_connection(str(guild.id))
+                    birthdays = get_birthdays(con)
+                    for id, birthday in birthdays:
+                        print(id, birthday)
+                        if birthday != None and today in birthday:
+                            member = await self.bot.fetch_user(id)
+                            await self.bot.general_channel_send(
+                                guild.id,
+                                "Es el cumple de "
+                                + member.mention
+                                + ". Felicidades!!!!!!!!!",
+                            )
+
+                            log.info("Sent birthday message of " + member.display_name)
 
             except Exception as error:
                 log.error("Error ocured on task birthday: {}".format(error))

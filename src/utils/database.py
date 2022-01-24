@@ -597,9 +597,10 @@ def get_channel(database_connection: sqlite3.Connection, channel_type: str) -> i
     except:
         log.error("Error: could not query the channel of type {}".format(channel_type))
     info = cur.fetchone()
-    channel = int(info[0])
-
-    return channel
+    if info is None:
+        return 0
+    else:
+        return int(info[0])
 
 
 ################################## Checks ##########################################

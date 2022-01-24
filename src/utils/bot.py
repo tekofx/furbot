@@ -7,6 +7,7 @@ from utils.database import (
     check_entry_in_database,
     create_connection,
     create_user,
+    get_channel,
     setup_database,
 )
 from utils.reddit import Reddit
@@ -62,23 +63,6 @@ class Bot(commands.Bot):
 
     async def on_ready(self):
         """Performs an action when the bot is ready"""
-        # Get channels and server
-        log.info("Fetching needed channels")
-
-        self._general_channel = await self.fetch_channel(os.getenv("GENERAL_CHANNEL"))
-        log.info("Loaded general channel")
-
-        self._memes_channel = await self.fetch_channel(os.getenv("MEMES_CHANNEL"))
-        log.info("Loaded memes channel")
-
-        self._audit_channel = await self.fetch_channel(os.getenv("AUDIT_CHANNEL"))
-        log.info("Loaded audit channel")
-
-        self._lobby_channel = await self.fetch_channel(os.getenv("LOBBY_CHANNEL"))
-        log.info("Loaded lobby channel")
-
-        self._server = await self.fetch_guild(os.getenv("VILLAFURRENSE"))
-        log.info("Loaded VF server")
 
         # Load cogs
         cogs = os.listdir("src/cogs/")
@@ -102,7 +86,7 @@ class Bot(commands.Bot):
         mensaje_lobby = """Bienvenid@ a {} {}. No olvides mirar el canal de normas y pasarlo bien""".format(
             member.guild.name, member.mention
         )
-        await self.lobby_channel.send(mensaje_lobby)
+        await self.lobby_channel_send(member.guild, mensaje_lobby)
 
         con = create_connection(str(member.guild.id))
         entry_in_database = check_entry_in_database(con, "users", member.id)
@@ -170,6 +154,65 @@ class Bot(commands.Bot):
         user = str(ctx.author)
         command = str(ctx.command)
         log.info(user + " used command " + command)
+
+    async def audit_channel_send(self, server_id: int, msg: str):
+        # Create database connection
+        con = create_connection(str(server_id))
+
+        # Get audit_channel id
+        audit_id = get_channel(con, "audit")
+
+        if audit_id != 0:
+
+            # Fetch audit_channel
+            audit_channel = await self.fetch_channel(audit_id)
+
+            # Send message
+            await audit_channel.send(msg)
+
+    async def lobby_channel_send(self, server_id: int, msg: str):
+        # Create database connection
+        con = create_connection(str(server_id))
+
+        # Get lobby_channel id
+        lobby_id = get_channel(con, "lobby")
+
+        if lobby_id != 0:
+            # Fetch lobby_channel
+            lobby_channel = await self.fetch_channel(lobby_id)
+
+            # Send message
+            await lobby_channel.send(msg)
+
+    async def memes_channel_send(self, server_id: int, msg: str):
+        # Create database connection
+        con = create_connection(str(server_id))
+
+        # Get memes_channel id
+        memes_id = get_channel(con, "memes")
+
+        if memes_id != 0:
+
+            # Fetch memes_channel
+            memes_channel = await self.fetch_channel(memes_id)
+
+            # Send message
+            await memes_channel.send(msg)
+
+    async def general_channel_send(self, server_id: int, msg: str):
+        # Create database connection
+        con = create_connection(str(server_id))
+
+        # Get general_channel id
+        general_id = get_channel(con, "general")
+
+        if general_id != 0:
+
+            # Fetch general_channel
+            general_channel = await self.fetch_channel(general_id)
+
+            # Send message
+            await general_channel.send(msg)
 
     async def on_command_error(
         self, context: commands.Context, error: commands.CommandError

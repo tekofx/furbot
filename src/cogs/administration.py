@@ -2,6 +2,7 @@ import logging
 from nextcord.ext import commands
 import nextcord
 from utils.database import (
+    create_channel,
     create_connection,
     create_role,
     set_birthday,
@@ -17,6 +18,101 @@ log = logging.getLogger(__name__)
 class administration(commands.Cog):
     def __init__(self, bot: Bot) -> None:
         self.bot = bot
+
+    @commands.command(name="setup")
+    @commands.has_permissions(administrator=True)
+    async def setup(self, ctx: commands.Context) -> None:
+        """
+        Setup the bot
+        """
+
+        def check(m: nextcord.Message) -> bool:
+            return m.author == ctx.author and m.channel == ctx.channel
+
+        await ctx.send("Empezando configuración...")
+
+        try:
+            # General channel
+            await ctx.send(
+                "Seleccione el canal general. Se utiliza para los mensajes de cumpleaños."
+            )
+            msg = await self.bot.wait_for("message", check=check)
+            log.info(msg.content)
+
+            channel_id = msg.content.removeprefix("<#").removesuffix(">")
+            channel = await self.bot.fetch_channel(channel_id)
+
+            con = create_connection(str(ctx.guild.id))
+
+            create_channel(
+                con,
+                [
+                    channel.id,
+                    "general",
+                    channel.name,
+                ],
+            )
+
+            # Audit channel
+            await ctx.send(
+                "Canal audit. Se usa para mostrar las acciones que hace el bot."
+            )
+            msg = await self.bot.wait_for("message", check=check)
+            log.info(msg.content)
+
+            channel_id = msg.content.removeprefix("<#").removesuffix(">")
+            channel = await self.bot.fetch_channel(channel_id)
+
+            create_channel(
+                con,
+                [
+                    channel.id,
+                    "audit",
+                    channel.name,
+                ],
+            )
+
+            # Canal memes
+            await ctx.send("Canal memes. Para mandar memes cada hora")
+            msg = await self.bot.wait_for("message", check=check)
+
+            channel_id = msg.content.removeprefix("<#").removesuffix(">")
+            channel = await self.bot.fetch_channel(channel_id)
+
+            create_channel(
+                con,
+                [
+                    channel.id,
+                    "memes",
+                    channel.name,
+                ],
+            )
+
+            # Canal lobby
+            await ctx.send("Canal lobby. Se usa para mandar mensajes de bienvenida")
+            msg = await self.bot.wait_for("message", check=check)
+
+            channel_id = msg.content.removeprefix("<#").removesuffix(">")
+            channel = await self.bot.fetch_channel(channel_id)
+
+            create_channel(
+                con,
+                [
+                    channel.id,
+                    "lobby",
+                    channel.name,
+                ],
+            )
+        except nextcord.Forbidden as e:
+            await ctx.send(
+                "Error, el bot no tiene permisos para ver el canal. Vuelve a ejecutar el comando cuando el bot tenga permiso de ver el canal."
+            )
+            con.close()
+            return
+        else:
+            await ctx.send("Añadidos canales")
+
+            con.close()
 
     @commands.command(name="activity")
     @commands.has_permissions(administrator=True)
