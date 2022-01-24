@@ -2,21 +2,21 @@ import logging
 import sqlite3
 from utils.database import check_record_in_database, create_record
 import os
-import asyncpraw
+import praw
 
 log = logging.getLogger(__name__)
 
 
 class Reddit:
     def __init__(self) -> None:
-        self.reddit = asyncpraw.Reddit(
+        self.reddit = praw.Reddit(
             client_id=os.getenv("REDDIT_CLIENT_ID"),
             client_secret=os.getenv("REDDIT_CLIENT_SECRET"),
             user_agent=os.getenv("REDDIT_USER_AGENT"),
             check_for_async=False,
         )
 
-    async def get_hot_subreddit_image(
+    def get_hot_subreddit_image(
         self,
         sub_reddit: str,
         posts_limit: int,
@@ -31,10 +31,10 @@ class Reddit:
             database_connection (sqlite3.Connection): Connection to database
             not_flair (str, optional): Flairs to avoid. Defaults to None.
         """
-        subreddit = await self.reddit.subreddit(sub_reddit)
+        subreddit = self.reddit.subreddit(sub_reddit)
         hot_posts = subreddit.hot(limit=posts_limit)
         posts = []
-        async for post in hot_posts:
+        for post in hot_posts:
             posts.append(post)
 
         try:

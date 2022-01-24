@@ -1,5 +1,5 @@
 pillow
-asyncpraw
+praw
 python-dotenv
 pyrae
 qrcode

@@ -73,7 +73,7 @@ class tasks(commands.Cog):
             try:
 
                 con = create_connection(str(guild.id))
-                meme = await self.bot.reddit.get_hot_subreddit_image(
+                meme = self.bot.reddit.get_hot_subreddit_image(
                     sub_reddit=subreddit,
                     posts_limit=100,
                     database_connection=con,
@@ -139,9 +139,9 @@ class tasks(commands.Cog):
         """Waits some time to execute tasks"""
         log.info("Waiting to execute tasks")
 
-        hours_from_now = 1
+        hours_from_now = 0
         minutes_from_now = 0
-        seconds_from_now = 0
+        seconds_from_now = 30
         now = datetime.now()
         after = now + timedelta(
             hours=hours_from_now, minutes=minutes_from_now, seconds=seconds_from_now
