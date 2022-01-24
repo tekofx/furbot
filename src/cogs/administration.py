@@ -22,9 +22,7 @@ class administration(commands.Cog):
     @commands.command(name="setup")
     @commands.has_permissions(administrator=True)
     async def setup(self, ctx: commands.Context) -> None:
-        """
-        Setup the bot
-        """
+        """Configurar los canales del bot"""
 
         def check(m: nextcord.Message) -> bool:
             return m.author == ctx.author and m.channel == ctx.channel
