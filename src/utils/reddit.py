@@ -3,20 +3,21 @@ import sqlite3
 from utils.database import check_record_in_database, create_record
 import praw
 import os
+import asyncpraw
 
 log = logging.getLogger(__name__)
 
 
 class Reddit:
     def __init__(self) -> None:
-        self.reddit = praw.Reddit(
+        self.reddit = asyncpraw.Reddit(
             client_id=os.getenv("REDDIT_CLIENT_ID"),
             client_secret=os.getenv("REDDIT_CLIENT_SECRET"),
             user_agent=os.getenv("REDDIT_USER_AGENT"),
             check_for_async=False,
         )
 
-    def get_hot_subreddit_image(
+    async def get_hot_subreddit_image(
         self,
         sub_reddit: str,
         posts_limit: int,
@@ -31,9 +32,9 @@ class Reddit:
             database_connection (sqlite3.Connection): Connection to database
             not_flair (str, optional): Flairs to avoid. Defaults to None.
         """
-        posts = self.reddit.subreddit(sub_reddit).hot(limit=posts_limit)
+        posts = await self.reddit.subreddit(sub_reddit)
         try:
-            for post in posts:
+            async for post in posts.hot(limit=posts_limit):
 
                 if post.over_18 is False:  # Check if post is SFW
 
@@ -43,6 +44,7 @@ class Reddit:
                             database_connection, post.url
                         ):
                             create_record(database_connection, ["reddit", post.url])
+                            await self.reddit.close()
                             return post.url
                     else:
                         if (
@@ -56,9 +58,10 @@ class Reddit:
                             )
                         ):
                             create_record(database_connection, ["reddit", post.url])
-
+                            await self.reddit.close()
                             return post.url
 
         except Exception as error:
+            await self.reddit.close()
             logging.error("Error in get_hot_subreddit_image: {}".format(error))
             return "Error: {}".format(error)

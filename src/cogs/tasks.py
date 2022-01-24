@@ -69,7 +69,7 @@ class tasks(commands.Cog):
                 not_flair = None
 
             con = create_connection(str(self.bot.server.id))
-            meme = self.bot.reddit.get_hot_subreddit_image(
+            meme = await self.bot.reddit.get_hot_subreddit_image(
                 sub_reddit=subreddit,
                 posts_limit=1000,
                 database_connection=con,
