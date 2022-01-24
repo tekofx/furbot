@@ -139,9 +139,9 @@ class tasks(commands.Cog):
         """Waits some time to execute tasks"""
         log.info("Waiting to execute tasks")
 
-        hours_from_now = 0
+        hours_from_now = 1
         minutes_from_now = 0
-        seconds_from_now = 30
+        seconds_from_now = 0
         now = datetime.now()
         after = now + timedelta(
             hours=hours_from_now, minutes=minutes_from_now, seconds=seconds_from_now
