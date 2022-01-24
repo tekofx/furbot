@@ -5,14 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [] - 2022-1-10
+## [3.7] - 2022-1-10
 ### Añadido
 - Comando reactionroles
 - Cog ReactionRoles
-
+- Comando setup
 ### Cambiado
 - Añadida opcion para mencionar en comando undertale
 - Cambiado praw por asyncpraw
+- Ahora no se pasan los ids de los canales en el .env, se utiliza el comando setup para configurarlos
 
 ### Mejorado 
 - Mensajes de error
