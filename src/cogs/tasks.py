@@ -85,8 +85,6 @@ class tasks(commands.Cog):
 
             except (Exception) as error:
                 log.error("Error sending meme to {}: {}".format(guild.name, error))
-            else:
-                log.info("Sent meme from {}".format(subreddit))
 
     @tasks.loop(hours=1)
     async def birthday(self):
@@ -155,7 +153,7 @@ class tasks(commands.Cog):
 
         log.info("Waiting {} seconds".format(delta))
 
-        # await asyncio.sleep(delta)
+        await asyncio.sleep(delta)
 
 
 def setup(bot: commands.Bot):
