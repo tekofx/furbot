@@ -1,7 +1,6 @@
 import logging
 import sqlite3
 from utils.database import check_record_in_database, create_record
-import praw
 import os
 import asyncpraw
 
