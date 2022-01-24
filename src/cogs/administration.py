@@ -57,7 +57,7 @@ class administration(commands.Cog):
             await ctx.send(
                 "Canal audit. Se usa para mostrar las acciones que hace el bot."
             )
-            msg = str(await self.bot.wait_for("message", check=check))
+            msg = await self.bot.wait_for("message", check=check)
             log.info(msg.content)
 
             channel_id = msg.content.replace("<#", "").replace(">", "")
@@ -109,6 +109,7 @@ class administration(commands.Cog):
                     "Error, el bot no tiene permisos para ver el canal. Vuelve a ejecutar el comando cuando el bot tenga permiso de ver el canal."
                 )
             else:
+                await ctx.send("Error desconocido, contacta con un administrador.")
                 log.error("Unkwon error: {}".format(e))
 
             con.close()
