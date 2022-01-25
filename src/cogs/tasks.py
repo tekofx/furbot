@@ -153,7 +153,7 @@ class tasks(commands.Cog):
 
         log.info("Waiting {} seconds".format(delta))
 
-        # await asyncio.sleep(delta)
+        await asyncio.sleep(delta)
 
 
 def setup(bot: commands.Bot):
