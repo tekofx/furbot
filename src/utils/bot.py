@@ -162,6 +162,7 @@ class Bot(commands.Bot):
 
         # Get general_channel id
         general_id = get_channel(con, channel_type)
+        con.close()
 
         if general_id != 0:
             try:

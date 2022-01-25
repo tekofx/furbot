@@ -8,6 +8,7 @@ from datetime import datetime, timedelta
 import random
 from utils.database import (
     check_entry_in_database,
+    check_record_in_database,
     create_connection,
     create_user,
     get_birthdays,
@@ -60,25 +61,23 @@ class tasks(commands.Cog):
         num = random.randint(0, 2)
         if num == 0:
             subreddit = "dankmemes"
-            not_flair = None
 
         elif num == 1:
             subreddit = "furry_irl"
-            not_flair = "Actual Yiff"
 
         else:
             subreddit = "SpanishMeme"
-            not_flair = None
+
+        memes = await self.bot.reddit.get_hot_subreddit_images(subreddit, 100)
+
         for guild in self.bot.guilds:
             try:
-
                 con = create_connection(str(guild.id))
-                meme = await self.bot.reddit.get_hot_subreddit_image(
-                    sub_reddit=subreddit,
-                    posts_limit=100,
-                    database_connection=con,
-                    not_flair=not_flair,
-                )
+
+                for x in memes:
+                    if not check_record_in_database(con, x):
+                        meme = x
+                        break
 
                 await self.bot.channel_send(guild.id, "memes", meme)
                 con.close()
