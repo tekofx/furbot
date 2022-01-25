@@ -43,12 +43,16 @@ class Reddit:
 
                     if not_flair is None:
 
+                        log.info("Not flair")
                         if post.url.endswith("jpg") and not check_record_in_database(
                             database_connection, post.url
                         ):
                             create_record(database_connection, ["reddit", post.url])
+                            log.info("Return {}".format(post.url))
                             return post.url
                     else:
+                        log.info("flair")
+
                         if (
                             (
                                 not post.link_flair_text
@@ -60,6 +64,7 @@ class Reddit:
                             )
                         ):
                             create_record(database_connection, ["reddit", post.url])
+                            log.info("Return {}".format(post.url))
                             return post.url
 
         except Exception as error:
