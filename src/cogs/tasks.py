@@ -75,7 +75,7 @@ class tasks(commands.Cog):
                 con = create_connection(str(guild.id))
                 meme = await self.bot.reddit.get_hot_subreddit_image(
                     sub_reddit=subreddit,
-                    posts_limit=20,
+                    posts_limit=100,
                     database_connection=con,
                     not_flair=not_flair,
                 )
