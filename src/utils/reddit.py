@@ -55,6 +55,7 @@ class Reddit:
         )
 
         subreddit = await reddit.subreddit(sub_reddit)
+        await reddit.close()
         hot_posts = subreddit.hot(limit=posts_limit)
         posts = []
         async for post in hot_posts:

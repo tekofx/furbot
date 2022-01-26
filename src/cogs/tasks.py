@@ -10,6 +10,7 @@ from utils.database import (
     check_entry_in_database,
     check_record_in_database,
     create_connection,
+    create_record,
     create_user,
     get_birthdays,
 )
@@ -65,18 +66,18 @@ class tasks(commands.Cog):
         elif num == 1:
             subreddit = "furry_irl"
 
-        else:
-            subreddit = "SpanishMeme"
+        """ else:
+            subreddit = "SpanishMeme" """
 
         memes = await self.bot.reddit.get_hot_subreddit_images(subreddit, 100)
 
         for guild in self.bot.guilds:
             try:
                 con = create_connection(str(guild.id))
-
                 for x in memes:
                     if not check_record_in_database(con, x):
                         meme = x
+                        create_record(con, ["meme", meme])
                         break
 
                 await self.bot.channel_send(guild.id, "memes", meme)

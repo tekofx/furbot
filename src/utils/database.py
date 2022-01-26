@@ -635,20 +635,19 @@ def check_record_in_database(database_connection, record: str) -> bool:
 
     Args:
         database_connection (sqlite3.Connection): Connection to database
-        table (str): table to check
-        entry_id (int): id of the entry
+        record (int): record of the entry
 
     Returns:
         bool: false if not exists, true on the contrary
     """
     cursor = database_connection.cursor()
-    sql = "SELECT id FROM records WHERE record = ?"
-    var = [record]
+    sql = """SELECT EXISTS(SELECT 1 FROM records WHERE record=?)"""
     try:
-        cursor.execute(sql, var)
+        cursor.execute(sql, (record,))
     except:
-        log.error("Error: Could not check if user {id} exists".format(id=record))
-    data = cursor.fetchall()
-    if len(data) == 0:
+        log.error("Error: Could not check if record {id} exists".format(id=record))
+
+    data = cursor.fetchone()
+    if data == (0,):
         return False
     return True
