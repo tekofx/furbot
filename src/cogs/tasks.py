@@ -62,11 +62,11 @@ class tasks(commands.Cog):
     async def meme(self):
         """Sends a random meme"""
 
-        num = random.randint(0, 2)
+        num = random.randint(0, 1)
         if num == 0:
             subreddit = "dankmemes"
 
-        elif num == 1:
+        else:
             subreddit = "furry_irl"
 
         """ else:
@@ -204,7 +204,7 @@ class tasks(commands.Cog):
 
         log.info("Waiting {} seconds".format(delta))
 
-        await asyncio.sleep(10)
+        await asyncio.sleep(delta)
 
 
 def setup(bot: commands.Bot):
