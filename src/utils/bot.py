@@ -156,7 +156,9 @@ class Bot(commands.Bot):
         command = str(ctx.command)
         log.info(user + " used command " + command)
 
-    async def channel_send(self, server_id: int, channel_type: str, msg: str):
+    async def channel_send(
+        self, server_id: int, channel_type: str, msg: str, embed: nextcord.Embed = None
+    ):
         # Create database connection
         con = create_connection(str(server_id))
 
@@ -177,7 +179,10 @@ class Bot(commands.Bot):
                 raise Forbidden
 
             # Send message
-            await general_channel.send(msg)
+            if embed:
+                await general_channel.send(embed=embed)
+            else:
+                await general_channel.send(msg)
 
     async def on_command_error(
         self, context: commands.Context, error: commands.CommandError

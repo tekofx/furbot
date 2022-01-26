@@ -1,5 +1,7 @@
 import asyncio
+from cgitb import text
 import logging
+import requests
 import discord
 import nextcord
 from nextcord.errors import Forbidden
@@ -24,9 +26,10 @@ class tasks(commands.Cog):
         self.bot = bot
 
         # Start tasks
-        self.meme.start()
-        self.birthday.start()
-        self.update_users.start()
+        # self.meme.start()
+        # self.birthday.start()
+        # self.update_users.start()
+        self.discord_status.start()
 
     @tasks.loop(hours=6)
     async def update_users(self):
@@ -132,6 +135,54 @@ class tasks(commands.Cog):
                         guild.id, "general", "Error desconocido, contacta al creador"
                     )
 
+    @tasks.loop(minutes=5)
+    async def discord_status(self):
+        r = requests.get("https://discordstatus.com/api/v2/summary.json")
+        data = r.json()
+
+        for guild in self.bot.guilds:
+            con = create_connection(str(guild.id))
+
+            for incident in data["incidents"]:
+
+                incident_id = incident["id"]
+                incident_name = incident["name"]
+                incident_status = incident["status"]
+                embed = nextcord.Embed(title="Discord Status", color=0x00FF00)
+                embed.description = "Hay un incidente en discord"
+                embed.add_field(name="Incidente", value=incident_name)
+                embed.add_field(name="Estado", value=incident_status)
+                embed.add_field(name="ID", value=incident_id)
+
+                # Inform about a new incident
+                if not check_record_in_database(con, incident_id):
+                    create_record(con, ["incident", incident_id])
+                    await self.bot.channel_send(guild.id, "audit", "a", embed)
+
+                # Inform about an incident update
+
+                for update in incident["incident_updates"]:
+
+                    update_id = update["id"]
+                    update_body = update["body"]
+                    update_status = update["status"]
+                    update_embed = nextcord.Embed(
+                        title="Actualización incidente", color=0x00FF00
+                    )
+                    update_embed.add_field(name="ID", value=update_id, inline=False)
+                    update_embed.add_field(
+                        name="Actualización", value=update_body, inline=False
+                    )
+                    update_embed.add_field(
+                        name="Estado", value=update_status, inline=False
+                    )
+                    if not check_record_in_database(con, update_id):
+                        create_record(con, ["incident", update_id])
+                        await self.bot.channel_send(
+                            guild.id, "audit", "a", update_embed
+                        )
+
+    @discord_status.before_loop
     @update_users.before_loop
     @meme.before_loop
     @birthday.before_loop
@@ -153,7 +204,7 @@ class tasks(commands.Cog):
 
         log.info("Waiting {} seconds".format(delta))
 
-        await asyncio.sleep(delta)
+        await asyncio.sleep(10)
 
 
 def setup(bot: commands.Bot):
