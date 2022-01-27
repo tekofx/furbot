@@ -26,9 +26,9 @@ class tasks(commands.Cog):
         self.bot = bot
 
         # Start tasks
-        # self.meme.start()
-        # self.birthday.start()
-        # self.update_users.start()
+        self.meme.start()
+        self.birthday.start()
+        self.update_users.start()
         self.discord_status.start()
 
     @tasks.loop(hours=6)
@@ -148,11 +148,22 @@ class tasks(commands.Cog):
                 incident_id = incident["id"]
                 incident_name = incident["name"]
                 incident_status = incident["status"]
-                embed = nextcord.Embed(title="Discord Status", color=0x00FF00)
-                embed.description = "Hay un incidente en discord"
-                embed.add_field(name="Incidente", value=incident_name)
+                incident_impact = incident["impact"]
+
+                if incident_impact == "Minor":
+                    color = nextcord.Color.yellow()
+                elif incident_impact == "Major":
+                    color = nextcord.Color.orange()
+                elif incident_impact == "Critical":
+                    color = nextcord.Color.red()
+                else:
+                    color = nextcord.Color.green()
+
+                embed = nextcord.Embed(title="Discord Status", color=color)
+                embed.add_field(name="Incidencia", value=incident_name)
                 embed.add_field(name="Estado", value=incident_status)
                 embed.add_field(name="ID", value=incident_id)
+                embed.add_field(name="Impacto", value=incident_impact)
 
                 # Inform about a new incident
                 if not check_record_in_database(con, incident_id):
@@ -167,7 +178,8 @@ class tasks(commands.Cog):
                     update_body = update["body"]
                     update_status = update["status"]
                     update_embed = nextcord.Embed(
-                        title="Actualización incidente", color=0x00FF00
+                        title="Actualización incidencia",
+                        color=nextcord.Color.dark_grey(),
                     )
                     update_embed.add_field(name="ID", value=update_id, inline=False)
                     update_embed.add_field(
