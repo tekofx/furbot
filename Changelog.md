@@ -8,7 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Añadido
 - Task discord status
 
-
+### Solucionado
+- Error en task meme que hacia que a veces no publicase un meme
 
 
 ## [3.7] - 2022-1-24
