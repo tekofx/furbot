@@ -27,7 +27,10 @@ class administration(commands.Cog):
         def check(m: nextcord.Message) -> bool:
             return m.author == ctx.author and m.channel == ctx.channel
 
-        await ctx.send("Empezando configuración...")
+        await ctx.send(
+            "Empezando configuración. Se le pedirá establecer varios canales. Si no quiere establecer un canal, escriba `skip`"
+        )
+        await sleep(2)
 
         try:
             # General channel
@@ -53,7 +56,7 @@ class administration(commands.Cog):
 
             # Audit channel
             await ctx.send(
-                "Canal audit. Se usa para mostrar las acciones que hace el bot."
+                "Canal audit. Se usa para mostrar las acciones que hace el bot a los administradores."
             )
             msg = await self.bot.wait_for("message", check=check)
             log.info(msg.content)
