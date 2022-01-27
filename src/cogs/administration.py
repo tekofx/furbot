@@ -37,7 +37,7 @@ class administration(commands.Cog):
             await ctx.send(
                 "Seleccione el canal general. Se utiliza para los mensajes de cumpleaños."
             )
-            msg = await self.bot.wait_for("message", check=check)
+            msg = await self.bot.wait_for("message", check=check, timeout=60)
             log.info(msg.content)
 
             channel_id = msg.content.replace("<#", "").replace(">", "")
@@ -58,7 +58,7 @@ class administration(commands.Cog):
             await ctx.send(
                 "Canal audit. Se usa para mostrar las acciones que hace el bot a los administradores."
             )
-            msg = await self.bot.wait_for("message", check=check)
+            msg = await self.bot.wait_for("message", check=check, timeout=60)
             log.info(msg.content)
 
             channel_id = msg.content.replace("<#", "").replace(">", "")
@@ -75,7 +75,7 @@ class administration(commands.Cog):
 
             # Canal memes
             await ctx.send("Canal memes. Para mandar memes cada hora")
-            msg = await self.bot.wait_for("message", check=check)
+            msg = await self.bot.wait_for("message", check=check, timeout=60)
 
             channel_id = msg.content.replace("<#", "").replace(">", "")
             channel = await self.bot.fetch_channel(channel_id)
@@ -91,7 +91,7 @@ class administration(commands.Cog):
 
             # Canal lobby
             await ctx.send("Canal lobby. Se usa para mandar mensajes de bienvenida")
-            msg = await self.bot.wait_for("message", check=check)
+            msg = await self.bot.wait_for("message", check=check, timeout=60)
 
             channel_id = msg.content.replace("<#", "").replace(">", "")
             channel = await self.bot.fetch_channel(channel_id)
