@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Solucionado
 - Error en task meme que hacia que a veces no publicase un meme
 
+### Eliminado
+- Comando carnet
+
 
 ## [3.7] - 2022-1-24
 ### Añadido
