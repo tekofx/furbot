@@ -13,11 +13,17 @@ class Reddit:
         self.client_secret = os.getenv("REDDIT_CLIENT_SECRET")
         self.user_agent = os.getenv("REDDIT_USER_AGENT")
 
-    async def get_hot_subreddit_images(
-        self,
-        sub_reddit: str,
-        posts_limit: int,
-    ) -> list:
+    async def get_hot_subreddit_images(self, sub_reddit: str, posts_limit: int) -> list:
+        """Gets a list of subreddit posts
+
+        Args:
+            sub_reddit (str): subreddit to get posts from
+            posts_limit (int): num of posts to charge
+            not_flag (str): flags to avoid in posts
+
+        Returns:
+            list: containing reddit posts
+        """
         reddit = asyncpraw.Reddit(
             client_id=self.client_id,
             client_secret=self.client_secret,
@@ -28,10 +34,16 @@ class Reddit:
         subreddit = await reddit.subreddit(sub_reddit)
         log.info(sub_reddit + "\n")
         hot_posts = subreddit.hot(limit=posts_limit)
+
         posts = []
         async for post in hot_posts:
-            if post.url.endswith("jpg") or post.url.endswith("png"):
+            if (
+                post.url.endswith("jpg")
+                or post.url.endswith("png")
+                and not post.over_18
+            ):
                 posts.append(post.url)
+        await reddit.close()
         return posts
 
     async def get_hot_subreddit_image(
