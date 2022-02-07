@@ -132,21 +132,25 @@ class Bot(commands.Bot):
             message ([nextcord.Message]): Message to check
         """
         if not message.author.bot:
+            content = message.content.lower()
 
-            if message.content.lower() == "owo":
+            if content == "owo":
                 await message.channel.send("OwO!")
-            if "vaca " in message.content.lower():
+            if "vaca " in content:
                 await message.channel.send("Muuu!")
-            if "vacas " in message.content.lower():
+            if "vacas " in content:
                 await message.channel.send("Muuu Muuu!")
-            if message.content.lower() == "uwu":
+            if content == "uwu":
                 await message.channel.send("UwU!")
-            if message.content.lower() == "7w7":
+            if content == "7w7":
                 await message.channel.send(":eyes:")
-            if message.content.lower() == "ewe":
+            if content == "ewe":
                 await message.channel.send("EwE!")
-            if message.content.lower() == "awa":
+            if content == "awa":
                 await message.channel.send("AwA!")
+            if content == "a" or content="A":
+                msg = await message.channel.send("Cuidado con Thedax!")
+                await msg.delete(delay=5)
 
         await self.process_commands(message)
 
