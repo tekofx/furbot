@@ -30,7 +30,8 @@ sentences_table = """ CREATE TABLE IF NOT EXISTS sentences (
 records_table = """ CREATE TABLE IF NOT EXISTS records (
                                     id integer PRIMARY KEY,
                                     type text NOT NULL ,
-                                    record text NOT NULL
+                                    record text NOT NULL,
+                                    date date NOT NULL
                                 ); """
 
 channels_table = """ CREATE TABLE IF NOT EXISTS channels (
@@ -254,8 +255,8 @@ def create_record(database_connection: sqlite3.Connection, record_data: list) ->
         record (list): info of record. Containing [type, record]
     """
 
-    sql = """ INSERT INTO records(id,type,record)
-              VALUES(?,?,?) """
+    sql = """ INSERT INTO records(id,type,record,date)
+              VALUES(?,?,?,?) """
 
     try:
         id = get_latest_id(database_connection, "records") + 1
@@ -263,6 +264,7 @@ def create_record(database_connection: sqlite3.Connection, record_data: list) ->
         log.error("Error: {}".format(error))
         return
     record_data.insert(0, id)
+    record_data.append(datetime.date.today())
 
     cur = database_connection.cursor()
     try:
@@ -278,6 +280,26 @@ def create_record(database_connection: sqlite3.Connection, record_data: list) ->
                 id=record_data[0], name=record_data[1], error=error
             )
         )
+
+    database_connection.commit()
+
+
+def remove_records_from_a_date(
+    database_connection: sqlite3.Connection, date: datetime.date
+) -> None:
+    """Removes all records from a date
+    Args:
+        database_connection(sqlite3.Connection): Connection to database
+        date (str): date to remove records from
+    """
+    sql = "DELETE FROM records WHERE date=?"
+    var = [date]
+    cur = database_connection.cursor()
+    try:
+        cur.execute(sql, var)
+        log.info("Deleted records from {} from database".format(date))
+    except:
+        log.error("Error: Could not delete records from {} from database".format(date))
 
     database_connection.commit()
 

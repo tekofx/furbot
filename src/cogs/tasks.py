@@ -6,7 +6,7 @@ import discord
 import nextcord
 from nextcord.errors import Forbidden
 from nextcord.ext import commands, tasks
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 import random
 from utils.database import (
     check_entry_in_database,
@@ -15,6 +15,7 @@ from utils.database import (
     create_record,
     create_user,
     get_birthdays,
+    remove_records_from_a_date,
 )
 from utils.bot import Bot
 
@@ -30,6 +31,16 @@ class tasks(commands.Cog):
         self.birthday.start()
         self.update_users.start()
         self.discord_status.start()
+        self.remove_records_from_previous_day.start()
+
+    @tasks.loop(hours=23)
+    async def remove_records_from_previous_day(self):
+        """Removes records from previous day"""
+        for guild in self.bot.guilds:
+            connection = create_connection(guild.id)
+            remove_records_from_a_date(connection, date.today() - timedelta(days=1))
+            connection.close()
+        log.info("Removed records from previous day")
 
     @tasks.loop(hours=6)
     async def update_users(self):
@@ -189,6 +200,7 @@ class tasks(commands.Cog):
                             guild.id, "audit", "a", update_embed
                         )
 
+    @remove_records_from_previous_day.before_loop
     @discord_status.before_loop
     @update_users.before_loop
     @meme.before_loop
