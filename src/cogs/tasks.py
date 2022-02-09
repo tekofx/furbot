@@ -62,15 +62,9 @@ class tasks(commands.Cog):
     async def meme(self):
         """Sends a random meme"""
 
-        num = random.randint(0, 1)
-        if num == 0:
-            subreddit = "dankmemes"
-
-        else:
-            subreddit = "furry_irl"
-
-        """ else:
-            subreddit = "SpanishMeme" """
+        num = random.randint(0, 2)
+        subreddits = ["dankmemes", "furry_irl", "SpanishMeme"]
+        subreddit = subreddits[num]
 
         memes = await self.bot.reddit.get_hot_subreddit_images(subreddit, 100)
 
@@ -84,6 +78,7 @@ class tasks(commands.Cog):
                         break
 
                 await self.bot.channel_send(guild.id, "memes", meme)
+                log.info("Sent meme from {}".format(subreddit))
                 con.close()
 
             except (Exception) as error:

@@ -32,16 +32,11 @@ class Reddit:
         )
 
         subreddit = await reddit.subreddit(sub_reddit)
-        log.info(sub_reddit + "\n")
         hot_posts = subreddit.hot(limit=posts_limit)
 
         posts = []
         async for post in hot_posts:
-            if (
-                post.url.endswith("jpg")
-                or post.url.endswith("png")
-                and not post.over_18
-            ):
+            if "jpg" in post.url or "png" in post.url and not post.over_18:
                 posts.append(post.url)
         await reddit.close()
         return posts
