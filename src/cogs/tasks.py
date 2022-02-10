@@ -1,5 +1,6 @@
 import asyncio
 from cgitb import text
+from ctypes import Union
 import logging
 import requests
 import discord
@@ -33,7 +34,7 @@ class tasks(commands.Cog):
         self.discord_status.start()
         self.remove_records_from_previous_day.start()
 
-    @tasks.loop(time(hour=0, minute=0, second=0))
+    @tasks.loop(time=time(hour=0, minute=0, second=0))
     async def remove_records_from_previous_day(self):
         """Removes records from previous day"""
         for guild in self.bot.guilds:
