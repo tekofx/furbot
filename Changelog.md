@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased] - 2022-1-24
 ### Añadido
 - Task discord status
+- Eliminacion de mensajes a partir de un mensaje. Responde a un mensaje para eliminar los mensajes anteriores a ese
 
 ### Solucionado
 - Error en task meme que hacia que a veces no publicase un meme

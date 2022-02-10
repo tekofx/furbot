@@ -248,13 +248,23 @@ class administration(commands.Cog):
         Uso:
             fur clear <num_mensajes>
         """
+
         messages_to_delete = []
-        async for message in ctx.channel.history(limit=num + 1):
-            messages_to_delete.append(message)
+        if ctx.message.reference is None:
+            async for message in ctx.channel.history(limit=num + 1):
+                messages_to_delete.append(message)
+
+        else:
+            async for message in ctx.channel.history(
+                limit=num, before=ctx.message.reference.cached_message
+            ):
+                messages_to_delete.append(message)
+                print(message.content)
         await ctx.channel.delete_messages(messages_to_delete)
         message = await ctx.send("Eliminados {} mensajes".format(num))
         await sleep(5)
         await message.delete()
+        await ctx.message.delete()
 
 
 def setup(bot: commands.Bot):
