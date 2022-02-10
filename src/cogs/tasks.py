@@ -201,7 +201,6 @@ class tasks(commands.Cog):
                             guild.id, "audit", "a", update_embed
                         )
 
-    @remove_records_from_previous_day.before_loop
     @discord_status.before_loop
     @update_users.before_loop
     @meme.before_loop
