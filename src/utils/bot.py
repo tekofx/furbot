@@ -148,7 +148,7 @@ class Bot(commands.Bot):
                 await message.channel.send("EwE!")
             if content == "awa":
                 await message.channel.send("AwA!")
-            if content == "a" or content == "A":
+            if content == "a" or content == "ª":
                 msg = await message.channel.send("Cuidado con Thedax!")
                 await msg.delete(delay=5)
 
