@@ -6,7 +6,7 @@ import discord
 import nextcord
 from nextcord.errors import Forbidden
 from nextcord.ext import commands, tasks
-from datetime import datetime, timedelta, date
+from datetime import datetime, timedelta, date, time
 import random
 from utils.database import (
     check_entry_in_database,
@@ -33,7 +33,7 @@ class tasks(commands.Cog):
         self.discord_status.start()
         self.remove_records_from_previous_day.start()
 
-    @tasks.loop(hours=23)
+    @tasks.loop(time(hour=0, minute=0, second=0))
     async def remove_records_from_previous_day(self):
         """Removes records from previous day"""
         for guild in self.bot.guilds:
