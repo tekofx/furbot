@@ -250,6 +250,7 @@ class administration(commands.Cog):
         """
 
         messages_to_delete = []
+        # If command is a reply to a message
         if ctx.message.reference is None:
             async for message in ctx.channel.history(limit=num + 1):
                 messages_to_delete.append(message)
@@ -259,7 +260,6 @@ class administration(commands.Cog):
                 limit=num, before=ctx.message.reference.cached_message
             ):
                 messages_to_delete.append(message)
-                print(message.content)
         await ctx.channel.delete_messages(messages_to_delete)
         message = await ctx.send("Eliminados {} mensajes".format(num))
         await sleep(5)
