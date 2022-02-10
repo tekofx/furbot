@@ -87,7 +87,7 @@ class Bot(commands.Bot):
         mensaje_lobby = """Bienvenid@ a {} {}. No olvides mirar el canal de normas y pasarlo bien""".format(
             member.guild.name, member.mention
         )
-        await self.channel_send(member.guild, "lobby", mensaje_lobby)
+        await self.channel_send(member.guild.id, "lobby", mensaje_lobby)
 
         con = create_connection(str(member.guild.id))
         entry_in_database = check_entry_in_database(con, "users", member.id)
@@ -107,7 +107,9 @@ class Bot(commands.Bot):
                 log.error("Error creating user on join: {}".format(error))
             else:
                 log.info("Created user {} with id {}".format(author_name, author_id))
-        await self.audit_channel.send("{} se ha unido".format(member.name))
+        await self.channel_send(
+            member.guild.id, "audit", "{} se ha unido".format(member.name)
+        )
         con.close()
 
     def run(self):
