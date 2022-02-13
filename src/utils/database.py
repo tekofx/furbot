@@ -150,7 +150,7 @@ def remove_user(database_connection: sqlite3.Connection, user_id: int) -> None:
         log.info("Deleted user {} from database".format(user_id))
     except Exception as error:
         log.error(
-            "Error: Could not delete user {} from database".format(user_id, error)
+            "Error: Could not delete user {} from database: {}".format(user_id, error)
         )
 
     database_connection.commit()
@@ -362,9 +362,9 @@ def get_name(database_connection: sqlite3.Connection, user_id: int) -> str:
             "Error: could not query the name of user {}: {}".format(user_id, error)
         )
     info = cur.fetchone()
-    num_messages = int(info[0])
+    name = info[0]
 
-    return num_messages
+    return name
 
 
 def set_name(database_connection: sqlite3.Connection, user_id: int, name: str) -> None:
@@ -579,7 +579,7 @@ def get_random_sentence(
         return output[0]
 
 
-def get_latest_id(database_connection: sqlite3.Connection, table: str) -> int:
+def get_latest_id(database_connection: sqlite3.Connection, table: str) -> int | None:
     """Gets id of latest item in a table
 
     Args:
@@ -588,6 +588,7 @@ def get_latest_id(database_connection: sqlite3.Connection, table: str) -> int:
 
     Returns:
         int: id of latest sentence
+        None: if error occurs
     """
     sql = """ SELECT id FROM {} """.format(table)
     cur = database_connection.cursor()
@@ -655,9 +656,7 @@ def check_entry_in_database(
         cursor.execute(sql, var)
     except Exception as error:
         log.error(
-            "Error: Could not check if user {id} exists: {}".format(
-                id=entry_id, error=error
-            )
+            "Error: Could not check if user {} exists: {}".format(entry_id, error)
         )
     data = cursor.fetchall()
     if len(data) == 0:
@@ -681,9 +680,7 @@ def check_record_in_database(database_connection, record: str) -> bool:
         cursor.execute(sql, (record,))
     except Exception as error:
         log.error(
-            "Error: Could not check if record {id} exists: {}".format(
-                id=record, error=error
-            )
+            "Error: Could not check if record {} exists: {}".format(record, error)
         )
 
     data = cursor.fetchone()

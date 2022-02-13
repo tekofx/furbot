@@ -9,8 +9,7 @@ from utils.data import resources_path, temp_path
 
 
 log = logging.getLogger(__name__)
-
-animal_history_txt = resources_path + "animal_history.txt"
+temp_image = "image.jpg"
 
 
 class animal(commands.Cog):
@@ -35,11 +34,11 @@ class animal(commands.Cog):
 
             # Download image
             r = requests.get(tweet_image_url, allow_redirects=True)
-            open(temp_path + "image.jpg", "wb").write(r.content)
+            open(temp_path + temp_image, "wb").write(r.content)
 
-        image = nextcord.File(temp_path + "image.jpg")
+        image = nextcord.File(temp_path + temp_image)
         await ctx.send(file=image)
-        os.remove(temp_path + "image.jpg")
+        os.remove(temp_path + temp_image)
         await message.delete()
 
     @commands.command(name="arctic")
@@ -60,10 +59,10 @@ class animal(commands.Cog):
 
             # Download image
             r = requests.get(tweet_image_url, allow_redirects=True)
-            open(temp_path + "image.jpg", "wb").write(r.content)
-        image = nextcord.File(temp_path + "image.jpg")
+            open(temp_path + temp_image, "wb").write(r.content)
+        image = nextcord.File(temp_path + temp_image)
         await ctx.send(file=image)
-        os.remove(temp_path + "image.jpg")
+        os.remove(temp_path + temp_image)
         await message.delete()
 
     @commands.command()
@@ -84,10 +83,10 @@ class animal(commands.Cog):
 
             # Download image
             r = requests.get(tweet_image_url, allow_redirects=True)
-            open(temp_path + "image.jpg", "wb").write(r.content)
-        image = nextcord.File(temp_path + "image.jpg")
+            open(temp_path + temp_image, "wb").write(r.content)
+        image = nextcord.File(temp_path + temp_image)
         await ctx.send(file=image)
-        os.remove(temp_path + "image.jpg")
+        os.remove(temp_path + temp_image)
         await message.delete()
 
     @commands.command()
@@ -108,10 +107,10 @@ class animal(commands.Cog):
 
             # Download image
             r = requests.get(tweet_image_url, allow_redirects=True)
-            open(temp_path + "image.jpg", "wb").write(r.content)
-        image = nextcord.File(temp_path + "image.jpg")
+            open(temp_path + temp_image, "wb").write(r.content)
+        image = nextcord.File(temp_path + temp_image)
         await ctx.send(file=image)
-        os.remove(temp_path + "image.jpg")
+        os.remove(temp_path + temp_image)
         await message.delete()
 
     @commands.command()
@@ -132,10 +131,10 @@ class animal(commands.Cog):
 
             # Download image
             r = requests.get(tweet_image_url, allow_redirects=True)
-            open(temp_path + "image.jpg", "wb").write(r.content)
-        image = nextcord.File(temp_path + "image.jpg")
+            open(temp_path + temp_image, "wb").write(r.content)
+        image = nextcord.File(temp_path + temp_image)
         await ctx.send(file=image)
-        os.remove(temp_path + "image.jpg")
+        os.remove(temp_path + temp_image)
         await message.delete()
 
 

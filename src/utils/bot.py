@@ -78,7 +78,7 @@ class Bot(commands.Bot):
         async for guild in guilds:
 
             server = str(guild.id)
-            con = setup_database(server)
+            setup_database(server)
 
         log.info("We have logged in as {}".format(self.user))
 
@@ -126,23 +126,22 @@ class Bot(commands.Bot):
             message ([nextcord.Message]): Message to check
         """
         if not message.author.bot:
-            content = message.content.lower()
 
-            if content == "owo":
+            if message.content.lower() == "owo":
                 await message.channel.send("OwO!")
-            if "vaca " in content:
+            if "vaca " in message.content.lower():
                 await message.channel.send("Muuu!")
-            if "vacas " in content:
+            if "vacas " in message.content.lower():
                 await message.channel.send("Muuu Muuu!")
-            if content == "uwu":
+            if message.content.lower() == "uwu":
                 await message.channel.send("UwU!")
-            if content == "7w7":
+            if message.content.lower() == "7w7":
                 await message.channel.send(":eyes:")
-            if content == "ewe":
+            if message.content.lower() == "ewe":
                 await message.channel.send("EwE!")
-            if content == "awa":
+            if message.content.lower() == "awa":
                 await message.channel.send("AwA!")
-            if content == "a" or content == "ª":
+            if message.content.lower() == "a" or message.content.lower() == "ª":
                 msg = await message.channel.send("Cuidado con Thedax!")
                 await msg.delete(delay=5)
 

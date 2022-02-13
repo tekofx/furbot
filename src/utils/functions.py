@@ -8,23 +8,22 @@ import requests
 from utils.data import meme_resources_path
 
 
-
-def convert_pic(picture: str, imgName: str, imgSize: str = None):
+def convert_pic(picture: str, img_name: str, img_size: str = None):
     """Converts an image to PNG with a differents size
 
     Args:
         picture (str): picture to convert
-        imgName (str): exported picture name
-        imgSize (str): exported image size
+        img_name (str): exported picture name
+        img_size (str): exported image size
     """
     img = Image.open(picture)
 
-    if imgSize is not None:
-        wpercent = imgSize / float(img.size[0])
+    if img_size is not None:
+        wpercent = img_size / float(img.size[0])
         hsize = int((float(img.size[1]) * float(wpercent)))
-        img = img.resize((imgSize, hsize), Image.ANTIALIAS)
+        img = img.resize((img_size, hsize), Image.ANTIALIAS)
 
-    img.save(meme_resources_path + imgName + ".png")
+    img.save(meme_resources_path + img_name + ".png")
 
 
 def get_user(ctx: commands.Context, user: nextcord.Member = None) -> nextcord.Member:

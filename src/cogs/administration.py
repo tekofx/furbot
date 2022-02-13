@@ -13,6 +13,7 @@ from utils.bot import Bot
 import yaml
 
 log = logging.getLogger(__name__)
+ROLE_EXISTS = "UNIQUE constraint failed: roles.id"
 
 
 class administration(commands.Cog):
@@ -145,7 +146,7 @@ class administration(commands.Cog):
 
         except Exception as error:
             await ctx.send("Error: Contacte con un administrador")
-            log.error("Error: ".format(error))
+            log.error("Error: {}".format(error))
             return
         else:
             await ctx.send("Cambiada actividad a " + activity_name)
@@ -165,7 +166,7 @@ class administration(commands.Cog):
             try:
                 create_role(con, specie.id, specie.name, "specie")
             except Exception as error:
-                if "UNIQUE constraint failed: roles.id" in error.args:
+                if ROLE_EXISTS in error.args:
                     await ctx.send(
                         "No se pudo añadir la especie {}. Esa especie ya existe en la base de datos".format(
                             specie.mention
@@ -189,7 +190,7 @@ class administration(commands.Cog):
             try:
                 create_role(con, rank.id, rank.name, "rank")
             except Exception as error:
-                if "UNIQUE constraint failed: roles.id" in error.args:
+                if ROLE_EXISTS in error.args:
                     await ctx.send(
                         "No se pudo añadir el rango {}. Ese rango ya existe en la base de datos".format(
                             rank.mention
@@ -213,7 +214,7 @@ class administration(commands.Cog):
             try:
                 create_role(con, color.id, color.name, "color")
             except Exception as error:
-                if "UNIQUE constraint failed: roles.id" in error.args:
+                if ROLE_EXISTS in error.args:
                     await ctx.send(
                         "No se pudo añadir el color {}. Ese color ya existe en la base de datos".format(
                             color.mention
