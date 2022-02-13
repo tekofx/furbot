@@ -67,7 +67,7 @@ class animal(commands.Cog):
 
     @commands.command()
     async def wolf(self, ctx: commands.Context):
-        """Fotos de zorros hermosos"""
+        """Fotos de lobetes"""
         message = await ctx.send("Buscando fotos de lobos lobitos lobones")
         con = create_connection(str(ctx.guild.id))
 
