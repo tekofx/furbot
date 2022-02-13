@@ -53,21 +53,13 @@ class tasks(commands.Cog):
                 entry_in_database = check_entry_in_database(con, "users", member.id)
                 if not entry_in_database and not member.bot:
                     # Add to database
-                    author_id = member.id
-                    author_name = member.name
-
-                    user_data = [
-                        author_id,
-                        author_name,
-                        member.joined_at,
-                    ]
                     try:
-                        create_user(con, user_data)
+                        create_user(con, [member.id, member.name, member.joined_at])
                     except Exception as error:
                         log.error("Error creating user on join: {}".format(error))
                     else:
                         log.info(
-                            "Created user {} with id {}".format(author_name, author_id)
+                            "Created user {} with id {}".format(member.name, member.id)
                         )
 
     @tasks.loop(hours=1)

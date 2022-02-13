@@ -149,7 +149,9 @@ def remove_user(database_connection: sqlite3.Connection, user_id: int) -> None:
         cur.execute(sql, var)
         log.info("Deleted user {} from database".format(user_id))
     except Exception as error:
-        log.error("Error: Could not delete user {} from database".format(user_id, error))
+        log.error(
+            "Error: Could not delete user {} from database".format(user_id, error)
+        )
 
     database_connection.commit()
 
@@ -205,7 +207,9 @@ def remove_role(database_connection: sqlite3.Connection, role_id: int) -> None:
         cur.execute(sql, var)
         log.info("Deleted role {} from database".format(role_id))
     except Exception as error:
-        log.error("Error: Could not delete role {} from database: {}".format(role_id,error))
+        log.error(
+            "Error: Could not delete role {} from database: {}".format(role_id, error)
+        )
 
     database_connection.commit()
 
@@ -299,7 +303,11 @@ def remove_records_from_a_date(
         cur.execute(sql, var)
         log.info("Deleted records from {} from database".format(date))
     except Exception as error:
-        log.error("Error: Could not delete records from {} from database: {}".format(date,error))
+        log.error(
+            "Error: Could not delete records from {} from database: {}".format(
+                date, error
+            )
+        )
 
     database_connection.commit()
 
@@ -581,11 +589,7 @@ def get_latest_id(database_connection: sqlite3.Connection, table: str) -> int:
     Returns:
         int: id of latest sentence
     """
-    sql = """ SELECT id
-        FROM {}
-        """.format(
-        table
-    )
+    sql = """ SELECT id FROM {} """.format(table)
     cur = database_connection.cursor()
     try:
         cur.execute(sql)
