@@ -223,11 +223,11 @@ def create_sentence(
               VALUES(?,?,?) """
 
     try:
-        id = get_latest_id(database_connection, "sentences") + 1
+        latest_id = get_latest_id(database_connection, "sentences") + 1
     except Exception as error:
         log.error("Error: {}".format(error))
         return
-    sentence_data.insert(0, id)
+    sentence_data.insert(0, latest_id)
 
     cur = database_connection.cursor()
     try:
@@ -259,11 +259,11 @@ def create_record(database_connection: sqlite3.Connection, record_data: list) ->
               VALUES(?,?,?,?) """
 
     try:
-        id = get_latest_id(database_connection, "records") + 1
+        latest_id = get_latest_id(database_connection, "records") + 1
     except Exception as error:
         log.error("Error: {}".format(error))
         return
-    record_data.insert(0, id)
+    record_data.insert(0, latest_id)
     record_data.append(datetime.date.today())
 
     cur = database_connection.cursor()
@@ -349,9 +349,10 @@ def get_name(database_connection: sqlite3.Connection, user_id: int) -> str:
     cur = database_connection.cursor()
     try:
         cur.execute(sql, var)
-        log.info("Query of name for user {id} successful".format(id=user_id))
-    except:
-        log.error("Error: could not query the name of user {}".format(user_id))
+    except Exception as error:
+        log.error(
+            "Error: could not query the name of user {}: {}".format(user_id, error)
+        )
     info = cur.fetchone()
     num_messages = int(info[0])
 
@@ -373,9 +374,8 @@ def set_name(database_connection: sqlite3.Connection, user_id: int, name: str) -
     var = [name, user_id]
     try:
         cur.execute(sql, var)
-        log.info("Updated name of user {}".format(user_id))
-    except:
-        log.error("Error: Could not update name of user {}".format(user_id))
+    except Exception as error:
+        log.error("Error: Could not update name of user {}: {}".format(user_id, error))
     database_connection.commit()
 
 
@@ -436,9 +436,10 @@ def set_birthday(
     try:
         cur = database_connection.cursor()
         cur.execute(sql, var)
-        log.info("Updated birthday of user {}".format(user_id))
-    except:
-        log.error("Error: Could not update birthday of user {}".format(user_id))
+    except Exception as error:
+        log.error(
+            "Error: Could not update birthday of user {}: {}".format(user_id, error)
+        )
     database_connection.commit()
 
 
@@ -616,13 +617,17 @@ def get_channel(database_connection: sqlite3.Connection, channel_type: str) -> i
     cur = database_connection.cursor()
     try:
         cur.execute(sql, var)
-    except:
-        log.error("Error: could not query the channel of type {}".format(channel_type))
+    except Exception as error:
+        log.error(
+            "Error: could not query the channel of type {}: {}".format(
+                channel_type, error
+            )
+        )
     info = cur.fetchone()
     if info is None:
         return 0
-    else:
-        return int(info[0])
+
+    return int(info[0])
 
 
 ################################## Checks ##########################################
@@ -644,8 +649,12 @@ def check_entry_in_database(
     var = [entry_id]
     try:
         cursor.execute(sql, var)
-    except:
-        log.error("Error: Could not check if user {id} exists".format(id=entry_id))
+    except Exception as error:
+        log.error(
+            "Error: Could not check if user {id} exists: {}".format(
+                id=entry_id, error=error
+            )
+        )
     data = cursor.fetchall()
     if len(data) == 0:
         return False
@@ -666,8 +675,12 @@ def check_record_in_database(database_connection, record: str) -> bool:
     sql = """SELECT EXISTS(SELECT 1 FROM records WHERE record=?)"""
     try:
         cursor.execute(sql, (record,))
-    except:
-        log.error("Error: Could not check if record {id} exists".format(id=record))
+    except Exception as error:
+        log.error(
+            "Error: Could not check if record {id} exists: {}".format(
+                id=record, error=error
+            )
+        )
 
     data = cursor.fetchone()
     if data == (0,):
