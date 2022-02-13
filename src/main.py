@@ -45,7 +45,7 @@ for var in env_vars:
     else:
         try:
             os.getenv(var)
-        except:
+        except Exception as error:
             log.error(
                 "Error: Missing environmental variable {} in .env file".format(var)
             )

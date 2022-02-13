@@ -115,9 +115,9 @@ class tasks(commands.Cog):
                 for guild in self.bot.guilds:
                     con = create_connection(str(guild.id))
                     birthdays = get_birthdays(con)
-                    for id, birthday in birthdays:
+                    for user_id, birthday in birthdays:
                         if birthday != None and today in birthday:
-                            member = await self.bot.fetch_user(id)
+                            member = await self.bot.fetch_user(user_id)
                             await self.bot.channel_send(
                                 guild.id,
                                 "general",

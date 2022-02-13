@@ -148,15 +148,15 @@ def remove_user(database_connection: sqlite3.Connection, user_id: int) -> None:
     try:
         cur.execute(sql, var)
         log.info("Deleted user {} from database".format(user_id))
-    except:
-        log.error("Error: Could not delete user {id} from database".format(user_id))
+    except Exception as error:
+        log.error("Error: Could not delete user {} from database".format(user_id, error))
 
     database_connection.commit()
 
 
 def create_role(
     database_connection: sqlite3.Connection,
-    id: int,
+    role_id: int,
     name: str,
     role_type: str,
 ) -> None:
@@ -164,7 +164,7 @@ def create_role(
 
     Args:
         database_connection(sqlite3.Connection): Connection to database
-        id (int): id of role
+        role_id (int): id of role
         name (str): name of role
         role_type (str): type of role
     """
@@ -174,16 +174,16 @@ def create_role(
 
     cur = database_connection.cursor()
     try:
-        cur.execute(sql, [id, name, role_type])
+        cur.execute(sql, [role_id, name, role_type])
         log.info(
             "Role {role} with id {id} was added to the database".format(
-                role=name, id=id
+                role=name, id=role_id
             )
         )
     except Exception as error:
         log.error(
             "Error: Could not add role {id} {name}: {error}".format(
-                id=id, name=name, error=error
+                id=role_id, name=name, error=error
             )
         )
         raise error
@@ -191,21 +191,21 @@ def create_role(
     database_connection.commit()
 
 
-def remove_role(database_connection: sqlite3.Connection, id: int) -> None:
+def remove_role(database_connection: sqlite3.Connection, role_id: int) -> None:
     """Removes a role entry
 
     Args:
         database_connection(sqlite3.Connection): Connection to database
-        id (int): id of the role
+        role_id (int): id of the role
     """
     sql = "DELETE FROM roles WHERE id=?"
-    var = [id]
+    var = [role_id]
     cur = database_connection.cursor()
     try:
         cur.execute(sql, var)
-        log.info("Deleted role {} from database".format(id))
-    except:
-        log.error("Error: Could not delete role {id} from database".format(id))
+        log.info("Deleted role {} from database".format(role_id))
+    except Exception as error:
+        log.error("Error: Could not delete role {} from database: {}".format(role_id,error))
 
     database_connection.commit()
 
@@ -298,8 +298,8 @@ def remove_records_from_a_date(
     try:
         cur.execute(sql, var)
         log.info("Deleted records from {} from database".format(date))
-    except:
-        log.error("Error: Could not delete records from {} from database".format(date))
+    except Exception as error:
+        log.error("Error: Could not delete records from {} from database: {}".format(date,error))
 
     database_connection.commit()
 
