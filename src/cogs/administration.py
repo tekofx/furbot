@@ -105,6 +105,24 @@ class administration(commands.Cog):
                     channel.name,
                 ],
             )
+
+            # Canal noticias_bot
+            await ctx.send(
+                "Canal noticias_bot. Se usa para mandar info sobre nuevas versiones del bot"
+            )
+            msg = await self.bot.wait_for("message", check=check, timeout=60)
+
+            channel_id = msg.content.replace("<#", "").replace(">", "")
+            channel = await self.bot.fetch_channel(channel_id)
+
+            create_channel(
+                con,
+                [
+                    channel.id,
+                    "bot_news",
+                    channel.name,
+                ],
+            )
         except (nextcord.Forbidden, Exception) as e:
             if isinstance(e, nextcord.Forbidden):
                 await ctx.send(
