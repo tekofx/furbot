@@ -21,14 +21,14 @@ roles_table = """ CREATE TABLE IF NOT EXISTS roles (
                                 );"""
 
 sentences_table = """ CREATE TABLE IF NOT EXISTS sentences (
-                                    id integer PRIMARY KEY,
+                                    id integer PRIMARY KEY AUTOINCREMENT,
                                     type text NOT NULL ,
                                     sentence text NOT NULL, 
                                     UNIQUE (type, sentence)
                                 ); """
 
 records_table = """ CREATE TABLE IF NOT EXISTS records (
-                                    id integer PRIMARY KEY,
+                                    id integer PRIMARY KEY AUTOINCREMENT,
                                     type text NOT NULL ,
                                     record text NOT NULL,
                                     date date NOT NULL
@@ -223,15 +223,8 @@ def create_sentence(
         sentence (list): info of sentence. Containing [type, sentence]
     """
 
-    sql = """ INSERT INTO sentences(id,type,sentence)
-              VALUES(?,?,?) """
-
-    try:
-        latest_id = get_latest_id(database_connection, "sentences") + 1
-    except Exception as error:
-        log.error("Error: {}".format(error))
-        return
-    sentence_data.insert(0, latest_id)
+    sql = """ INSERT INTO sentences(type,sentence)
+              VALUES(?,?) """
 
     cur = database_connection.cursor()
     try:
@@ -259,15 +252,9 @@ def create_record(database_connection: sqlite3.Connection, record_data: list) ->
         record (list): info of record. Containing [type, record]
     """
 
-    sql = """ INSERT INTO records(id,type,record,date)
-              VALUES(?,?,?,?) """
+    sql = """ INSERT INTO records(type,record,date)
+              VALUES(?,?,?) """
 
-    try:
-        latest_id = get_latest_id(database_connection, "records") + 1
-    except Exception as error:
-        log.error("Error: {}".format(error))
-        return
-    record_data.insert(0, latest_id)
     record_data.append(datetime.date.today())
 
     cur = database_connection.cursor()
@@ -577,31 +564,6 @@ def get_random_sentence(
     else:
         output = random.choice(info)
         return output[0]
-
-
-def get_latest_id(database_connection: sqlite3.Connection, table: str) -> int:
-    """Gets id of latest item in a table
-
-    Args:
-        database_connection (sqlite3.Connection): Connection to database
-        table (str): table to look
-
-    Returns:
-        int: id of latest sentence
-        None: if error occurs
-    """
-    sql = """ SELECT id FROM {} """.format(table)
-    cur = database_connection.cursor()
-    try:
-        cur.execute(sql)
-        info = cur.fetchall()
-    except Exception as error:
-        log.error("Error: could not query sentences: {}".format(error))
-        return
-    else:
-        if info == []:  # If theres no sentences
-            return 0
-        return info[-1][0]
 
 
 def get_channel(database_connection: sqlite3.Connection, channel_type: str) -> int:
