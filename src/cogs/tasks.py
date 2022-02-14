@@ -32,16 +32,16 @@ class tasks(commands.Cog):
         self.birthday.start()
         self.update_users.start()
         self.discord_status.start()
-        # self.remove_records_from_previous_day.start()
+        self.remove_records_from_previous_day.start()
 
     @tasks.loop(hours=30)
     async def remove_records_from_previous_day(self):
-        """Removes records from previous day"""
+        """Removes records from 2 days ago"""
         for guild in self.bot.guilds:
             connection = create_connection(guild.id)
-            remove_records_from_a_date(connection, date.today() - timedelta(days=1))
+            remove_records_from_a_date(connection, date.today() - timedelta(days=2))
             connection.close()
-        log.info("Removed records from previous day")
+        log.info("Removed records from 2 days ago")
 
     @tasks.loop(hours=6)
     async def update_users(self):
