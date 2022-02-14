@@ -3,7 +3,7 @@ import nextcord
 from nextcord.ext import commands
 import os
 import requests
-from utils.database import create_connection, create_record
+from utils.database import check_record_in_database, create_connection, create_record
 from utils.bot import Bot
 from utils.data import resources_path, temp_path
 
@@ -131,6 +131,36 @@ class animal(commands.Cog):
 
             # Download image
             r = requests.get(tweet_image_url, allow_redirects=True)
+            open(temp_path + temp_image, "wb").write(r.content)
+        image = nextcord.File(temp_path + temp_image)
+        await ctx.send(file=image)
+        os.remove(temp_path + temp_image)
+        await message.delete()
+
+    @commands.command()
+    async def cat(self, ctx: commands.Context):
+        """Fotos de gatitos"""
+        message = await ctx.send("Buscando fotos de gatitos")
+        con = create_connection(str(ctx.guild.id))
+
+        with ctx.typing():
+
+            # Get pics from reddit
+            reddit_image_urls = await self.bot.reddit.get_hot_subreddit_images(
+                "catpictures", 50
+            )
+
+            # Select pic
+            for x in reddit_image_urls:
+                if not check_record_in_database(con, x):
+                    pic = x
+                    break
+
+            # Write in history
+            create_record(con, ["reddit", pic])
+
+            # Download image
+            r = requests.get(pic, allow_redirects=True)
             open(temp_path + temp_image, "wb").write(r.content)
         image = nextcord.File(temp_path + temp_image)
         await ctx.send(file=image)
