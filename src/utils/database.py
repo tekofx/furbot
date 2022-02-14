@@ -579,7 +579,7 @@ def get_random_sentence(
         return output[0]
 
 
-def get_latest_id(database_connection: sqlite3.Connection, table: str) -> int | None:
+def get_latest_id(database_connection: sqlite3.Connection, table: str) -> int:
     """Gets id of latest item in a table
 
     Args:
