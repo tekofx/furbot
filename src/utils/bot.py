@@ -84,14 +84,19 @@ class Bot(commands.Bot):
 
     async def on_member_join(self, member: nextcord.Member):
         # Message in lobby
-        mensaje_lobby = """Bienvenid@ a {} {}. No olvides mirar el canal de normas y pasarlo bien""".format(
+        mensaje_lobby_usuario = """Bienvenid@ a {} {}. No olvides mirar el canal de normas y pasarlo bien""".format(
             member.guild.name, member.mention
         )
-        await self.channel_send(member.guild.id, "lobby", mensaje_lobby)
+        mensaje_lobby_bot = "Se ha añadido el bot {}".format(member.mention)
+
+        if not member.bot:
+            await self.channel_send(member.guild.id, "lobby", mensaje_lobby_usuario)
+        else:
+            await self.channel_send(member.guild.id, "lobby", mensaje_lobby_bot)
 
         con = create_connection(str(member.guild.id))
         entry_in_database = check_entry_in_database(con, "users", member.id)
-        if not entry_in_database and member.bot:
+        if not entry_in_database and not member.bot:
             # Add to database
             try:
                 create_user(con, [member.id, member.name, member.joined_at])
