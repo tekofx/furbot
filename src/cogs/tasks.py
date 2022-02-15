@@ -60,9 +60,7 @@ class tasks(commands.Cog):
                         var = "\n".join(i[1:])
                         embed.add_field(name=i[0], value=var, inline=False)
 
-                for guild in self.bot.guilds:
-
-                    await self.bot.channel_send(guild.id, "bot_news", "a", embed)
+                await self.bot.channel_send(guild.id, "bot_news", "a", embed)
 
     @tasks.loop(hours=30)
     async def remove_records_from_previous_day(self):
