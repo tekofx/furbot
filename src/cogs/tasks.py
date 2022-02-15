@@ -70,7 +70,7 @@ class tasks(commands.Cog):
         subreddits = ["dankmemes", "furry_irl", "SpanishMeme"]
         subreddit = subreddits[num]
 
-        memes = await self.bot.reddit.get_hot_subreddit_images(subreddit, 100)
+        memes = await self.bot.reddit.get_hot_subreddit_images(subreddit, 100, 1)
 
         for guild in self.bot.guilds:
             try:

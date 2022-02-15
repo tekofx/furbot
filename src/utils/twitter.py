@@ -33,7 +33,7 @@ class Twitter:
         return tweets
 
     def get_latest_image(self, username: str) -> str:
-        """Gets the URL the latest image posted by some user
+        """Gets the URL the latest image url posted by some user
 
         Args:
             username (str): user to look
@@ -49,26 +49,35 @@ class Twitter:
 
                 return tweet.entities["media"][0]["media_url"]
 
-    def get_latest_image_not_repeated(
-        self, username: str, database_connection: sqlite3.Connection
-    ) -> str:
-        """Gets the latest image checking in a database if that image was obtained
-        before. If the image is in the database, it will get another until the picture
-        is not in the database
+    def get_latest_images_not_repeated(
+        self, username: str, con: sqlite3.Connection, count: int
+    ) -> list:
+
+        """Gets the URL the latest images urls posted by some user
 
         Args:
-            username (str): user to search
-            database_connection (sqlite3.Connection): Connection to database
+            username (str): user to look
+            con (sqlite3.Connection): sqlite3 connection
+            count (int): number of images to return
 
         Returns:
-            str: URL of image not repeated
+            list: containin URLs of latest image posted
         """
+
+        images = []
+        num = 0
         tweets = self.api.user_timeline(
             screen_name=username, count=200, include_rts=False, tweet_mode="extended"
         )
         for tweet in tweets:
+            tweet_url = tweet.entities["media"][0]["media_url"]
             if "media" in tweet.entities and not check_record_in_database(
-                database_connection, tweet.entities["media"][0]["media_url"]
+                con, tweet_url
             ):
+                num += 1
+                images.append(tweet_url)
 
-                return tweet.entities["media"][0]["media_url"]
+            if count == num:
+                break
+
+        return images

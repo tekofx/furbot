@@ -13,13 +13,15 @@ class Reddit:
         self.client_secret = os.getenv("REDDIT_CLIENT_SECRET")
         self.user_agent = os.getenv("REDDIT_USER_AGENT")
 
-    async def get_hot_subreddit_images(self, sub_reddit: str, posts_limit: int) -> list:
-        """Gets a list of subreddit posts
+    async def get_hot_subreddit_images(
+        self, sub_reddit: str, posts_limit: int, num: int
+    ) -> list:
+        """Gets a list of subreddit pics
 
         Args:
-            sub_reddit (str): subreddit to get posts from
-            posts_limit (int): num of posts to charge
-            not_flag (str): flags to avoid in posts
+            sub_reddit (str): subreddit to get pics from
+            pics_limit (int): num of pics to charge
+            num (int): num of pics to return
 
         Returns:
             list: containing reddit posts

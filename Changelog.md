@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased] - 2022-2-14
 ### Añadido 
 - Nuevo canal noticias bot
+- Opcion para que se envien varias fotos a la vez de los comandos de `animal`
 
 
 ### Arreglado
