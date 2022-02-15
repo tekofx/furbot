@@ -1,15 +1,6 @@
 import nextcord
 from nextcord.ext import commands
-from PIL import Image
-from PIL import ImageFont
-from PIL import ImageDraw
-import qrcode
 from pyrae import dle
-import requests
-from utils.functions import (
-    convert_pic,
-    delete_files,
-)
 
 from utils.database import (
     create_connection,
@@ -19,7 +10,6 @@ from utils.database import (
     get_species,
 )
 from utils.bot import Bot
-from utils.data import meme_resources_path
 
 
 class utilities(commands.Cog):

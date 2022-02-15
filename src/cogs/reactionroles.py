@@ -1,5 +1,4 @@
 import asyncio
-from cgitb import text
 import nextcord
 from nextcord.ext import commands
 from nextcord.ui import Button, View

@@ -4,7 +4,6 @@ import os
 import logging
 import nextcord
 from nextcord.ext import commands
-import requests
 from utils.data import meme_resources_path
 
 

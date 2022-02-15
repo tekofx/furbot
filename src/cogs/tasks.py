@@ -1,14 +1,10 @@
 import asyncio
-from cgitb import text
-from ctypes import Union
 import logging
-from venv import create
 import requests
-import discord
 import nextcord
 from nextcord.errors import Forbidden
 from nextcord.ext import commands, tasks
-from datetime import datetime, timedelta, date, time
+from datetime import date, datetime, timedelta
 import random
 from utils.database import (
     check_entry_in_database,
