@@ -2,6 +2,7 @@ import asyncio
 from cgitb import text
 from ctypes import Union
 import logging
+from venv import create
 import requests
 import discord
 import nextcord
@@ -33,6 +34,39 @@ class tasks(commands.Cog):
         self.update_users.start()
         self.discord_status.start()
         self.remove_records_from_previous_day.start()
+        self.new_github_release.start()
+
+    @tasks.loop(minutes=5)
+    async def new_github_release(self):
+        "Checks if there is a new release on github and sends a message to the channel"
+        r = requests.request(
+            "GET", "https://api.github.com/repos/tekofx/furbot/releases"
+        )
+        r = r.json()
+        for guild in self.bot.guilds:
+            con = create_connection(guild.id)
+            if not check_record_in_database(con, r[0]["url"]):
+                create_record(con, ["github", r[0]["url"]])
+                version = r[0]["tag_name"]
+                release_changelog = r[0]["body"]
+                url = r[0]["html_url"]
+                embed = nextcord.Embed(
+                    title="Nueva versión " + version, description=url
+                )
+                embed.set_thumbnail(
+                    url="https://raw.githubusercontent.com/tekofx/furbot/main/assets/furbot_logo.png"
+                )
+                release_changelog = release_changelog.replace("\r", "")
+                release_changelog = release_changelog.split("#")
+                for i in release_changelog:
+                    if i != "":
+                        i = i.splitlines()
+                        var = "\n".join(i[1:])
+                        embed.add_field(name=i[0], value=var, inline=False)
+
+                for guild in self.bot.guilds:
+
+                    await self.bot.channel_send(guild.id, "bot_news", "a", embed)
 
     @tasks.loop(hours=30)
     async def remove_records_from_previous_day(self):
