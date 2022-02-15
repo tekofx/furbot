@@ -65,6 +65,13 @@ class Bot(commands.Bot):
     async def on_ready(self):
         """Performs an action when the bot is ready"""
 
+        # Setup databases
+        guilds = self.fetch_guilds()
+        async for guild in guilds:
+
+            server = str(guild.id)
+            setup_database(server)
+
         # Load cogs
         cogs = os.listdir("src/cogs/")
 
@@ -72,13 +79,6 @@ class Bot(commands.Bot):
             if c.endswith(".py"):
                 self.load_extension("cogs." + c[:-3])
                 log.info("Loaded {}".format(c))
-
-        # Setup databases
-        guilds = self.fetch_guilds()
-        async for guild in guilds:
-
-            server = str(guild.id)
-            setup_database(server)
 
         log.info("We have logged in as {}".format(self.user))
 

@@ -75,13 +75,42 @@ def create_table(
     database_name = table_sql_sentence.split()[5]
 
     try:
-        c = database_connection.cursor()
-        c.execute(table_sql_sentence)
-        log.info("Created table {}".format(database_name))
+        if not table_exists(database_connection, database_name):
+            c = database_connection.cursor()
+            c.execute(table_sql_sentence)
+            log.info("Created table {}".format(database_name))
 
     except Exception as e:
         log.error(
             "Error: Could not create table {}. Reason: {}".format(database_name, e)
+        )
+
+
+def table_exists(database_connection: sqlite3.Connection, table_name: str) -> bool:
+    """Checks if a table exists in the database
+
+    Args:
+        database_connection(sqlite3.Connection): Connection to database
+        table_name (str): name of the table
+
+    Returns:
+        bool
+    """
+    sql = "SELECT * FROM sqlite_master WHERE type='table' AND name=?"
+    var = [table_name]
+    cur = database_connection.cursor()
+    try:
+        cur.execute(sql, var)
+        table_exists = cur.fetchone()
+        if table_exists:
+            return True
+        else:
+            return False
+    except Exception as error:
+        log.error(
+            "Error: Could not check if table {} exists in database: {}".format(
+                table_name, error
+            )
         )
 
 
