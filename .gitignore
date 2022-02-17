@@ -1,6 +1,4 @@
-data/databases/
-data/memes/
-data/stickers/
+data/servers/*
 env/
 *.pyc
 data/resources/*.txt
