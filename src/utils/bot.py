@@ -42,26 +42,6 @@ class Bot(commands.Bot):
     def reddit(self) -> Reddit:
         return self._reddit
 
-    @property
-    def general_channel(self):
-        return self._general_channel
-
-    @property
-    def memes_channel(self):
-        return self._memes_channel
-
-    @property
-    def audit_channel(self):
-        return self._audit_channel
-
-    @property
-    def lobby_channel(self):
-        return self._lobby_channel
-
-    @property
-    def server(self):
-        return self._server
-
     async def on_ready(self):
         """Performs an action when the bot is ready"""
 
