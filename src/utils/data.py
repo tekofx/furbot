@@ -1,30 +1,36 @@
 import os
 import logging
+import nextcord
 
 log = logging.getLogger(__name__)
 
 data_path = "data/"
-temp_path = data_path + "temp/"
-resources_path = data_path + "resources/"
-databases_path = data_path + "databases/"
-meme_resources_path = resources_path + "memes/"
-stickers_path = data_path + "stickers/"
-memes_path = data_path + "memes/"
+server_path = data_path + "servers/{guild_id} - {guild_name}/"
 
+# Resources
+resources_path = data_path + "resources/"
+meme_resources_path = resources_path + "memes/"
 config_yaml = resources_path + "config.yaml"
 
 
 class Data:
-    def __init__(self) -> None:
+    def __init__(self, guild: nextcord.Guild) -> None:
+        self.guild = guild
+
+        self.server_path = server_path.format(guild_name=guild.name, guild_id=guild.id)
+
+        # Info folders
+        self.temp_path = self.server_path + "temp/"
+        self.stickers_path = self.server_path + "stickers/"
+        self.memes_path = self.server_path + "memes/"
+
         # Paths
         self._folders = [
             data_path,
-            temp_path,
-            memes_path,
-            stickers_path,
-            databases_path,
-            resources_path,
-            meme_resources_path,
+            self.server_path,
+            self.temp_path,
+            self.stickers_path,
+            self.memes_path,
         ]
 
         # Datafiles
@@ -53,7 +59,7 @@ class Data:
         for folder in self._folders:
             if not os.path.isdir(folder):
                 log.warning("Folder {} not exists, creating it".format(folder))
-                os.mkdir(folder)
+                os.makedirs(folder)
             else:
                 log.info("Folder {} exists".format(folder))
 

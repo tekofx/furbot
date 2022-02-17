@@ -4,7 +4,6 @@ from dotenv import load_dotenv
 import sys
 import coloredlogs, logging, colorama
 from utils.bot import Bot
-from utils.data import Data
 
 # Set logs
 coloredlogs.install()
@@ -50,13 +49,6 @@ for var in env_vars:
                 "Error: Missing environmental variable {} in .env file".format(var)
             )
             sys.exit()
-
-
-# Setup files and folders
-data = Data()
-data.setup_files()
-data.setup_folders()
-del data
 
 
 if "-t" in sys.argv:

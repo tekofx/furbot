@@ -3,7 +3,8 @@ import random
 import sqlite3
 import os
 import logging
-from utils.data import databases_path
+import nextcord
+from utils.data import server_path
 
 
 users_table = """ CREATE TABLE IF NOT EXISTS users (
@@ -45,7 +46,7 @@ tables = [users_table, roles_table, sentences_table, records_table, channels_tab
 log = logging.getLogger(__name__)
 
 
-def create_connection(db_file: str) -> sqlite3.Connection:
+def create_connection(guild: nextcord.Guild) -> sqlite3.Connection:
     """Creates a connection with a db file
 
     Args:
@@ -54,7 +55,8 @@ def create_connection(db_file: str) -> sqlite3.Connection:
     Returns:
         sqlite3.Connection
     """
-    database = databases_path + str(db_file) + ".db"
+    databases_path = server_path.format(guild_name=guild.name, guild_id=guild.id)
+    database = databases_path + "database.db"
 
     database_connection = None
     try:
@@ -64,18 +66,17 @@ def create_connection(db_file: str) -> sqlite3.Connection:
         log.error("Error: Could not connect to database . {}".format(e))
 
 
-def create_table(
-    database_connection: sqlite3.Connection, table_sql_sentence: str
-) -> None:
+def create_table(guild: nextcord.Guild, table_sql_sentence: str) -> None:
     """Creates a table in the database
     Args:
-        database_connection(sqlite3.Connection): Connection to database
+        guild (nextcord.Guild) : Guild to access its database
         table_sql_sentence (str): sql sentence
     """
     database_name = table_sql_sentence.split()[5]
+    database_connection = create_connection(guild)
 
     try:
-        if not table_exists(database_connection, database_name):
+        if not table_exists(guild, database_name):
             c = database_connection.cursor()
             c.execute(table_sql_sentence)
             log.info("Created table {}".format(database_name))
@@ -84,18 +85,23 @@ def create_table(
         log.error(
             "Error: Could not create table {}. Reason: {}".format(database_name, e)
         )
+        database_connection.close()
+    else:
+        database_connection.close()
 
 
-def table_exists(database_connection: sqlite3.Connection, table_name: str) -> bool:
+def table_exists(guild: nextcord.Guild, table_name: str) -> bool:
     """Checks if a table exists in the database
 
     Args:
-        database_connection(sqlite3.Connection): Connection to database
+        guild (nextcord.Guild) : Guild to access its database
         table_name (str): name of the table
 
     Returns:
         bool
     """
+    database_connection = create_connection(guild)
+
     sql = "SELECT * FROM sqlite_master WHERE type='table' AND name=?"
     var = [table_name]
     cur = database_connection.cursor()
@@ -112,15 +118,20 @@ def table_exists(database_connection: sqlite3.Connection, table_name: str) -> bo
                 table_name, error
             )
         )
+        database_connection.close()
+    else:
+        database_connection.close()
 
 
-def setup_database(db_file: str) -> None:
+def setup_database(guild: nextcord.Guild) -> None:
     """Creates a db file and connects to it
 
     Args:
         db_file (str): db file to create
     """
-    database = databases_path + db_file + ".db"
+    databases_path = server_path.format(guild_name=guild.name, guild_id=guild.id)
+
+    database = databases_path + "database.db"
 
     # Create db files
     if not os.path.isfile(database):
@@ -129,20 +140,20 @@ def setup_database(db_file: str) -> None:
         f.close()
 
     # create a database connection
-    database_connection = create_connection(db_file)
 
     # create tables
     for table in tables:
-        create_table(database_connection, table)
+        create_table(guild, table)
 
 
 ###################### Creates and removes ######################
-def create_user(database_connection: sqlite3.Connection, user_data) -> None:
+def create_user(guild: nextcord.guild, user_data) -> None:
     """Creates a user in the users table
     Args:
-        database_connection(sqlite3.Connection): Connection to database
+        guild (nextcord.Guild) : Guild to access its database
         user (tuple): info to add. Containing: [user_id, user_name, user_joined_at]
     """
+    database_connection = create_connection(guild)
 
     sql = """ INSERT INTO users(id,name,joined_date)
               VALUES(?,?,?) """
@@ -161,16 +172,21 @@ def create_user(database_connection: sqlite3.Connection, user_data) -> None:
                 id=user_data[0], name=user_data[1], error=error
             )
         )
+        database_connection.close()
+    else:
 
-    database_connection.commit()
+        database_connection.commit()
+        database_connection.close()
 
 
-def remove_user(database_connection: sqlite3.Connection, user_id: int) -> None:
+def remove_user(guild: nextcord.guild, user_id: int) -> None:
     """Removes a user from database
     Args:
-        database_connection(sqlite3.Connection): Connection to database
+        guild (nextcord.Guild) : Guild to access its database
         user_id (int): id of user to remove
     """
+    database_connection = create_connection(guild)
+
     sql = "DELETE FROM users WHERE id=?"
     var = [user_id]
     cur = database_connection.cursor()
@@ -181,12 +197,14 @@ def remove_user(database_connection: sqlite3.Connection, user_id: int) -> None:
         log.error(
             "Error: Could not delete user {} from database: {}".format(user_id, error)
         )
-
-    database_connection.commit()
+        database_connection.close()
+    else:
+        database_connection.commit()
+        database_connection.close()
 
 
 def create_role(
-    database_connection: sqlite3.Connection,
+    guild: nextcord.guild,
     role_id: int,
     name: str,
     role_type: str,
@@ -194,11 +212,12 @@ def create_role(
     """Creates a role in the roles table
 
     Args:
-        database_connection(sqlite3.Connection): Connection to database
+        guild (nextcord.Guild) : Guild to access its database
         role_id (int): id of role
         name (str): name of role
         role_type (str): type of role
     """
+    database_connection = create_connection(guild)
 
     sql = """ INSERT INTO roles(id,name, type)
               VALUES(?,?,?) """
@@ -217,18 +236,22 @@ def create_role(
                 id=role_id, name=name, error=error
             )
         )
+        database_connection.close()
         raise error
+    else:
+        database_connection.commit()
+        database_connection.close()
 
-    database_connection.commit()
 
-
-def remove_role(database_connection: sqlite3.Connection, role_id: int) -> None:
+def remove_role(guild: nextcord.guild, role_id: int) -> None:
     """Removes a role entry
 
     Args:
-        database_connection(sqlite3.Connection): Connection to database
+        guild (nextcord.Guild) : Guild to access its database
         role_id (int): id of the role
     """
+    database_connection = create_connection(guild)
+
     sql = "DELETE FROM roles WHERE id=?"
     var = [role_id]
     cur = database_connection.cursor()
@@ -239,18 +262,19 @@ def remove_role(database_connection: sqlite3.Connection, role_id: int) -> None:
         log.error(
             "Error: Could not delete role {} from database: {}".format(role_id, error)
         )
+        database_connection.close()
+    else:
+        database_connection.commit()
+        database_connection.close()
 
-    database_connection.commit()
 
-
-def create_sentence(
-    database_connection: sqlite3.Connection, sentence_data: list
-) -> None:
+def create_sentence(guild: nextcord.guild, sentence_data: list) -> None:
     """Creates a sentence in the sentences table
     Args:
-        database_connection(sqlite3.Connection): Connection to database
+        guild (nextcord.Guild) : Guild to access its database
         sentence (list): info of sentence. Containing [type, sentence]
     """
+    database_connection = create_connection(guild)
 
     sql = """ INSERT INTO sentences(type,sentence)
               VALUES(?,?) """
@@ -269,17 +293,20 @@ def create_sentence(
                 id=sentence_data[0], name=sentence_data[1], error=error
             )
         )
+        database_connection.close()
         raise error
+    else:
+        database_connection.commit()
+        database_connection.close()
 
-    database_connection.commit()
 
-
-def create_record(database_connection: sqlite3.Connection, record_data: list) -> None:
+def create_record(guild: nextcord.guild, record_data: list) -> None:
     """Creates a record in the records table
     Args:
-        database_connection(sqlite3.Connection): Connection to database
+        guild (nextcord.Guild) : Guild to access its database
         record (list): info of record. Containing [type, record]
     """
+    database_connection = create_connection(guild)
 
     sql = """ INSERT INTO records(type,record,date)
               VALUES(?,?,?) """
@@ -300,18 +327,20 @@ def create_record(database_connection: sqlite3.Connection, record_data: list) ->
                 id=record_data[0], name=record_data[1], error=error
             )
         )
+        database_connection.close()
+    else:
+        database_connection.commit()
+        database_connection.close()
 
-    database_connection.commit()
 
-
-def remove_records_from_a_date(
-    database_connection: sqlite3.Connection, date: datetime.date
-) -> None:
+def remove_records_from_a_date(guild: nextcord.guild, date: datetime.date) -> None:
     """Removes all records from a date
     Args:
-        database_connection(sqlite3.Connection): Connection to database
+        guild (nextcord.Guild) : Guild to access its database
         date (str): date to remove records from
     """
+    database_connection = create_connection(guild)
+
     sql = "DELETE FROM records WHERE date=?"
     var = [date]
     cur = database_connection.cursor()
@@ -324,16 +353,20 @@ def remove_records_from_a_date(
                 date, error
             )
         )
+        database_connection.close()
 
-    database_connection.commit()
+    else:
+        database_connection.commit()
+        database_connection.close()
 
 
-def create_channel(database_connection: sqlite3.Connection, channel_data: list) -> None:
+def create_channel(guild: nextcord.guild, channel_data: list) -> None:
     """Creates a channel in the channels table
     Args:
-        database_connection(sqlite3.Connection): Connection to database
+        guild (nextcord.Guild) : Guild to access its database
         channel (list): info of channel. Containing [channel_id, type, channel]
     """
+    database_connection = create_connection(guild)
 
     sql = """ INSERT INTO channels(channel_id,type,name)
               VALUES(?,?,?) """
@@ -352,19 +385,23 @@ def create_channel(database_connection: sqlite3.Connection, channel_data: list) 
                 id=channel_data[0], name=channel_data[1], error=error
             )
         )
-
-    database_connection.commit()
+        database_connection.close()
+    else:
+        database_connection.commit()
+        database_connection.close()
 
 
 ###################### Getters and setters ######################
-def get_name(database_connection: sqlite3.Connection, user_id: int) -> str:
+def get_name(guild: nextcord.guild, user_id: int) -> str:
     """Gets the name of a user
     Args:
-        database_connection(sqlite3.Connection): Connection to database
+        guild (nextcord.Guild) : Guild to access its database
         user_id (int): id of user
     Returns:
         [str]: name of user
     """
+    database_connection = create_connection(guild)
+
     sql = """ SELECT name
         FROM users
         WHERE id=?
@@ -377,19 +414,23 @@ def get_name(database_connection: sqlite3.Connection, user_id: int) -> str:
         log.error(
             "Error: could not query the name of user {}: {}".format(user_id, error)
         )
-    info = cur.fetchone()
-    name = info[0]
+        database_connection.close()
+    else:
+        info = cur.fetchone()
+        name = info[0]
+        database_connection.close()
+        return name
 
-    return name
 
-
-def set_name(database_connection: sqlite3.Connection, user_id: int, name: str) -> None:
+def set_name(guild: nextcord.guild, user_id: int, name: str) -> None:
     """Changes the name of a user
     Args:
-        database_connection(sqlite3.Connection): Connection to database
+        guild (nextcord.Guild) : Guild to access its database
         user_id (int): id of user
         name (str): new name for a user
     """
+    database_connection = create_connection(guild)
+
     sql = """ UPDATE users  
               SET name = ?
               WHERE id = ?"""
@@ -400,19 +441,23 @@ def set_name(database_connection: sqlite3.Connection, user_id: int, name: str) -
         cur.execute(sql, var)
     except Exception as error:
         log.error("Error: Could not update name of user {}: {}".format(user_id, error))
-    database_connection.commit()
+        database_connection.close()
+    else:
+        database_connection.commit()
+        database_connection.close()
 
 
-def get_birthday(database_connection: sqlite3.Connection, user_id: int) -> str:
+def get_birthday(guild: nextcord.guild, user_id: int) -> str:
     """Gets the birthday of a user
 
     Args:
-        database_connection(sqlite3.Connection): Connection to database
+        guild (nextcord.Guild) : Guild to access its database
         user_id (int): id of user
 
     Returns:
         str: birthday of user
     """
+    database_connection = create_connection(guild)
 
     sql = """ SELECT birthday
         FROM users
@@ -429,20 +474,22 @@ def get_birthday(database_connection: sqlite3.Connection, user_id: int) -> str:
         log.error(
             "Error: could not query birthday of user {}. {}".format(user_id, error)
         )
+        database_connection.close()
+    else:
+        database_connection.close()
+        return birthday
 
-    return birthday
 
-
-def set_birthday(
-    database_connection: sqlite3.Connection, user_id: int, date: str
-) -> None:
+def set_birthday(guild: nextcord.guild, user_id: int, date: str) -> None:
     """Sets the birthday of a user
 
     Args:
-        database_connection(sqlite3.Connection): Connection to database
+        guild (nextcord.Guild) : Guild to access its database
         user_id (int): id of user
         date (str): birthday of user
     """
+    database_connection = create_connection(guild)
+
     sql = """ UPDATE users  
               SET birthday = ?
               WHERE id = ?"""
@@ -464,18 +511,24 @@ def set_birthday(
         log.error(
             "Error: Could not update birthday of user {}: {}".format(user_id, error)
         )
-    database_connection.commit()
+        database_connection.close()
+    else:
+        database_connection.commit()
+        database_connection.close()
 
 
-def get_birthdays(database_connection: sqlite3.Connection) -> list:
+def get_birthdays(guild: nextcord.guild) -> list:
     """Gets birtdays of all users
 
     Args:
-        database_connection(sqlite3.Connection): Connection to database
+        guild (nextcord.Guild) : Guild to access its database
 
     Returns:
         list: containing other lists with [user_id, birtday]
     """
+
+    database_connection = create_connection(guild)
+
     sql = """ SELECT id,birthday
         FROM users
         """
@@ -485,20 +538,23 @@ def get_birthdays(database_connection: sqlite3.Connection) -> list:
         info = cur.fetchall()
     except Exception as error:
         log.error("Error: could not query birthdays: {}".format(error))
+        database_connection.close()
     else:
-
+        database_connection.close()
         return info
 
 
-def get_ranks(database_connection: sqlite3.Connection) -> list:
+def get_ranks(guild: nextcord.guild) -> list:
     """Gets a list with all ranks
 
     Args:
-        database_connection (sqlite3.Connection): Connection to database
+        guild (nextcord.Guild) : Guild to access its database
 
     Returns:
         list: containing ids of all ranks
     """
+    database_connection = create_connection(guild)
+
     sql = """ SELECT id
         FROM ranks
         """
@@ -508,22 +564,27 @@ def get_ranks(database_connection: sqlite3.Connection) -> list:
         info = cur.fetchall()
     except Exception as error:
         log.error("Error: could not query ranks: {}".format(error))
-    output = []
-    for x in info:
-        output.append(x[0])
+        database_connection.close()
+    else:
+        database_connection.close()
+        output = []
+        for x in info:
+            output.append(x[0])
 
-    return output
+        return output
 
 
-def get_species(database_connection: sqlite3.Connection) -> list:
+def get_species(guild: nextcord.guild) -> list:
     """Get a list with all species
 
     Args:
-        database_connection (sqlite3.Connection): Connection to database
+        guild (nextcord.Guild) : Guild to access its database
 
     Returns:
         list: containing ids of all species
     """
+    database_connection = create_connection(guild)
+
     sql = """ SELECT id
         FROM species
         """
@@ -533,22 +594,27 @@ def get_species(database_connection: sqlite3.Connection) -> list:
         info = cur.fetchall()
     except Exception as error:
         log.error("Error: could not query species: {}".format(error))
-    output = []
-    for x in info:
-        output.append(x[0])
+        database_connection.close()
+    else:
+        database_connection.close()
+        output = []
+        for x in info:
+            output.append(x[0])
 
-    return output
+        return output
 
 
-def get_colors(database_connection: sqlite3.Connection) -> list:
+def get_colors(guild: nextcord.guild) -> list:
     """Returns a list with all colors
 
     Args:
-        database_connection (sqlite3.Connection): Connection to database
+        guild (nextcord.Guild) : Guild to access its database
 
     Returns:
         list: containing ids of all colors
     """
+    database_connection = create_connection(guild)
+
     sql = """ SELECT id
         FROM colors
         """
@@ -558,25 +624,28 @@ def get_colors(database_connection: sqlite3.Connection) -> list:
         info = cur.fetchall()
     except Exception as error:
         log.error("Error: could not query colors: {}".format(error))
-    output = []
-    for x in info:
-        output.append(x[0])
+        database_connection.close()
+    else:
+        database_connection.close()
+        output = []
+        for x in info:
+            output.append(x[0])
 
-    return output
+        return output
 
 
-def get_random_sentence(
-    database_connection: sqlite3.Connection, sentence_type: str
-) -> str:
+def get_random_sentence(guild: nextcord.guild, sentence_type: str) -> str:
     """Gets a random sentence
 
     Args:
-        database_connection (sqlite3.Connection): Connection to database
+        guild (nextcord.Guild) : Guild to access its database
         type (str): type of sentence
 
     Returns:
         str: random sentence
     """
+    database_connection = create_connection(guild)
+
     sql = """ SELECT sentence
         FROM sentences
         WHERE type=?
@@ -590,21 +659,25 @@ def get_random_sentence(
         info = cur.fetchall()
     except Exception as error:
         log.error("Error: could not query sentences: {}".format(error))
+        database_connection.close()
     else:
+        database_connection.close()
         output = random.choice(info)
         return output[0]
 
 
-def get_channel(database_connection: sqlite3.Connection, channel_type: str) -> int:
+def get_channel(guild: nextcord.guild, channel_type: str) -> int:
     """Gets id of saved channels
 
     Args:
-        database_connection (sqlite3.Connection): Connection to database
+        guild (nextcord.Guild) : Guild to access its database
         channel_type (str): type of channel. Can be general, memes, audit or lobby
 
     Returns:
         int: id of channel
     """
+    database_connection = create_connection(guild)
+
     sql = """ SELECT channel_id
         FROM channels
         WHERE type=?
@@ -619,27 +692,31 @@ def get_channel(database_connection: sqlite3.Connection, channel_type: str) -> i
                 channel_type, error
             )
         )
-    info = cur.fetchone()
-    if info is None:
-        return 0
+        database_connection.close()
 
-    return int(info[0])
+    else:
+        info = cur.fetchone()
+        database_connection.close()
+        if info is None:
+            return 0
+
+        return int(info[0])
 
 
 ################################## Checks ##########################################
-def check_entry_in_database(
-    database_connection: sqlite3.Connection, table: str, entry_id: int
-) -> bool:
+def check_entry_in_database(guild: nextcord.guild, table: str, entry_id: int) -> bool:
     """Check if entry exists in table
 
     Args:
-        database_connection (sqlite3.Connection): Connection to database
+        guild (nextcord.Guild) : Guild to access its database
         table (str): table to check
         entry_id (int): id of the entry
 
     Returns:
         bool: false if not exists, true on the contrary
     """
+    database_connection = create_connection(guild)
+
     cursor = database_connection.cursor()
     sql = "SELECT rowid FROM {} WHERE id = ?".format(table)
     var = [entry_id]
@@ -649,22 +726,27 @@ def check_entry_in_database(
         log.error(
             "Error: Could not check if user {} exists: {}".format(entry_id, error)
         )
-    data = cursor.fetchall()
-    if len(data) == 0:
-        return False
-    return True
+        database_connection.close()
+    else:
+        database_connection.close()
+        data = cursor.fetchall()
+        if len(data) == 0:
+            return False
+        return True
 
 
-def check_record_in_database(database_connection, record: str) -> bool:
+def check_record_in_database(guild: nextcord.Guild, record: str) -> bool:
     """Check if entry exists in table
 
     Args:
-        database_connection (sqlite3.Connection): Connection to database
+        guild (nextcord.Guild) : Guild to access its database
         record (int): record of the entry
 
     Returns:
         bool: false if not exists, true on the contrary
     """
+    database_connection = create_connection(guild)
+
     cursor = database_connection.cursor()
     sql = """SELECT EXISTS(SELECT 1 FROM records WHERE record=?)"""
     try:
@@ -673,8 +755,11 @@ def check_record_in_database(database_connection, record: str) -> bool:
         log.error(
             "Error: Could not check if record {} exists: {}".format(record, error)
         )
+        database_connection.close()
+    else:
+        database_connection.close()
 
-    data = cursor.fetchone()
-    if data == (0,):
-        return False
-    return True
+        data = cursor.fetchone()
+        if data == (0,):
+            return False
+        return True

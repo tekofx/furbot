@@ -1,3 +1,4 @@
+from turtle import pen
 import nextcord
 from nextcord.errors import Forbidden
 from nextcord.ext import commands
@@ -13,7 +14,7 @@ from utils.database import (
 )
 from utils.reddit import Reddit
 from utils.twitter import Twitter
-from utils.data import resources_path
+from utils.data import Data, resources_path, config_yaml
 
 log = logging.getLogger(__name__)
 token = os.getenv("DISCORD_TOKEN")
@@ -45,20 +46,36 @@ class Bot(commands.Bot):
     async def on_ready(self):
         """Performs an action when the bot is ready"""
 
-        # Setup databases
-        guilds = self.fetch_guilds()
-        async for guild in guilds:
+        for guild in self.guilds:
+            # Setup folders
+            data = Data(guild)
+            data.setup_folders()
+            data.setup_files()
+            del data
 
-            server = str(guild.id)
-            setup_database(server)
+            # Setup database
+            setup_database(guild)
+
+        # Set activity
+        self.status = nextcord.Status.online
+
+        # Get activity
+        with open(config_yaml, "r") as stream:
+            try:
+                content = yaml.safe_load(stream)
+            except yaml.YAMLError as error:
+                log.error("Error at getting YAML content: {}".format(error))
+
+        activity = nextcord.Game(content["activity"])
+        self.activity = activity
 
         # Load cogs
-        cogs = os.listdir("src/cogs/")
+        """ cogs = os.listdir("src/cogs/")
 
         for c in cogs:
             if c.endswith(".py"):
                 self.load_extension("cogs." + c[:-3])
-                log.info("Loaded {}".format(c))
+                log.info("Loaded {}".format(c)) """
 
         log.info("We have logged in as {}".format(self.user))
 
@@ -104,18 +121,6 @@ class Bot(commands.Bot):
         )
 
     def run(self):
-        # Set activity
-        self.status = nextcord.Status.online
-
-        # Get activity
-        with open(resources_path + "config.yaml", "r") as stream:
-            try:
-                content = yaml.safe_load(stream)
-            except yaml.YAMLError as error:
-                log.error("Error at getting YAML content: {}".format(error))
-
-        activity = nextcord.Game(content["activity"])
-        self.activity = activity
 
         super().run(token=self.token)
 
