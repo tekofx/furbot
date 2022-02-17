@@ -1,9 +1,8 @@
 import logging
-import sqlite3
 import tweepy as tw
 import os
 from utils.database import check_record_in_database
-
+import nextcord
 
 log = logging.getLogger(__name__)
 
@@ -50,14 +49,14 @@ class Twitter:
                 return tweet.entities["media"][0]["media_url"]
 
     def get_latest_images_not_repeated(
-        self, username: str, con: sqlite3.Connection, count: int
+        self, guild: nextcord.Guild, username: str, count: int
     ) -> list:
 
         """Gets the URL the latest images urls posted by some user
 
         Args:
+            guild (nextcord.Guild): guild to look
             username (str): user to look
-            con (sqlite3.Connection): sqlite3 connection
             count (int): number of images to return
 
         Returns:
@@ -72,7 +71,7 @@ class Twitter:
         for tweet in tweets:
 
             if "media" in tweet.entities and not check_record_in_database(
-                con, tweet.entities["media"][0]["media_url"]
+                guild, tweet.entities["media"][0]["media_url"]
             ):
                 tweet_url = tweet.entities["media"][0]["media_url"]
 

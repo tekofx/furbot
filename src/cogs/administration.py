@@ -44,10 +44,8 @@ class administration(commands.Cog):
             channel_id = msg.content.replace("<#", "").replace(">", "")
             channel = await self.bot.fetch_channel(channel_id)
 
-            con = create_connection(str(ctx.guild.id))
-
             create_channel(
-                con,
+                ctx.guild,
                 [
                     channel.id,
                     "general",
@@ -66,7 +64,7 @@ class administration(commands.Cog):
             channel = await self.bot.fetch_channel(channel_id)
 
             create_channel(
-                con,
+                ctx.guild,
                 [
                     channel.id,
                     "audit",
@@ -82,7 +80,7 @@ class administration(commands.Cog):
             channel = await self.bot.fetch_channel(channel_id)
 
             create_channel(
-                con,
+                ctx.guild,
                 [
                     channel.id,
                     "memes",
@@ -98,7 +96,7 @@ class administration(commands.Cog):
             channel = await self.bot.fetch_channel(channel_id)
 
             create_channel(
-                con,
+                ctx.guild,
                 [
                     channel.id,
                     "lobby",
@@ -116,7 +114,7 @@ class administration(commands.Cog):
             channel = await self.bot.fetch_channel(channel_id)
 
             create_channel(
-                con,
+                ctx.guild,
                 [
                     channel.id,
                     "bot_news",
@@ -132,12 +130,9 @@ class administration(commands.Cog):
                 await ctx.send("Error desconocido, contacta con un administrador.")
                 log.error("Unkwon error: {}".format(e))
 
-            con.close()
             return
         else:
             await ctx.send("Añadidos canales")
-
-            con.close()
 
     @commands.command(name="activity")
     @commands.has_permissions(administrator=True)
@@ -178,11 +173,9 @@ class administration(commands.Cog):
         Uso:
             fur addspecie <rol>
         """
-        server = str(ctx.guild.id)
-        con = create_connection(server)
         for specie in species:
             try:
-                create_role(con, specie.id, specie.name, "specie")
+                create_role(ctx.guild, specie.id, specie.name, "specie")
             except Exception as error:
                 if ROLE_EXISTS in error.args:
                     await ctx.send(
@@ -202,11 +195,9 @@ class administration(commands.Cog):
         Uso:
             fur addrank <rol>
         """
-        server = str(ctx.guild.id)
-        con = create_connection(server)
         for rank in ranks:
             try:
-                create_role(con, rank.id, rank.name, "rank")
+                create_role(ctx.guild, rank.id, rank.name, "rank")
             except Exception as error:
                 if ROLE_EXISTS in error.args:
                     await ctx.send(
@@ -226,11 +217,9 @@ class administration(commands.Cog):
         Uso:
             fur addcolor <rol>
         """
-        server = str(ctx.guild.id)
-        con = create_connection(server)
         for color in colors:
             try:
-                create_role(con, color.id, color.name, "color")
+                create_role(ctx.guild, color.id, color.name, "color")
             except Exception as error:
                 if ROLE_EXISTS in error.args:
                     await ctx.send(
@@ -254,9 +243,8 @@ class administration(commands.Cog):
         Ejemplo:
             fur addcumple 16-1 @Teko
         """
-        con = create_connection(str(ctx.guild.id))
 
-        set_birthday(con, user.id, birthday)
+        set_birthday(ctx.guild, user.id, birthday)
         await ctx.send("Añadido cumpleaños de " + user.display_name)
 
     @commands.command()

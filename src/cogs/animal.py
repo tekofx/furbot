@@ -25,7 +25,7 @@ class animal(commands.Cog):
 
         # Get images
         tweet_images_urls = self.bot.twitter.get_latest_images_not_repeated(
-            subreddit, con, num
+            ctx.guild, subreddit, num
         )
         async with ctx.typing():
             for tweet in tweet_images_urls:
@@ -79,7 +79,6 @@ class animal(commands.Cog):
     async def cat(self, ctx: commands.Context, num: int = None):
         """Fotos de gatitos"""
         message = await ctx.send("Buscando fotos de gatitos")
-        con = create_connection(str(ctx.guild.id))
 
         if num is None:
             num = 1
@@ -98,11 +97,11 @@ class animal(commands.Cog):
                 if aux == num:
                     break
 
-                if not check_record_in_database(con, x):
+                if not check_record_in_database(ctx.guild, x):
                     aux += 1
 
                     # Write in history
-                    create_record(con, ["reddit", x])
+                    create_record(ctx.guild, ["reddit", x])
 
                     # Download image
                     r = requests.get(x, allow_redirects=True)
