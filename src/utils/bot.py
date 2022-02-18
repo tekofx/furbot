@@ -89,6 +89,20 @@ class Bot(commands.Bot):
         )
         con.close()
 
+    async def on_member_remove(self, member: nextcord.Member):
+        # When a user leaves a server
+        mensaje_lobby_usuario = "{} se fue, una pena. ".format(member.mention)
+        mensaje_lobby_bot = "Se ha ido el bot {}".format(member.mention)
+
+        if not member.bot:
+            await self.channel_send(member.guild.id, "lobby", mensaje_lobby_usuario)
+        else:
+            await self.channel_send(member.guild.id, "lobby", mensaje_lobby_bot)
+
+        await self.channel_send(
+            member.guild.id, "audit", "{} se ha ido".format(member.name)
+        )
+
     def run(self):
         # Set activity
         self.status = nextcord.Status.online
