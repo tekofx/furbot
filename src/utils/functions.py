@@ -5,6 +5,7 @@ import logging
 import nextcord
 from nextcord.ext import commands
 from utils.data import meme_resources_path
+import io
 
 
 def convert_pic(picture: str, img_name: str, img_size: str = None):
@@ -22,7 +23,12 @@ def convert_pic(picture: str, img_name: str, img_size: str = None):
         hsize = int((float(img.size[1]) * float(wpercent)))
         img = img.resize((img_size, hsize), Image.ANTIALIAS)
 
-    img.save(meme_resources_path + img_name + ".png")
+    bytes_io = io.BytesIO()
+
+    img.save(bytes_io, "png")
+    bytes_io.seek(0)
+    print("b")
+    return bytes_io
 
 
 def get_user(ctx: commands.Context, user: nextcord.Member = None) -> nextcord.Member:

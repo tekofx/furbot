@@ -75,3 +75,12 @@ class Data:
                     f = open(file, "w")
                     f.write("activity: online")
                     f.close()
+
+
+def get_server_path(guild: nextcord.Guild) -> str:
+    """Returns the server path
+
+    Returns:
+        str
+    """
+    return server_path.format(guild_name=guild.name, guild_id=guild.id)

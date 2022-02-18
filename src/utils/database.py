@@ -745,7 +745,6 @@ def check_record_in_database(guild: nextcord.Guild, record: str) -> bool:
     Returns:
         bool: false if not exists, true on the contrary
     """
-    print("a")
     database_connection = create_connection(guild)
 
     cursor = database_connection.cursor()

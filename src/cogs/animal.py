@@ -1,3 +1,4 @@
+import io
 import logging
 import nextcord
 from nextcord.ext import commands
@@ -5,7 +6,6 @@ import os
 import requests
 from utils.database import check_record_in_database, create_connection, create_record
 from utils.bot import Bot
-from utils.data import temp_path
 
 
 log = logging.getLogger(__name__)
@@ -17,28 +17,20 @@ class animal(commands.Cog):
         self.bot = bot
 
     async def send_animal_pics_twitter(
-        self, ctx: commands.Context, subreddit: str, num: int
+        self, ctx: commands.Context, username: str, num: int
     ):
-        con = create_connection(str(ctx.guild.id))
         if num is None:
             num = 1
 
         # Get images
         tweet_images_urls = self.bot.twitter.get_latest_images_not_repeated(
-            ctx.guild, subreddit, num
+            ctx.guild, username, num
         )
-        async with ctx.typing():
-            for tweet in tweet_images_urls:
-                # Write in history
-                create_record(con, ["twitter", tweet])
+        for tweet in tweet_images_urls:
 
-                # Download image
-                r = requests.get(tweet, allow_redirects=True)
-                open(temp_path + temp_image, "wb").write(r.content)
-
-                image = nextcord.File(temp_path + temp_image)
-                await ctx.send(file=image)
-                os.remove(temp_path + temp_image)
+            # Write in history
+            create_record(ctx.guild, ["twitter", tweet])
+            await ctx.send(tweet)
 
     @commands.command()
     async def fox(self, ctx: commands.Context, num: int = None):
@@ -104,11 +96,7 @@ class animal(commands.Cog):
                     create_record(ctx.guild, ["reddit", x])
 
                     # Download image
-                    r = requests.get(x, allow_redirects=True)
-                    open(temp_path + temp_image, "wb").write(r.content)
-                    image = nextcord.File(temp_path + temp_image)
-                    await ctx.send(file=image)
-                    os.remove(temp_path + temp_image)
+                    await ctx.send(x)
         await message.delete()
 
 

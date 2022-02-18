@@ -70,12 +70,12 @@ class Bot(commands.Bot):
         self.activity = activity
 
         # Load cogs
-        """ cogs = os.listdir("src/cogs/")
+        cogs = os.listdir("src/cogs/")
 
         for c in cogs:
             if c.endswith(".py"):
                 self.load_extension("cogs." + c[:-3])
-                log.info("Loaded {}".format(c)) """
+                log.info("Loaded {}".format(c))
 
         log.info("We have logged in as {}".format(self.user))
 

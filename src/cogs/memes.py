@@ -1,8 +1,11 @@
+from http import server
+import io
 import nextcord
 from nextcord.ext import commands
 import random
 import textwrap
 import time
+import PIL
 from PIL import ImageFont, ImageDraw
 from utils.functions import (
     get_user,
@@ -16,7 +19,7 @@ import unicodedata
 import requests
 from PIL import Image
 from utils.bot import Bot
-from utils.data import meme_resources_path, memes_path
+from utils.data import get_server_path, meme_resources_path, server_path
 
 log = logging.getLogger(__name__)
 
@@ -33,6 +36,8 @@ class memes(commands.Cog):
             fur meme <nombres personas en el meme>
 
         """
+        memes_path = get_server_path(ctx.guild) + "/memes/"
+
         meme_extension = "." + ctx.message.attachments[0].filename
         meme_extension = meme_extension[-4:]
         count = 1
@@ -98,6 +103,7 @@ class memes(commands.Cog):
         """Meme random de los nuestros"""
 
         # If all memes have been sent, delete history
+        memes_path = get_server_path(ctx.guild) + "/memes/"
 
         if name is None:
             output = random.choice(os.listdir(memes_path))
@@ -139,6 +145,7 @@ class memes(commands.Cog):
     @commands.command()
     async def count_memes(self, ctx: commands.Context):
         """Número de memes añadidos al bot"""
+        memes_path = get_server_path(ctx.guild) + "/memes/"
         await ctx.send(len(os.listdir(memes_path)))
 
     @commands.command()
@@ -148,13 +155,13 @@ class memes(commands.Cog):
         avatarUrl = get_user(ctx, user).avatar.url
 
         # Create meme
-        create_meme(("horny", "01"), avatarUrl, 300, (0, 0, 410, 180), True)
+        meme = create_meme(("horny", "01"), avatarUrl, 300, (0, 0, 410, 180), True)
 
         # Send meme
-        await ctx.send(file=nextcord.File(meme_resources_path + "output.png"))
+        await ctx.send(file=nextcord.File(meme, "output.png"))
 
         # Delete user avatar and output
-        delete_files(("01.webp", "output.png", "01.png"))
+        # delete_files(("01.webp", "output.png", "01.png"))
 
     @commands.command()
     async def patada(self, ctx: commands.Context, user: nextcord.Member = None):
@@ -164,12 +171,12 @@ class memes(commands.Cog):
         avatarUrl = get_user(ctx, user).avatar.url
 
         # Create meme
-        create_meme(
+        meme = create_meme(
             ("patada", "01", "01"), avatarUrl, 110, (0, 0, 198, 229, 348, 915), True
         )
 
         # Send meme
-        await ctx.send(file=nextcord.File(meme_resources_path + "output.png"))
+        await ctx.send(file=nextcord.File(meme, "output.png"))
 
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
@@ -181,10 +188,10 @@ class memes(commands.Cog):
         # Get user avatar
         avatarUrl = get_user(ctx, user).avatar.url
 
-        create_meme(("shef", "01"), avatarUrl, 120, (0, 0, 280, 87), True)
+        meme = create_meme(("shef", "01"), avatarUrl, 120, (0, 0, 280, 87), True)
 
         # Send meme
-        await ctx.send(file=nextcord.File(meme_resources_path + "output.png"))
+        await ctx.send(file=nextcord.File(meme, "output.png"))
 
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
@@ -229,14 +236,16 @@ class memes(commands.Cog):
         quote = '"' + quote + '"'
 
         r = requests.get(userName.avatar.url, allow_redirects=True)
-        open(meme_resources_path + "01.webp", "wb").write(r.content)
+        bytes_io = io.BytesIO(r.content)
+        print(1)
 
-        convert_pic(meme_resources_path + "01.webp", "01", avatarSize)
+        converted_pic = convert_pic(bytes_io, avatarSize)
+        print("a")
 
         # Open images
         txtPic = Image.new("RGBA", (620, 500))
         pic = Image.open(meme_resources_path + "quote.png").convert("RGBA")
-        avatar = Image.open(meme_resources_path + "01" + ".png").convert("L")
+        avatar = Image.open(converted_pic).convert("L")
 
         # Set up fonts
         fontQuote = ImageFont.truetype(meme_resources_path + "Sofia.ttf", txtSize)
@@ -299,9 +308,11 @@ class memes(commands.Cog):
         pic.paste(txtPic, (textOffsetX, int(220 - 20 * cont)), txtPic)
 
         # Save picture
-        pic.save(meme_resources_path + "output.png", "PNG")
+        bytes_io = io.BytesIO()
+        pic.save(bytes_io, "PNG")
+        bytes_io.seek(0)
 
-        await ctx.send(file=nextcord.File(meme_resources_path + "output.png"))
+        await ctx.send(file=nextcord.File(bytes_io, "output.png"))
 
         delete_files(("01.webp", "output.png", "01.png"))
 
@@ -311,10 +322,10 @@ class memes(commands.Cog):
 
         avatarUrl = get_user(ctx, user).avatar.url
 
-        create_meme(("impostor", "01"), avatarUrl, 205, (0, 0, 323, 175), True)
+        meme = create_meme(("impostor", "01"), avatarUrl, 205, (0, 0, 323, 175), True)
 
         # Send meme
-        await ctx.send(file=nextcord.File(meme_resources_path + "output.png"))
+        await ctx.send(file=nextcord.File(meme, "output.png"))
 
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
@@ -326,10 +337,10 @@ class memes(commands.Cog):
         # Get user avatar
         avatarUrl = get_user(ctx, user).avatar.url
 
-        create_meme(("stonks", "01"), avatarUrl, 236, (0, 0, 63, 25), True)
+        meme = create_meme(("stonks", "01"), avatarUrl, 236, (0, 0, 63, 25), True)
 
         # Send meme
-        await ctx.send(file=nextcord.File(meme_resources_path + "output.png"))
+        await ctx.send(file=nextcord.File(meme, "output.png"))
 
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
@@ -346,12 +357,12 @@ class memes(commands.Cog):
 
         convert_pic(meme_resources_path + "02.webp", "02", 65)
 
-        create_meme(
+        meme = create_meme(
             ("jojo", "01", "02"), avatarUrl, 65, (0, 0, 162, 19, 469, 130), True
         )
 
         # Send meme
-        await ctx.send(file=nextcord.File(meme_resources_path + "output.png"))
+        await ctx.send(file=nextcord.File(meme, "output.png"))
 
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png", "02.png", "02.webp"))
@@ -363,10 +374,10 @@ class memes(commands.Cog):
         # Get user avatar
         avatarUrl = get_user(ctx, user).avatar.url
 
-        create_meme(("cute", "01"), avatarUrl, 387, (0, 0, 210, 75), True)
+        meme = create_meme(("cute", "01"), avatarUrl, 387, (0, 0, 210, 75), True)
 
         # Send meme
-        await ctx.send(file=nextcord.File(meme_resources_path + "output.png"))
+        await ctx.send(file=nextcord.File(meme, "output.png"))
 
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
@@ -378,10 +389,10 @@ class memes(commands.Cog):
         # Get user avatar
         avatarUrl = ctx.author.avatar.url
 
-        create_meme(("suicidio", "01"), avatarUrl, 54, (0, 0, 172, 182), True)
+        meme = create_meme(("suicidio", "01"), avatarUrl, 54, (0, 0, 172, 182), True)
 
         # Send meme
-        await ctx.send(file=nextcord.File(meme_resources_path + "output.png"))
+        await ctx.send(file=nextcord.File(meme, "output.png"))
 
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
@@ -393,10 +404,10 @@ class memes(commands.Cog):
         # Get user avatar
         avatarUrl = get_user(ctx, user).avatar.url
 
-        create_meme(("coding", "01"), avatarUrl, 167, (0, 0, 218, 137), True)
+        meme = create_meme(("coding", "01"), avatarUrl, 167, (0, 0, 218, 137), True)
 
         # Send meme
-        await ctx.send(file=nextcord.File(meme_resources_path + "output.png"))
+        await ctx.send(file=nextcord.File(meme, "output.png"))
 
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
@@ -408,10 +419,10 @@ class memes(commands.Cog):
         # Get user avatar
         avatarUrl = get_user(ctx, user).avatar.url
 
-        create_meme(("unsee", "01"), avatarUrl, 108, (0, 0, 256, 112), True)
+        meme = create_meme(("unsee", "01"), avatarUrl, 108, (0, 0, 256, 112), True)
 
         # Send meme
-        await ctx.send(file=nextcord.File(meme_resources_path + "output.png"))
+        await ctx.send(file=nextcord.File(meme, "output.png"))
 
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
@@ -423,10 +434,10 @@ class memes(commands.Cog):
         # Get user avatar
         avatarUrl = get_user(ctx, user).avatar.url
 
-        create_meme(("palomitas", "01"), avatarUrl, 125, (0, 0, 278, 67), True)
+        meme = create_meme(("palomitas", "01"), avatarUrl, 125, (0, 0, 278, 67), True)
 
         # Send meme
-        await ctx.send(file=nextcord.File(meme_resources_path + "output.png"))
+        await ctx.send(file=nextcord.File(meme, "output.png"))
 
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
@@ -454,7 +465,7 @@ class memes(commands.Cog):
         # Get user avatar
         avatarUrl = get_user(ctx, user).avatar.url
 
-        create_meme(("quien", "01"), avatarUrl, 130, (0, 0, 210, 570), True)
+        meme = create_meme(("quien", "01"), avatarUrl, 130, (0, 0, 210, 570), True)
         txtPic = Image.new("RGBA", (200, 200))
         img = Image.open(meme_resources_path + "output" + ".png").convert("RGBA")
         draw = ImageDraw.Draw(txtPic)
@@ -467,10 +478,14 @@ class memes(commands.Cog):
 
         draw.text(((170, 170)), text2, font=font, fill=(0, 0, 0, 255))
         img.paste(txtPic, (180, 10), txtPic)
-        img.save(meme_resources_path + "output2.png", "PNG")
+
+        # Save
+        bytes_io = io.BytesIO()
+        img.save(bytes_io, "PNG")
+        bytes_io.seek(0)
 
         # Send meme
-        await ctx.send(file=nextcord.File(meme_resources_path + "output.png"))
+        await ctx.send(file=nextcord.File(bytes_io, "output.png"))
 
         # Delete user avatar and output
         time.sleep(1)
@@ -509,7 +524,7 @@ class memes(commands.Cog):
         img.save(meme_resources_path + "output2.png", "PNG")
 
         # Send meme
-        await ctx.send(file=nextcord.File(meme_resources_path + "output.png"))
+        await ctx.send(file=nextcord.File(meme, "output.png"))
 
         # Delete user avatar and output
         delete_files(
@@ -538,7 +553,7 @@ class memes(commands.Cog):
         )
 
         # Send meme
-        await ctx.send(file=nextcord.File(meme_resources_path + "output.png"))
+        await ctx.send(file=nextcord.File(meme, "output.png"))
 
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png", "02.png", "02.webp"))
@@ -564,7 +579,7 @@ class memes(commands.Cog):
         )
 
         # Send meme
-        await ctx.send(file=nextcord.File(meme_resources_path + "output.png"))
+        await ctx.send(file=nextcord.File(meme, "output.png"))
 
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png", "02.png", "02.webp"))
@@ -604,10 +619,10 @@ class memes(commands.Cog):
         # Get user avatar
         avatarUrl = get_user(ctx, user).avatar.url
 
-        create_meme(("slap", "01"), avatarUrl, 160, (0, 0, 120, 88), True)
+        meme = create_meme(("slap", "01"), avatarUrl, 160, (0, 0, 120, 88), True)
 
         # Send meme
-        await ctx.send(file=nextcord.File(meme_resources_path + "output.png"))
+        await ctx.send(file=nextcord.File(meme, "output.png"))
 
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
@@ -619,10 +634,10 @@ class memes(commands.Cog):
         # Get user avatar
         avatarUrl = get_user(ctx, user).avatar.url
 
-        create_meme(("reviento", "01"), avatarUrl, 78, (0, 0, 315, 80), True)
+        meme = create_meme(("reviento", "01"), avatarUrl, 78, (0, 0, 315, 80), True)
 
         # Send meme
-        await ctx.send(file=nextcord.File(meme_resources_path + "output.png"))
+        await ctx.send(file=nextcord.File(meme, "output.png"))
 
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
@@ -634,10 +649,10 @@ class memes(commands.Cog):
         # Get user avatar
         avatarUrl = get_user(ctx, user).avatar.url
 
-        create_meme(("radiopatio", "01"), avatarUrl, 88, (0, 0, 188, 45), True)
+        meme = create_meme(("radiopatio", "01"), avatarUrl, 88, (0, 0, 188, 45), True)
 
         # Send meme
-        await ctx.send(file=nextcord.File(meme_resources_path + "output.png"))
+        await ctx.send(file=nextcord.File(meme, "output.png"))
 
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
@@ -649,10 +664,10 @@ class memes(commands.Cog):
         # Get user avatar
         avatarUrl = get_user(ctx, user).avatar.url
 
-        create_meme(("omni", "01"), avatarUrl, 470, (0, 0, 210, 388), True)
+        meme = create_meme(("omni", "01"), avatarUrl, 470, (0, 0, 210, 388), True)
 
         # Send meme
-        await ctx.send(file=nextcord.File(meme_resources_path + "output.png"))
+        await ctx.send(file=nextcord.File(meme, "output.png"))
 
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
@@ -664,10 +679,10 @@ class memes(commands.Cog):
         # Get user avatar
         avatarUrl = get_user(ctx, user).avatar.url
 
-        create_meme(("mierda", "01"), avatarUrl, 270, (0, 0, 476, 161), True)
+        meme = create_meme(("mierda", "01"), avatarUrl, 270, (0, 0, 476, 161), True)
 
         # Send meme
-        await ctx.send(file=nextcord.File(meme_resources_path + "output.png"))
+        await ctx.send(file=nextcord.File(meme, "output.png"))
 
         # Delete user avatar and output
         delete_files(("01.webp", "output.png", "01.png"))
@@ -755,7 +770,7 @@ class memes(commands.Cog):
         # Save image
         output.save(meme_resources_path + "output.png", "PNG")
 
-        await ctx.send(file=nextcord.File(meme_resources_path + "output.png"))
+        await ctx.send(file=nextcord.File(meme, "output.png"))
 
         delete_files(("01.webp", "02.webp", "01.png", "02.png", "03.png", "output.png"))
 
@@ -795,7 +810,7 @@ class memes(commands.Cog):
 
         pic.save(meme_resources_path + "output.png", "PNG")
 
-        await ctx.send(file=nextcord.File(meme_resources_path + "output.png"))
+        await ctx.send(file=nextcord.File(meme, "output.png"))
         os.remove(meme_resources_path + "output.png")
 
     @commands.command()
@@ -838,7 +853,7 @@ class memes(commands.Cog):
 
         image.paste(txtPic1, (350, 50), txtPic1)
         image.save(meme_resources_path + "output.png", "PNG")
-        await ctx.send(file=nextcord.File(meme_resources_path + "output.png"))
+        await ctx.send(file=nextcord.File(meme, "output.png"))
         delete_files(("output.png", "01.png", "01.webp"))
 
     @commands.command()
@@ -890,7 +905,7 @@ class memes(commands.Cog):
         output.save(meme_resources_path + "output.png", "PNG")
 
         # Send meme
-        await ctx.send(file=nextcord.File(meme_resources_path + "output.png"))
+        await ctx.send(file=nextcord.File(meme, "output.png"))
 
         # Delete user avatar and output
         delete_files(
@@ -908,7 +923,7 @@ class memes(commands.Cog):
 
 def create_meme(
     pictures: list, avatar_url: str, avatar_size: int, position: list, invert: bool
-):
+) -> io.BytesIO:
     """Crea un meme
 
     Args:
@@ -952,7 +967,11 @@ def create_meme(
     output.paste(meme, (position[0], position[1]), meme)
 
     # Save final meme
-    output.save(meme_resources_path + "output.png", "PNG")
+    # output.save(meme_resources_path + "output.png", "PNG")
+    byte_io = io.BytesIO()
+    output.save(byte_io, "PNG")
+    byte_io.seek(0)
+    return byte_io
 
 
 def setup(bot: commands.Bot):
