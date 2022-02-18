@@ -67,13 +67,15 @@ class Twitter:
         images = []
         num = 0
         tweets = self.api.user_timeline(
-            screen_name=username, count=200, include_rts=False, tweet_mode="extended"
+            screen_name=username, count=200, include_rts=True, tweet_mode="extended"
         )
         for tweet in tweets:
-            tweet_url = tweet.entities["media"][0]["media_url"]
+
             if "media" in tweet.entities and not check_record_in_database(
-                con, tweet_url
+                con, tweet.entities["media"][0]["media_url"]
             ):
+                tweet_url = tweet.entities["media"][0]["media_url"]
+
                 num += 1
                 images.append(tweet_url)
 

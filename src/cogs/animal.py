@@ -65,7 +65,7 @@ class animal(commands.Cog):
     async def bird(self, ctx: commands.Context, num: int = None):
         """Fotos de pajaros"""
         message = await ctx.send("Buscando fotos de pajaritos")
-        await self.send_animal_pics_twitter(ctx, "eugeniogarcia2", num)
+        await self.send_animal_pics_twitter(ctx, "kerrybv1", num)
         await message.delete()
 
     @commands.command()
