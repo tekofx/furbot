@@ -73,13 +73,12 @@ class tasks(commands.Cog):
         """Updates the users database"""
         async for guild in self.bot.fetch_guilds():
             members = await guild.fetch_members().flatten()
-            con = create_connection(str(guild.id))
             for member in members:
-                entry_in_database = check_entry_in_database(con, "users", member.id)
+                entry_in_database = check_entry_in_database(guild, "users", member.id)
                 if not entry_in_database and not member.bot:
                     # Add to database
                     try:
-                        create_user(con, [member.id, member.name, member.joined_at])
+                        create_user(guild, [member.id, member.name, member.joined_at])
                     except Exception as error:
                         log.error("Error creating user on join: {}".format(error))
                     else:
