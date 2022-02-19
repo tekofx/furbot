@@ -1,5 +1,6 @@
 from http import server
 import io
+from turtle import width
 import nextcord
 from nextcord.ext import commands
 import random
@@ -154,12 +155,20 @@ class memes(commands.Cog):
         # Get user avatar
         avatarUrl = get_user(ctx, user).avatar.url
 
+        avatar_info = [
+            {
+                "url": avatarUrl,
+                "size": 300,
+                "x": 410,
+                "y": 180,
+            }
+        ]
+
         # Create meme
-        meme = create_meme(("horny", "01"), avatarUrl, 300, (0, 0, 410, 180), True)
+        meme = create_meme("horny", avatar_info)
 
         # Send meme
         await ctx.send(file=nextcord.File(meme, "output.png"))
-
         # Delete user avatar and output
         # delete_files(("01.webp", "output.png", "01.png"))
 
@@ -237,10 +246,8 @@ class memes(commands.Cog):
 
         r = requests.get(userName.avatar.url, allow_redirects=True)
         bytes_io = io.BytesIO(r.content)
-        print(1)
 
         converted_pic = convert_pic(bytes_io, avatarSize)
-        print("a")
 
         # Open images
         txtPic = Image.new("RGBA", (620, 500))
@@ -921,57 +928,49 @@ class memes(commands.Cog):
         )
 
 
-def create_meme(
-    pictures: list, avatar_url: str, avatar_size: int, position: list, invert: bool
-) -> io.BytesIO:
+def create_meme(meme_picture: str, avatars_info: list[dict]) -> io.BytesIO:
     """Crea un meme
 
     Args:
-        pictures (list): lista de imagenes, siendo pictures[0] el meme y el resto avatares
-        avatar_url (str): url del avatar a añadir al meme
-        avatar_size (int): tamañao al que convertir el avatar de webp a png
-        position (list): posiciones en las que colocar las imagenes, siendo position[0] y position[1] la x,y del meme
-        invert (bool): Si es True usa el meme como canvas, en caso contrario, usa el avatar
+        meme_picture (str): name of the meme picture
+        avatars_info (list): containgin a dictionary with the avatars info.
+            The keys of each avatar are: url, size, x, y
+
+    Returns:
+        io.BytesIO: the meme image
     """
 
-    r = requests.get(avatar_url, allow_redirects=True)
-    open(meme_resources_path + "01.webp", "wb").write(r.content)
+    # Open meme canvas
+    meme = Image.open(meme_resources_path + meme_picture + ".png").convert("RGBA")
 
-    # Convert avatar
-    convert_pic(meme_resources_path + "01.webp", "01", avatar_size)
+    # Get canvas size
+    width, height = meme.size
 
-    if not invert:  # burn
-        canvas = pictures[1]
-        width, height = (
-            Image.open(meme_resources_path + canvas + ".png").convert("RGBA").size
+    # Create canvas
+    canvas = Image.new("RGBA", (width, height))
+
+    # Paste avatars
+    for avatar in avatars_info:
+        url = avatar["url"]
+        size = avatar["size"]
+        x = avatar["x"]
+        y = avatar["y"]
+        avatar = (
+            Image.open(io.BytesIO(requests.get(url).content))
+            .convert("RGBA")
+            .resize((size, size))
         )
-    else:  # cringe
-        canvas = pictures[0]
-        width, height = (
-            Image.open(meme_resources_path + canvas + ".png").convert("RGBA").size
-        )
+        canvas.paste(avatar, (x, y), avatar)
 
-    output = Image.new("RGBA", (width, height))  # Create picture
-    meme = Image.open(meme_resources_path + pictures[0] + ".png").convert(
-        "RGBA"
-    )  # Open meme picture
+    # Paste meme into canvas
+    canvas.paste(meme, (0, 0), meme)
 
-    # Add avatar pictures
-    i = 2
-    for x in pictures[1:]:
-        img = Image.open(meme_resources_path + x + ".png").convert("RGBA")
-        output.paste(img, (position[i], position[i + 1]), img)
-        i += 2
+    bytes_io = io.BytesIO()
 
-    # Add meme picture
-    output.paste(meme, (position[0], position[1]), meme)
+    canvas.save(bytes_io, "PNG")
+    bytes_io.seek(0)
 
-    # Save final meme
-    # output.save(meme_resources_path + "output.png", "PNG")
-    byte_io = io.BytesIO()
-    output.save(byte_io, "PNG")
-    byte_io.seek(0)
-    return byte_io
+    return bytes_io
 
 
 def setup(bot: commands.Bot):
