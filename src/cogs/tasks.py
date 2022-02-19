@@ -40,9 +40,8 @@ class tasks(commands.Cog):
         )
         r = r.json()
         for guild in self.bot.guilds:
-            con = create_connection(guild.id)
-            if not check_record_in_database(con, r[0]["url"]):
-                create_record(con, ["github", r[0]["url"]])
+            if not check_record_in_database(guild, r[0]["url"]):
+                create_record(guild, ["github", r[0]["url"]])
                 version = r[0]["tag_name"]
                 release_changelog = r[0]["body"]
                 url = r[0]["html_url"]
@@ -66,9 +65,7 @@ class tasks(commands.Cog):
     async def remove_records_from_previous_day(self):
         """Removes records from 2 days ago"""
         for guild in self.bot.guilds:
-            connection = create_connection(guild.id)
-            remove_records_from_a_date(connection, date.today() - timedelta(days=2))
-            connection.close()
+            remove_records_from_a_date(guild, date.today() - timedelta(days=2))
         log.info("Removed records from 2 days ago")
 
     @tasks.loop(hours=6)
