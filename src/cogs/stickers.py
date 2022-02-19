@@ -3,12 +3,14 @@ from pathlib import Path
 import nextcord
 from nextcord.ext import commands
 import requests
+from utils.data import get_server_path
 from utils.functions import convert_pic
-from utils.data import stickers_path
 import os
 from utils.bot import Bot
 
 log = logging.getLogger(__name__)
+
+stickers_subpath = "stickers/"
 
 
 class stickers(commands.Cog):
@@ -23,7 +25,7 @@ class stickers(commands.Cog):
             - seleccionar una imagen y en el cuadro de "añadir comentario" poner:
             fur add <nombre_sticker>
         """
-
+        stickers_path = get_server_path(ctx.guild) + stickers_subpath
         # If not image provided
         if not ctx.message.attachments:
             await ctx.send("Error: No se ha añadido una imagen")
@@ -31,7 +33,7 @@ class stickers(commands.Cog):
 
         # Checks if a picture is correct
         sticker_extension = ctx.message.attachments[0].url.split(".")[-1]
-        if check_sticker(sticker_name, sticker_extension) == 0:
+        if check_sticker(ctx.guild, sticker_name, sticker_extension) == 0:
             await ctx.send(
                 "Error: Ya existe un sticker con el nombre {}".format(sticker_name)
             )
@@ -56,6 +58,8 @@ class stickers(commands.Cog):
     @commands.command(name="list")
     async def list_stickers(self, ctx: commands.Context):
         """Lista de los stickers añadidos"""
+        stickers_path = get_server_path(ctx.guild) + stickers_subpath
+
         output = os.listdir(stickers_path)
         output.sort()
         output[:] = [s.replace(".png", "") for s in output]
@@ -69,6 +73,8 @@ class stickers(commands.Cog):
         Uso:
             fur s <nombre_sticker>
         """
+        stickers_path = get_server_path(ctx.guild) + stickers_subpath
+
         if Path(stickers_path + sticker + ".png").is_file():
             stickerName = stickers_path
             stickerName += sticker
@@ -86,10 +92,11 @@ def setup(bot: commands.Bot):
     bot.add_cog(stickers(bot))
 
 
-def check_sticker(stickerName: str, stickerExtension: str):
+def check_sticker(guild: nextcord.Guild, stickerName: str, stickerExtension: str):
     """checks if a sticker already exists and if file extension is correct
 
     Args:
+        guild (nextcord.Guild): guild
         stickerName ([String]): [Name of sticker to add]
         stickerExtension ([String]): [Extension of sticker to add]
 
@@ -97,6 +104,8 @@ def check_sticker(stickerName: str, stickerExtension: str):
         [0]: [name used by other sticker]
         [1]: [if file extension is correct, must be jpg or png]
     """
+    stickers_path = get_server_path(guild) + stickers_subpath
+
     string = os.listdir(stickers_path)
     string[:] = [s.replace(".png", "") for s in string]
     string[:] = [s.replace("'", "") for s in string]
