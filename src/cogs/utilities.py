@@ -44,10 +44,9 @@ class utilities(commands.Cog):
         Uso:
             fur cumple @<usuario>
         """
-        con = create_connection(str(ctx.guild.id))
 
         output = "No existe el cumpleaños de " + user.display_name
-        birthday = get_birthday(con, user.id).split("-")
+        birthday = get_birthday(ctx.guild, user.id).split("-")
         day = birthday[2]
         month = birthday[1]
         birthday = str(day) + "-" + str(month)

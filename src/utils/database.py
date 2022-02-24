@@ -472,7 +472,7 @@ def get_birthday(guild: nextcord.guild, user_id: int) -> str:
         birthday = info[0]
     except Exception as error:
         log.error(
-            "Error: could not query birthday of user {}. {}".format(user_id, error)
+            "Error: could not query birthday of user {}: {}".format(user_id, error)
         )
         database_connection.close()
     else:
@@ -728,8 +728,8 @@ def check_entry_in_database(guild: nextcord.guild, table: str, entry_id: int) ->
         )
         database_connection.close()
     else:
-        database_connection.close()
         data = cursor.fetchall()
+        database_connection.close()
         if len(data) == 0:
             return False
         return True
