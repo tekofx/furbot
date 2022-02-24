@@ -87,24 +87,22 @@ class Bot(commands.Bot):
         mensaje_lobby_bot = "Se ha añadido el bot {}".format(member.mention)
 
         if not member.bot:
-            await self.channel_send(member.guild.id, "lobby", mensaje_lobby_usuario)
+            await self.channel_send(member.guild, "lobby", mensaje_lobby_usuario)
         else:
-            await self.channel_send(member.guild.id, "lobby", mensaje_lobby_bot)
+            await self.channel_send(member.guild, "lobby", mensaje_lobby_bot)
 
-        con = create_connection(str(member.guild.id))
-        entry_in_database = check_entry_in_database(con, "users", member.id)
+        entry_in_database = check_entry_in_database(member.guild, "users", member.id)
         if not entry_in_database and not member.bot:
             # Add to database
             try:
-                create_user(con, [member.id, member.name, member.joined_at])
+                create_user(member.guild, [member.id, member.name, member.joined_at])
             except Exception as error:
                 log.error("Error creating user on join: {}".format(error))
             else:
                 log.info("Created user {} with id {}".format(member.name, member.id))
         await self.channel_send(
-            member.guild.id, "audit", "{} se ha unido".format(member.name)
+            member.guild, "audit", "{} se ha unido".format(member.name)
         )
-        con.close()
 
     async def on_member_remove(self, member: nextcord.Member):
         # When a user leaves a server
@@ -112,12 +110,12 @@ class Bot(commands.Bot):
         mensaje_lobby_bot = "Se ha ido el bot {}".format(member.mention)
 
         if not member.bot:
-            await self.channel_send(member.guild.id, "lobby", mensaje_lobby_usuario)
+            await self.channel_send(member.guild, "lobby", mensaje_lobby_usuario)
         else:
-            await self.channel_send(member.guild.id, "lobby", mensaje_lobby_bot)
+            await self.channel_send(member.guild, "lobby", mensaje_lobby_bot)
 
         await self.channel_send(
-            member.guild.id, "audit", "{} se ha ido".format(member.name)
+            member.guild, "audit", "{} se ha ido".format(member.name)
         )
 
     def run(self):
@@ -158,14 +156,26 @@ class Bot(commands.Bot):
         log.info(user + " used command " + command)
 
     async def channel_send(
-        self, server_id: int, channel_type: str, msg: str, embed: nextcord.Embed = None
+        self,
+        guild: nextcord.Guild,
+        channel_type: str,
+        msg: str,
+        embed: nextcord.Embed = None,
     ):
-        # Create database connection
-        con = create_connection(str(server_id))
+        """Send message to a determinated channel
+
+        Args:
+            guild (nextcord.Guild): guild to send the message
+            channel_type (str): determinated channel to send the message
+            msg (str): message to send
+            embed (nextcord.Embed, optional): Embed to send. Defaults to None.
+
+        Raises:
+            Forbidden: If the bot doesn't have permissions to send the message
+        """
 
         # Get general_channel id
-        general_id = get_channel(con, channel_type)
-        con.close()
+        general_id = get_channel(guild, channel_type)
 
         if general_id != 0:
             try:
@@ -174,7 +184,7 @@ class Bot(commands.Bot):
             except Forbidden as error:
                 log.error(
                     "Error getting {} channel from server {}: {}".format(
-                        channel_type, server_id, error
+                        channel_type, guild, error
                     )
                 )
                 raise Forbidden

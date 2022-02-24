@@ -61,17 +61,17 @@ def setup(bot: commands.Bot):
     bot.add_cog(utilities(bot))
 
 
-def get_user_species(user: nextcord.Member):
+def get_user_species(user: nextcord.Member, guild: nextcord.Guild):
     """Get user roles that are species
 
     Args:
         user (nextcord.Member): user to search for roles
+        guild (nextcord.Guild): guild to search for roles
 
     Returns:
         str: String containing roles
     """
-    con = create_connection(user.guild.id)
-    server_species = get_species(con)
+    server_species = get_species(guild)
     mention = []
     roles = user.roles
     for role in roles:
@@ -82,18 +82,18 @@ def get_user_species(user: nextcord.Member):
     return b
 
 
-def get_user_roles(user: nextcord.Member):
+def get_user_roles(user: nextcord.Member,guild: nextcord.Guild):
     """Get user roles that are not ranks
 
     Args:
         user (nextcord.Member): user to search for roles
+        guild (nextcord.Guild): guild to search for roles
 
     Returns:
         str: String containing roles
     """
-    con = create_connection(user.guild.id)
 
-    server_ranks = get_ranks(con)
+    server_ranks = get_ranks(guild)
     mention = []
     roles = user.roles
 
@@ -105,17 +105,17 @@ def get_user_roles(user: nextcord.Member):
     return str(b)
 
 
-def get_user_ranks(user: nextcord.Member):
+def get_user_ranks(user: nextcord.Member, guild: nextcord.Guild):
     """Get ranks from a user
 
     Args:
         user (nextcord.User): user to search for roles
+        guild (nextcord.Guild): guild to search for roles
 
     Returns:
         str: String containing all ranks
     """
-    con = create_connection(user.guild.id)
-    server_ranks = get_ranks(con)
+    server_ranks = get_ranks(guild)
     output = []
     roles = user.roles
 

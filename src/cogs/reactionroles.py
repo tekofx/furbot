@@ -65,7 +65,7 @@ class ReactionRoles(commands.Cog):
             message = "Error al asignar rol {}. Comprueba que mi rol está por encima del rol que se quiere asignar".format(
                 role.name
             )
-            await self.bot.channel_send(interaction.guild.id,"audit",message)
+            await self.bot.channel_send(interaction.guild, "audit", message)
             raise error
 
     @commands.command(name="reactionrole")

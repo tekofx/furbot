@@ -59,7 +59,7 @@ class tasks(commands.Cog):
                         var = "\n".join(i[1:])
                         embed.add_field(name=i[0], value=var, inline=False)
 
-                await self.bot.channel_send(guild.id, "bot_news", "a", embed)
+                await self.bot.channel_send(guild, "bot_news", "a", embed)
 
     @tasks.loop(hours=30)
     async def remove_records_from_previous_day(self):
@@ -98,16 +98,14 @@ class tasks(commands.Cog):
 
         for guild in self.bot.guilds:
             try:
-                con = create_connection(str(guild.id))
                 for x in memes:
-                    if not check_record_in_database(con, x):
+                    if not check_record_in_database(guild, x):
                         meme = x
-                        create_record(con, ["meme", meme])
+                        create_record(guild, ["meme", meme])
                         break
 
-                await self.bot.channel_send(guild.id, "memes", meme)
+                await self.bot.channel_send(guild, "memes", meme)
                 log.info("Sent meme from {}".format(subreddit))
-                con.close()
 
             except (Exception) as error:
                 log.error("Error sending meme to {}: {}".format(guild.name, error))
@@ -129,13 +127,12 @@ class tasks(commands.Cog):
                 today = month + "-" + day
 
                 for guild in self.bot.guilds:
-                    con = create_connection(str(guild.id))
-                    birthdays = get_birthdays(con)
+                    birthdays = get_birthdays(guild)
                     for user_id, birthday in birthdays:
                         if birthday != None and today in birthday:
                             member = await self.bot.fetch_user(user_id)
                             await self.bot.channel_send(
-                                guild.id,
+                                guild,
                                 "general",
                                 "Es el cumple de "
                                 + member.mention
@@ -148,14 +145,14 @@ class tasks(commands.Cog):
                 if isinstance(error, nextcord.Forbidden):
                     log.error("Forbidden error on task birthday: {}".format(error))
                     await self.bot.channel_send(
-                        guild.id,
+                        guild,
                         "general",
                         "Error: El bot no tiene permiso para enviar mensajes",
                     )
                 else:
                     log.error("Unknown error on task birthday: {}".format(error))
                     await self.bot.channel_send(
-                        guild.id, "general", "Error desconocido, contacta al creador"
+                        guild, "general", "Error desconocido, contacta al creador"
                     )
 
     @tasks.loop(minutes=5)
@@ -164,7 +161,6 @@ class tasks(commands.Cog):
         data = r.json()
 
         for guild in self.bot.guilds:
-            con = create_connection(str(guild.id))
 
             for incident in data["incidents"]:
 
@@ -189,9 +185,9 @@ class tasks(commands.Cog):
                 embed.add_field(name="Impacto", value=incident_impact)
 
                 # Inform about a new incident
-                if not check_record_in_database(con, incident_id):
-                    create_record(con, ["incident", incident_id])
-                    await self.bot.channel_send(guild.id, "audit", "a", embed)
+                if not check_record_in_database(guild, incident_id):
+                    create_record(guild, ["incident", incident_id])
+                    await self.bot.channel_send(guild, "audit", "a", embed)
 
                 # Inform about an incident update
 
@@ -211,11 +207,9 @@ class tasks(commands.Cog):
                     update_embed.add_field(
                         name="Estado", value=update_status, inline=False
                     )
-                    if not check_record_in_database(con, update_id):
-                        create_record(con, ["incident", update_id])
-                        await self.bot.channel_send(
-                            guild.id, "audit", "a", update_embed
-                        )
+                    if not check_record_in_database(guild, update_id):
+                        create_record(guild, ["incident", update_id])
+                        await self.bot.channel_send(guild, "audit", "a", update_embed)
 
     @discord_status.before_loop
     @update_users.before_loop
