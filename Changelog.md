@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Añadido 
 - Mensajes cuando un usuario se va del servidor
+- Task que publica juegos nuevos
   
 ### Eliminado
 - Comando cojones
