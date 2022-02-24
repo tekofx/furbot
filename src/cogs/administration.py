@@ -39,88 +39,107 @@ class administration(commands.Cog):
                 "Seleccione el canal general. Se utiliza para los mensajes de cumpleaños."
             )
             msg = await self.bot.wait_for("message", check=check, timeout=60)
-            log.info(msg.content)
+            if msg.content.lower() != "skip":
 
-            channel_id = msg.content.replace("<#", "").replace(">", "")
-            channel = await self.bot.fetch_channel(channel_id)
+                channel_id = msg.content.replace("<#", "").replace(">", "")
+                channel = await self.bot.fetch_channel(channel_id)
 
-            create_channel(
-                ctx.guild,
-                [
-                    channel.id,
-                    "general",
-                    channel.name,
-                ],
-            )
+                create_channel(
+                    ctx.guild,
+                    [
+                        channel.id,
+                        "general",
+                        channel.name,
+                    ],
+                )
 
             # Audit channel
             await ctx.send(
                 "Canal audit. Se usa para mostrar las acciones que hace el bot a los administradores."
             )
             msg = await self.bot.wait_for("message", check=check, timeout=60)
-            log.info(msg.content)
 
-            channel_id = msg.content.replace("<#", "").replace(">", "")
-            channel = await self.bot.fetch_channel(channel_id)
+            if msg.content.lower() != "skip":
+                channel_id = msg.content.replace("<#", "").replace(">", "")
+                channel = await self.bot.fetch_channel(channel_id)
 
-            create_channel(
-                ctx.guild,
-                [
-                    channel.id,
-                    "audit",
-                    channel.name,
-                ],
-            )
+                create_channel(
+                    ctx.guild,
+                    [
+                        channel.id,
+                        "audit",
+                        channel.name,
+                    ],
+                )
 
             # Canal memes
             await ctx.send("Canal memes. Para mandar memes cada hora")
             msg = await self.bot.wait_for("message", check=check, timeout=60)
 
-            channel_id = msg.content.replace("<#", "").replace(">", "")
-            channel = await self.bot.fetch_channel(channel_id)
+            if msg.content.lower() != "skip":
+                channel_id = msg.content.replace("<#", "").replace(">", "")
+                channel = await self.bot.fetch_channel(channel_id)
 
-            create_channel(
-                ctx.guild,
-                [
-                    channel.id,
-                    "memes",
-                    channel.name,
-                ],
-            )
+                create_channel(
+                    ctx.guild,
+                    [
+                        channel.id,
+                        "memes",
+                        channel.name,
+                    ],
+                )
 
             # Canal lobby
             await ctx.send("Canal lobby. Se usa para mandar mensajes de bienvenida")
             msg = await self.bot.wait_for("message", check=check, timeout=60)
 
-            channel_id = msg.content.replace("<#", "").replace(">", "")
-            channel = await self.bot.fetch_channel(channel_id)
+            if msg.content.lower() != "skip":
+                channel_id = msg.content.replace("<#", "").replace(">", "")
+                channel = await self.bot.fetch_channel(channel_id)
 
-            create_channel(
-                ctx.guild,
-                [
-                    channel.id,
-                    "lobby",
-                    channel.name,
-                ],
-            )
+                create_channel(
+                    ctx.guild,
+                    [
+                        channel.id,
+                        "lobby",
+                        channel.name,
+                    ],
+                )
 
             # Canal noticias_bot
             await ctx.send(
                 "Canal noticias_bot. Se usa para mandar info sobre nuevas versiones del bot"
             )
             msg = await self.bot.wait_for("message", check=check, timeout=60)
+            if msg.content.lower() != "skip":
+                channel_id = msg.content.replace("<#", "").replace(">", "")
+                channel = await self.bot.fetch_channel(channel_id)
 
-            channel_id = msg.content.replace("<#", "").replace(">", "")
-            channel = await self.bot.fetch_channel(channel_id)
+                create_channel(
+                    ctx.guild,
+                    [
+                        channel.id,
+                        "bot_news",
+                        channel.name,
+                    ],
+                )
 
-            create_channel(
-                ctx.guild,
-                [
-                    channel.id,
-                    "bot_news",
-                    channel.name,
-                ],
-            )
+            # Canal juegos
+            await ctx.send("Canal juegos. Se usa para mandar juegos gratuitos")
+            msg = await self.bot.wait_for("message", check=check, timeout=60)
+
+            if msg.content.lower() != "skip":
+                channel_id = msg.content.replace("<#", "").replace(">", "")
+                channel = await self.bot.fetch_channel(channel_id)
+
+                create_channel(
+                    ctx.guild,
+                    [
+                        channel.id,
+                        "games",
+                        channel.name,
+                    ],
+                )
         except (nextcord.Forbidden, Exception) as e:
             if isinstance(e, nextcord.Forbidden):
                 await ctx.send(

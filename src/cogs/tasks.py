@@ -1,5 +1,7 @@
 import asyncio
 import logging
+from platform import platform
+from urllib import request
 import requests
 import nextcord
 from nextcord.errors import Forbidden
@@ -31,6 +33,32 @@ class tasks(commands.Cog):
         self.discord_status.start()
         self.remove_records_from_previous_day.start()
         self.new_github_release.start()
+        self.free_games.start()
+
+    @tasks.loop(hours=2)
+    async def free_games(self):
+        r = requests.get("https://www.gamerpower.com/api/giveaways?type=game")
+
+        for guild in self.bot.guilds:
+
+            for x in r.json():
+                if not check_record_in_database(guild, x["id"]):
+                    create_record(guild, ["game", x["id"]])
+                    title = x["title"]
+                    decription = x["description"]
+                    url = x["open_giveaway_url"]
+                    thumbnail = x["thumbnail"]
+                    platform = x["platforms"]
+
+                    embed = nextcord.Embed(title=title)
+                    embed.add_field(name="Descripcion", value=decription, inline=False)
+                    embed.add_field(name="Plataforma", value=platform, inline=False)
+                    embed.add_field(name="Link", value=url, inline=False)
+                    embed.set_image(url=thumbnail)
+
+                    await self.bot.channel_send(
+                        guild, channel_type="games", msg="a", embed=embed
+                    )
 
     @tasks.loop(minutes=5)
     async def new_github_release(self):
@@ -65,7 +93,7 @@ class tasks(commands.Cog):
     async def remove_records_from_previous_day(self):
         """Removes records from 2 days ago"""
         for guild in self.bot.guilds:
-            remove_records_from_a_date(guild, date.today(), "github")
+            remove_records_from_a_date(guild, date.today(), ["meme"])
         log.info("Removed records from 2 days ago")
 
     @tasks.loop(hours=6)
@@ -211,6 +239,7 @@ class tasks(commands.Cog):
                         create_record(guild, ["incident", update_id])
                         await self.bot.channel_send(guild, "audit", "a", update_embed)
 
+    @free_games.before_loop
     @discord_status.before_loop
     @update_users.before_loop
     @meme.before_loop
