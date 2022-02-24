@@ -100,9 +100,6 @@ class Bot(commands.Bot):
                 log.error("Error creating user on join: {}".format(error))
             else:
                 log.info("Created user {} with id {}".format(member.name, member.id))
-        await self.channel_send(
-            member.guild, "audit", "{} se ha unido".format(member.name)
-        )
 
     async def on_member_remove(self, member: nextcord.Member):
         # When a user leaves a server
@@ -113,10 +110,6 @@ class Bot(commands.Bot):
             await self.channel_send(member.guild, "lobby", mensaje_lobby_usuario)
         else:
             await self.channel_send(member.guild, "lobby", mensaje_lobby_bot)
-
-        await self.channel_send(
-            member.guild, "audit", "{} se ha ido".format(member.name)
-        )
 
     def run(self):
 
