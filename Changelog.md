@@ -7,7 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Añadido 
-- Mensajes cuando un usuario se va
+- Mensajes cuando un usuario se va del servidor
+  
+### Eliminado
+- Comando cojones
+- Comando tecute
+
+### Cambiado
+- Modificada task remove_records_from_previous_day para que no borre records de github
 
 ## [v3.9.1] - 2022-2-18
 ### Arreglado 
