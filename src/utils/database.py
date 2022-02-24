@@ -334,33 +334,35 @@ def create_record(guild: nextcord.guild, record_data: list) -> None:
 
 
 def remove_records_from_a_date(
-    guild: nextcord.guild, date: datetime.date, record_type_avoid: str
+    guild: nextcord.guild, date: datetime.date, record_types: list
 ) -> None:
     """Removes all records from a date
     Args:
         guild (nextcord.Guild) : Guild to access its database
         date (str): date to remove records from
-        record_type_avoid (str): type of record to NOT delete
+        record(list): record type to delete
     """
     database_connection = create_connection(guild)
 
-    sql = "DELETE FROM records WHERE date=? AND type!=?"
-    var = [date, record_type_avoid]
-    cur = database_connection.cursor()
-    try:
-        cur.execute(sql, var)
-        log.info("Deleted records from {} from database".format(date))
-    except Exception as error:
-        log.error(
-            "Error: Could not delete records from {} from database: {}".format(
-                date, error
-            )
-        )
-        database_connection.close()
+    for record_type in record_types:
 
-    else:
-        database_connection.commit()
-        database_connection.close()
+        sql = "DELETE FROM records WHERE date=? AND type=?"
+        var = [date, record_type]
+        cur = database_connection.cursor()
+        try:
+            cur.execute(sql, var)
+            log.info("Deleted records from {} from database".format(date))
+        except Exception as error:
+            log.error(
+                "Error: Could not delete records from {} from database: {}".format(
+                    date, error
+                )
+            )
+            database_connection.close()
+
+        else:
+            database_connection.commit()
+            database_connection.close()
 
 
 def create_channel(guild: nextcord.guild, channel_data: list) -> None:
