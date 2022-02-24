@@ -423,46 +423,55 @@ class memes(commands.Cog):
     async def coding(self, ctx: commands.Context, user: nextcord.Member = None):
         """Programa como un pro hacker"""
 
-        # Get user avatar
-        avatarUrl = get_user(ctx, user).avatar.url
+        avatar_info = [
+            {
+                "url": get_user(ctx, user).avatar.url,
+                "size": 167,
+                "x": 218,
+                "y": 137,
+            }
+        ]
 
-        meme = create_meme(("coding", "01"), avatarUrl, 167, (0, 0, 218, 137), True)
+        meme = create_meme("coding", avatar_info)
 
         # Send meme
         await ctx.send(file=nextcord.File(meme, "output.png"))
-
-        # Delete user avatar and output
-        delete_files(("01.webp", "output.png", "01.png"))
 
     @commands.command()
     async def unsee(self, ctx: commands.Context, user: nextcord.Member = None):
         """No por favor"""
 
-        # Get user avatar
-        avatarUrl = get_user(ctx, user).avatar.url
+        avatar_info = [
+            {
+                "url": get_user(ctx, user).avatar.url,
+                "size": 108,
+                "x": 256,
+                "y": 112,
+            }
+        ]
 
-        meme = create_meme(("unsee", "01"), avatarUrl, 108, (0, 0, 256, 112), True)
+        meme = create_meme("unsee", avatar_info)
 
         # Send meme
         await ctx.send(file=nextcord.File(meme, "output.png"))
-
-        # Delete user avatar and output
-        delete_files(("01.webp", "output.png", "01.png"))
 
     @commands.command()
     async def palomitas(self, ctx: commands.Context, user: nextcord.Member = None):
         """Este drama está interesante"""
 
-        # Get user avatar
-        avatarUrl = get_user(ctx, user).avatar.url
+        avatar_info = [
+            {
+                "url": get_user(ctx, user).avatar.url,
+                "size": 125,
+                "x": 278,
+                "y": 67,
+            }
+        ]
 
-        meme = create_meme(("palomitas", "01"), avatarUrl, 125, (0, 0, 278, 67), True)
+        meme = create_meme("palomitas", avatar_info)
 
         # Send meme
         await ctx.send(file=nextcord.File(meme, "output.png"))
-
-        # Delete user avatar and output
-        delete_files(("01.webp", "output.png", "01.png"))
 
     @commands.command()
     async def quien(
@@ -484,12 +493,21 @@ class memes(commands.Cog):
         Y = 20
         Y_aux = 10
 
+        avatar_info = [
+            {
+                "url": get_user(ctx, user).avatar.url,
+                "size": 130,
+                "x": 210,
+                "y": 570,
+            }
+        ]
+
         # Get user avatar
         avatarUrl = get_user(ctx, user).avatar.url
 
-        meme = create_meme(("quien", "01"), avatarUrl, 130, (0, 0, 210, 570), True)
+        meme = create_meme("quien", avatar_info)
         txtPic = Image.new("RGBA", (200, 200))
-        img = Image.open(meme_resources_path + "output" + ".png").convert("RGBA")
+        img = Image.open(meme).convert("RGBA")
         draw = ImageDraw.Draw(txtPic)
         font = ImageFont.truetype(meme_resources_path + "Calibri.ttf", 24)
 
@@ -509,76 +527,29 @@ class memes(commands.Cog):
         # Send meme
         await ctx.send(file=nextcord.File(bytes_io, "output.png"))
 
-        # Delete user avatar and output
-        time.sleep(1)
-        delete_files(("01.webp", "output.png", "01.png", "output2.png"))
-
-    @commands.command()
-    async def cojones(self, ctx: commands.Context, text: str, user: nextcord.Member):
-        """Si, los cojones
-
-        Uso:
-            fur cojones <texto> @<usuario>
-        """
-
-        # Get user avatar
-        avatarUrl = user.avatar.url
-
-        # Download author avatar
-        r = requests.get(ctx.author.avatar.url, allow_redirects=True)
-        open(meme_resources_path + "02.webp", "wb").write(r.content)
-
-        convert_pic(meme_resources_path + "02.webp", "02", 146)
-
-        create_meme(
-            ("cojones", "01", "02"), avatarUrl, 175, (0, 0, 185, 431, 218, 6), True
-        )
-
-        # Add text to image
-        img = Image.open(meme_resources_path + "output" + ".png").convert("RGBA")
-        txtPic = Image.new("RGBA", (600, 300))
-        draw = ImageDraw.Draw(txtPic)
-        font = ImageFont.truetype(meme_resources_path + "Calibri.ttf", 45)
-
-        draw.text(((10, 10)), text, font=font, fill=(0, 0, 0, 255))
-        img.paste(txtPic, (720, 560), txtPic)
-
-        img.save(meme_resources_path + "output2.png", "PNG")
-
-        # Send meme
-        await ctx.send(file=nextcord.File(meme, "output.png"))
-
-        # Delete user avatar and output
-        delete_files(
-            ("01.webp", "output.png", "01.png", "02.png", "02.webp", "output2.png")
-        )
-
     @commands.command()
     async def palanca(self, ctx: commands.Context, user: nextcord.Member):
         """Tira de la palanca Cronk"""
 
-        # Get author avatar url
-        author_avatar_url = ctx.author.avatar.url
+        avatar_info = [
+            {
+                "url": ctx.author.avatar.url,
+                "size": 62,
+                "x": 240,
+                "y": 79,
+            },
+            {
+                "url": user.avatar.url,
+                "size": 55,
+                "x": 137,
+                "y": 177,
+            },
+        ]
 
-        # Download second avatar
-        r = requests.get(user.avatar.url, allow_redirects=True)
-        open(meme_resources_path + "02.webp", "wb").write(r.content)
-
-        convert_pic(meme_resources_path + "02.webp", "02", 57)
-
-        create_meme(
-            ("palanca", "01", "02"),
-            author_avatar_url,
-            62,
-            (0, 0, 240, 79, 137, 176),
-            True,
-        )
+        meme = create_meme("palanca", avatar_info)
 
         # Send meme
         await ctx.send(file=nextcord.File(meme, "output.png"))
-
-        # Delete user avatar and output
-        delete_files(("01.webp", "output.png", "01.png", "02.png", "02.webp"))
 
     @commands.command()
     async def tren(self, ctx: commands.Context, user: nextcord.Member):
