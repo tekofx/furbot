@@ -1,17 +1,11 @@
-from http import server
 import io
-from turtle import width
 import nextcord
 from nextcord.ext import commands
 import random
 import textwrap
-import time
-import PIL
 from PIL import ImageFont, ImageDraw
 from utils.functions import (
     get_user,
-    delete_files,
-    convert_pic,
 )
 import os
 import logging
@@ -20,7 +14,7 @@ import unicodedata
 import requests
 from PIL import Image
 from utils.bot import Bot
-from utils.data import get_server_path, meme_resources_path, server_path
+from utils.data import get_server_path, meme_resources_path
 
 log = logging.getLogger(__name__)
 
