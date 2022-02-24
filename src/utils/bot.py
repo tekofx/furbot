@@ -1,4 +1,3 @@
-from turtle import pen
 import nextcord
 from nextcord.errors import Forbidden
 from nextcord.ext import commands
