@@ -911,7 +911,7 @@ class memes(commands.Cog):
         await ctx.send(file=nextcord.File(meme, "output.png"))
 
 
-def create_meme(meme_picture: str, avatars_info: list[dict]) -> io.BytesIO:
+def create_meme(meme_picture: str, avatars_info: list) -> io.BytesIO:
     """Crea un meme
 
     Args:
