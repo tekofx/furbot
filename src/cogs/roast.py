@@ -12,14 +12,6 @@ class roast(commands.Cog):
         self.bot = bot
 
     @commands.command()
-    async def tecute(self, ctx: commands.Context):
-        """Teko cute"""
-        if ctx.author.id is magnet_id:
-            await ctx.send("Teko cute")
-        else:
-            await ctx.send("Teko NO cute")
-
-    @commands.command()
     async def teodio(self, ctx: commands.Context, user: nextcord.Member = None):
         """Muestra tu odio al bot"""
         await ctx.reply(content="Yo te odio mas pedazo de basura")
@@ -29,8 +21,7 @@ class roast(commands.Cog):
         """Insulta gente 7w7"""
 
         try:
-            con = create_connection(str(ctx.guild.id))
-            output = get_random_sentence(con, "insult")
+            output = get_random_sentence(ctx.guild, "insult")
             if user is None:
                 await ctx.reply(content=output)
             else:
@@ -50,11 +41,9 @@ class roast(commands.Cog):
         Ejemplo:
             fur addinsulto "feo" "horrible"
         """
-        con = create_connection(str(ctx.guild.id))
-
         for insult in insults:
             try:
-                create_sentence(con, ["insult", insult])
+                create_sentence(ctx.guild, ["insult", insult])
             except Exception as error:
                 log.error("Error adding insult: {}".format(error))
                 await ctx.reply(
@@ -68,8 +57,7 @@ class roast(commands.Cog):
     async def animo(self, ctx: commands.Context, user: nextcord.Member = None):
         """Anima a la gente"""
         try:
-            con = create_connection(str(ctx.guild.id))
-            output = get_random_sentence(con, "animo")
+            output = get_random_sentence(ctx.guild, "animo")
             if user is None:
                 await ctx.reply(content=output)
             else:
@@ -89,11 +77,10 @@ class roast(commands.Cog):
         Ejemplo:
             fur addanimo "guapo" "hermoso"
         """
-        con = create_connection(str(ctx.guild.id))
 
         for animo in animos:
             try:
-                create_sentence(con, ["animo", animo])
+                create_sentence(ctx.guild, ["animo", animo])
             except Exception as error:
                 log.error("Error adding anim: {}".format(error))
                 await ctx.reply(
