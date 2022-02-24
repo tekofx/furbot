@@ -10,5 +10,6 @@ services:
       - ./files:/bot/files/
       - ./databases:/bot/databases
       - ./env:/bot/env
+      - ./cogs/:/bot/cogs
 
     restart: unless-stopped
