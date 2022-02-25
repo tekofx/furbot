@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Mensajes cuando un usuario se va del servidor
 - Task que publica juegos nuevos
 - Opcion para solo configurar 1 canal con el comando setup
+- Cog wordle: para jugar al wordle entre todos los miembros del server. Cada miembro tiene 1 oportunidad para proponer una palabra
   
 ### Eliminado
 - Comando cojones

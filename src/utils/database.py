@@ -42,7 +42,20 @@ channels_table = """ CREATE TABLE IF NOT EXISTS channels (
                                     PRIMARY KEY(channel_id, type )
                                 ); """
 
-tables = [users_table, roles_table, sentences_table, records_table, channels_table]
+wordle_table = """ CREATE TABLE IF NOT EXISTS wordle (
+                                    id integer PRIMARY KEY AUTOINCREMENT,
+                                    word text NOT NULL,
+                                    user_id integer NOT NULL
+
+                                );"""
+tables = [
+    users_table,
+    roles_table,
+    sentences_table,
+    records_table,
+    channels_table,
+    wordle_table,
+]
 log = logging.getLogger(__name__)
 
 
@@ -394,6 +407,103 @@ def create_channel(guild: nextcord.guild, channel_data: list) -> None:
     else:
         database_connection.commit()
         database_connection.close()
+
+
+def create_word(guild: nextcord.guild, word_data: list) -> None:
+    """Creates a word in the wordle table
+    Args:
+        guild (nextcord.Guild) : Guild to access its database
+        word_data (list): info of word. Containing [word, user_id]
+            If user_id is 0, it is the word to guess
+    """
+    database_connection = create_connection(guild)
+
+    sql = """ INSERT INTO wordle(word,user_id)
+              VALUES(?,?) """
+
+    cur = database_connection.cursor()
+    try:
+        cur.execute(sql, word_data)
+        log.info(
+            "word {word} with id {id} was added to the database".format(
+                word=word_data[1], id=word_data[0]
+            )
+        )
+    except Exception as error:
+        log.error(
+            "Error: Could not create word {id} {name}: {error}".format(
+                id=word_data[0], name=word_data[1], error=error
+            )
+        )
+        database_connection.close()
+    else:
+        database_connection.commit()
+        database_connection.close()
+
+
+def empty_wordle_table(guild: nextcord.guild) -> None:
+    """Empties the wordle table
+
+    Args:
+        guild (nextcord.guild): guild of the database
+    """
+    database_connection = create_connection(guild)
+
+    sql = """ DELETE FROM wordle """
+
+    cur = database_connection.cursor()
+    try:
+        cur.execute(sql)
+    except Exception as error:
+        log.error("Error: Could not empty wordle table: {}".format(error))
+        database_connection.close()
+    else:
+        database_connection.commit()
+        database_connection.close()
+
+
+def check_user_in_wordle(guild: nextcord.guild, user_id: int) -> bool:
+    database_connection = create_connection(guild)
+
+    cursor = database_connection.cursor()
+    sql = "SELECT rowid FROM wordle WHERE user_id = ?"
+    var = [user_id]
+    try:
+        cursor.execute(sql, var)
+    except Exception as error:
+        log.error("Error: Could not check if user {} exists: {}".format(user_id, error))
+        database_connection.close()
+    else:
+        data = cursor.fetchall()
+        database_connection.close()
+        if len(data) == 0:
+            return False
+        return True
+
+
+def get_word(guild: nextcord.guild) -> str:
+    """Checks if a word is the word to guess
+
+    Args:
+        guild (nextcord.guild): guild of the database
+
+    Returns:
+        str: word to guess
+    """
+
+    database_connection = create_connection(guild)
+
+    cursor = database_connection.cursor()
+    sql = "SELECT word FROM wordle WHERE user_id = 0"
+    try:
+        cursor.execute(sql)
+    except Exception as error:
+        log.error("Error: Could not get word: {}".format(error))
+        database_connection.close()
+    else:
+        data = cursor.fetchone()
+        database_connection.close()
+        return data[0]
 
 
 ###################### Getters and setters ######################
@@ -768,3 +878,23 @@ def check_record_in_database(guild: nextcord.Guild, record: str) -> bool:
         if data == (0,):
             return False
         return True
+
+
+def table_empty(guild: nextcord.guild, table: str) -> bool:
+    database_connection = create_connection(guild)
+    sql = "SELECT count(*) FROM {}".format(table)
+    cursor = database_connection.cursor()
+
+    try:
+        cursor.execute(sql)
+    except Exception as error:
+        log.error(
+            "Error: Could not check if table {} is empty: {}".format(table, error)
+        )
+        database_connection.close()
+    else:
+        data = cursor.fetchone()
+        database_connection.close()
+        if data[0] == 0:
+            return True
+        return False
