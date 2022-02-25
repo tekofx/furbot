@@ -5,13 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [v5.0]
 ### Añadido 
 - Mensajes cuando un usuario se va del servidor
 - Task que publica juegos nuevos
 - Opcion para solo configurar 1 canal con el comando setup
 - Cog wordle: para jugar al wordle entre todos los miembros del server. Cada miembro tiene 1 oportunidad para proponer una palabra
   
+### Añadido
+- Comando wordle
+
 ### Eliminado
 - Comando cojones
 - Comando tecute
