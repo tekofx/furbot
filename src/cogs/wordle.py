@@ -108,7 +108,7 @@ class wordle(commands.Cog):
         if now < datetime(now.year, now.month, now.day, 8, 0, 0):
             next_time = datetime(now.year, now.month, now.day, 8, 0, 0)
         else:
-            next_time = now + timedelta(days=1)
+            next_time = (now + timedelta(days=1)).replace(hour=8, minute=0, second=0)
         hour_to_wait = datetime(next_time.year, next_time.month, next_time.day, 8)
 
         secs_to_wait = (hour_to_wait - datetime.now()).total_seconds()

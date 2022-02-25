@@ -28,6 +28,7 @@ CHANNELS = [
         "channel_description": "mandar info sobre nuevas versiones del bot",
     },
     {"channel_type": "games", "channel_description": "mandar juegos gratuitos"},
+    {"channel_type": "wordle", "channel_description": "jugar a wordle"},
 ]
 
 
