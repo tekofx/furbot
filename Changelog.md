@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Añadido 
 - Mensajes cuando un usuario se va del servidor
 - Task que publica juegos nuevos
+- Opcion para solo configurar 1 canal con el comando setup
   
 ### Eliminado
 - Comando cojones
