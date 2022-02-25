@@ -1,4 +1,5 @@
 import logging
+from typing import List
 from nextcord.ext import commands
 import nextcord
 from utils.database import (
@@ -14,6 +15,20 @@ import yaml
 
 log = logging.getLogger(__name__)
 ROLE_EXISTS = "UNIQUE constraint failed: roles.id"
+CHANNELS = [
+    {"channel_type": "general", "channel_description": "los mensajes de cumpleaños."},
+    {
+        "channel_type": "audit",
+        "channel_description": "mostrar las acciones que hace el bot a los administradores.",
+    },
+    {"channel_type": "memes", "channel_description": "mandar memes cada hora"},
+    {"channel_type": "lobby", "channel_description": "mandar mensajes de bienvenida"},
+    {
+        "channel_type": "bot_news",
+        "channel_description": "mandar info sobre nuevas versiones del bot",
+    },
+    {"channel_type": "games", "channel_description": "mandar juegos gratuitos"},
+]
 
 
 class administration(commands.Cog):
@@ -22,136 +37,46 @@ class administration(commands.Cog):
 
     @commands.command(name="setup")
     @commands.has_permissions(administrator=True)
-    async def setup(self, ctx: commands.Context) -> None:
-        """Configurar los canales del bot"""
+    async def setup(self, ctx: commands.Context, canal: str = None) -> None:
+        """Configurar los canales del bot
+
+        Si no se especifica ningun canal, se configuraran todos los canales
+        """
 
         def check(m: nextcord.Message) -> bool:
             return m.author == ctx.author and m.channel == ctx.channel
+
+        if canal is not None:
+            if not canal in self.get_channel_types():
+                await ctx.send(
+                    "Canal no valido, el canal debe ser uno de los siguientes: `{}`".format(
+                        ", ".join(self.get_channel_types())
+                    )
+                )
+                return
+            await ctx.send("Seleccione el canal que servirá como {}".format(canal))
+            msg = await self.bot.wait_for("message", check=check, timeout=60)
+            channel = await self.fetch_channel_from_message_content(msg)
+
+            create_channel(
+                ctx.guild,
+                [
+                    channel.id,
+                    canal,
+                    channel.name,
+                ],
+            )
+            await ctx.send("Canal {} configurado".format(canal))
+            return
 
         await ctx.send(
             "Empezando configuración. Se le pedirá establecer varios canales. Si no quiere establecer un canal, escriba `skip`"
         )
         await sleep(2)
+        for x in CHANNELS:
+            await self.setup_channel(ctx, x["channel_type"], x["channel_description"])
 
-        try:
-            # General channel
-            await ctx.send(
-                "Seleccione el canal general. Se utiliza para los mensajes de cumpleaños."
-            )
-            msg = await self.bot.wait_for("message", check=check, timeout=60)
-            if msg.content.lower() != "skip":
-
-                channel_id = msg.content.replace("<#", "").replace(">", "")
-                channel = await self.bot.fetch_channel(channel_id)
-
-                create_channel(
-                    ctx.guild,
-                    [
-                        channel.id,
-                        "general",
-                        channel.name,
-                    ],
-                )
-
-            # Audit channel
-            await ctx.send(
-                "Canal audit. Se usa para mostrar las acciones que hace el bot a los administradores."
-            )
-            msg = await self.bot.wait_for("message", check=check, timeout=60)
-
-            if msg.content.lower() != "skip":
-                channel_id = msg.content.replace("<#", "").replace(">", "")
-                channel = await self.bot.fetch_channel(channel_id)
-
-                create_channel(
-                    ctx.guild,
-                    [
-                        channel.id,
-                        "audit",
-                        channel.name,
-                    ],
-                )
-
-            # Canal memes
-            await ctx.send("Canal memes. Para mandar memes cada hora")
-            msg = await self.bot.wait_for("message", check=check, timeout=60)
-
-            if msg.content.lower() != "skip":
-                channel_id = msg.content.replace("<#", "").replace(">", "")
-                channel = await self.bot.fetch_channel(channel_id)
-
-                create_channel(
-                    ctx.guild,
-                    [
-                        channel.id,
-                        "memes",
-                        channel.name,
-                    ],
-                )
-
-            # Canal lobby
-            await ctx.send("Canal lobby. Se usa para mandar mensajes de bienvenida")
-            msg = await self.bot.wait_for("message", check=check, timeout=60)
-
-            if msg.content.lower() != "skip":
-                channel_id = msg.content.replace("<#", "").replace(">", "")
-                channel = await self.bot.fetch_channel(channel_id)
-
-                create_channel(
-                    ctx.guild,
-                    [
-                        channel.id,
-                        "lobby",
-                        channel.name,
-                    ],
-                )
-
-            # Canal noticias_bot
-            await ctx.send(
-                "Canal noticias_bot. Se usa para mandar info sobre nuevas versiones del bot"
-            )
-            msg = await self.bot.wait_for("message", check=check, timeout=60)
-            if msg.content.lower() != "skip":
-                channel_id = msg.content.replace("<#", "").replace(">", "")
-                channel = await self.bot.fetch_channel(channel_id)
-
-                create_channel(
-                    ctx.guild,
-                    [
-                        channel.id,
-                        "bot_news",
-                        channel.name,
-                    ],
-                )
-
-            # Canal juegos
-            await ctx.send("Canal juegos. Se usa para mandar juegos gratuitos")
-            msg = await self.bot.wait_for("message", check=check, timeout=60)
-
-            if msg.content.lower() != "skip":
-                channel_id = msg.content.replace("<#", "").replace(">", "")
-                channel = await self.bot.fetch_channel(channel_id)
-
-                create_channel(
-                    ctx.guild,
-                    [
-                        channel.id,
-                        "games",
-                        channel.name,
-                    ],
-                )
-        except (nextcord.Forbidden, Exception) as e:
-            if isinstance(e, nextcord.Forbidden):
-                await ctx.send(
-                    "Error, el bot no tiene permisos para ver el canal. Vuelve a ejecutar el comando cuando el bot tenga permiso de ver el canal."
-                )
-            else:
-                await ctx.send("Error desconocido, contacta con un administrador.")
-                log.error("Unkwon error: {}".format(e))
-
-            return
-        else:
-            await ctx.send("Añadidos canales")
+        await ctx.send("Configuración finalizada")
 
     @commands.command(name="activity")
     @commands.has_permissions(administrator=True)
@@ -291,6 +216,61 @@ class administration(commands.Cog):
         await sleep(5)
         await message.delete()
         await ctx.message.delete()
+
+    async def fetch_channel_from_message_content(
+        self, message: nextcord.Message
+    ) -> nextcord.TextChannel:
+        """Gets a channel from a message content
+
+        Args:
+            message (nextcord.Message): message to get the channel from
+
+        Returns:
+            nextcord.TextChannel: channel
+        """
+
+        channel_id = message.content.replace("<#", "").replace(">", "")
+        channel = await self.bot.fetch_channel(channel_id)
+        return channel
+
+    async def setup_channel(
+        self, ctx: commands.Context, channel_type: str, channel_description: str
+    ):
+        def check(m: nextcord.Message) -> bool:
+            return m.author == ctx.author and m.channel == ctx.channel
+
+        # General channel
+        await ctx.send(
+            "Seleccione el canal {}. Se utiliza para {}".format(
+                channel_type, channel_description
+            )
+        )
+        msg = await self.bot.wait_for("message", check=check, timeout=60)
+        if msg.content.lower() != "skip":
+
+            channel = await self.fetch_channel_from_message_content(msg)
+
+            create_channel(
+                ctx.guild,
+                [
+                    channel.id,
+                    channel_type,
+                    channel.name,
+                ],
+            )
+            await ctx.send("Canal {} añadido".format(channel_type))
+
+    def get_channel_types(self) -> List[str]:
+        """Gets the channel_types from CHANNEL
+
+        Returns:
+            List[str]: contains the channel_types
+        """
+        output = []
+        for x in CHANNELS:
+            output.append(x["channel_type"])
+
+        return output
 
 
 def setup(bot: commands.Bot):
