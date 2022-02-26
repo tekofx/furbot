@@ -45,7 +45,7 @@ channels_table = """ CREATE TABLE IF NOT EXISTS channels (
 wordle_table = """ CREATE TABLE IF NOT EXISTS wordle (
                                     id integer PRIMARY KEY AUTOINCREMENT,
                                     word text NOT NULL,
-                                    user_id integer NOT NULL
+                                    user_id integer NOT NULL UNIQUE
 
                                 );"""
 tables = [
