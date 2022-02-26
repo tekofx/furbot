@@ -98,7 +98,7 @@ class wordle(commands.Cog):
 
         for guild in self.bot.guilds:
             create_word(guild, [self.get_random_word(), 0])
-            msg = "Ya está disponible la palabra de hoy"
+            msg = "Ya está disponible la palabra de hoy, utiliza `fur guess` para adivinarla"
             await self.bot.channel_send(guild, "wordle", msg)
 
     @generate_word.before_loop
