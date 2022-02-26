@@ -94,6 +94,7 @@ class wordle(commands.Cog):
     @tasks.loop(hours=24)
     async def generate_word(self):
         # Generar palabra para adivinar
+        log.info("Generating word for each server")
 
         for guild in self.bot.guilds:
             create_word(guild, [self.get_random_word(), 0])
