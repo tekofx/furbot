@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+### Añadido
+- Task que dice la palabra solucion a las 12
+  
+### Arreglado
+- Error con wordle que no creaba la palabra a adivinar
+
+### Modificado
+- Eliminadas palabras poco conocidas de la lista de palabras de wordle
+
 ## [v4.0]
 ### Añadido 
 - Mensajes cuando un usuario se va del servidor
