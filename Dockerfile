@@ -4,6 +4,7 @@ WORKDIR /bot/
 
 COPY requirements.txt /tmp/
 COPY src /bot/src
+COPY data/resources /bot/data/resources
 
 ENV TZ="Europe/Madrid"
 RUN apt-get update && apt-get install -y --no-install-recommends \
