@@ -34,6 +34,7 @@ class tasks(commands.Cog):
         self.remove_records_from_previous_day.start()
         self.new_github_release.start()
         self.free_games.start()
+        log.info("Waiting for tasks to start")
 
     @tasks.loop(hours=2)
     async def free_games(self):
@@ -248,7 +249,6 @@ class tasks(commands.Cog):
     @birthday.before_loop
     async def prep(self):
         """Waits some time to execute tasks"""
-        log.info("Waiting to execute tasks")
 
         hours_from_now = 1
         minutes_from_now = 0
@@ -261,8 +261,6 @@ class tasks(commands.Cog):
         after = after.replace(minute=0, second=0)
 
         delta = (after - now).total_seconds()
-
-        log.info("Waiting {} seconds".format(delta))
 
         await asyncio.sleep(delta)
 

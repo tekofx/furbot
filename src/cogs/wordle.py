@@ -54,8 +54,8 @@ class wordle(commands.Cog):
         return False
 
     @commands.command()
-    async def wordle(self, ctx: commands.Context, word: str):
-        # Intentar adivinar la palabra
+    async def guess(self, ctx: commands.Context, word: str):
+        """Intentar adivinar la palabra del wordle"""
         if table_empty(ctx.guild, "wordle"):
             await ctx.send("Ya se ha adivinado la palabra de hoy")
             return
@@ -103,7 +103,6 @@ class wordle(commands.Cog):
     @generate_word.before_loop
     async def prep(self):
         """Waits some time to execute tasks"""
-        log.info("Waiting to execute tasks")
         now = datetime.now()
         if now < datetime(now.year, now.month, now.day, 8, 0, 0):
             next_time = datetime(now.year, now.month, now.day, 8, 0, 0)
@@ -112,6 +111,8 @@ class wordle(commands.Cog):
         hour_to_wait = datetime(next_time.year, next_time.month, next_time.day, 8)
 
         secs_to_wait = (hour_to_wait - datetime.now()).total_seconds()
+
+        log.info("Waiting to generate word {} mins".format(str(secs_to_wait / 60)))
 
         await asyncio.sleep(secs_to_wait)
 
