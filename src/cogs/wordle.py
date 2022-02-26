@@ -69,13 +69,23 @@ class wordle(commands.Cog):
             return
 
         if len(word) != WORD_NUM_CHARS:
-            await ctx.send("La palabra debe tener {} letras".format(WORD_NUM_CHARS))
+            await ctx.send(
+                "La palabra debe tener {} letras, inténtalo otra vez".format(
+                    WORD_NUM_CHARS
+                )
+            )
             return
 
         if not self.word_in_word_dict(word):
-            await ctx.send("La palabra no está en la lista de palabras")
+            await ctx.send(
+                "La palabra no está en la lista de palabras, inténtalo otra vez"
+            )
             return
 
+        # Add user to db
+        create_word(ctx.guild, [word, ctx.author.id])
+
+        # Generate squares
         output = word + "\n"
         for char1, char2 in zip(word, solution):
             if char1 in solution:
@@ -101,6 +111,15 @@ class wordle(commands.Cog):
             msg = "Ya está disponible la palabra de hoy, utiliza `fur guess` para adivinarla"
             await self.bot.channel_send(guild, "wordle", msg)
 
+    @tasks.loop(hours=24)
+    async def give_solution(self):
+        # Dar la palabra solucion
+
+        for guild in self.bot.guilds:
+            word = get_word(guild)
+            msg = "No se adivinó la palabra de hoy, la palabra era: {}".format(word)
+            await self.bot.channel_send(guild, "wordle", msg)
+
     @generate_word.before_loop
     async def prep(self):
         """Waits some time to execute tasks"""
@@ -114,6 +133,22 @@ class wordle(commands.Cog):
         secs_to_wait = (hour_to_wait - datetime.now()).total_seconds()
 
         log.info("Waiting to generate word {} mins".format(str(secs_to_wait / 60)))
+
+        await asyncio.sleep(secs_to_wait)
+
+    @generate_word.before_loop
+    async def prep2(self):
+        """Waits some time to execute tasks"""
+        now = datetime.now()
+        if now < datetime(now.year, now.month, now.day, 23, 59, 0):
+            next_time = datetime(now.year, now.month, now.day, 23, 59, 0)
+        else:
+            next_time = (now + timedelta(days=1)).replace(hour=23, minute=59, second=0)
+        hour_to_wait = datetime(next_time.year, next_time.month, next_time.day, 23, 59)
+
+        secs_to_wait = (hour_to_wait - datetime.now()).total_seconds()
+
+        log.info("Waiting to give solution {} mins".format(str(secs_to_wait / 60)))
 
         await asyncio.sleep(secs_to_wait)
 
