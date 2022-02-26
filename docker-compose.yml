@@ -7,9 +7,7 @@ services:
       - "100:80"
 
     volumes:
-      - ./files:/bot/files/
-      - ./databases:/bot/databases
       - ./env:/bot/env
-      - ./cogs/:/bot/cogs
+      - ./data/servers:/bot/data/servers
 
     restart: unless-stopped
