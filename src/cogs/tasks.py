@@ -61,7 +61,7 @@ class tasks(commands.Cog):
                         guild, channel_type="games", msg="a", embed=embed
                     )
 
-    @tasks.loop(minutes=5)
+    @tasks.loop(hours=1)
     async def new_github_release(self):
         "Checks if there is a new release on github and sends a message to the channel"
         r = requests.request(
