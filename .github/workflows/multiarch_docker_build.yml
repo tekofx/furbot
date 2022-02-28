@@ -1,6 +1,6 @@
 name: Build multiarch docker image
 
-on: release
+on: [release,push]
 
 jobs:
   Upload_docker_image_to_ghcr:
