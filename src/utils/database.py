@@ -481,31 +481,6 @@ def check_user_in_wordle(guild: nextcord.guild, user_id: int) -> bool:
         return True
 
 
-def get_word(guild: nextcord.guild) -> str:
-    """Checks if a word is the word to guess
-
-    Args:
-        guild (nextcord.guild): guild of the database
-
-    Returns:
-        str: word to guess
-    """
-
-    database_connection = create_connection(guild)
-
-    cursor = database_connection.cursor()
-    sql = "SELECT word FROM wordle WHERE user_id = 0"
-    try:
-        cursor.execute(sql)
-    except Exception as error:
-        log.error("Error: Could not get word: {}".format(error))
-        database_connection.close()
-    else:
-        data = cursor.fetchone()
-        database_connection.close()
-        return data[0]
-
-
 ###################### Getters and setters ######################
 def get_name(guild: nextcord.guild, user_id: int) -> str:
     """Gets the name of a user

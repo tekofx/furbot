@@ -1,16 +1,17 @@
 from nextcord.ext import commands, tasks
 from utils.bot import Bot
-from utils.data import resources_path
+from utils.data import get_server_path, resources_path
 import random
 import logging
 from datetime import date, datetime, timedelta, time
 import asyncio
+import nextcord
+import os
 
 from utils.database import (
     check_user_in_wordle,
     create_word,
     empty_wordle_table,
-    get_word,
     table_empty,
 )
 
@@ -20,23 +21,55 @@ log = logging.getLogger(__name__)
 GREEN_SQUARE = "🟩"
 YELLOW_SQUARE = "🟨"
 GREY_SQUARE = "⬜"
-WORD_NUM_CHARS = 5
+WORD_LENGHT = 5
 
 
 class wordle(commands.Cog):
     def __init__(self, bot: Bot) -> None:
         self.bot = bot
         self.generate_word.start()
+        self.remove_users_from_wordle.start()
 
-    def get_random_word(self) -> str:
-        """get a random word from the wordle database
+    def word_guessed(self, guild: nextcord.Guild) -> bool:
+        """Checks if the word of the day was guesses
+
+        Args:
+            guild (nextcord.Guild): guild to check
 
         Returns:
-            str: word from the wordle database
+            bool: True if the word was guessed, False otherwise
         """
-        lines = open(resources_path + "words.txt").readlines()
-        word = random.choice(lines).strip()
+        server_path = get_server_path(guild)
+        if os.path.isfile(server_path + "word.txt"):
+            return False
+        return True
+
+    def get_solution_word(self, guild: nextcord.Guild) -> str:
+        """Gets the solution word for the guild
+
+        Args:
+            guild (nextcord.Guild): guild to get the word
+
+        Returns:
+            str: solution word
+        """
+        server_path = get_server_path(guild)
+        word = open(server_path + "word.txt", "r").read()
         return word
+
+    def get_random_word(self, guild: nextcord.Guild):
+        """Selects a random word from the words dictionary
+
+        ARgs:
+            guild (nextcord.Guild): guild to get the word
+
+        """
+        server_path = get_server_path(guild)
+        if not os.path.isfile(server_path + "word.txt"):
+
+            lines = open(resources_path + "words.txt").readlines()
+            word = random.choice(lines).strip()
+            open(server_path + "word.txt", "w+").write(word)
 
     def word_in_word_dict(self, word: str) -> bool:
         """Checks if a word is in the words dictionary
@@ -56,22 +89,20 @@ class wordle(commands.Cog):
     @commands.command()
     async def guess(self, ctx: commands.Context, word: str):
         """Intentar adivinar la palabra del wordle"""
-        if table_empty(ctx.guild, "wordle"):
+        if self.word_guessed(ctx.guild):
             await ctx.send("Ya se ha adivinado la palabra de hoy")
             return
 
-        solution = get_word(ctx.guild)
-        word = word.lower()
-
         if check_user_in_wordle(ctx.guild, ctx.author.id):
-            # create_word(ctx.guild, [word, ctx.author.id])
-            await ctx.send("No puedes jugar más hoy")
+            now = datetime.now().hour
+            await ctx.send("No puedes jugar más hasta las {}:00".format(now + 1))
             return
 
-        if len(word) != WORD_NUM_CHARS:
+        word = word.lower()
+        if len(word) != WORD_LENGHT:
             await ctx.send(
                 "La palabra debe tener {} letras, inténtalo otra vez".format(
-                    WORD_NUM_CHARS
+                    WORD_LENGHT
                 )
             )
             return
@@ -86,6 +117,7 @@ class wordle(commands.Cog):
         create_word(ctx.guild, [word, ctx.author.id])
 
         # Generate squares
+        solution = self.get_solution_word(ctx.guild)
         output = word + "\n"
         for char1, char2 in zip(word, solution):
             if char1 in solution:
@@ -100,6 +132,7 @@ class wordle(commands.Cog):
         if word == solution:
             await ctx.send("Palabra correcta!!!!")
             empty_wordle_table(ctx.guild)
+            os.remove(get_server_path(ctx.guild) + "word.txt")
 
     @tasks.loop(hours=24)
     async def generate_word(self):
@@ -107,7 +140,7 @@ class wordle(commands.Cog):
         log.info("Generating word for each server")
 
         for guild in self.bot.guilds:
-            create_word(guild, [self.get_random_word(), 0])
+            self.get_random_word(guild)
             msg = "Ya está disponible la palabra de hoy, utiliza `fur guess` para adivinarla"
             await self.bot.channel_send(guild, "wordle", msg)
 
@@ -116,10 +149,16 @@ class wordle(commands.Cog):
         # Dar la palabra solucion
 
         for guild in self.bot.guilds:
-            word = get_word(guild)
+            word = self.get_word(guild)
             msg = "No se adivinó la palabra de hoy, la palabra era: {}".format(word)
             await self.bot.channel_send(guild, "wordle", msg)
 
+    @tasks.loop(hours=1)
+    async def remove_users_from_wordle(self):
+        for guild in self.bot.guilds:
+            empty_wordle_table(guild)
+
+    @remove_users_from_wordle.before_loop
     @generate_word.before_loop
     async def prep(self):
         """Waits some time to execute tasks"""
@@ -132,11 +171,15 @@ class wordle(commands.Cog):
 
         secs_to_wait = (hour_to_wait - datetime.now()).total_seconds()
 
-        log.info("Waiting to generate word {} mins".format(str(secs_to_wait / 60)))
+        log.info(
+            "Waiting to generate word and clear wordle table {} mins".format(
+                str(secs_to_wait / 60)
+            )
+        )
 
         await asyncio.sleep(secs_to_wait)
 
-    @generate_word.before_loop
+    @give_solution.before_loop
     async def prep2(self):
         """Waits some time to execute tasks"""
         now = datetime.now()
