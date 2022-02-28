@@ -6,12 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
-## [v4.1.0]
+## [v4.1.0] - 2022-02-28
 ### Cambiado
 - Ahora en wordle cada usuario tendrá 1 intento de adivinar la palabra cada hora en punto
 
 
-## [v4.0.1]
+## [v4.0.1] - 2022-02-26
 ### Añadido
 - Task que dice la palabra solucion a las 12
   
@@ -21,7 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Modificado
 - Eliminadas palabras poco conocidas de la lista de palabras de wordle
 
-## [v4.0]
+## [v4.0] - 2022-02-25
 ### Añadido 
 - Mensajes cuando un usuario se va del servidor
 - Task que publica juegos nuevos
