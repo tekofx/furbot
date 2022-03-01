@@ -1,3 +1,4 @@
+from http import server
 from nextcord.ext import commands, tasks
 from utils.bot import Bot
 from utils.data import get_server_path, resources_path
@@ -7,6 +8,7 @@ from datetime import date, datetime, timedelta, time
 import asyncio
 import nextcord
 from pyrae import dle
+import json
 
 import os
 
@@ -25,6 +27,14 @@ YELLOW_SQUARE = "🟨"
 GREY_SQUARE = "⬜"
 WORD_LENGHT = 5
 WORD_FILE = "word.txt"
+DISCARDED_LETTERS_FILE = "discarded_letters.txt"
+WORDLE_JSON = "wordle.json"
+
+
+WORDLE_DICT = {
+    "word": "",
+    "discarded_letters": [],
+}
 
 
 class wordle(commands.Cog):
@@ -33,8 +43,42 @@ class wordle(commands.Cog):
         self.generate_word.start()
         self.remove_users_from_wordle.start()
 
+    def discard_letter(self, guild: nextcord.Guild, letter: str):
+        """Adds a letter to the discarded letters list
+
+        Args:
+            guild (nextcord.Guild): guild to add the letter
+            letter (str): letter to add
+        """
+
+        # Check if the letter is already in the list
+        server_path = get_server_path(guild)
+        with open(server_path + WORDLE_JSON, "r+") as f:
+
+            json_object = json.load(f)
+            letters = json_object["discarded_letters"]
+
+            if letter not in letters:
+                letters.append(letter)
+                letters.sort()
+
+            json_object["discarded_letters"] = letters
+            f.seek(0)
+            json.dump(json_object, f)
+            f.truncate()
+
+    def discarded_letters_txt(self, guild: nextcord.Guild) -> str:
+        output = "Letras descartadas: "
+
+        with open(get_server_path(guild) + WORDLE_JSON, "r") as f:
+            json_object = json.load(f)
+            letters = json_object["discarded_letters"]
+            output += ", ".join(letters)
+
+        return output
+
     def word_guessed(self, guild: nextcord.Guild) -> bool:
-        """Checks if the word of the day was guesses
+        """Checks if the word of the day was guessed
 
         Args:
             guild (nextcord.Guild): guild to check
@@ -43,7 +87,7 @@ class wordle(commands.Cog):
             bool: True if the word was guessed, False otherwise
         """
         server_path = get_server_path(guild)
-        if os.path.isfile(server_path + WORD_FILE):
+        if os.path.isfile(server_path + WORDLE_JSON):
             return False
         return True
 
@@ -57,8 +101,9 @@ class wordle(commands.Cog):
             str: solution word
         """
         server_path = get_server_path(guild)
-        word = open(server_path + WORD_FILE, "r").read()
-        return word
+        with open(server_path + WORDLE_JSON, "r") as file:
+            data = json.load(file)
+        return data["word"]
 
     def get_random_word(self, guild: nextcord.Guild):
         """Selects a random word from the words dictionary
@@ -68,20 +113,23 @@ class wordle(commands.Cog):
 
         """
         server_path = get_server_path(guild)
-        if not os.path.isfile(server_path + WORD_FILE):
-
+        if not os.path.isfile(server_path + WORDLE_JSON):
             lines = open(resources_path + "words.txt").readlines()
             word = random.choice(lines).strip()
-            open(server_path + WORD_FILE, "w+").write(word)
+            # Create file
+            with open(server_path + WORDLE_JSON, "w+") as f:
+                WORDLE_DICT["word"] = word
+                json_object = json.dumps(WORDLE_DICT)
+                f.write(json_object)
 
-    def word_in_word_dict(self, word: str) -> bool:
-        """Checks if a word is in the words dictionary
+    def word_in_word_list(self, word: str) -> bool:
+        """Checks if a word is in the words list
 
         Args:
             word (str): word to check
 
         Returns:
-            bool: True if the word is in the dictionary, False otherwise
+            bool: True if the word is in the list, False otherwise
         """
         lines = open(resources_path + "words.txt").read().splitlines()
 
@@ -112,7 +160,7 @@ class wordle(commands.Cog):
             )
             return
 
-        if not self.word_in_word_dict(word):
+        if not self.word_in_word_list(word):
             await ctx.send(
                 "La palabra no está en la lista de palabras, inténtalo otra vez"
             )
@@ -132,18 +180,20 @@ class wordle(commands.Cog):
                     output += YELLOW_SQUARE
             else:
                 output += GREY_SQUARE
+                self.discard_letter(ctx.guild, char1)
+
+        output += "\n\n" + self.discarded_letters_txt(ctx.guild)
         await ctx.send(output)
 
         if word == solution:
             await ctx.send("Palabra correcta!!!!")
             empty_wordle_table(ctx.guild)
-            os.remove(get_server_path(ctx.guild) + "word.txt")
+            os.remove(get_server_path(ctx.guild) + WORD_FILE)
+            os.remove(get_server_path(ctx.guild) + DISCARDED_LETTERS_FILE)
 
             # Get definition
             definicion = str(dle.search_by_word(word))
             await ctx.send('"{}": {}'.format(word, definicion))
-
-            await ctx.send("Esperando a generar nueva palabra")
 
             self.get_random_word(ctx.guild)
             await self.bot.channel_send(
@@ -168,7 +218,6 @@ class wordle(commands.Cog):
                     "Nueva palabra generada, intenta adivinarla con `fur guess`",
                 )
 
-    @generate_word.before_loop
     @remove_users_from_wordle.before_loop
     async def prep(self):
         """Waits some time to execute tasks"""

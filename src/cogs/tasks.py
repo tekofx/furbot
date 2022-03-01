@@ -223,7 +223,6 @@ class tasks(commands.Cog):
 
     @free_games.before_loop
     @discord_status.before_loop
-    @update_users.before_loop
     @meme.before_loop
     @joined_date.before_loop
     async def prep(self):
@@ -241,7 +240,7 @@ class tasks(commands.Cog):
 
         delta = (after - now).total_seconds()
 
-        # await asyncio.sleep(delta)
+        await asyncio.sleep(delta)
 
 
 def setup(bot: commands.Bot):
