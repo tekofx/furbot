@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [v4.1.1] - 2022-02-29
+### Cambiado
+- Ahora en wordle se generará una nueva palabra tras un tiempo aleatorio cada vez que se adivine una palabra
+
+
 ## [v4.1.0] - 2022-02-28
 ### Cambiado
 - Ahora en wordle cada usuario tendrá 1 intento de adivinar la palabra cada hora en punto

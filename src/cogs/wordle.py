@@ -22,6 +22,7 @@ GREEN_SQUARE = "🟩"
 YELLOW_SQUARE = "🟨"
 GREY_SQUARE = "⬜"
 WORD_LENGHT = 5
+WORD_FILE = "word.txt"
 
 
 class wordle(commands.Cog):
@@ -40,7 +41,7 @@ class wordle(commands.Cog):
             bool: True if the word was guessed, False otherwise
         """
         server_path = get_server_path(guild)
-        if os.path.isfile(server_path + "word.txt"):
+        if os.path.isfile(server_path + WORD_FILE):
             return False
         return True
 
@@ -54,7 +55,7 @@ class wordle(commands.Cog):
             str: solution word
         """
         server_path = get_server_path(guild)
-        word = open(server_path + "word.txt", "r").read()
+        word = open(server_path + WORD_FILE, "r").read()
         return word
 
     def get_random_word(self, guild: nextcord.Guild):
@@ -65,11 +66,11 @@ class wordle(commands.Cog):
 
         """
         server_path = get_server_path(guild)
-        if not os.path.isfile(server_path + "word.txt"):
+        if not os.path.isfile(server_path + WORD_FILE):
 
             lines = open(resources_path + "words.txt").readlines()
             word = random.choice(lines).strip()
-            open(server_path + "word.txt", "w+").write(word)
+            open(server_path + WORD_FILE, "w+").write(word)
 
     def word_in_word_dict(self, word: str) -> bool:
         """Checks if a word is in the words dictionary
@@ -90,7 +91,9 @@ class wordle(commands.Cog):
     async def guess(self, ctx: commands.Context, word: str):
         """Intentar adivinar la palabra del wordle"""
         if self.word_guessed(ctx.guild):
-            await ctx.send("Ya se ha adivinado la palabra de hoy")
+            await ctx.send(
+                "La palabra ya fue adivinada, espera hasta la siguiente palabra"
+            )
             return
 
         if check_user_in_wordle(ctx.guild, ctx.author.id):
@@ -133,30 +136,34 @@ class wordle(commands.Cog):
             await ctx.send("Palabra correcta!!!!")
             empty_wordle_table(ctx.guild)
             os.remove(get_server_path(ctx.guild) + "word.txt")
+            await ctx.send("Esperando a generar nueva palabra")
 
-    @tasks.loop(hours=24)
-    async def generate_word(self):
-        # Generar palabra para adivinar
-        log.info("Generating word for each server")
-
-        for guild in self.bot.guilds:
-            self.get_random_word(guild)
-            msg = "Ya está disponible la palabra de hoy, utiliza `fur guess` para adivinarla"
-            await self.bot.channel_send(guild, "wordle", msg)
-
-    @tasks.loop(hours=24)
-    async def give_solution(self):
-        # Dar la palabra solucion
-
-        for guild in self.bot.guilds:
-            word = self.get_word(guild)
-            msg = "No se adivinó la palabra de hoy, la palabra era: {}".format(word)
-            await self.bot.channel_send(guild, "wordle", msg)
+            # Wait randomly to generate a new word
+            seconds = random.randint(1, 30) * 60
+            log.info("Waiting {} seconds to generate a new word".format(seconds))
+            await asyncio.sleep(seconds)
+            self.get_random_word(ctx.guild)
+            await self.bot.channel_send(
+                ctx.guild,
+                "wordle",
+                "Nueva palabra generada, intenta adivinarla con `fur guess`",
+            )
 
     @tasks.loop(hours=1)
     async def remove_users_from_wordle(self):
         for guild in self.bot.guilds:
             empty_wordle_table(guild)
+
+    @tasks.loop(hours=24)
+    async def generate_word(self):
+        for guild in self.bot.guilds:
+            if self.word_guessed(guild):
+                self.get_random_word(guild)
+                await self.bot.channel_send(
+                    guild,
+                    "wordle",
+                    "Nueva palabra generada, intenta adivinarla con `fur guess`",
+                )
 
     @remove_users_from_wordle.before_loop
     @generate_word.before_loop
@@ -176,22 +183,6 @@ class wordle(commands.Cog):
                 str(secs_to_wait / 60)
             )
         )
-
-        await asyncio.sleep(secs_to_wait)
-
-    @give_solution.before_loop
-    async def prep2(self):
-        """Waits some time to execute tasks"""
-        now = datetime.now()
-        if now < datetime(now.year, now.month, now.day, 23, 59, 0):
-            next_time = datetime(now.year, now.month, now.day, 23, 59, 0)
-        else:
-            next_time = (now + timedelta(days=1)).replace(hour=23, minute=59, second=0)
-        hour_to_wait = datetime(next_time.year, next_time.month, next_time.day, 23, 59)
-
-        secs_to_wait = (hour_to_wait - datetime.now()).total_seconds()
-
-        log.info("Waiting to give solution {} mins".format(str(secs_to_wait / 60)))
 
         await asyncio.sleep(secs_to_wait)
 
