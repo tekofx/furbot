@@ -462,7 +462,7 @@ def empty_wordle_table(guild: nextcord.guild) -> None:
         database_connection.close()
 
 
-def check_user_in_wordle(guild: nextcord.guild, user_id: int) -> bool:
+def user_in_wordle(guild: nextcord.guild, user_id: int) -> bool:
     database_connection = create_connection(guild)
 
     cursor = database_connection.cursor()
@@ -472,6 +472,25 @@ def check_user_in_wordle(guild: nextcord.guild, user_id: int) -> bool:
         cursor.execute(sql, var)
     except Exception as error:
         log.error("Error: Could not check if user {} exists: {}".format(user_id, error))
+        database_connection.close()
+    else:
+        data = cursor.fetchall()
+        database_connection.close()
+        if len(data) == 0:
+            return False
+        return True
+
+
+def word_in_wordle(guild: nextcord.guild, word: str) -> bool:
+    database_connection = create_connection(guild)
+
+    cursor = database_connection.cursor()
+    sql = "SELECT word FROM wordle WHERE user_id = ?"
+    var = [word]
+    try:
+        cursor.execute(sql, var)
+    except Exception as error:
+        log.error("Error: Could not check if word {} exists: {}".format(word, error))
         database_connection.close()
     else:
         data = cursor.fetchall()

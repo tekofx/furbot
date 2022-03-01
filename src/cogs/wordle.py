@@ -13,10 +13,11 @@ import json
 import os
 
 from utils.database import (
-    check_user_in_wordle,
+    user_in_wordle,
     create_word,
     empty_wordle_table,
     table_empty,
+    word_in_wordle,
 )
 
 log = logging.getLogger(__name__)
@@ -146,9 +147,13 @@ class wordle(commands.Cog):
             )
             return
 
-        if check_user_in_wordle(ctx.guild, ctx.author.id):
+        if user_in_wordle(ctx.guild, ctx.author.id):
             now = datetime.now().hour
             await ctx.send("No puedes jugar más hasta las {}:00".format(now + 1))
+            return
+
+        if word_in_wordle(ctx.guild, word):
+            await ctx.send("Ya se utilizó esta palabra, intenta otra")
             return
 
         word = word.lower()
