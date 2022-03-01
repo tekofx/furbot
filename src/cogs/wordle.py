@@ -27,8 +27,6 @@ GREEN_SQUARE = "🟩"
 YELLOW_SQUARE = "🟨"
 GREY_SQUARE = "⬜"
 WORD_LENGHT = 5
-WORD_FILE = "word.txt"
-DISCARDED_LETTERS_FILE = "discarded_letters.txt"
 WORDLE_JSON = "wordle.json"
 
 
@@ -193,8 +191,7 @@ class wordle(commands.Cog):
         if word == solution:
             await ctx.send("Palabra correcta!!!!")
             empty_wordle_table(ctx.guild)
-            os.remove(get_server_path(ctx.guild) + WORD_FILE)
-            os.remove(get_server_path(ctx.guild) + DISCARDED_LETTERS_FILE)
+            os.remove(get_server_path(ctx.guild) + WORDLE_JSON)
 
             # Get definition
             definicion = str(dle.search_by_word(word))
