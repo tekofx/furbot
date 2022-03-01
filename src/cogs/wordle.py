@@ -6,6 +6,7 @@ import logging
 from datetime import date, datetime, timedelta, time
 import asyncio
 import nextcord
+import dle
 import os
 
 from utils.database import (
@@ -136,6 +137,11 @@ class wordle(commands.Cog):
             await ctx.send("Palabra correcta!!!!")
             empty_wordle_table(ctx.guild)
             os.remove(get_server_path(ctx.guild) + "word.txt")
+
+            # Get definition
+            definicion = str(dle.search_by_word(word))
+            await ctx.send('"{}": {}'.format(word, definicion))
+
             await ctx.send("Esperando a generar nueva palabra")
 
             # Wait randomly to generate a new word
