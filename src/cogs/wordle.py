@@ -6,7 +6,8 @@ import logging
 from datetime import date, datetime, timedelta, time
 import asyncio
 import nextcord
-import dle
+from pyrae import dle
+
 import os
 
 from utils.database import (
