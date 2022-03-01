@@ -165,7 +165,6 @@ class wordle(commands.Cog):
                     "Nueva palabra generada, intenta adivinarla con `fur guess`",
                 )
 
-    @remove_users_from_wordle.before_loop
     @generate_word.before_loop
     async def prep(self):
         """Waits some time to execute tasks"""
@@ -185,6 +184,24 @@ class wordle(commands.Cog):
         )
 
         await asyncio.sleep(secs_to_wait)
+
+    @remove_users_from_wordle.before_loop()
+    async def prep2(self):
+        """Waits some time to execute tasks"""
+
+        hours_from_now = 1
+        minutes_from_now = 0
+        seconds_from_now = 0
+        now = datetime.now()
+        after = now + timedelta(
+            hours=hours_from_now, minutes=minutes_from_now, seconds=seconds_from_now
+        )
+        # Comment to try tasks that are not at oclock
+        after = after.replace(minute=0, second=0)
+
+        delta = (after - now).total_seconds()
+
+        await asyncio.sleep(delta)
 
 
 def setup(bot: commands.Bot):
