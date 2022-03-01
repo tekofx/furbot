@@ -145,10 +145,6 @@ class wordle(commands.Cog):
 
             await ctx.send("Esperando a generar nueva palabra")
 
-            # Wait randomly to generate a new word
-            seconds = random.randint(1, 30) * 60
-            log.info("Waiting {} seconds to generate a new word".format(seconds))
-            await asyncio.sleep(seconds)
             self.get_random_word(ctx.guild)
             await self.bot.channel_send(
                 ctx.guild,
