@@ -145,12 +145,25 @@ class tasks(commands.Cog):
     @tasks.loop(hours=1)
     async def joined_date(self):
         """Checks if today is somebody's birthday"""
+
         now = datetime.now()
+        if now.hour != 8:
+            return
         now = datetime(now.year, now.month, now.day)
+
         for guild in self.bot.guilds:
             dates = get_joined_dates(guild)
-            for date in dates:
-                pass
+            for user_id, date in dates:
+                now_str = str(now).split(" ")[0][5:]
+                if date[5:] == now_str:
+                    user = await guild.fetch_member(user_id)
+                    years = int(now.year) - int(date[:4])
+
+                    await self.bot.channel_send(
+                        guild,
+                        "general",
+                        "Hoy hace {} años que se unió {}".format(years, user.mention),
+                    )
 
     @tasks.loop(minutes=5)
     async def discord_status(self):

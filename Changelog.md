@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Recordatorios de cumpleaños
 
 ### Añadido 
-- Recordatorio de union al servidor
+- Recordatorio de aniversario de union al servidor
 
 
 ## [v4.1.1] - 2022-02-29

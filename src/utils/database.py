@@ -3,6 +3,7 @@ import random
 import sqlite3
 import os
 import logging
+from typing import List
 import nextcord
 from utils.data import server_path
 
@@ -518,11 +519,11 @@ def get_joined_dates(guild: nextcord.Guild) -> list:
         guild (nextcord.Guild): guild of the database
 
     Returns:
-        list: containing dates of joined users
+        list: containing [user_id, joined_date]
     """
     database_connection = create_connection(guild)
 
-    sql = """ SELECT joined_date
+    sql = """ SELECT id,joined_date
         FROM users
         """
     cur = database_connection.cursor()
@@ -537,9 +538,15 @@ def get_joined_dates(guild: nextcord.Guild) -> list:
         database_connection.close()
     else:
         info = cur.fetchall()
-        name = info
+        output = []
+
+        for x in info:
+            var = []
+            var.append(x[0])
+            var.append(x[1].split(" ")[0])
+            output.append(var)
         database_connection.close()
-        return name
+        return output
 
 
 def set_name(guild: nextcord.Guild, user_id: int, name: str) -> None:
