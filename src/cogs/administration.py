@@ -6,7 +6,6 @@ from utils.database import (
     create_channel,
     create_connection,
     create_role,
-    set_birthday,
 )
 from asyncio import sleep
 from utils.data import config_yaml
@@ -175,22 +174,6 @@ class administration(commands.Cog):
             else:
                 log.info("Added color " + color.name)
                 await ctx.send("Color {} añadido".format(color.mention))
-
-    @commands.command()
-    async def addcumple(
-        self, ctx: commands.Context, birthday: str, user: nextcord.Member
-    ):
-        """[Admin] Añade el cumpleaños de alguien al bot
-
-        Uso:
-            fur addcumple <dia>-<mes> @<usuario>
-
-        Ejemplo:
-            fur addcumple 16-1 @Teko
-        """
-
-        set_birthday(ctx.guild, user.id, birthday)
-        await ctx.send("Añadido cumpleaños de " + user.display_name)
 
     @commands.command()
     @commands.has_permissions(administrator=True)

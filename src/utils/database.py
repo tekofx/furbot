@@ -511,7 +511,38 @@ def get_name(guild: nextcord.guild, user_id: int) -> str:
         return name
 
 
-def set_name(guild: nextcord.guild, user_id: int, name: str) -> None:
+def get_joined_dates(guild: nextcord.Guild) -> list:
+    """Gets all the joined dates of the users in the database
+
+    Args:
+        guild (nextcord.Guild): guild of the database
+
+    Returns:
+        list: containing dates of joined users
+    """
+    database_connection = create_connection(guild)
+
+    sql = """ SELECT joined_date
+        FROM users
+        """
+    cur = database_connection.cursor()
+    try:
+        cur.execute(sql)
+    except Exception as error:
+        log.error(
+            "Error: could not query the joined_dates of guild {}: {}".format(
+                guild, error
+            )
+        )
+        database_connection.close()
+    else:
+        info = cur.fetchall()
+        name = info
+        database_connection.close()
+        return name
+
+
+def set_name(guild: nextcord.Guild, user_id: int, name: str) -> None:
     """Changes the name of a user
     Args:
         guild (nextcord.Guild) : Guild to access its database

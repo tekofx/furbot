@@ -14,7 +14,7 @@ from utils.database import (
     create_connection,
     create_record,
     create_user,
-    get_birthdays,
+    get_joined_dates,
     remove_records_from_a_date,
 )
 from utils.bot import Bot
@@ -28,12 +28,12 @@ class tasks(commands.Cog):
 
         # Start tasks
         self.meme.start()
-        self.birthday.start()
         self.update_users.start()
         self.discord_status.start()
         self.remove_records_from_previous_day.start()
         self.new_github_release.start()
         self.free_games.start()
+        self.joined_date.start()
         log.info("Waiting for tasks to start")
 
     @tasks.loop(hours=2)
@@ -142,10 +142,11 @@ class tasks(commands.Cog):
                 log.error("Error sending meme to {}: {}".format(guild.name, error))
 
     @tasks.loop(hours=1)
-    async def joined_time(self):
+    async def joined_date(self):
         """Checks if today is somebody's birthday"""
-
-        now = datetime.now()
+        for guild in self.bot.guilds:
+            dates = get_joined_dates(guild)
+            print(dates)
 
     @tasks.loop(minutes=5)
     async def discord_status(self):
@@ -207,7 +208,7 @@ class tasks(commands.Cog):
     @discord_status.before_loop
     @update_users.before_loop
     @meme.before_loop
-    @joined_time.before_loop
+    @joined_date.before_loop
     async def prep(self):
         """Waits some time to execute tasks"""
 
@@ -223,7 +224,7 @@ class tasks(commands.Cog):
 
         delta = (after - now).total_seconds()
 
-        await asyncio.sleep(delta)
+        # await asyncio.sleep(delta)
 
 
 def setup(bot: commands.Bot):

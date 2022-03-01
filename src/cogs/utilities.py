@@ -4,7 +4,6 @@ from pyrae import dle
 
 from utils.database import (
     create_connection,
-    get_birthday,
     get_colors,
     get_ranks,
     get_species,
@@ -82,7 +81,7 @@ def get_user_species(user: nextcord.Member, guild: nextcord.Guild):
     return b
 
 
-def get_user_roles(user: nextcord.Member,guild: nextcord.Guild):
+def get_user_roles(user: nextcord.Member, guild: nextcord.Guild):
     """Get user roles that are not ranks
 
     Args:
