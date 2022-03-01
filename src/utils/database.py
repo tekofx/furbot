@@ -11,7 +11,6 @@ users_table = """ CREATE TABLE IF NOT EXISTS users (
                                     id integer PRIMARY KEY,
                                     name text NOT NULL,
                                     joined_date date,
-                                    birthday date
                                 ); """
 
 
@@ -535,103 +534,6 @@ def set_name(guild: nextcord.guild, user_id: int, name: str) -> None:
     else:
         database_connection.commit()
         database_connection.close()
-
-
-def get_birthday(guild: nextcord.guild, user_id: int) -> str:
-    """Gets the birthday of a user
-
-    Args:
-        guild (nextcord.Guild) : Guild to access its database
-        user_id (int): id of user
-
-    Returns:
-        str: birthday of user
-    """
-    database_connection = create_connection(guild)
-
-    sql = """ SELECT birthday
-        FROM users
-        WHERE id=?
-        """
-
-    var = [user_id]
-    cur = database_connection.cursor()
-    try:
-        cur.execute(sql, var)
-        info = cur.fetchone()
-        birthday = info[0]
-    except Exception as error:
-        log.error(
-            "Error: could not query birthday of user {}: {}".format(user_id, error)
-        )
-        database_connection.close()
-    else:
-        database_connection.close()
-        return birthday
-
-
-def set_birthday(guild: nextcord.guild, user_id: int, date: str) -> None:
-    """Sets the birthday of a user
-
-    Args:
-        guild (nextcord.Guild) : Guild to access its database
-        user_id (int): id of user
-        date (str): birthday of user
-    """
-    database_connection = create_connection(guild)
-
-    sql = """ UPDATE users  
-              SET birthday = ?
-              WHERE id = ?"""
-
-    date = date.split("-")
-    day = int(date[0])
-    month = int(date[1])
-    birthday = datetime.date(
-        2000,
-        month,
-        day,
-    )
-
-    var = [birthday, user_id]
-    try:
-        cur = database_connection.cursor()
-        cur.execute(sql, var)
-    except Exception as error:
-        log.error(
-            "Error: Could not update birthday of user {}: {}".format(user_id, error)
-        )
-        database_connection.close()
-    else:
-        database_connection.commit()
-        database_connection.close()
-
-
-def get_birthdays(guild: nextcord.guild) -> list:
-    """Gets birtdays of all users
-
-    Args:
-        guild (nextcord.Guild) : Guild to access its database
-
-    Returns:
-        list: containing other lists with [user_id, birtday]
-    """
-
-    database_connection = create_connection(guild)
-
-    sql = """ SELECT id,birthday
-        FROM users
-        """
-    cur = database_connection.cursor()
-    try:
-        cur.execute(sql)
-        info = cur.fetchall()
-    except Exception as error:
-        log.error("Error: could not query birthdays: {}".format(error))
-        database_connection.close()
-    else:
-        database_connection.close()
-        return info
 
 
 def get_ranks(guild: nextcord.guild) -> list:

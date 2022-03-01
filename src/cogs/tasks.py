@@ -142,49 +142,10 @@ class tasks(commands.Cog):
                 log.error("Error sending meme to {}: {}".format(guild.name, error))
 
     @tasks.loop(hours=1)
-    async def birthday(self):
+    async def joined_time(self):
         """Checks if today is somebody's birthday"""
 
         now = datetime.now()
-        if now.hour == 8:
-            try:
-                # Get month and day
-                month = str(now.month)
-                day = str(now.day)
-                if len(month) == 1:
-                    month = "0" + month
-                if len(day) == 1:
-                    day = "0" + day
-                today = month + "-" + day
-
-                for guild in self.bot.guilds:
-                    birthdays = get_birthdays(guild)
-                    for user_id, birthday in birthdays:
-                        if birthday != None and today in birthday:
-                            member = await self.bot.fetch_user(user_id)
-                            await self.bot.channel_send(
-                                guild,
-                                "general",
-                                "Es el cumple de "
-                                + member.mention
-                                + ". Felicidades!!!!!!!!!",
-                            )
-
-                            log.info("Sent birthday message of " + member.display_name)
-
-            except (Exception, Forbidden) as error:
-                if isinstance(error, nextcord.Forbidden):
-                    log.error("Forbidden error on task birthday: {}".format(error))
-                    await self.bot.channel_send(
-                        guild,
-                        "general",
-                        "Error: El bot no tiene permiso para enviar mensajes",
-                    )
-                else:
-                    log.error("Unknown error on task birthday: {}".format(error))
-                    await self.bot.channel_send(
-                        guild, "general", "Error desconocido, contacta al creador"
-                    )
 
     @tasks.loop(minutes=5)
     async def discord_status(self):
@@ -246,7 +207,7 @@ class tasks(commands.Cog):
     @discord_status.before_loop
     @update_users.before_loop
     @meme.before_loop
-    @birthday.before_loop
+    @joined_time.before_loop
     async def prep(self):
         """Waits some time to execute tasks"""
 
