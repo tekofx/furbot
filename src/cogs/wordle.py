@@ -185,7 +185,7 @@ class wordle(commands.Cog):
 
         await asyncio.sleep(secs_to_wait)
 
-    @remove_users_from_wordle.before_loop()
+    @remove_users_from_wordle.before_loop
     async def prep2(self):
         """Waits some time to execute tasks"""
 
