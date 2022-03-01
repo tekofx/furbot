@@ -173,27 +173,8 @@ class wordle(commands.Cog):
                 )
 
     @generate_word.before_loop
-    async def prep(self):
-        """Waits some time to execute tasks"""
-        now = datetime.now()
-        if now < datetime(now.year, now.month, now.day, 8, 0, 0):
-            next_time = datetime(now.year, now.month, now.day, 8, 0, 0)
-        else:
-            next_time = (now + timedelta(days=1)).replace(hour=8, minute=0, second=0)
-        hour_to_wait = datetime(next_time.year, next_time.month, next_time.day, 8)
-
-        secs_to_wait = (hour_to_wait - datetime.now()).total_seconds()
-
-        log.info(
-            "Waiting to generate word and clear wordle table {} mins".format(
-                str(secs_to_wait / 60)
-            )
-        )
-
-        await asyncio.sleep(secs_to_wait)
-
     @remove_users_from_wordle.before_loop
-    async def prep2(self):
+    async def prep(self):
         """Waits some time to execute tasks"""
 
         hours_from_now = 1
