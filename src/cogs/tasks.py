@@ -2,6 +2,7 @@ import asyncio
 import logging
 from platform import platform
 from urllib import request
+from xmlrpc.client import DateTime
 import requests
 import nextcord
 from nextcord.errors import Forbidden
@@ -144,9 +145,12 @@ class tasks(commands.Cog):
     @tasks.loop(hours=1)
     async def joined_date(self):
         """Checks if today is somebody's birthday"""
+        now = datetime.now()
+        now = datetime(now.year, now.month, now.day)
         for guild in self.bot.guilds:
             dates = get_joined_dates(guild)
-            print(dates)
+            for date in dates:
+                pass
 
     @tasks.loop(minutes=5)
     async def discord_status(self):
