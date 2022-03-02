@@ -147,7 +147,10 @@ class wordle(commands.Cog):
 
         if user_in_wordle(ctx.guild, ctx.author.id):
             now = datetime.now().hour
-            await ctx.send("No puedes jugar más hasta las {}:00".format(now + 1))
+            msg = await ctx.send("No puedes jugar más hasta las {}:00".format(now + 1))
+            await msg.delete(delay=3)
+            await ctx.message.delete(delay=3)
+
             return
 
         if word_in_wordle(ctx.guild, word):
@@ -156,17 +159,23 @@ class wordle(commands.Cog):
 
         word = word.lower()
         if len(word) != WORD_LENGHT:
-            await ctx.send(
+            msg = await ctx.send(
                 "La palabra debe tener {} letras, inténtalo otra vez".format(
                     WORD_LENGHT
                 )
             )
+            await msg.delete(delay=3)
+            await ctx.message.delete(delay=3)
+
             return
 
         if not self.word_in_word_list(word):
             await ctx.send(
                 "La palabra no está en la lista de palabras, inténtalo otra vez"
             )
+            await msg.delete(delay=3)
+            await ctx.message.delete(delay=3)
+
             return
 
         # Add user to db
