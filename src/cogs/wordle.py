@@ -33,6 +33,7 @@ WORDLE_JSON = "wordle.json"
 WORDLE_DICT = {
     "word": "",
     "discarded_letters": [],
+    "partial_letters": ["-", "-", "-", "-", "-"],
 }
 
 
@@ -42,7 +43,7 @@ class wordle(commands.Cog):
         self.generate_word.start()
         self.remove_users_from_wordle.start()
 
-    def discard_letter(self, guild: nextcord.Guild, letter: str):
+    def add_discarded_letter(self, guild: nextcord.Guild, letter: str):
         """Adds a letter to the discarded letters list
 
         Args:
@@ -65,6 +66,61 @@ class wordle(commands.Cog):
             f.seek(0)
             json.dump(json_object, f)
             f.truncate()
+
+    def add_partial_letter(self, guild: nextcord.Guild, letter: str, index: int):
+        """Adds a letter to the partial letters list
+
+        Args:
+            guild (nextcord.Guild): guild to add the letter
+            letter (str): letter to add
+        """
+        server_path = get_server_path(guild)
+
+        with open(server_path + WORDLE_JSON, "r+") as f:
+
+            json_object = json.load(f)
+            letters = json_object["partial_letters"]
+
+            if letters[index] != "-":
+                return
+
+            letters.insert(index, letter)
+
+            f.seek(0)
+            json.dump(json_object, f)
+            f.truncate()
+
+    def get_partial_letters(self, guild: nextcord.Guild) -> list:
+        """Gets the partial letters
+
+        Args:
+            guild (nextcord.Guild): guild to get the letters
+
+        Returns:
+            list: list of partial letters
+        """
+        server_path = get_server_path(guild)
+        with open(server_path + WORDLE_JSON, "r") as f:
+            json_object = json.load(f)
+            letters = json_object["partial_letters"]
+
+        return letters
+
+    def get_discarded_letters(self, guild: nextcord.Guild) -> list:
+        """Gets the discarded letters
+
+        Args:
+            guild (nextcord.Guild): guild to get the letters
+
+        Returns:
+            list: list of discarded letters
+        """
+        server_path = get_server_path(guild)
+        with open(server_path + WORDLE_JSON, "r") as f:
+            json_object = json.load(f)
+            letters = json_object["discarded_letters"]
+
+        return letters
 
     def get_discarded_letters(self, guild: nextcord.Guild) -> list:
         """Gets the discarded letters
@@ -164,10 +220,10 @@ class wordle(commands.Cog):
         if user_in_wordle(ctx.guild, ctx.author.id):
             now = datetime.now().hour
             msg = await ctx.send("No puedes jugar más hasta las {}:00".format(now + 1))
-            await msg.delete(delay=4)
-            await ctx.message.delete(delay=4)
+            # await msg.delete(delay=4)
+            # await ctx.message.delete(delay=4)
 
-            return
+            # return
 
         word = word.lower()
         if len(word) != WORD_LENGHT:
@@ -195,25 +251,25 @@ class wordle(commands.Cog):
 
         # Generate squares
         solution = self.get_solution_word(ctx.guild)
-        partial_solution = ""
         output = word + "\n"
         for char1, char2 in zip(word, solution):
+            index = word.index(char1)
             if char1 in solution:
                 if char1 == char2:
                     output += GREEN_SQUARE
-                    partial_solution += char1
+                    self.add_partial_letter(ctx.guild, char1, index)
+
                 else:
                     output += YELLOW_SQUARE
-                    partial_solution += "-"
+
             else:
                 output += GREY_SQUARE
-                partial_solution += "-"
-                self.discard_letter(ctx.guild, char1)
+                self.add_discarded_letter(ctx.guild, char1)
 
         discarded_letters = self.get_discarded_letters(ctx.guild)
-
-        output += "\n\nSolucion parcial: {}".format(partial_solution)
-        output += "\n\nLetras descartadas:" + ", ".join(discarded_letters)
+        partial_letters = self.get_partial_letters(ctx.guild)
+        output += "\n\nSolucion parcial: " + "".join(partial_letters)
+        output += "\n\nLetras descartadas: " + ", ".join(discarded_letters)
         await ctx.send(output)
 
         if word == solution:

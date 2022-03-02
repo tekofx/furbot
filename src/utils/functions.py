@@ -27,7 +27,6 @@ def convert_pic(picture: str, img_name: str, img_size: str = None):
 
     img.save(bytes_io, "png")
     bytes_io.seek(0)
-    print("b")
     return bytes_io
 
 
