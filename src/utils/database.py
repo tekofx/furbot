@@ -11,7 +11,7 @@ from utils.data import server_path
 users_table = """ CREATE TABLE IF NOT EXISTS users (
                                     id integer PRIMARY KEY,
                                     name text NOT NULL,
-                                    joined_date date,
+                                    joined_date date
                                 ); """
 
 
