@@ -35,7 +35,7 @@ class trivia(commands.Cog):
         data = data["results"][0]
 
         # Get data
-        question = data["question"]
+        question = data["question"].replace("&quot;", "'")
         correct_answer = data["correct_answer"]
         incorrect_answers = data["incorrect_answers"]
         difficulty = data["difficulty"]
@@ -43,7 +43,7 @@ class trivia(commands.Cog):
 
         # Randomize answers
         incorrect_answers.append(correct_answer)
-        answers = random.choices(incorrect_answers, k=4)
+        answers = random.sample(incorrect_answers, k=4)
 
         ANSWERS_DICT[EMOJI_A] = answers[0]
         ANSWERS_DICT[EMOJI_B] = answers[1]
