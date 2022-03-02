@@ -84,7 +84,7 @@ class wordle(commands.Cog):
             if letters[index] != "-":
                 return
 
-            letters.insert(index, letter)
+            letters[index] = letter
 
             f.seek(0)
             json.dump(json_object, f)
