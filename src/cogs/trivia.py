@@ -1,10 +1,11 @@
 import asyncio
 import random
+import re
 from nextcord.ext import commands
 from utils.bot import Bot
 import requests
 import nextcord
-
+from utils.data import resources_path
 
 EMOJI_A = "🇦"
 EMOJI_B = "🇧"
@@ -57,6 +58,9 @@ class trivia(commands.Cog):
         embed.add_field(name="Opcion B", value=answers[1], inline=False)
         embed.add_field(name="Opcion C", value=answers[2], inline=False)
         embed.add_field(name="Opcion D", value=answers[3], inline=False)
+        embed.set_thumbnail(
+            url="https://cdn3.f-cdn.com/contestentries/1233731/27978425/5a61f080ea253_thumb900.jpg"
+        )
 
         embed = await ctx.send(embed=embed)
         await embed.add_reaction(EMOJI_A)
