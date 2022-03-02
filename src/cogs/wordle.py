@@ -66,6 +66,22 @@ class wordle(commands.Cog):
             json.dump(json_object, f)
             f.truncate()
 
+    def get_discarded_letters(self, guild: nextcord.Guild) -> list:
+        """Gets the discarded letters
+
+        Args:
+            guild (nextcord.Guild): guild to get the letters
+
+        Returns:
+            list: list of discarded letters
+        """
+        server_path = get_server_path(guild)
+        with open(server_path + WORDLE_JSON, "r") as f:
+            json_object = json.load(f)
+            letters = json_object["discarded_letters"]
+
+        return letters
+
     def discarded_letters_txt(self, guild: nextcord.Guild) -> str:
         output = "Letras descartadas: "
 
@@ -151,11 +167,7 @@ class wordle(commands.Cog):
             await msg.delete(delay=3)
             await ctx.message.delete(delay=3)
 
-            return
-
-        if word_in_wordle(ctx.guild, word):
-            await ctx.send("Ya se utilizó esta palabra, intenta otra")
-            return
+            # return
 
         word = word.lower()
         if len(word) != WORD_LENGHT:
@@ -183,18 +195,25 @@ class wordle(commands.Cog):
 
         # Generate squares
         solution = self.get_solution_word(ctx.guild)
+        partial_solution = ""
         output = word + "\n"
         for char1, char2 in zip(word, solution):
             if char1 in solution:
                 if char1 == char2:
                     output += GREEN_SQUARE
+                    partial_solution += char1
                 else:
                     output += YELLOW_SQUARE
+                    partial_solution += "-"
             else:
                 output += GREY_SQUARE
+                partial_solution += "-"
                 self.discard_letter(ctx.guild, char1)
 
-        output += "\n\n" + self.discarded_letters_txt(ctx.guild)
+        discarded_letters = self.get_discarded_letters(ctx.guild)
+
+        output += "\n\nSolucion parcial: {}".format(partial_solution)
+        output += "\n\nLetras descartadas:" + ", ".join(discarded_letters)
         await ctx.send(output)
 
         if word == solution:
@@ -215,6 +234,7 @@ class wordle(commands.Cog):
 
     @tasks.loop(hours=1)
     async def remove_users_from_wordle(self):
+        await asyncio.sleep(5)
         for guild in self.bot.guilds:
             empty_wordle_table(guild)
 
