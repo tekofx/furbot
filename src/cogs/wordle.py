@@ -9,7 +9,6 @@ import asyncio
 import nextcord
 from pyrae import dle
 import json
-
 import os
 
 from utils.database import (
