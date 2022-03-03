@@ -220,10 +220,9 @@ class wordle(commands.Cog):
         if user_in_wordle(ctx.guild, ctx.author.id):
             now = datetime.now().hour
             msg = await ctx.send("No puedes jugar más hasta las {}:00".format(now + 1))
-            # await msg.delete(delay=4)
-            # await ctx.message.delete(delay=4)
-
-            # return
+            await msg.delete(delay=4)
+            await ctx.message.delete(delay=4)
+            return
 
         word = word.lower()
         if len(word) != WORD_LENGHT:
@@ -258,7 +257,7 @@ class wordle(commands.Cog):
                 if char1 == char2:
                     output += GREEN_SQUARE
                     self.add_partial_letter(ctx.guild, char1, count)
-                    cont += 1
+                    count += 1
 
                 else:
                     output += YELLOW_SQUARE
