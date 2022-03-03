@@ -257,7 +257,6 @@ class wordle(commands.Cog):
                 if char1 == char2:
                     output += GREEN_SQUARE
                     self.add_partial_letter(ctx.guild, char1, count)
-                    count += 1
 
                 else:
                     output += YELLOW_SQUARE
@@ -265,7 +264,8 @@ class wordle(commands.Cog):
             else:
                 output += GREY_SQUARE
                 self.add_discarded_letter(ctx.guild, char1)
-
+            count += 1
+            
         discarded_letters = self.get_discarded_letters(ctx.guild)
         partial_letters = self.get_partial_letters(ctx.guild)
         output += "\n\nSolucion parcial: " + "".join(partial_letters)
