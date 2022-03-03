@@ -252,12 +252,13 @@ class wordle(commands.Cog):
         # Generate squares
         solution = self.get_solution_word(ctx.guild)
         output = word + "\n"
+        count = 0
         for char1, char2 in zip(word, solution):
-            index = word.index(char1)
             if char1 in solution:
                 if char1 == char2:
                     output += GREEN_SQUARE
-                    self.add_partial_letter(ctx.guild, char1, index)
+                    self.add_partial_letter(ctx.guild, char1, count)
+                    cont += 1
 
                 else:
                     output += YELLOW_SQUARE
