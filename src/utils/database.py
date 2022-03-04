@@ -349,17 +349,18 @@ def create_record(guild: nextcord.guild, record_data: list) -> None:
 def remove_records_from_a_date(
     guild: nextcord.guild, date: datetime.date, record_types: list
 ) -> None:
-    """Removes all records from a date
+    """Removes all records older than a date
     Args:
         guild (nextcord.Guild) : Guild to access its database
-        date (str): date to remove records from
+        date (str): date to compare with
         record(list): record type to delete
     """
     database_connection = create_connection(guild)
+    date = "date({}-{}-{})".format(date.year, date.month, date.day)
 
     for record_type in record_types:
 
-        sql = "DELETE FROM records WHERE date=? AND type=?"
+        sql = "DELETE FROM records WHERE date(date)<? AND type=?"
         var = [date, record_type]
         cur = database_connection.cursor()
         try:
