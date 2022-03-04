@@ -26,6 +26,9 @@ GREY_SQUARE = "⬜"
 WORD_LENGHT = 5
 WORDLE_JSON = "wordle.json"
 
+GREEN = "#5c824c"
+YELLOW = "#c8a111"
+GREY = "#474b4d"
 
 YELLOW_POINTS = 1
 GREEN_POINTS = 2
@@ -409,20 +412,22 @@ class wordle(commands.Cog):
 
                 if char1 == char2:
                     var["squares"].append(GREEN_SQUARE)
-                    var["colors"].append("green")
+                    var["colors"].append(GREEN)
                     self.add_partial_letter(ctx.guild, char1, count)
                     increase_points(ctx.guild, ctx.author.id, GREEN_POINTS)
 
                 else:
                     var["squares"].append(YELLOW_SQUARE)
-                    var["colors"].append("yellow")
+                    var["colors"].append(YELLOW)
                     increase_points(ctx.guild, ctx.author.id, YELLOW_POINTS)
 
             else:
                 var["squares"].append(GREY_SQUARE)
-                var["colors"].append("grey")
+                var["colors"].append(GREY)
                 self.add_to_list(ctx.guild, "discarded_letters", char1)
             count += 1
+
+        print(var)
         return var
 
     @commands.command()
