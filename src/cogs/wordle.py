@@ -16,8 +16,6 @@ from utils.database import (
     user_in_wordle,
     create_word,
     empty_wordle_table,
-    table_empty,
-    word_in_wordle,
 )
 
 log = logging.getLogger(__name__)
@@ -35,6 +33,7 @@ WORDLE_DICT = {
     "discarded_letters": [],
     "correct_letters": [],
     "partial_letters": ["-", "-", "-", "-", "-"],
+    "users": [],
 }
 
 
@@ -64,6 +63,29 @@ class wordle(commands.Cog):
                 letters.sort()
 
             json_object["discarded_letters"] = letters
+            f.seek(0)
+            json.dump(json_object, f)
+            f.truncate()
+
+    def add_user(self, guild: nextcord.Guild, user: int):
+        """Adds a user to json file
+
+        Args:
+            guild (nextcord.Guild): guild to add the letter
+            user (int): id of user to add
+        """
+
+        # Check if the letter is already in the list
+        server_path = get_server_path(guild)
+        with open(server_path + WORDLE_JSON, "r+") as f:
+
+            json_object = json.load(f)
+            users = json_object["users"]
+
+            if user not in users:
+                users.append(user)
+
+            json_object["users"] = users
             f.seek(0)
             json.dump(json_object, f)
             f.truncate()
@@ -128,6 +150,22 @@ class wordle(commands.Cog):
         with open(server_path + WORDLE_JSON, "r") as f:
             json_object = json.load(f)
             letters = json_object["partial_letters"]
+
+        return letters
+
+    def get_users(self, guild: nextcord.Guild) -> list:
+        """Gets the users from json file
+
+        Args:
+            guild (nextcord.Guild): guild to get the users
+
+        Returns:
+            list: list of users
+        """
+        server_path = get_server_path(guild)
+        with open(server_path + WORDLE_JSON, "r") as f:
+            json_object = json.load(f)
+            letters = json_object["users"]
 
         return letters
 
@@ -254,7 +292,7 @@ class wordle(commands.Cog):
         if self.word_guessed(ctx.guild):
             return "La palabra ya fue adivinada, espera hasta la siguiente palabra"
 
-        if user_in_wordle(ctx.guild, ctx.author.id):
+        if ctx.author.id in self.get_users(ctx.guild):
             now = datetime.now().hour
             return "No puedes jugar más hasta las {}:00".format(now + 1)
 
@@ -309,8 +347,8 @@ class wordle(commands.Cog):
             await msg.delete(delay=5)
             return
 
-        # Add user to db
-        create_word(ctx.guild, [word, ctx.author.id])
+        # Add user to json
+        self.add_user(ctx.guild, ctx.author.id)
 
         # Send embed
         embed = self.create_embed(ctx, word)

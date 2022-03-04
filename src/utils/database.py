@@ -42,10 +42,10 @@ channels_table = """ CREATE TABLE IF NOT EXISTS channels (
                                     PRIMARY KEY(channel_id, type )
                                 ); """
 
-wordle_table = """ CREATE TABLE IF NOT EXISTS wordle (
-                                    id integer PRIMARY KEY AUTOINCREMENT,
-                                    word text NOT NULL,
-                                    user_id integer NOT NULL UNIQUE
+wordle_table = """ CREATE TABLE IF NOT EXISTS wordle_ranking (
+                                    id integer PRIMARY KEY,
+                                    name text NOT NULL,
+                                    points integer NOT NULL
 
                                 );"""
 tables = [
