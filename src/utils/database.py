@@ -42,7 +42,7 @@ channels_table = """ CREATE TABLE IF NOT EXISTS channels (
                                     PRIMARY KEY(channel_id, type )
                                 ); """
 
-wordle_table = """ CREATE TABLE IF NOT EXISTS wordle_ranking (
+wordle_table = """ CREATE TABLE IF NOT EXISTS wordle_scores (
                                     id integer PRIMARY KEY,
                                     name text NOT NULL,
                                     points integer NOT NULL
@@ -408,97 +408,6 @@ def create_channel(guild: nextcord.guild, channel_data: list) -> None:
     else:
         database_connection.commit()
         database_connection.close()
-
-
-def create_word(guild: nextcord.guild, word_data: list) -> None:
-    """Creates a word in the wordle table
-    Args:
-        guild (nextcord.Guild) : Guild to access its database
-        word_data (list): info of word. Containing [word, user_id]
-            If user_id is 0, it is the word to guess
-    """
-    database_connection = create_connection(guild)
-
-    sql = """ INSERT INTO wordle(word,user_id)
-              VALUES(?,?) """
-
-    cur = database_connection.cursor()
-    try:
-        cur.execute(sql, word_data)
-        log.info(
-            "word {word} with id {id} was added to the database".format(
-                word=word_data[1], id=word_data[0]
-            )
-        )
-    except Exception as error:
-        log.error(
-            "Error: Could not create word {id} {name}: {error}".format(
-                id=word_data[0], name=word_data[1], error=error
-            )
-        )
-        database_connection.close()
-    else:
-        database_connection.commit()
-        database_connection.close()
-
-
-def empty_wordle_table(guild: nextcord.guild) -> None:
-    """Empties the wordle table
-
-    Args:
-        guild (nextcord.guild): guild of the database
-    """
-    database_connection = create_connection(guild)
-
-    sql = """ DELETE FROM wordle """
-
-    cur = database_connection.cursor()
-    try:
-        cur.execute(sql)
-    except Exception as error:
-        log.error("Error: Could not empty wordle table: {}".format(error))
-        database_connection.close()
-    else:
-        database_connection.commit()
-        database_connection.close()
-
-
-def user_in_wordle(guild: nextcord.guild, user_id: int) -> bool:
-    database_connection = create_connection(guild)
-
-    cursor = database_connection.cursor()
-    sql = "SELECT rowid FROM wordle WHERE user_id = ?"
-    var = [user_id]
-    try:
-        cursor.execute(sql, var)
-    except Exception as error:
-        log.error("Error: Could not check if user {} exists: {}".format(user_id, error))
-        database_connection.close()
-    else:
-        data = cursor.fetchall()
-        database_connection.close()
-        if len(data) == 0:
-            return False
-        return True
-
-
-def word_in_wordle(guild: nextcord.guild, word: str) -> bool:
-    database_connection = create_connection(guild)
-
-    cursor = database_connection.cursor()
-    sql = "SELECT word FROM wordle WHERE user_id = ?"
-    var = [word]
-    try:
-        cursor.execute(sql, var)
-    except Exception as error:
-        log.error("Error: Could not check if word {} exists: {}".format(word, error))
-        database_connection.close()
-    else:
-        data = cursor.fetchall()
-        database_connection.close()
-        if len(data) == 0:
-            return False
-        return True
 
 
 ###################### Getters and setters ######################
