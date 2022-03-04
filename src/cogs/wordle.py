@@ -332,6 +332,9 @@ class wordle(commands.Cog):
         )
         embed.add_field(name="Letras acertadas", value=correct_letters, inline=False)
         embed.add_field(name="Letras descartadas", value=discarded_letters)
+        embed.set_thumbnail(
+            url="https://raw.githubusercontent.com/tekofx/furbot/main/assets/wordle.png"
+        )
         return embed
 
     def correct_input(self, ctx: commands.Context, word: str) -> str:
