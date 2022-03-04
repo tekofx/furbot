@@ -1,4 +1,5 @@
 from http import server
+from types import NoneType
 from nextcord.ext import commands, tasks
 from utils.bot import Bot
 from utils.data import get_server_path, resources_path
@@ -222,49 +223,63 @@ class wordle(commands.Cog):
             return True
         return False
 
-    @commands.command()
-    async def guess(self, ctx: commands.Context, word: str):
-        """Intentar adivinar la palabra del wordle"""
+    def create_embed(self, ctx: commands.Context, word: str) -> nextcord.Embed:
+        """Creates an embed with the word
+
+        Args:
+            ctx (commands.Context): _description_
+            word (str): word to embed
+
+        Returns:
+            nextcord.Embed: embed with the word
+        """
+        discarded_letters = self.get_discarded_letters(ctx.guild)
+        correct_letters = self.get_correct_letters(ctx.guild)
+        partial_letters = self.get_partial_letters(ctx.guild)
+
+        word = self.process_word(ctx, word)
+
+        embed = nextcord.Embed(title="Wordle")
+        embed.add_field(name="Palabra", value=word, inline=False)
+        embed.add_field(
+            name="Solución parcial", value="".join(partial_letters), inline=False
+        )
+        embed.add_field(
+            name="Letras acertadas", value=", ".join(correct_letters), inline=False
+        )
+        embed.add_field(name="Letras descartadas", value=", ".join(discarded_letters))
+        return embed
+
+    def correct_input(self, ctx: commands.Context, word: str) -> str:
         if self.word_guessed(ctx.guild):
-            await ctx.send(
-                "La palabra ya fue adivinada, espera hasta la siguiente palabra"
-            )
-            return
+            return "La palabra ya fue adivinada, espera hasta la siguiente palabra"
 
         if user_in_wordle(ctx.guild, ctx.author.id):
             now = datetime.now().hour
-            msg = await ctx.send("No puedes jugar más hasta las {}:00".format(now + 1))
-            await msg.delete(delay=4)
-            await ctx.message.delete(delay=4)
-            return
+            return "No puedes jugar más hasta las {}:00".format(now + 1)
 
         word = word.lower()
         if len(word) != WORD_LENGHT:
-            msg = await ctx.send(
-                "La palabra debe tener {} letras, inténtalo otra vez".format(
-                    WORD_LENGHT
-                )
+            return "La palabra debe tener {} letras, inténtalo otra vez".format(
+                WORD_LENGHT
             )
-            await msg.delete(delay=4)
-            await ctx.message.delete(delay=4)
-
-            return
 
         if not self.word_in_word_list(word):
-            msg = await ctx.send(
-                "La palabra no está en la lista de palabras, inténtalo otra vez"
-            )
-            await msg.delete(delay=4)
-            await ctx.message.delete(delay=4)
+            return "La palabra no está en la lista de palabras, inténtalo otra vez"
 
-            return
+        return None
 
-        # Add user to db
-        create_word(ctx.guild, [word, ctx.author.id])
+    def process_word(self, ctx: commands.Context, word: str) -> str:
+        """Processes the word to get the correct letters
 
-        # Generate squares
-        solution = self.get_solution_word(ctx.guild)
+        Args:
+            ctx (commands.Context): context of the command
+            word (str): word to process
+        Returns:
+            str: processed word with the squares
+        """
         output = word + "\n"
+        solution = self.get_solution_word(ctx.guild)
         count = 0
         for char1, char2 in zip(word, solution):
             if char1 in solution:
@@ -281,21 +296,28 @@ class wordle(commands.Cog):
                 self.add_discarded_letter(ctx.guild, char1)
             count += 1
 
-        discarded_letters = self.get_discarded_letters(ctx.guild)
-        correct_letters = self.get_correct_letters(ctx.guild)
-        partial_letters = self.get_partial_letters(ctx.guild)
+        return output
 
-        embed = nextcord.Embed(title="Wordle")
-        embed.add_field(name="Palabra", value=output, inline=False)
-        embed.add_field(
-            name="Solución parcial", value="".join(partial_letters), inline=False
-        )
-        embed.add_field(
-            name="Letras acertadas", value=", ".join(correct_letters), inline=False
-        )
-        embed.add_field(name="Letras descartadas", value=", ".join(discarded_letters))
+    @commands.command()
+    async def guess(self, ctx: commands.Context, word: str):
+        """Intentar adivinar la palabra del wordle"""
+
+        # Check requirements are met
+        aux = self.correct_input(ctx, word)
+        if aux != None:
+            msg = await ctx.send(aux)
+            await msg.delete(delay=5)
+            return
+
+        # Add user to db
+        create_word(ctx.guild, [word, ctx.author.id])
+
+        # Send embed
+        embed = self.create_embed(ctx, word)
         await ctx.send(embed=embed)
 
+        # Check if the word was guessed
+        solution = self.get_solution_word(ctx.guild)
         if word == solution:
             await ctx.send("Palabra correcta!!!!")
             empty_wordle_table(ctx.guild)
