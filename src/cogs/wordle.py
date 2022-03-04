@@ -474,12 +474,13 @@ class wordle(commands.Cog):
         count = 1
         embed = nextcord.Embed(title="Ranking")
         first = await self.bot.fetch_user(ranking[0][0])
-        first_avatar = first.avatar.url
-        embed.set_thumbnail(url=first_avatar)
+        # first_avatar = first.avatar.url
+        # embed.set_thumbnail(url=first_avatar)
 
         for user, points in ranking[:5]:
             user = self.bot.get_user(user)
-            embed.add_field(name="Puesto " + str(count), value=points, inline=False)
+            text = "{} - {} puntos".format(user.mention, points)
+            embed.add_field(name="Puesto " + str(count), value=text, inline=False)
             count += 1
         await ctx.send(embed=embed)
 
