@@ -32,6 +32,7 @@ WORDLE_JSON = "wordle.json"
 WORDLE_DICT = {
     "word": "",
     "discarded_letters": [],
+    "correct_letters": [],
     "partial_letters": ["-", "-", "-", "-", "-"],
 }
 
@@ -62,6 +63,30 @@ class wordle(commands.Cog):
                 letters.sort()
 
             json_object["discarded_letters"] = letters
+            f.seek(0)
+            json.dump(json_object, f)
+            f.truncate()
+
+    def add_correct_letter(self, guild: nextcord.Guild, letter: str):
+        """Adds a letter to the correct letters list
+
+        Args:
+            guild (nextcord.Guild): guild to add the letter
+            letter (str): letter to add
+        """
+
+        # Check if the letter is already in the list
+        server_path = get_server_path(guild)
+        with open(server_path + WORDLE_JSON, "r+") as f:
+
+            json_object = json.load(f)
+            letters = json_object["correct_letters"]
+
+            if letter not in letters:
+                letters.append(letter)
+                letters.sort()
+
+            json_object["correct_letters"] = letters
             f.seek(0)
             json.dump(json_object, f)
             f.truncate()
@@ -121,31 +146,21 @@ class wordle(commands.Cog):
 
         return letters
 
-    def get_discarded_letters(self, guild: nextcord.Guild) -> list:
-        """Gets the discarded letters
+    def get_correct_letters(self, guild: nextcord.Guild) -> list:
+        """Gets the correct letters
 
         Args:
             guild (nextcord.Guild): guild to get the letters
 
         Returns:
-            list: list of discarded letters
+            list: list of correct letters
         """
         server_path = get_server_path(guild)
         with open(server_path + WORDLE_JSON, "r") as f:
             json_object = json.load(f)
-            letters = json_object["discarded_letters"]
+            letters = json_object["correct_letters"]
 
         return letters
-
-    def discarded_letters_txt(self, guild: nextcord.Guild) -> str:
-        output = "Letras descartadas: "
-
-        with open(get_server_path(guild) + WORDLE_JSON, "r") as f:
-            json_object = json.load(f)
-            letters = json_object["discarded_letters"]
-            output += ", ".join(letters)
-
-        return output
 
     def word_guessed(self, guild: nextcord.Guild) -> bool:
         """Checks if the word of the day was guessed
@@ -236,7 +251,7 @@ class wordle(commands.Cog):
             return
 
         if not self.word_in_word_list(word):
-            await ctx.send(
+            msg = await ctx.send(
                 "La palabra no está en la lista de palabras, inténtalo otra vez"
             )
             await msg.delete(delay=4)
@@ -253,6 +268,7 @@ class wordle(commands.Cog):
         count = 0
         for char1, char2 in zip(word, solution):
             if char1 in solution:
+                self.add_correct_letter(ctx.guild, char1)
                 if char1 == char2:
                     output += GREEN_SQUARE
                     self.add_partial_letter(ctx.guild, char1, count)
@@ -264,12 +280,21 @@ class wordle(commands.Cog):
                 output += GREY_SQUARE
                 self.add_discarded_letter(ctx.guild, char1)
             count += 1
-            
+
         discarded_letters = self.get_discarded_letters(ctx.guild)
+        correct_letters = self.get_correct_letters(ctx.guild)
         partial_letters = self.get_partial_letters(ctx.guild)
-        output += "\n\nSolucion parcial: " + "".join(partial_letters)
-        output += "\n\nLetras descartadas: " + ", ".join(discarded_letters)
-        await ctx.send(output)
+
+        embed = nextcord.Embed(title="Wordle")
+        embed.add_field(name="Palabra", value=output, inline=False)
+        embed.add_field(
+            name="Solución parcial", value="".join(partial_letters), inline=False
+        )
+        embed.add_field(
+            name="Letras acertadas", value=", ".join(correct_letters), inline=False
+        )
+        embed.add_field(name="Letras descartadas", value=", ".join(discarded_letters))
+        await ctx.send(embed=embed)
 
         if word == solution:
             await ctx.send("Palabra correcta!!!!")
