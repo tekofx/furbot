@@ -381,7 +381,7 @@ class wordle(commands.Cog):
             text = ImageDraw.Draw(square)
             text_w, text_h = text.textsize(letter, font=font)
             text.text(
-                ((square_w - text_w) / 2, (square_h - text_h) / 2),
+                ((square_w - text_w) / 2, (square_h - text_h) / 2 - 8),
                 letter,
                 font=font,
                 fill="black",
