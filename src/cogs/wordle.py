@@ -1,3 +1,4 @@
+import io
 from nextcord.ext import commands, tasks
 from utils.bot import Bot
 from utils.data import get_server_path, resources_path
@@ -299,8 +300,10 @@ class wordle(commands.Cog):
             return True
         return False
 
-    def create_embed(self, ctx: commands.Context, word: str) -> nextcord.Embed:
-        """Creates an embed with the word
+    async def create_and_send_embed(
+        self, ctx: commands.Context, word: str
+    ) -> nextcord.Embed:
+        """Creates and sends an embed with the word
 
         Args:
             ctx (commands.Context): _description_
@@ -309,7 +312,10 @@ class wordle(commands.Cog):
         Returns:
             nextcord.Embed: embed with the word
         """
-        word = self.process_word(ctx, word)
+        info = self.process_word(ctx, word)
+        word = info["word"] + "\n" + "".join(info["squares"])
+        picture = self.word_picture(info["word"], info["colors"])
+        file = nextcord.File(picture, "output.png")
 
         discarded_letters = self.get_discarded_letters(ctx.guild)
         correct_letters = self.get_correct_letters(ctx.guild)
@@ -335,10 +341,9 @@ class wordle(commands.Cog):
         )
         embed.add_field(name="Letras acertadas", value=correct_letters, inline=False)
         embed.add_field(name="Letras descartadas", value=discarded_letters)
-        embed.set_thumbnail(
-            url="https://raw.githubusercontent.com/tekofx/furbot/main/assets/wordle.png"
-        )
-        return embed
+        embed.set_thumbnail(url="attachment://output.png")
+
+        await ctx.send(file=file, embed=embed)
 
     def correct_input(self, ctx: commands.Context, word: str) -> str:
         if self.word_guessed(ctx.guild):
@@ -359,7 +364,7 @@ class wordle(commands.Cog):
 
         return None
 
-    def word_picture(self, word: str, colors: list):
+    def word_picture(self, word: str, colors: list) -> io.BytesIO:
         """Creates a picture of the word"""
         word = word.upper()
         image = Image.new("RGB", (600, 300), "white")
@@ -381,44 +386,44 @@ class wordle(commands.Cog):
             image.paste(square, (x, y + 5))
             x += 120
 
-        image.save(resources_path + "word.png")
-        pass
+        bytes_io = io.BytesIO()
+        image.save(bytes_io, "PNG")
+        bytes_io.seek(0)
+        return bytes_io
 
-    def process_word(self, ctx: commands.Context, word: str) -> str:
+    def process_word(self, ctx: commands.Context, word: str) -> dict:
         """Processes the word to get the correct letters
 
         Args:
             ctx (commands.Context): context of the command
             word (str): word to process
         Returns:
-            str: processed word with the squares
+            dict: dictionary with {word:"word", squares:[], colors:[]}
         """
-        output = word + "\n"
+        var = {"word": word, "squares": [], "colors": []}
         solution = self.get_solution_word(ctx.guild)
         count = 0
-        colors = []
         for char1, char2 in zip(word, solution):
             if char1 in solution:
                 self.add_to_list(ctx.guild, "correct_letters", char1)
 
                 if char1 == char2:
-                    output += GREEN_SQUARE
-                    colors.append("grren")
+                    var["squares"].append(GREEN_SQUARE)
+                    var["colors"].append("green")
                     self.add_partial_letter(ctx.guild, char1, count)
                     increase_points(ctx.guild, ctx.author.id, GREEN_POINTS)
 
                 else:
-                    output += YELLOW_SQUARE
-                    colors.append("yellow")
+                    var["squares"].append(YELLOW_SQUARE)
+                    var["colors"].append("yellow")
                     increase_points(ctx.guild, ctx.author.id, YELLOW_POINTS)
 
             else:
-                output += GREY_SQUARE
-                colors.append("grey")
+                var["squares"].append(GREY_SQUARE)
+                var["colors"].append("grey")
                 self.add_to_list(ctx.guild, "discarded_letters", char1)
             count += 1
-
-        return output
+        return var
 
     @commands.command()
     async def guess(self, ctx: commands.Context, word: str):
@@ -435,8 +440,7 @@ class wordle(commands.Cog):
         self.add_user(ctx.guild, ctx.author.id)
 
         # Send embed
-        embed = self.create_embed(ctx, word)
-        await ctx.send(embed=embed)
+        await self.create_and_send_embed(ctx, word)
 
         # Check if the word was guessed
         solution = self.get_solution_word(ctx.guild)
