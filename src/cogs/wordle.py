@@ -12,11 +12,6 @@ from pyrae import dle
 import json
 import os
 
-from utils.database import (
-    user_in_wordle,
-    create_word,
-    empty_wordle_table,
-)
 
 log = logging.getLogger(__name__)
 
@@ -26,6 +21,11 @@ YELLOW_SQUARE = "🟨"
 GREY_SQUARE = "⬜"
 WORD_LENGHT = 5
 WORDLE_JSON = "wordle.json"
+
+
+YELLOW_POINTS = 1
+GREEN_POINTS = 2
+WORD_GUESSED_POINTS = 3
 
 
 WORDLE_DICT = {
@@ -42,6 +42,26 @@ class wordle(commands.Cog):
         self.bot = bot
         self.generate_word.start()
         self.remove_users_from_wordle.start()
+
+    def add_to_list(self, guild: nextcord.Guild, key: str, element: str):
+        """Adds an element to the json file
+
+        Args:
+            guild (nextcord.Guild): guild to add the element
+            key (str): key of the element
+            element (str): element to add
+        """
+        server_path = get_server_path(guild)
+        with open(server_path + WORDLE_JSON, "r+") as f:
+
+            json_object = json.load(f)
+            if element not in json_object[key]:
+                json_object[key].append(element)
+                json_object[key].sort()
+
+            f.seek(0)
+            json.dump(json_object, f)
+            f.truncate()
 
     def add_discarded_letter(self, guild: nextcord.Guild, letter: str):
         """Adds a letter to the discarded letters list
@@ -169,6 +189,21 @@ class wordle(commands.Cog):
 
         return letters
 
+    def remove_users(self, guild: nextcord.Guild):
+        """Removes users from json file
+
+        Args:
+            guild (nextcord.Guild): guild to remove the users
+        """
+        server_path = get_server_path(guild)
+        with open(server_path + WORDLE_JSON, "r+") as f:
+
+            json_object = json.load(f)
+            json_object["users"] = []
+            f.seek(0)
+            json.dump(json_object, f)
+            f.truncate()
+
     def get_discarded_letters(self, guild: nextcord.Guild) -> list:
         """Gets the discarded letters
 
@@ -271,21 +306,32 @@ class wordle(commands.Cog):
         Returns:
             nextcord.Embed: embed with the word
         """
+        word = self.process_word(ctx, word)
+
         discarded_letters = self.get_discarded_letters(ctx.guild)
         correct_letters = self.get_correct_letters(ctx.guild)
         partial_letters = self.get_partial_letters(ctx.guild)
 
-        word = self.process_word(ctx, word)
+        if correct_letters == []:
+            correct_letters = "."
+        else:
+            correct_letters = ", ".join(correct_letters)
+
+        if discarded_letters == []:
+            discarded_letters = "."
+        else:
+            discarded_letters = ", ".join(discarded_letters)
+
+        if partial_letters == []:
+            partial_letters = "-----"
 
         embed = nextcord.Embed(title="Wordle")
         embed.add_field(name="Palabra", value=word, inline=False)
         embed.add_field(
             name="Solución parcial", value="".join(partial_letters), inline=False
         )
-        embed.add_field(
-            name="Letras acertadas", value=", ".join(correct_letters), inline=False
-        )
-        embed.add_field(name="Letras descartadas", value=", ".join(discarded_letters))
+        embed.add_field(name="Letras acertadas", value=correct_letters, inline=False)
+        embed.add_field(name="Letras descartadas", value=discarded_letters)
         return embed
 
     def correct_input(self, ctx: commands.Context, word: str) -> str:
@@ -321,7 +367,8 @@ class wordle(commands.Cog):
         count = 0
         for char1, char2 in zip(word, solution):
             if char1 in solution:
-                self.add_correct_letter(ctx.guild, char1)
+                self.add_to_list(ctx.guild, "correct_letters", char1)
+
                 if char1 == char2:
                     output += GREEN_SQUARE
                     self.add_partial_letter(ctx.guild, char1, count)
@@ -331,7 +378,7 @@ class wordle(commands.Cog):
 
             else:
                 output += GREY_SQUARE
-                self.add_discarded_letter(ctx.guild, char1)
+                self.add_to_list(ctx.guild, "discarded_letters", char1)
             count += 1
 
         return output
@@ -358,7 +405,6 @@ class wordle(commands.Cog):
         solution = self.get_solution_word(ctx.guild)
         if word == solution:
             await ctx.send("Palabra correcta!!!!")
-            empty_wordle_table(ctx.guild)
             os.remove(get_server_path(ctx.guild) + WORDLE_JSON)
 
             # Get definition
@@ -376,7 +422,7 @@ class wordle(commands.Cog):
     async def remove_users_from_wordle(self):
         await asyncio.sleep(5)
         for guild in self.bot.guilds:
-            empty_wordle_table(guild)
+            self.remove_users(guild)
 
     @tasks.loop(hours=24)
     async def generate_word(self):
@@ -389,7 +435,7 @@ class wordle(commands.Cog):
                     "Nueva palabra generada, intenta adivinarla con `fur guess`",
                 )
 
-    @remove_users_from_wordle.before_loop
+    # @remove_users_from_wordle.before_loop
     async def prep(self):
         """Waits some time to execute tasks"""
 
