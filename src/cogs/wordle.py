@@ -1,16 +1,17 @@
-from http import server
-from types import NoneType
 from nextcord.ext import commands, tasks
 from utils.bot import Bot
 from utils.data import get_server_path, resources_path
 import random
 import logging
-from datetime import date, datetime, timedelta, time
+from datetime import datetime, timedelta
 import asyncio
 import nextcord
 from pyrae import dle
 import json
 import os
+from PIL import ImageFont, ImageDraw, Image
+from utils.data import meme_resources_path
+
 
 from utils.database import increase_points, sort_by_points
 
@@ -358,6 +359,31 @@ class wordle(commands.Cog):
 
         return None
 
+    def word_picture(self, word: str, colors: list):
+        """Creates a picture of the word"""
+        word = word.upper()
+        image = Image.new("RGB", (600, 300), "white")
+        font = ImageFont.truetype(meme_resources_path + "Calibri.ttf", 130)
+        x = 10
+        y = 90
+
+        for letter, color in zip(word, colors):
+            square = Image.new("RGB", (100, 100), color)
+            square_w, square_h = square.size
+            text = ImageDraw.Draw(square)
+            text_w, text_h = text.textsize(letter, font=font)
+            text.text(
+                ((square_w - text_w) / 2, (square_h - text_h) / 2),
+                letter,
+                font=font,
+                fill="black",
+            )
+            image.paste(square, (x, y + 5))
+            x += 120
+
+        image.save(resources_path + "word.png")
+        pass
+
     def process_word(self, ctx: commands.Context, word: str) -> str:
         """Processes the word to get the correct letters
 
@@ -370,21 +396,25 @@ class wordle(commands.Cog):
         output = word + "\n"
         solution = self.get_solution_word(ctx.guild)
         count = 0
+        colors = []
         for char1, char2 in zip(word, solution):
             if char1 in solution:
                 self.add_to_list(ctx.guild, "correct_letters", char1)
 
                 if char1 == char2:
                     output += GREEN_SQUARE
+                    colors.append("grren")
                     self.add_partial_letter(ctx.guild, char1, count)
                     increase_points(ctx.guild, ctx.author.id, GREEN_POINTS)
 
                 else:
                     output += YELLOW_SQUARE
+                    colors.append("yellow")
                     increase_points(ctx.guild, ctx.author.id, YELLOW_POINTS)
 
             else:
                 output += GREY_SQUARE
+                colors.append("grey")
                 self.add_to_list(ctx.guild, "discarded_letters", char1)
             count += 1
 
@@ -425,6 +455,25 @@ class wordle(commands.Cog):
                 "wordle",
                 "Nueva palabra generada, intenta adivinarla con `fur guess`",
             )
+
+    @commands.command()
+    async def ranking(self, ctx: commands.Context):
+        """Show the ranking of the wordle"""
+        ranking = sort_by_points(ctx.guild)
+        if ranking == []:
+            return
+
+        count = 1
+        embed = nextcord.Embed(title="Ranking")
+        first = await self.bot.fetch_user(ranking[0][0])
+        first_avatar = first.avatar.url
+        embed.set_thumbnail(url=first_avatar)
+
+        for user, points in ranking[:5]:
+            user = self.bot.get_user(user)
+            embed.add_field(name="Puesto " + str(count), value=points, inline=False)
+            count += 1
+        await ctx.send(embed=embed)
 
     @tasks.loop(hours=1)
     async def remove_users_from_wordle(self):
