@@ -500,7 +500,7 @@ class wordle(commands.Cog):
                     "Nueva palabra generada, intenta adivinarla con `fur guess`",
                 )
 
-    # @remove_users_from_wordle.before_loop
+    @remove_users_from_wordle.before_loop
     async def prep(self):
         """Waits some time to execute tasks"""
 
