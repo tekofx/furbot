@@ -12,6 +12,8 @@ from pyrae import dle
 import json
 import os
 
+from utils.database import increase_points, sort_by_points
+
 
 log = logging.getLogger(__name__)
 
@@ -375,9 +377,11 @@ class wordle(commands.Cog):
                 if char1 == char2:
                     output += GREEN_SQUARE
                     self.add_partial_letter(ctx.guild, char1, count)
+                    increase_points(ctx.guild, ctx.author.id, GREEN_POINTS)
 
                 else:
                     output += YELLOW_SQUARE
+                    increase_points(ctx.guild, ctx.author.id, YELLOW_POINTS)
 
             else:
                 output += GREY_SQUARE
@@ -407,6 +411,7 @@ class wordle(commands.Cog):
         # Check if the word was guessed
         solution = self.get_solution_word(ctx.guild)
         if word == solution:
+            increase_points(ctx.guild, ctx.author.id, WORD_GUESSED_POINTS)
             await ctx.send("Palabra correcta!!!!")
             os.remove(get_server_path(ctx.guild) + WORDLE_JSON)
 
