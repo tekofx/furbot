@@ -50,21 +50,24 @@ class wordle(commands.Cog):
         self.generate_word.start()
         self.remove_users_from_wordle.start()
 
-    def add_to_list(self, guild: nextcord.Guild, key: str, element: str):
+    def add_to_list(self, ctx: commands.Context, key: str, element: str):
         """Adds an element to the json file
 
         Args:
-            guild (nextcord.Guild): guild to add the element
+            ctx (commands.Context): context of the command
             key (str): key of the element
             element (str): element to add
         """
-        server_path = get_server_path(guild)
+        server_path = get_server_path(ctx.guild)
         with open(server_path + WORDLE_JSON, "r+") as f:
 
             json_object = json.load(f)
             if element not in json_object[key]:
                 json_object[key].append(element)
                 json_object[key].sort()
+                if key == "correct_letters":
+
+                    increase_points(ctx.guild, ctx.author.id, GREEN_POINTS)
 
             f.seek(0)
             json.dump(json_object, f)
@@ -141,14 +144,14 @@ class wordle(commands.Cog):
             json.dump(json_object, f)
             f.truncate()
 
-    def add_partial_letter(self, guild: nextcord.Guild, letter: str, index: int):
+    def add_partial_letter(self, ctx: commands.Context, letter: str, index: int):
         """Adds a letter to the partial letters list
 
         Args:
             guild (nextcord.Guild): guild to add the letter
             letter (str): letter to add
         """
-        server_path = get_server_path(guild)
+        server_path = get_server_path(ctx.guild)
 
         with open(server_path + WORDLE_JSON, "r+") as f:
 
@@ -163,6 +166,8 @@ class wordle(commands.Cog):
             f.seek(0)
             json.dump(json_object, f)
             f.truncate()
+
+        increase_points(ctx.guild, ctx.author.id, YELLOW_POINTS)
 
     def get_partial_letters(self, guild: nextcord.Guild) -> list:
         """Gets the partial letters
@@ -371,23 +376,23 @@ class wordle(commands.Cog):
         """Creates a picture of the word"""
         word = word.upper()
         image = Image.new("RGB", (600, 300), "white")
-        font = ImageFont.truetype(meme_resources_path + "Calibri.ttf", 130)
-        x = 10
-        y = 90
+        font = ImageFont.truetype(meme_resources_path + "Calibri.ttf", 100)
+        x = 50
+        y = 100
 
         for letter, color in zip(word, colors):
-            square = Image.new("RGB", (100, 100), color)
+            square = Image.new("RGB", (90, 90), color)
             square_w, square_h = square.size
             text = ImageDraw.Draw(square)
             text_w, text_h = text.textsize(letter, font=font)
             text.text(
-                ((square_w - text_w) / 2, (square_h - text_h) / 2 - 8),
+                ((square_w - text_w) / 2, (square_h - text_h) / 2 - 5),
                 letter,
                 font=font,
                 fill="black",
             )
-            image.paste(square, (x, y + 5))
-            x += 120
+            image.paste(square, (x, y))
+            x += 100
 
         bytes_io = io.BytesIO()
         image.save(bytes_io, "PNG")
@@ -408,23 +413,21 @@ class wordle(commands.Cog):
         count = 0
         for char1, char2 in zip(word, solution):
             if char1 in solution:
-                self.add_to_list(ctx.guild, "correct_letters", char1)
+                self.add_to_list(ctx, "correct_letters", char1)
 
                 if char1 == char2:
                     var["squares"].append(GREEN_SQUARE)
                     var["colors"].append(GREEN)
-                    self.add_partial_letter(ctx.guild, char1, count)
-                    increase_points(ctx.guild, ctx.author.id, GREEN_POINTS)
+                    self.add_partial_letter(ctx, char1, count)
 
                 else:
                     var["squares"].append(YELLOW_SQUARE)
                     var["colors"].append(YELLOW)
-                    increase_points(ctx.guild, ctx.author.id, YELLOW_POINTS)
 
             else:
                 var["squares"].append(GREY_SQUARE)
                 var["colors"].append(GREY)
-                self.add_to_list(ctx.guild, "discarded_letters", char1)
+                self.add_to_list(ctx, "discarded_letters", char1)
             count += 1
 
         return var
