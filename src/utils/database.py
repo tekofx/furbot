@@ -833,3 +833,36 @@ def table_empty(guild: nextcord.guild, table: str) -> bool:
         if data[0] == 0:
             return True
         return False
+
+
+def exists_channel(guild: nextcord.Guild, channel_type: str) -> bool:
+    """Check if channel exists
+
+    Args:
+        guild (nextcord.Guild) : Guild to access its database
+        channel_type (str): type of channel. Can be general, memes, audit or lobby
+
+    Returns:
+        bool: false if not exists, true on the contrary
+    """
+    database_connection = create_connection(guild)
+
+    cursor = database_connection.cursor()
+    sql = "SELECT EXISTS(SELECT 1 FROM channels WHERE type=?)"
+    var = [channel_type]
+    try:
+        cursor.execute(sql, var)
+    except Exception as error:
+        log.error(
+            "Error: Could not check if channel {} exists: {}".format(
+                channel_type, error
+            )
+        )
+        database_connection.close()
+    else:
+        data = cursor.fetchone()
+        database_connection.close()
+
+        if data == (0,):
+            return False
+        return True

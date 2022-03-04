@@ -15,6 +15,7 @@ from utils.database import (
     create_connection,
     create_record,
     create_user,
+    exists_channel,
     get_joined_dates,
     remove_records_from_a_date,
 )
@@ -42,6 +43,8 @@ class tasks(commands.Cog):
         r = requests.get("https://www.gamerpower.com/api/giveaways?type=game")
 
         for guild in self.bot.guilds:
+            if not exists_channel(guild, "games"):
+                continue
 
             for x in r.json():
                 if not check_record_in_database(guild, x["id"]):
@@ -70,6 +73,9 @@ class tasks(commands.Cog):
         )
         r = r.json()
         for guild in self.bot.guilds:
+            if not exists_channel(guild, "bot_news"):
+                continue
+
             if not check_record_in_database(guild, r[0]["url"]):
                 create_record(guild, ["github", r[0]["url"]])
                 version = r[0]["tag_name"]
@@ -130,6 +136,8 @@ class tasks(commands.Cog):
         memes = await self.bot.reddit.get_hot_subreddit_images(subreddit, 100, 1)
 
         for guild in self.bot.guilds:
+            if not exists_channel(guild, "memes"):
+                continue
             try:
                 for x in memes:
                     if not check_record_in_database(guild, x):
@@ -153,6 +161,9 @@ class tasks(commands.Cog):
         now = datetime(now.year, now.month, now.day)
 
         for guild in self.bot.guilds:
+
+            if not exists_channel(guild, "general"):
+                continue
             dates = get_joined_dates(guild)
             for user_id, date in dates:
                 now_str = str(now).split(" ")[0][5:]
@@ -172,6 +183,9 @@ class tasks(commands.Cog):
         data = r.json()
 
         for guild in self.bot.guilds:
+
+            if not exists_channel(guild, "audit"):
+                continue
 
             for incident in data["incidents"]:
 
