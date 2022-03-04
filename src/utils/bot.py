@@ -214,11 +214,13 @@ class Bot(commands.Bot):
                 "Error: Comando no existente, escribe `fur help` para ver los comandos disponibles"
             )
             # Check if exists a similar command
-            output = "Igual quisiste usar alguno de estos comandos:\n"
+            bot_commands = []
             for command in self.commands:
-                if command_used in str(command):
-                    output += str(command) + ", "
-            if output != "Igual quisiste usar alguno de estos comandos:\n":
+                if command_used in command.name:
+                    bot_commands.append(command.name)
+
+            if len(bot_commands) > 0:
+                output = "Igual quisiste usar: {}\n".format(",".join(bot_commands))
                 await context.send(output)
 
         # Not admin access
