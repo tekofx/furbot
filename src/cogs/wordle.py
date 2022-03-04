@@ -472,8 +472,8 @@ class wordle(commands.Cog):
             return
 
         count = 1
-        embed = nextcord.Embed(title="Ranking")
-        first = await self.bot.fetch_user(ranking[0][0])
+        embed = nextcord.Embed(title="Ranking Wordle")
+        # first = await self.bot.fetch_user(ranking[0][0])
         # first_avatar = first.avatar.url
         # embed.set_thumbnail(url=first_avatar)
 
