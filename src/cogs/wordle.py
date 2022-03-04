@@ -338,13 +338,13 @@ class wordle(commands.Cog):
             partial_letters = "-----"
 
         embed = nextcord.Embed(title="Wordle")
-        embed.add_field(name="Palabra", value=word, inline=False)
+        embed.add_field(name="Palabra", value=word, inline=True)
         embed.add_field(
-            name="Solución parcial", value="".join(partial_letters), inline=False
+            name="Solución parcial", value="".join(partial_letters), inline=True
         )
         embed.add_field(name="Letras acertadas", value=correct_letters, inline=False)
-        embed.add_field(name="Letras descartadas", value=discarded_letters)
-        embed.set_thumbnail(url="attachment://output.png")
+        embed.add_field(name="Letras descartadas", value=discarded_letters, inline=True)
+        embed.set_image(url="attachment://output.png")
 
         await ctx.send(file=file, embed=embed)
 
@@ -427,7 +427,6 @@ class wordle(commands.Cog):
                 self.add_to_list(ctx.guild, "discarded_letters", char1)
             count += 1
 
-        print(var)
         return var
 
     @commands.command()
