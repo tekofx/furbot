@@ -5,7 +5,7 @@ import os
 import logging
 from typing import List
 import nextcord
-from utils.data import server_path
+from utils.data import get_server_path, server_path
 
 
 users_table = """ CREATE TABLE IF NOT EXISTS users (
@@ -42,19 +42,12 @@ channels_table = """ CREATE TABLE IF NOT EXISTS channels (
                                     PRIMARY KEY(channel_id, type )
                                 ); """
 
-wordle_table = """ CREATE TABLE IF NOT EXISTS wordle_scores (
-                                    id integer PRIMARY KEY,
-                                    name text NOT NULL,
-                                    points integer NOT NULL
-
-                                );"""
 tables = [
     users_table,
     roles_table,
     sentences_table,
     records_table,
     channels_table,
-    wordle_table,
 ]
 log = logging.getLogger(__name__)
 
@@ -68,7 +61,7 @@ def create_connection(guild: nextcord.Guild) -> sqlite3.Connection:
     Returns:
         sqlite3.Connection
     """
-    databases_path = server_path.format(guild_name=guild.name, guild_id=guild.id)
+    databases_path = get_server_path(guild)
     database = databases_path + "database.db"
 
     database_connection = None
@@ -142,7 +135,7 @@ def setup_database(guild: nextcord.Guild) -> None:
     Args:
         db_file (str): db file to create
     """
-    databases_path = server_path.format(guild_name=guild.name, guild_id=guild.id)
+    databases_path = get_server_path(guild)
 
     database = databases_path + "database.db"
 
