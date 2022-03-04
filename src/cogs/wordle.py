@@ -67,7 +67,7 @@ class wordle(commands.Cog):
                 json_object[key].sort()
                 if key == "correct_letters":
 
-                    increase_points(ctx.guild, ctx.author.id, GREEN_POINTS)
+                    increase_points(ctx.guild, ctx.author.id, YELLOW_POINTS)
 
             f.seek(0)
             json.dump(json_object, f)
@@ -167,7 +167,7 @@ class wordle(commands.Cog):
             json.dump(json_object, f)
             f.truncate()
 
-        increase_points(ctx.guild, ctx.author.id, YELLOW_POINTS)
+        increase_points(ctx.guild, ctx.author.id, GREEN_POINTS)
 
     def get_partial_letters(self, guild: nextcord.Guild) -> list:
         """Gets the partial letters
