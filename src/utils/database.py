@@ -350,12 +350,12 @@ def remove_records_from_a_date(
         record(list): record type to delete
     """
     database_connection = create_connection(guild)
-    date = "date({}-{}-{})".format(date.year, date.month, date.day)
+    date = "{}-{}-{}".format(date.year, date.month, date.day)
 
     for record_type in record_types:
 
-        sql = "DELETE FROM records WHERE date(date)<? AND type=?"
-        var = [date, record_type]
+        sql = "DELETE FROM records WHERE date<'{}' AND type=?".format(date)
+        var = [record_type]
         cur = database_connection.cursor()
         try:
             cur.execute(sql, var)
