@@ -103,7 +103,7 @@ class tasks(commands.Cog):
         for guild in self.bot.guilds:
             var = datetime(
                 date.today().year, date.today().month, date.today().day
-            ) - timedelta(days=2)
+            ) - timedelta(days=3)
             remove_records_from_a_date(guild, var, ["meme"])
         log.info("Removed records from 2 days ago")
 
