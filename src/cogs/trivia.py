@@ -25,6 +25,50 @@ class trivia(commands.Cog):
         self.bot = bot
 
     @commands.command()
+    async def trivial(self, ctx: commands.Context):
+
+        pass
+
+    def create_embed(self, trivial_dict: dict) -> nextcord.Embed:
+        """Creates a embed
+
+        Args:
+            trivial_dict (dict): dict with the information containing
+            {
+            "title": "",
+            "question": "",
+            "difficulty": "",
+            "type": "",
+            "answers": {
+                EMOJI_A: "",
+                EMOJI_B: "",
+                EMOJI_C: "",
+                EMOJI_D: "",
+            },
+        }
+
+        Returns:
+            nextcord.Embed: embed with the information
+        """
+        answers = trivial_dict["answers"]
+
+        embed = nextcord.Embed(
+            title="Trivia", description=trivial_dict["question"], color=0x00FF00
+        )
+        embed.add_field(
+            name="Dificultad", value=trivial_dict["difficulty"], inline=True
+        )
+        embed.add_field(name="Tipo", value=trivial_dict["type"], inline=True)
+        embed.add_field(name="Opcion A", value=answers[EMOJI_A], inline=False)
+        embed.add_field(name="Opcion B", value=answers[EMOJI_B], inline=False)
+        embed.add_field(name="Opcion C", value=answers[EMOJI_C], inline=False)
+        embed.add_field(name="Opcion D", value=answers[EMOJI_D], inline=False)
+        embed.set_thumbnail(
+            url="https://cdn3.f-cdn.com/contestentries/1233731/27978425/5a61f080ea253_thumb900.jpg"
+        )
+        return embed
+
+    @commands.command()
     async def pregunta(self, ctx: commands.Context):
         """Pregunta al azar"""
 
@@ -45,30 +89,27 @@ class trivia(commands.Cog):
         incorrect_answers.append(correct_answer)
         answers = random.sample(incorrect_answers, k=4)
 
-        ANSWERS_DICT[EMOJI_A] = answers[0]
-        ANSWERS_DICT[EMOJI_B] = answers[1]
-        ANSWERS_DICT[EMOJI_C] = answers[2]
-        ANSWERS_DICT[EMOJI_D] = answers[3]
+        var = {
+            "title": "Trivia",
+            "question": question,
+            "difficulty": difficulty,
+            "type": question_type,
+            "answers": {
+                EMOJI_A: answers[0],
+                EMOJI_B: answers[1],
+                EMOJI_C: answers[2],
+                EMOJI_D: answers[3],
+            },
+        }
 
-        # Create Embed
-        embed = nextcord.Embed(title="Trivia", description=question, color=0x00FF00)
-        embed.add_field(name="Dificultad", value=difficulty, inline=True)
-        embed.add_field(name="Tipo", value=question_type, inline=True)
-        embed.add_field(name="Opcion A", value=answers[0], inline=False)
-        embed.add_field(name="Opcion B", value=answers[1], inline=False)
-        embed.add_field(name="Opcion C", value=answers[2], inline=False)
-        embed.add_field(name="Opcion D", value=answers[3], inline=False)
-        embed.set_thumbnail(
-            url="https://cdn3.f-cdn.com/contestentries/1233731/27978425/5a61f080ea253_thumb900.jpg"
-        )
+        embed = self.create_embed(var)
 
-        embed = await ctx.send(embed=embed)
-        await embed.add_reaction(EMOJI_A)
-        await embed.add_reaction(EMOJI_B)
-        await embed.add_reaction(EMOJI_C)
-        await embed.add_reaction(EMOJI_D)
+        embed_msg = await ctx.send(embed=embed)
+        await embed_msg.add_reaction(EMOJI_A)
+        await embed_msg.add_reaction(EMOJI_B)
+        await embed_msg.add_reaction(EMOJI_C)
+        await embed_msg.add_reaction(EMOJI_D)
 
-        # msg = await self.bot.wait_for("message", check=check, timeout=60)
         try:
             reaction, user = await self.bot.wait_for(
                 "reaction_add", timeout=60.0, check=check
@@ -77,7 +118,7 @@ class trivia(commands.Cog):
             await ctx.send("Tiempo agotado")
             return
 
-        if ANSWERS_DICT[reaction.emoji] == correct_answer:
+        if var["answers"][reaction.emoji] == correct_answer:
             await ctx.send("Correcto")
         else:
             await ctx.send(
