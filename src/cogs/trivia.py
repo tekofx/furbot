@@ -1,6 +1,8 @@
 import asyncio
+from email import message
 import random
 import re
+from time import sleep
 from nextcord.ext import commands
 from utils.bot import Bot
 import requests
@@ -25,9 +27,54 @@ class trivia(commands.Cog):
         self.bot = bot
 
     @commands.command()
-    async def trivial(self, ctx: commands.Context):
+    async def trivial(self, ctx: commands.Context, rondas: int = 1):
+        """Preguntas entre varias personas, a ver quien acierta mas"""
+        victories = {}
+        for _ in range(rondas):
 
-        pass
+            # Get Trivia data
+            var = self.get_trivia_data()
+            correct_answer = var["correct_answer"]
+
+            # Create and send embed
+            embed = self.create_embed(var)
+            embed_msg = await ctx.send(embed=embed)
+            await embed_msg.add_reaction(EMOJI_A)
+            await embed_msg.add_reaction(EMOJI_B)
+            await embed_msg.add_reaction(EMOJI_C)
+            await embed_msg.add_reaction(EMOJI_D)
+
+            # Wait for answer
+            await ctx.send("Esperando 10 segundos")
+            await asyncio.sleep(5)
+            await ctx.send("Quedan 5 segundos")
+            await asyncio.sleep(5)
+
+            message = await ctx.channel.fetch_message(embed_msg.id)
+            reactions = message.reactions
+            for reaction in reactions:
+                reaction_answer = var["answers"][reaction.emoji]
+                if reaction_answer == correct_answer:
+                    aux = await reaction.users().flatten()
+                    aux.remove(self.bot.user)
+                    users = list(dict.fromkeys(aux))
+
+                    for user in users:
+                        if user not in victories:
+                            temp = {user: 1}
+                            victories.update(temp)
+                        else:
+                            temp = {user, victories[user] + 1}
+                            victories.update(temp)
+
+            if len(users) == 0:
+                msg = "No hay ganadores"
+            else:
+                msg = "{} ganó la trivia".format("".join(str(x.mention) for x in users))
+            await ctx.send(msg)
+
+        for x in victories:
+            await ctx.send("{} ganó {} rondas".format(x.mention, victories[x]))
 
     def create_embed(self, trivial_dict: dict) -> nextcord.Embed:
         """Creates a embed
@@ -68,11 +115,12 @@ class trivia(commands.Cog):
         )
         return embed
 
-    def process_string(self, string: str):
+    def process_string(self, string):
         string = string.replace("&rsquo;", "'")
-        string = string.replace("&quot;", "'")
+        string = string.replace("&quot;", '"')
         string = string.replace("&#039;", "'")
         string = string.replace("&amp;", "&")
+
         return string
 
     def get_trivia_data(self):
@@ -84,13 +132,13 @@ class trivia(commands.Cog):
         correct_answer = self.process_string(data["correct_answer"])
         incorrect_answers = []
         for x in data["incorrect_answers"]:
-            x = self.process_string(x)
-            incorrect_answers.append(x)
+            incorrect_answers.append(self.process_string(x))
         difficulty = data["difficulty"]
         question_type = data["type"]
 
         # Randomize answers
         incorrect_answers.append(correct_answer)
+        incorrect_answers = list(dict.fromkeys(incorrect_answers))
         answers = random.sample(incorrect_answers, k=4)
 
         var = {
