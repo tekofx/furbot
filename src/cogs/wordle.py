@@ -435,7 +435,7 @@ class wordle(commands.Cog):
     @commands.command()
     async def guess(self, ctx: commands.Context, word: str):
         """Intentar adivinar la palabra del wordle"""
-
+        word=word.lower()
         # Check requirements are met
         aux = self.correct_input(ctx, word)
         if aux != None:
@@ -485,7 +485,7 @@ class wordle(commands.Cog):
             text = "{} - {} puntos".format(user.mention, points)
             embed.add_field(name="Puesto " + str(count), value=text, inline=False)
             count += 1
-        await ctx.send(embed=embed)
+        # await ctx.send(embed=embed)
 
     @tasks.loop(hours=1)
     async def remove_users_from_wordle(self):
