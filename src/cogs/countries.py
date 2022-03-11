@@ -4,6 +4,7 @@ from utils.bot import Bot
 import requests
 import nextcord
 import asyncio
+import unidecode
 
 
 class countries(commands.Cog):
@@ -19,8 +20,13 @@ class countries(commands.Cog):
 
         data = requests.get("https://restcountries.com/v3.1/all").json()
         country = random.choice(data)
+
         name = country["translations"]["spa"]["common"]
         flag = country["flags"]["png"]
+        capital = " ".join(country["capital"])
+        region = country["region"]
+        subregion = country["subregion"]
+        google_maps = country["maps"]["googleMaps"]
 
         embed = nextcord.Embed(title="Adivina la bandera")
         embed.set_image(url=flag)
@@ -30,12 +36,23 @@ class countries(commands.Cog):
             message = await self.bot.wait_for("message", timeout=60.0, check=check)
         except asyncio.TimeoutError:
             await ctx.send("Tiempo agotado")
+            await ctx.send(name)
             return
 
-        if message.content.lower() in name.lower():
+        if unidecode.unidecode(message.content.lower()) in unidecode.unidecode(
+            name.lower()
+        ):
             await ctx.send("Correcto")
         else:
             await ctx.send("Incorrecto: {}".format(name))
+
+        embed = nextcord.Embed(title=name)
+        embed.add_field(name="Capital", value=capital)
+        embed.add_field(name="Región", value=region)
+        embed.add_field(name="Subregión", value=subregion)
+        embed.add_field(name="Google Maps", value=google_maps)
+        embed.set_image(url=flag)
+        await ctx.send(embed=embed)
 
 
 def setup(bot: commands.Bot):
