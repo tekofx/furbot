@@ -68,20 +68,24 @@ class trivia(commands.Cog):
         )
         return embed
 
-    @commands.command()
-    async def pregunta(self, ctx: commands.Context):
-        """Pregunta al azar"""
+    def process_string(self, string: str):
+        string = string.replace("&rsquo;", "'")
+        string = string.replace("&quot;", "'")
+        string = string.replace("&#039;", "'")
+        string = string.replace("&amp;", "&")
+        return string
 
-        def check(reaction: nextcord.Reaction, user: nextcord.Member) -> bool:
-            return user.id == ctx.author.id
-
+    def get_trivia_data(self):
         data = requests.get("https://opentdb.com/api.php?amount=1&category=9").json()
         data = data["results"][0]
 
         # Get data
-        question = data["question"].replace("&quot;", "'")
-        correct_answer = data["correct_answer"]
-        incorrect_answers = data["incorrect_answers"]
+        question = self.process_string(data["question"])
+        correct_answer = self.process_string(data["correct_answer"])
+        incorrect_answers = []
+        for x in data["incorrect_answers"]:
+            x = self.process_string(x)
+            incorrect_answers.append(x)
         difficulty = data["difficulty"]
         question_type = data["type"]
 
@@ -94,6 +98,7 @@ class trivia(commands.Cog):
             "question": question,
             "difficulty": difficulty,
             "type": question_type,
+            "correct_answer": correct_answer,
             "answers": {
                 EMOJI_A: answers[0],
                 EMOJI_B: answers[1],
@@ -101,9 +106,22 @@ class trivia(commands.Cog):
                 EMOJI_D: answers[3],
             },
         }
+        return var
 
+    @commands.command()
+    async def pregunta(self, ctx: commands.Context):
+        """Pregunta al azar"""
+
+        def check(reaction: nextcord.Reaction, user: nextcord.Member) -> bool:
+            return user.id == ctx.author.id
+
+        # Get Trivia data
+        var = self.get_trivia_data()
+        answers = var["answers"]
+        correct_answer = var["correct_answer"]
+
+        # Create and send embed
         embed = self.create_embed(var)
-
         embed_msg = await ctx.send(embed=embed)
         await embed_msg.add_reaction(EMOJI_A)
         await embed_msg.add_reaction(EMOJI_B)
@@ -118,7 +136,7 @@ class trivia(commands.Cog):
             await ctx.send("Tiempo agotado")
             return
 
-        if var["answers"][reaction.emoji] == correct_answer:
+        if answers[reaction.emoji] == correct_answer:
             await ctx.send("Correcto")
         else:
             await ctx.send(
