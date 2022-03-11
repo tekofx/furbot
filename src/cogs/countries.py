@@ -34,6 +34,8 @@ class countries(commands.Cog):
 
         if message.content.lower() in name.lower():
             await ctx.send("Correcto")
+        else:
+            await ctx.send("Incorrecto: {}".format(name))
 
 
 def setup(bot: commands.Bot):
