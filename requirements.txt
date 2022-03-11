@@ -12,3 +12,4 @@ tweepy
 colorama
 coloredlogs
 nextcord
+unidecode
