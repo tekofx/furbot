@@ -13,7 +13,7 @@ class countries(commands.Cog):
 
     @commands.command()
     async def pais(self, ctx: commands.Context, nombre: str):
-        url = "https://restcountries.com/v3.1/name/{}".format(nombre)
+        url = "https://restcountries.com/v3.1/name/{}".format(nombre.lower())
 
         data = requests.get(url)
 
@@ -22,7 +22,7 @@ class countries(commands.Cog):
             return
 
         data = data.json()[0]
-        embed = nextcord.Embed(title=nombre)
+        embed = nextcord.Embed(title=data["name"]["common"])
         embed.set_image(url=data["flags"]["png"])
         embed.set_thumbnail(url=data["coatOfArms"]["png"])
         embed.add_field(name="Capital", value="".join(data["capital"]), inline=True)
