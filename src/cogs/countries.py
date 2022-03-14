@@ -12,6 +12,40 @@ class countries(commands.Cog):
         self.bot = bot
 
     @commands.command()
+    async def pais(self, ctx: commands.Context, nombre: str):
+        url = "https://restcountries.com/v3.1/name/{}".format(nombre)
+        url = "https://restcountries.com/v3.1/all"
+
+        data = requests.get(url)
+
+        if data.status_code != 200:
+            await ctx.send("Error, no se encuentra el pais. Prueba el nombre en inglés")
+            return
+
+        embed = nextcord.Embed(title=nombre)
+        embed.set_image(url=data["flags"]["png"])
+        embed.set_thumbnail(url=data["coatOfArms"]["png"])
+        embed.add_field(name="Capital", value="".join(data["capital"]))
+        embed.add_field(name="Población", value=data["population"])
+        print(0)
+
+        currencies = []
+        for x in data["currencies"]:
+            name = data["currencies"][x]["name"]
+            symbol = data["currencies"][x]["symbol"]
+            currencies += [name + " (" + symbol + ")"]
+        embed.add_field(name="Moneda/s", value=",".join(currencies))
+
+        languages = []
+        for x in data["languages"]:
+            name = data["languages"][x]
+            languages += [name]
+        embed.add_field(name="Idioma/s", value=",".join(languages))
+
+        embed.add_field(name="Región", value=data["region"])
+        await ctx.send(embed=embed)
+
+    @commands.command()
     async def bandera(self, ctx: commands.Context):
         """Intenta adivinar la bandera del país"""
 
@@ -39,8 +73,10 @@ class countries(commands.Cog):
             await ctx.send(name)
             return
 
-        if unidecode.unidecode(message.content.lower()) in unidecode.unidecode(
-            name.lower()
+        if (
+            unidecode.unidecode(message.content.lower())
+            in unidecode.unidecode(name.lower())
+            and len(message.content.lower()) > 2
         ):
             await ctx.send("Correcto")
         else:
