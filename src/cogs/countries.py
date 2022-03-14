@@ -14,7 +14,6 @@ class countries(commands.Cog):
     @commands.command()
     async def pais(self, ctx: commands.Context, nombre: str):
         url = "https://restcountries.com/v3.1/name/{}".format(nombre)
-        url = "https://restcountries.com/v3.1/all"
 
         data = requests.get(url)
 
@@ -22,27 +21,31 @@ class countries(commands.Cog):
             await ctx.send("Error, no se encuentra el pais. Prueba el nombre en inglés")
             return
 
+        data = data.json()[0]
         embed = nextcord.Embed(title=nombre)
         embed.set_image(url=data["flags"]["png"])
         embed.set_thumbnail(url=data["coatOfArms"]["png"])
-        embed.add_field(name="Capital", value="".join(data["capital"]))
-        embed.add_field(name="Población", value=data["population"])
-        print(0)
+        embed.add_field(name="Capital", value="".join(data["capital"]), inline=True)
+        embed.add_field(name="Región", value=data["region"], inline=True)
+        embed.add_field(name="Subregión", value=data["subregion"], inline=True)
+        embed.add_field(name="Población", value=data["population"], inline=False)
 
         currencies = []
         for x in data["currencies"]:
             name = data["currencies"][x]["name"]
             symbol = data["currencies"][x]["symbol"]
             currencies += [name + " (" + symbol + ")"]
-        embed.add_field(name="Moneda/s", value=",".join(currencies))
+        embed.add_field(name="Moneda/s", value=",".join(currencies), inline=False)
 
         languages = []
         for x in data["languages"]:
             name = data["languages"][x]
             languages += [name]
-        embed.add_field(name="Idioma/s", value=",".join(languages))
+        embed.add_field(name="Idioma/s", value=",".join(languages), inline=False)
+        embed.add_field(
+            name="Google Maps", value=data["maps"]["googleMaps"], inline=False
+        )
 
-        embed.add_field(name="Región", value=data["region"])
         await ctx.send(embed=embed)
 
     @commands.command()
