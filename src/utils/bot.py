@@ -102,8 +102,8 @@ class Bot(commands.Bot):
 
     async def on_member_remove(self, member: nextcord.Member):
         # When a user leaves a server
-        mensaje_lobby_usuario = "{} se fue, una pena. ".format(member.mention)
-        mensaje_lobby_bot = "Se ha ido el bot {}".format(member.mention)
+        mensaje_lobby_usuario = "{}({}) se fue, una pena. ".format(member.mention, member.name)
+        mensaje_lobby_bot = "Se ha eliminado el bot {}({})".format(member.mention, member.name)
 
         if not member.bot:
             await self.channel_send(member.guild, "lobby", mensaje_lobby_usuario)
