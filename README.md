@@ -1,7 +1,7 @@
 <h1 align="center">Furbot</h1>
 
 <p align="center">
-    <img  width=25% src="./assets/furbot_logo.png"  >
+    <img  width=25% src="./assets/logo.png"  >
 </p>
 
 
