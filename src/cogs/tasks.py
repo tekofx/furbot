@@ -1,18 +1,13 @@
 import asyncio
 import logging
-from platform import platform
-from urllib import request
-from xmlrpc.client import DateTime
 import requests
 import nextcord
-from nextcord.errors import Forbidden
 from nextcord.ext import commands, tasks
 from datetime import date, datetime, timedelta
 import random
 from utils.database import (
     check_entry_in_database,
     check_record_in_database,
-    create_connection,
     create_record,
     create_user,
     exists_channel,
@@ -105,7 +100,6 @@ class tasks(commands.Cog):
                 date.today().year, date.today().month, date.today().day
             ) - timedelta(days=3)
             remove_records_from_a_date(guild, var, ["meme"])
-        log.info("Removed records from 2 days ago")
 
     @tasks.loop(hours=6)
     async def update_users(self):

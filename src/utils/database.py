@@ -319,6 +319,7 @@ def create_record(guild: nextcord.guild, record_data: list) -> None:
               VALUES(?,?,?) """
 
     record_data.append(datetime.date.today())
+    print(datetime.date.today() + datetime.timedelta(days=10))
 
     cur = database_connection.cursor()
     try:
@@ -350,7 +351,10 @@ def remove_records_from_a_date(
         record(list): record type to delete
     """
     database_connection = create_connection(guild)
-    date = "{}-{}-{}".format(date.year, date.month, date.day)
+    if date.day < 10:
+        date = str(date.year) + "-" + str(date.month) + "-0" + str(date.day)
+    else:
+        date = "{}-{}-{}".format(date.year, date.month, date.day)
 
     for record_type in record_types:
 
