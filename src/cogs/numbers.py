@@ -65,11 +65,15 @@ class numbers(commands.Cog):
         last_user = self.get_last_user(message.guild)
         if message.author != self.bot.user and content.isnumeric():
             if last_user == message.author.id:
+                await message.add_reaction(INCORRECT_EMOJI)
+
                 await message.channel.send(
                     "{} arruinó la cuenta en {}".format(message.author.mention, number)
                 )
                 self.update_json(message.guild, 0, None)
             elif int(content) != number + 1:
+                await message.add_reaction(INCORRECT_EMOJI)
+
                 await message.channel.send(
                     "{} no es el número correcto".format(message.author.mention)
                 )
