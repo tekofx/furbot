@@ -8,7 +8,7 @@ import nextcord
 from utils.data import get_server_path
 from utils.database import get_channel
 
-JSON_CONTENT = {"number": 0, "last_user": None}
+JSON_CONTENT = {"number": 0, "last_user": None, "record": 0}
 NUMBERS_JSON = "numbers.json"
 CORRECT_EMOJI = "✅"
 INCORRECT_EMOJI = "❌"
@@ -44,6 +44,14 @@ class numbers(commands.Cog):
 
         return letters
 
+    def get_record(self, guild: nextcord.Guild) -> int:
+        server_path = get_server_path(guild)
+        with open(server_path + NUMBERS_JSON, "r") as f:
+            json_object = json.load(f)
+            letters = json_object["record"]
+
+        return letters
+
     def update_json(self, guild: nextcord.Guild, number: int, last_user: int) -> None:
         server_path = get_server_path(guild)
 
@@ -52,6 +60,9 @@ class numbers(commands.Cog):
             json_object = json.load(f)
             json_object["number"] = number
             json_object["last_user"] = last_user
+            if json_object["record"] < number:
+                json_object["record"] = number
+
             f.seek(0)
             json.dump(json_object, f)
             f.truncate()
@@ -63,20 +74,21 @@ class numbers(commands.Cog):
         content = message.content
         number = self.get_number(message.guild)
         last_user = self.get_last_user(message.guild)
+        record = self.get_record(message.guild)
         if message.author != self.bot.user and content.isnumeric():
             if last_user == message.author.id:
                 await message.add_reaction(INCORRECT_EMOJI)
-
                 await message.channel.send(
                     "{} arruinó la cuenta en {}".format(message.author.mention, number)
                 )
+                await message.channel.send("Record hasta ahora `{}`".format(record))
                 self.update_json(message.guild, 0, None)
             elif int(content) != number + 1:
                 await message.add_reaction(INCORRECT_EMOJI)
-
                 await message.channel.send(
                     "{} no es el número correcto".format(message.author.mention)
                 )
+                await message.channel.send("Record hasta ahora `{}`".format(record))
                 self.update_json(message.guild, 0, None)
 
             else:
