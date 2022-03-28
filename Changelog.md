@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v4.3.4 - 2022-3-28
+### Añadido 
+- Nuevo canal numbers: Para jugar a contar numeros
+- Extensión numbers: Permite jugar a contar numeros
+
 ## v4.3.3 - 2022-3-14
 ### Añadido 
 - Comando pais: Obtiene info de un país
