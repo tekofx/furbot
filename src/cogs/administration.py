@@ -28,6 +28,7 @@ CHANNELS = [
     },
     {"channel_type": "games", "channel_description": "mandar juegos gratuitos"},
     {"channel_type": "wordle", "channel_description": "jugar a wordle"},
+    {"channel_type": "numbers", "channel_description": "jugar a contar numeros"},
 ]
 
 
