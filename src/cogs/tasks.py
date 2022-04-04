@@ -27,7 +27,7 @@ class tasks(commands.Cog):
         self.meme.start()
         self.update_users.start()
         self.discord_status.start()
-        self.remove_records_from_previous_day.start()
+        #self.remove_records_from_previous_day.start()
         self.new_github_release.start()
         self.free_games.start()
         self.joined_date.start()
