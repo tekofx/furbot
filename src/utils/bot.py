@@ -6,13 +6,17 @@ import yaml
 import logging
 from utils.database import (
     check_entry_in_database,
+    check_record_in_database,
     create_connection,
+    create_record,
     create_user,
+    exists_channel,
     get_channel,
     setup_database,
 )
 from utils.reddit import Reddit
 from utils.twitter import Twitter
+import requests
 from utils.data import Data, resources_path, config_yaml
 
 log = logging.getLogger(__name__)
@@ -42,6 +46,35 @@ class Bot(commands.Bot):
     def reddit(self) -> Reddit:
         return self._reddit
 
+    async def new_github_release(self):
+        "Checks if there is a new release on github and sends a message to the channel"
+        r = requests.request(
+            "GET", "https://api.github.com/repos/tekofx/furbot/releases"
+        )
+        r = r.json()
+        version = r[0]["tag_name"]
+        release_changelog = r[0]["body"]
+        url = r[0]["html_url"]
+        embed = nextcord.Embed(title="Nueva versión " + version, description=url)
+        embed.set_thumbnail(
+            url="https://raw.githubusercontent.com/tekofx/furbot/main/assets/furbot_logo.png"
+        )
+        release_changelog = release_changelog.replace("\r", "")
+        release_changelog = release_changelog.split("#")
+        for i in release_changelog:
+            if i != "":
+                i = i.splitlines()
+                var = "\n".join(i[1:])
+                embed.add_field(name=i[0], value=var, inline=False)
+        for guild in self.guilds:
+            if not exists_channel(guild, "bot_news"):
+                continue
+
+            if not check_record_in_database(guild, r[0]["url"]):
+                create_record(guild, ["github", r[0]["url"]])
+
+                await self.channel_send(guild, "bot_news", "a", embed)
+
     async def on_ready(self):
         """Performs an action when the bot is ready"""
 
@@ -54,6 +87,9 @@ class Bot(commands.Bot):
 
             # Setup database
             setup_database(guild)
+
+        # Check if there is a new release on github
+        await self.new_github_release()
 
         # Set activity
         self.status = nextcord.Status.online
@@ -102,8 +138,12 @@ class Bot(commands.Bot):
 
     async def on_member_remove(self, member: nextcord.Member):
         # When a user leaves a server
-        mensaje_lobby_usuario = "{}({}) se fue, una pena. ".format(member.mention, member.name)
-        mensaje_lobby_bot = "Se ha eliminado el bot {}({})".format(member.mention, member.name)
+        mensaje_lobby_usuario = "{}({}) se fue, una pena. ".format(
+            member.mention, member.name
+        )
+        mensaje_lobby_bot = "Se ha eliminado el bot {}({})".format(
+            member.mention, member.name
+        )
 
         if not member.bot:
             await self.channel_send(member.guild, "lobby", mensaje_lobby_usuario)
