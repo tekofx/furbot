@@ -1,8 +1,10 @@
+from ast import List
 import logging
 import sqlite3
 from utils.database import check_record_in_database, create_record
 import os
 import asyncpraw
+from asyncpraw import models
 
 log = logging.getLogger(__name__)
 
@@ -13,8 +15,11 @@ class Reddit:
         self.client_secret = os.getenv("REDDIT_CLIENT_SECRET")
         self.user_agent = os.getenv("REDDIT_USER_AGENT")
 
-    async def get_hot_subreddit_images(
-        self, sub_reddit: str, posts_limit: int, num: int
+    async def get_hot_subreddit_submissions_with_media(
+        self,
+        sub_reddit: str,
+        posts_limit: int,
+        num: int,
     ) -> list:
         """Gets a list of subreddit pics
 
@@ -38,7 +43,14 @@ class Reddit:
 
         posts = []
         async for post in hot_posts:
-            if "jpg" in post.url or "png" in post.url and not post.over_18:
-                posts.append(post.url)
+
+            if (
+                "jpg" in post.url
+                or "png" in post.url
+                or "v.redd" in post.url
+                and not post.over_18
+            ):
+
+                posts.append(post)
         await reddit.close()
         return posts

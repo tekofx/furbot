@@ -27,7 +27,7 @@ class tasks(commands.Cog):
         self.meme.start()
         self.update_users.start()
         self.discord_status.start()
-        #self.remove_records_from_previous_day.start()
+        # self.remove_records_from_previous_day.start()
         self.new_github_release.start()
         self.free_games.start()
         self.joined_date.start()
@@ -124,22 +124,38 @@ class tasks(commands.Cog):
         """Sends a random meme"""
 
         num = random.randint(0, 2)
-        subreddits = ["dankmemes", "furry_irl", "SpanishMeme"]
+        subreddits = ["dankmemes", "LMDShow", "SpanishMeme", "MemesESP", "orslokx"]
         subreddit = subreddits[num]
 
-        memes = await self.bot.reddit.get_hot_subreddit_images(subreddit, 100, 1)
+        memes = await self.bot.reddit.get_hot_subreddit_submissions_with_media(
+            subreddit, 100, 1
+        )
 
         for guild in self.bot.guilds:
             if not exists_channel(guild, "memes"):
                 continue
             try:
                 for x in memes:
-                    if not check_record_in_database(guild, x):
+                    if not check_record_in_database(guild, x.url):
                         meme = x
-                        create_record(guild, ["meme", meme])
+                        create_record(guild, ["meme", meme.url])
                         break
 
-                await self.bot.channel_send(guild, "memes", meme)
+                # If contains video
+                if meme.media:
+                    print(meme.media)
+                    print(type(meme.media))
+                    print(meme.media["reddit_video"]["fallback_url"])
+                    # download video
+
+                    await self.bot.channel_send(
+                        guild, "memes", meme.media["reddit_video"]["fallback_url"]
+                    )
+
+                else:
+                    await self.bot.channel_send(guild, "memes", meme.url)
+
+                # await self.bot.channel_send(guild, "memes", meme.url)
                 log.info("Sent meme from {}".format(subreddit))
 
             except (Exception) as error:
@@ -232,7 +248,7 @@ class tasks(commands.Cog):
 
     @free_games.before_loop
     @discord_status.before_loop
-    @meme.before_loop
+    # @meme.before_loop
     @joined_date.before_loop
     async def prep(self):
         """Waits some time to execute tasks"""
