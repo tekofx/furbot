@@ -137,11 +137,7 @@ class memes(commands.Cog):
             await ctx.send(file=nextcord.File(memes_path + output))
         logging.info("Meme " + output + " sent")
 
-    @commands.command()
-    async def count_memes(self, ctx: commands.Context):
-        """Número de memes añadidos al bot"""
-        memes_path = get_server_path(ctx.guild) + "/memes/"
-        await ctx.send(len(os.listdir(memes_path)))
+ 
 
     @commands.command()
     async def horny(self, ctx: commands.Context, user: nextcord.Member = None):
