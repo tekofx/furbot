@@ -92,9 +92,6 @@ class Bot(commands.Bot):
         await self.new_github_release()
 
         # Set activity
-        self.status = nextcord.Status.online
-
-        # Get activity
         with open(config_yaml, "r") as stream:
             try:
                 content = yaml.safe_load(stream)
@@ -102,7 +99,7 @@ class Bot(commands.Bot):
                 log.error("Error at getting YAML content: {}".format(error))
 
         activity = nextcord.Game(content["activity"])
-        self.activity = activity
+        await self.change_presence(activity=activity, status=nextcord.Status.online)
 
         # Load cogs
         cogs = os.listdir("src/cogs/")
