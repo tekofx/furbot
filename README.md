@@ -9,9 +9,15 @@
 
 <p align="center">Bot para el servidor de Villafurrense</p>
 
-# Ejecución en docker-compose:
-- Poner en /env el archivo .env con las variables de entornos
+# Ejecución en docker-compose (recomendado):
+- Descargar el archivo docker-compose y cambiar las rutas de los volúmenes
+- En la carpeta que corresponde al volumen /bot/env colocar el archivo furbot.env rellenando los tokens 
 - `docker-compose up -d`
+
+# Ejecución sin docker
+- Clonar el repositorio
+- Rellenar el archivo env/furbot.env con los tokens
+- `python3 src/main.py`
 
 
 ## Demo
