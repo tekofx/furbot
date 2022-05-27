@@ -11,12 +11,10 @@ jobs:
 
       - name: Get tag
         id: tag
-        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
-
-      - name: Test
-        run: |
-          echo $RELEASE_VERSION
-          echo ${{ env.RELEASE_VERSION }}
+        uses: dawidd6/action-get-tag@v1
+        with:
+          # Optionally strip `v` prefix
+          strip_v: true
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
@@ -39,3 +37,4 @@ jobs:
           push: true
           tags: |
             ghcr.io/tekofx/furbot:latest
+            ghcr.io/tekofx/furbot:${{steps.tag.outputs.tag}}
