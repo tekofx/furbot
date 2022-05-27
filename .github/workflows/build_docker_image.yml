@@ -1,8 +1,6 @@
 name: Build multiarch docker image
 
-on:
-  release:
-    types: [published]
+on: release
 jobs:
   Upload_docker_image_to_ghcr:
     runs-on: ubuntu-latest
