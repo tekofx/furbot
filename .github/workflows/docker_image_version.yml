@@ -1,4 +1,4 @@
-name: Build multiarch docker image (version)
+name: Build multiarch docker image
 
 on: release
 
@@ -38,4 +38,5 @@ jobs:
           # Build and Publish container image
           docker buildx build --push \
           --tag $IMAGE_ID:$VERSION \
+          --tag $IMAGE_ID:latest \
           --platform linux/amd64,linux/arm64/v8 .
