@@ -30,4 +30,3 @@ jobs:
           push: true
           tags: |
             ghcr.io/tekofx/furbot:latest
-            ghcr.io/tekofx/app:{{env.VERSION}}
