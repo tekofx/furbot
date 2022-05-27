@@ -11,10 +11,12 @@ jobs:
 
       - name: Get tag
         id: tag
-        run: |
-          echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
-          echo $RELEASE_VERSION
-          echo ${{ env.RELEASE_VERSION }}
+        uses: dawidd6/action-get-tag@v1
+        with:
+          # Optionally strip `v` prefix
+          strip_v: true
+      - name: Use tag
+        run: echo ${{steps.tag.outputs.tag}}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
