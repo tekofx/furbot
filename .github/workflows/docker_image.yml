@@ -1,7 +1,8 @@
 name: Build multiarch docker image
 
-on: release
-
+on:
+  release:
+    types: [published]
 jobs:
   Upload_docker_image_to_ghcr:
     runs-on: ubuntu-latest
@@ -36,7 +37,4 @@ jobs:
           echo IMAGE_ID=$IMAGE_ID
           echo VERSION=$VERSION
           # Build and Publish container image
-          docker buildx build --push \
-          --tag $IMAGE_ID:$VERSION \
-          --tag $IMAGE_ID:latest \
-          --platform linux/amd64,linux/arm64/v8 .
+          docker buildx build . --platform=linux/amd64,linux/arm64/v8 --tag=$IMAGE_ID:$VERSION --tag=$IMAGE_ID:latest --pull --push --no-cache
