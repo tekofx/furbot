@@ -44,12 +44,7 @@ class Reddit:
         posts = []
         async for post in hot_posts:
 
-            if (
-                "jpg" in post.url
-                or "png" in post.url
-                or "v.redd" in post.url
-                and not post.over_18
-            ):
+            if ("jpg" in post.url or "png" in post.url) and not post.over_18:
 
                 posts.append(post)
         await reddit.close()

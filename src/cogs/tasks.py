@@ -108,14 +108,7 @@ class tasks(commands.Cog):
                         create_record(guild, ["meme", meme.url])
                         break
 
-                # If contains video
-                if meme.media:
-                    await self.bot.channel_send(
-                        guild, "memes", meme.media["reddit_video"]["fallback_url"]
-                    )
-
-                else:
-                    await self.bot.channel_send(guild, "memes", meme.url)
+                await self.bot.channel_send(guild, "memes", meme.url)
 
                 # await self.bot.channel_send(guild, "memes", meme.url)
                 log.info("Sent meme from {}".format(subreddit))
