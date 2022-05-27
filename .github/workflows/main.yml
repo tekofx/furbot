@@ -26,6 +26,7 @@ jobs:
         id: tag
         run: |
           VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+          echo $VERSION
           echo $VERSION >> $GITHUB_ENV
 
       - name: Build and push
