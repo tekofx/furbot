@@ -1,11 +1,10 @@
 name: Build multiarch docker image
 
-on: [release,push]
+on: release
 
 jobs:
   Upload_docker_image_to_ghcr:
     runs-on: ubuntu-latest
-   
 
     steps:
       - name: checkout
@@ -20,7 +19,7 @@ jobs:
 
       - name: Log-in to ghcr.io
         run: echo "${{ secrets.BUILD_IMAGE_TOKEN }}" | docker login https://ghcr.io -u ${{ github.actor }} --password-stdin
-      
+
       - name: Get tag
         id: tag
         run: echo "${{ github.ref_name }}"
