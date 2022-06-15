@@ -90,7 +90,7 @@ class tasks(commands.Cog):
     async def meme(self):
         """Sends a random meme"""
 
-        num = random.randint(0, 2)
+        num = random.randint(0, 4)
         subreddits = ["dankmemes", "LMDShow", "SpanishMeme", "MemesESP", "orslokx"]
         subreddit = subreddits[num]
 
@@ -107,8 +107,17 @@ class tasks(commands.Cog):
                         meme = x
                         create_record(guild, ["meme", meme.url])
                         break
+                link = "[Link](https://reddit.com/{})".format(meme.permalink)
+                subreddit = "[{}](https://reddit.com/r/{})".format(subreddit, subreddit)
 
-                await self.bot.channel_send(guild, "memes", meme.url)
+                embed = nextcord.Embed(title=meme.title)
+                embed.add_field(name="Subreddit", value=subreddit, inline=False)
+                embed.description = link
+                embed.set_image(url=meme.url)
+                embed.set_footer(text="Submitted by {}".format(meme.author))
+                await self.bot.channel_send(
+                    guild, channel_type="memes", msg="a", embed=embed
+                )
 
                 # await self.bot.channel_send(guild, "memes", meme.url)
                 log.info("Sent meme from {}".format(subreddit))
@@ -203,7 +212,7 @@ class tasks(commands.Cog):
 
     @free_games.before_loop
     @discord_status.before_loop
-    @meme.before_loop
+    # @meme.before_loop
     @joined_date.before_loop
     async def prep(self):
         """Waits some time to execute tasks"""
