@@ -211,7 +211,7 @@ class tasks(commands.Cog):
 
     @free_games.before_loop
     @discord_status.before_loop
-    # @meme.before_loop
+    @meme.before_loop
     @joined_date.before_loop
     async def prep(self):
         """Waits some time to execute tasks"""
