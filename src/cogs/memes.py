@@ -28,7 +28,7 @@ class memes(commands.Cog):
         """Añade un meme al bot
 
         Uso:
-            fur meme <nombres personas en el meme>
+            fur addmeme <nombres personas en el meme>
 
         """
         memes_path = get_server_path(ctx.guild) + "/memes/"
@@ -136,8 +136,6 @@ class memes(commands.Cog):
 
             await ctx.send(file=nextcord.File(memes_path + output))
         logging.info("Meme " + output + " sent")
-
- 
 
     @commands.command()
     async def horny(self, ctx: commands.Context, user: nextcord.Member = None):

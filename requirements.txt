@@ -11,5 +11,5 @@ graphviz
 tweepy
 colorama
 coloredlogs
-nextcord
+nextcord==2.0.0a6
 unidecode
