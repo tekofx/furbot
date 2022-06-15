@@ -90,9 +90,8 @@ class tasks(commands.Cog):
     async def meme(self):
         """Sends a random meme"""
 
-        num = random.randint(0, 4)
         subreddits = ["dankmemes", "LMDShow", "SpanishMeme", "MemesESP", "orslokx"]
-        subreddit = subreddits[num]
+        subreddit = random.choice(subreddits)
 
         memes = await self.bot.reddit.get_hot_subreddit_submissions_with_media(
             subreddit, 100, 1
