@@ -409,6 +409,27 @@ def create_channel(guild: nextcord.guild, channel_data: list) -> None:
 
 
 ###################### Getters and setters ######################
+def get_roles_by_type(guild: nextcord.guild, role_type: str):
+    database_connection = create_connection(guild)
+
+    sql = """ SELECT id
+        FROM roles
+        WHERE type=?
+        """
+    var = [role_type]
+    cur = database_connection.cursor()
+    try:
+        cur.execute(sql, var)
+    except Exception as error:
+        log.error(
+            "Error: could not query roles of type {}: {}".format(role_type, error)
+        )
+        database_connection.close()
+    else:
+        info = cur.fetchall()
+        return info
+
+
 def get_name(guild: nextcord.guild, user_id: int) -> str:
     """Gets the name of a user
     Args:

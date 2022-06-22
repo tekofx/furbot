@@ -1,14 +1,12 @@
+import io
+from ntpath import join
 import nextcord
 from nextcord.ext import commands
 from pyrae import dle
-
-from utils.database import (
-    create_connection,
-    get_colors,
-    get_ranks,
-    get_species,
-)
+import requests
+from utils.database import get_roles_by_type
 from utils.bot import Bot
+from PIL import Image, ImageOps, ImageFont, ImageDraw
 
 
 class utilities(commands.Cog):
@@ -18,6 +16,52 @@ class utilities(commands.Cog):
     @commands.command()
     async def ping(self, context):
         await context.channel.send("Pim pam trucu trucu")
+
+    @commands.command()
+    async def carnet(self, context: commands.Context, user: nextcord.Member = None):
+        if not user:
+            user = context.author
+
+        name = user.name
+        joined_date = user.joined_at
+        joined_date = (
+            str(joined_date.day)
+            + "-"
+            + str(joined_date.month)
+            + "-"
+            + str(joined_date.year)
+        )
+        roles = user.roles
+        color = user.colour
+
+        # Get avatar and make it round
+        avatar = user.avatar.url
+        avatar = io.BytesIO(requests.get(avatar).content)
+        avatar = Image.open(avatar).convert("RGBA").resize((80, 80))
+        mask = Image.open("data/resources/mask.png").convert("L")
+        avatar = ImageOps.fit(avatar, mask.size, centering=(0.5, 0.5))
+        avatar.putalpha(mask)
+
+        # Create canvas
+        canvas = Image.new("RGB", (400, 200), color="white")
+        canvas.paste(avatar, (20, 20), avatar)
+
+        # Create text image
+        txt_pic = Image.new("RGBA", (200, 100))
+        font = ImageFont.truetype("data/resources/calibri.ttf", size=20)
+        draw = ImageDraw.Draw(txt_pic)
+
+        # Draw text
+        draw.text((10, 20), name, "black", font=font)
+        draw.text((10, 40), joined_date, "black", font=font)
+
+        canvas.paste(txt_pic, (150, 20), txt_pic)
+
+        # Send
+        bytes_io = io.BytesIO()
+        canvas.save(bytes_io, "PNG")
+        bytes_io.seek(0)
+        await context.send(file=nextcord.File(bytes_io, "output.png"))
 
     @commands.command()
     async def rae(self, ctx: commands.Context, palabra: str):
@@ -36,112 +80,6 @@ class utilities(commands.Cog):
         else:
             await tmp.edit(content=output)
 
-    @commands.command()
-    async def cumple(self, ctx: commands.Context, user: nextcord.Member):
-        """Obtiene el cumpleaños de un usuario
-
-        Uso:
-            fur cumple @<usuario>
-        """
-
-        output = "No existe el cumpleaños de " + user.display_name
-        birthday = get_birthday(ctx.guild, user.id).split("-")
-        day = birthday[2]
-        month = birthday[1]
-        birthday = str(day) + "-" + str(month)
-
-        output = "El cumpleaños de {user} es el {cumple}".format(
-            user=user.display_name, cumple=birthday
-        )
-        await ctx.send(output)
-
 
 def setup(bot: commands.Bot):
     bot.add_cog(utilities(bot))
-
-
-def get_user_species(user: nextcord.Member, guild: nextcord.Guild):
-    """Get user roles that are species
-
-    Args:
-        user (nextcord.Member): user to search for roles
-        guild (nextcord.Guild): guild to search for roles
-
-    Returns:
-        str: String containing roles
-    """
-    server_species = get_species(guild)
-    mention = []
-    roles = user.roles
-    for role in roles:
-        if role.id in server_species:
-            mention.append(role.name)
-
-    b = ", ".join(mention)
-    return b
-
-
-def get_user_roles(user: nextcord.Member, guild: nextcord.Guild):
-    """Get user roles that are not ranks
-
-    Args:
-        user (nextcord.Member): user to search for roles
-        guild (nextcord.Guild): guild to search for roles
-
-    Returns:
-        str: String containing roles
-    """
-
-    server_ranks = get_ranks(guild)
-    mention = []
-    roles = user.roles
-
-    for role in roles:
-        if role.id in server_ranks:
-            mention.append(role.name)
-
-    b = ", ".join(mention)
-    return str(b)
-
-
-def get_user_ranks(user: nextcord.Member, guild: nextcord.Guild):
-    """Get ranks from a user
-
-    Args:
-        user (nextcord.User): user to search for roles
-        guild (nextcord.Guild): guild to search for roles
-
-    Returns:
-        str: String containing all ranks
-    """
-    server_ranks = get_ranks(guild)
-    output = []
-    roles = user.roles
-
-    for role in roles:
-        if role.id in server_ranks:
-            output.append(role.name)
-    if output:
-        b = ", ".join(output)
-    else:
-        return "Admin"
-    return str(b)
-
-
-def get_user_color_code(user: nextcord.Member):
-    """Get user roles that are not ranks
-
-    Args:
-        user (nextcord.User): user to search for roles
-
-    Returns:
-        str: String containing roles
-    """
-    con = create_connection(user.guild_id)
-
-    server_colors = get_colors(con)
-    roles = user.roles
-
-    for role in roles:
-        if role.id in server_colors:
-            return role.colour.value
