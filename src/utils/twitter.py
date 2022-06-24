@@ -70,9 +70,7 @@ class Twitter:
         )
         for tweet in tweets:
 
-            if "media" in tweet.entities and not check_record_in_database(
-                guild, tweet.entities["media"][0]["media_url"]
-            ):
+            if "media" in tweet.entities:
                 tweet_url = tweet.entities["media"][0]["media_url"]
 
                 num += 1

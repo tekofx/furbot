@@ -16,6 +16,7 @@ from utils.database import (
 )
 from utils.bot import Bot
 
+
 log = logging.getLogger(__name__)
 
 
@@ -28,6 +29,7 @@ class tasks(commands.Cog):
         self.update_users.start()
         self.discord_status.start()
         # self.remove_records_from_previous_day.start()
+        self.ordure_bizarre.start()
         self.free_games.start()
         self.joined_date.start()
         log.info("Waiting for tasks to start")
@@ -125,6 +127,21 @@ class tasks(commands.Cog):
                 log.error("Error sending meme to {}: {}".format(guild.name, error))
 
     @tasks.loop(hours=1)
+    async def ordure_bizarre(self):
+        for guild in self.bot.guilds:
+            if not exists_channel(guild, "ordure"):
+                continue
+        posts = self.bot.twitter.get_latest_images_not_repeated(
+            guild, "ordurebizarree", 10
+        )
+
+        for post in posts:
+            if not check_record_in_database(guild, post):
+                create_record(guild, ["meme", post])
+                await self.bot.channel_send(guild, channel_type="ordure", msg=post)
+                return
+
+    @tasks.loop(hours=1)
     async def joined_date(self):
         """Checks if today is somebody's birthday"""
 
@@ -213,6 +230,7 @@ class tasks(commands.Cog):
     @discord_status.before_loop
     @meme.before_loop
     @joined_date.before_loop
+    @ordure_bizarre.before_loop
     async def prep(self):
         """Waits some time to execute tasks"""
 
