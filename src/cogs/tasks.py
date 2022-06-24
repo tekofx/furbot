@@ -126,20 +126,16 @@ class tasks(commands.Cog):
             except (Exception) as error:
                 log.error("Error sending meme to {}: {}".format(guild.name, error))
 
-    @tasks.loop(hours=1)
+    @tasks.loop(minutes=10)
     async def ordure_bizarre(self):
+        post = self.bot.twitter.get_latest_image("ordurebizarree")
         for guild in self.bot.guilds:
             if not exists_channel(guild, "ordure"):
                 continue
-        posts = self.bot.twitter.get_latest_images_not_repeated(
-            guild, "ordurebizarree", 10
-        )
 
-        for post in posts:
             if not check_record_in_database(guild, post):
                 create_record(guild, ["meme", post])
                 await self.bot.channel_send(guild, channel_type="ordure", msg=post)
-                return
 
     @tasks.loop(hours=1)
     async def joined_date(self):
@@ -230,7 +226,7 @@ class tasks(commands.Cog):
     @discord_status.before_loop
     @meme.before_loop
     @joined_date.before_loop
-    @ordure_bizarre.before_loop
+    # @ordure_bizarre.before_loop
     async def prep(self):
         """Waits some time to execute tasks"""
 
