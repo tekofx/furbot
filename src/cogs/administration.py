@@ -8,6 +8,7 @@ from utils.database import (
     create_role,
     create_post,
     get_posts,
+    remove_post,
 )
 from asyncio import sleep
 from utils.data import config_yaml
@@ -83,6 +84,18 @@ class administration(commands.Cog):
 
     @commands.command()
     @commands.has_permissions(administrator=True)
+    async def rmpost(self, ctx: commands.Context, post_id: int):
+        """[Admin]Permite eliminar una cuenta de twitter/subreddit de un canal.
+
+        Args:
+            id: id del post a eliminar
+        """
+
+        remove_post(ctx.guild, post_id)
+        await ctx.send("Post eliminado")
+
+    @commands.command()
+    @commands.has_permissions(administrator=True)
     async def posts(self, ctx: commands.Context):
         "Muestra los posts que se han añadido"
         posts = get_posts(ctx.guild)
@@ -93,7 +106,9 @@ class administration(commands.Cog):
         output = ""
         for post in posts:
             channel = await self.bot.fetch_channel(post[0])
-            output += "- {} ({}): {}\n".format(channel.mention, post[1], post[2])
+            output += "-id={}\n-canal={}\n-visibilidad={}\n-cuenta/s={} \n".format(
+                post[3], channel.mention, post[1], post[2]
+            )
 
         await ctx.send(output)
 

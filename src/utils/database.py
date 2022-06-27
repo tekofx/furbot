@@ -437,6 +437,24 @@ def create_post(guild: nextcord.guild, post_data: list) -> None:
         database_connection.close()
 
 
+def remove_post(guild: nextcord.guild, id: int) -> None:
+
+    database_connection = create_connection(guild)
+
+    sql = "DELETE FROM posts WHERE id=?"
+    cur = database_connection.cursor()
+    try:
+        cur.execute(sql, [id])
+        log.info("Deleted post {} from database".format(id))
+    except Exception as error:
+        log.error("Error: Could not delete post {} from database: {}".format(id, error))
+        database_connection.close()
+
+    else:
+        database_connection.commit()
+        database_connection.close()
+
+
 ###################### Getters and setters ######################
 
 
@@ -447,11 +465,11 @@ def get_posts(guild: nextcord.guild) -> list:
         guild (nextcord.guild): guild to get the posts for
 
     Returns:
-        list: containing [(channel_id, account), (channel_id, account), ...]
+        list: containing [(channel_id, visibility,account, id), (channel_id, visibility,account, id), ...]
     """
     database_connection = create_connection(guild)
 
-    sql = "SELECT channel_id, visibility, accounts FROM posts "
+    sql = "SELECT channel_id, visibility, accounts, id FROM posts "
     cur = database_connection.cursor()
     try:
         cur.execute(sql)
