@@ -68,6 +68,13 @@ class animal(commands.Cog):
         await message.delete()
 
     @commands.command()
+    async def lizard(self, ctx: commands.Context, num: int = None):
+        """Fotos de lagartitos"""
+        message = await ctx.send("Buscando fotos de laganitos")
+        await self.send_animal_pics_twitter(ctx, "HourlyLizards", num)
+        await message.delete()
+
+    @commands.command()
     async def cat(self, ctx: commands.Context, num: int = None):
         """Fotos de gatitos"""
         message = await ctx.send("Buscando fotos de gatitos")
