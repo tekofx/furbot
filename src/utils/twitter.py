@@ -117,11 +117,32 @@ class Twitter:
                     break
         user = output.user.name
         text = output.full_text
-        embed = Embed(
+        embed = self.create_embed(output)
+        """ embed = Embed(
             title="Twitter",
             description=text,
             color=Colour.from_rgb(29, 161, 242),
         )
         embed.set_image(url=tweet_url)
-        embed.set_author(name=user, icon_url=output.user.profile_image_url)
+        embed.set_author(name=user, icon_url=output.user.profile_image_url) """
+        return embed
+
+    def create_embed(self, tweet) -> Embed:
+        """Creates an embed from a tweet
+
+        Args:
+            tweet (tw.Status): tweet to create embed from
+
+        Returns:
+            Embed: embed of tweet
+        """
+        user = tweet.user.name
+        text = tweet.full_text
+        embed = Embed(
+            title="Twitter",
+            description=text,
+            color=Colour.from_rgb(29, 161, 242),
+        )
+        embed.set_image(url=tweet.entities["media"][0]["media_url"])
+        embed.set_author(name=user, icon_url=tweet.user.profile_image_url)
         return embed

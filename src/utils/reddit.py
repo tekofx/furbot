@@ -89,20 +89,34 @@ class Reddit:
                 output = post
                 break
 
-        image = output.url
+        embed = self.create_embed(output)
+        await reddit.close()
+        return embed
 
-        link = "[Link](https://reddit.com/{})".format(output.permalink)
+    def create_embed(
+        self,
+        post: asyncpraw.reddit.models.Submission,
+    ) -> Embed:
+        """Creates an embed from a reddit post
+
+        Args:
+            post (asyncpraw.models.Submission): post to create embed from
+
+        Returns:
+            Embed: embed created from post
+        """
+        link = "[Link](https://reddit.com{})".format(post.permalink)
+
         embed = Embed(
-            title=output.title,
+            title=post.title,
             description=link,
             color=Colour.from_rgb(255, 86, 0),
         )
 
         embed.set_author(
-            name="r/" + subreddit.display_name,
+            name="r/" + post.subreddit.display_name,
             icon_url="https://www.redditinc.com/assets/images/site/reddit-logo.png",
         )
 
-        embed.set_image(url=image)
-        await reddit.close()
+        embed.set_image(url=post.url)
         return embed
