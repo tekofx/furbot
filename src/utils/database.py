@@ -439,7 +439,15 @@ def create_post(guild: nextcord.guild, post_data: list) -> None:
 ###################### Getters and setters ######################
 
 
-def get_posts(guild: nextcord.guild):
+def get_posts(guild: nextcord.guild) -> list:
+    """Gets the posts for a server
+
+    Args:
+        guild (nextcord.guild): guild to get the posts for
+
+    Returns:
+        list: containing [(channel_id, account), (channel_id, account), ...]
+    """
     database_connection = create_connection(guild)
 
     sql = "SELECT channel_id, accounts FROM posts "
