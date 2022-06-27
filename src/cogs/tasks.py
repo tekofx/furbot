@@ -12,7 +12,7 @@ from utils.database import (
     create_user,
     exists_channel,
     get_joined_dates,
-    remove_records_from_a_date,
+    remove_records_2_days,
     get_posts,
 )
 from utils.bot import Bot
@@ -65,7 +65,7 @@ class tasks(commands.Cog):
     async def remove_records_from_previous_day(self):
         """Removes records from 2 days ago"""
         for guild in self.bot.guilds:
-            remove_records_from_a_date(guild, ("post", "incident", "animal"))
+            remove_records_2_days(guild, ("post", "incident", "animal"))
 
     @tasks.loop(hours=1)
     async def post(self):

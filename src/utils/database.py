@@ -347,7 +347,7 @@ def create_record(guild: nextcord.guild, record_data: list) -> None:
         database_connection.close()
 
 
-def remove_records_from_a_date(guild: nextcord.guild, record_types: list) -> None:
+def remove_records_2_days(guild: nextcord.guild, record_types: list) -> None:
     """Removes all records older than a date
     Args:
         guild (nextcord.Guild) : Guild to access its database
