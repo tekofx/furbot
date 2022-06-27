@@ -22,10 +22,6 @@ setproctitle.setproctitle("furbot")
 env_vars = [
     "DISCORD_TOKEN",
     "VILLAFURRENSE",
-    "GENERAL_CHANNEL",
-    "MEMES_CHANNEL",
-    "AUDIT_CHANNEL",
-    "LOBBY_CHANNEL",
     "REDDIT_CLIENT_ID",
     "REDDIT_CLIENT_SECRET",
     "REDDIT_USER_AGENT",
