@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Cambios
 - Mejorado el funcionamiento de la base de datos
+- Eliminados comandos cowsay, impostor, omni, shef, undertale, mierda
 
 ### Añadido
 - Comando lizard

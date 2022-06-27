@@ -180,24 +180,6 @@ class memes(commands.Cog):
         await ctx.send(file=nextcord.File(meme, "output.png"))
 
     @commands.command()
-    async def shef(self, ctx: commands.Context, user: nextcord.Member = None):
-        """shef"""
-
-        avatar_info = [
-            {
-                "url": get_user(ctx, user).avatar.url,
-                "size": 120,
-                "x": 280,
-                "y": 87,
-            }
-        ]
-
-        meme = create_meme("shef", avatar_info)
-
-        # Send meme
-        await ctx.send(file=nextcord.File(meme, "output.png"))
-
-    @commands.command()
     async def quote(
         self,
         ctx: commands.Context,
@@ -311,23 +293,6 @@ class memes(commands.Cog):
         bytes_io.seek(0)
 
         await ctx.send(file=nextcord.File(bytes_io, "output.png"))
-
-    @commands.command()
-    async def impostor(self, ctx: commands.Context, user: nextcord.Member = None):
-        """Quién es el impostor?"""
-
-        avatar_info = [
-            {
-                "url": get_user(ctx, user).avatar.url,
-                "size": 205,
-                "x": 323,
-                "y": 175,
-            }
-        ]
-        meme = create_meme("impostor", avatar_info)
-
-        # Send meme
-        await ctx.send(file=nextcord.File(meme, "output.png"))
 
     @commands.command()
     async def stonks(self, ctx: commands.Context, user: nextcord.Member = None):
@@ -562,7 +527,6 @@ class memes(commands.Cog):
         # Send meme
         await ctx.send(file=nextcord.File(meme, "output.png"))
 
-
     @commands.command()
     async def slap(self, ctx: commands.Context, user: nextcord.Member = None):
         """slap"""
@@ -613,42 +577,6 @@ class memes(commands.Cog):
         ]
 
         meme = create_meme("radiopatio", avatar_info)
-
-        # Send meme
-        await ctx.send(file=nextcord.File(meme, "output.png"))
-
-    @commands.command()
-    async def omni(self, ctx: commands.Context, user: nextcord.Member = None):
-        """Omniman"""
-
-        avatar_info = [
-            {
-                "url": get_user(ctx, user).avatar.url,
-                "size": 470,
-                "x": 210,
-                "y": 388,
-            }
-        ]
-
-        meme = create_meme("omni", avatar_info)
-
-        # Send meme
-        await ctx.send(file=nextcord.File(meme, "output.png"))
-
-    @commands.command()
-    async def mierda(self, ctx: commands.Context, user: nextcord.Member = None):
-        """Menudo montón de mierda"""
-
-        avatar_info = [
-            {
-                "url": get_user(ctx, user).avatar.url,
-                "size": 270,
-                "x": 476,
-                "y": 161,
-            }
-        ]
-
-        meme = create_meme("mierda", avatar_info)
 
         # Send meme
         await ctx.send(file=nextcord.File(meme, "output.png"))
@@ -777,62 +705,6 @@ class memes(commands.Cog):
         # Save image
         bytes_io = io.BytesIO()
         pic.save(bytes_io, "PNG")
-        bytes_io.seek(0)
-
-        await ctx.send(file=nextcord.File(bytes_io, "output.png"))
-
-    @commands.command()
-    async def undertale(
-        self, ctx: commands.Context, texto: str, usuario: nextcord.Member = None
-    ):
-        """Bajo cuento"""
-
-        avatar_info = [
-            {
-                "url": get_user(ctx, usuario).avatar.url,
-                "size": 160,
-                "x": 120,
-                "y": 88,
-            }
-        ]
-        character_image_size = 200
-
-        # Get user
-        avatar_url = get_user(ctx, usuario).avatar.url
-
-        sprite = (
-            Image.open(io.BytesIO(requests.get(avatar_url).content))
-            .convert("L")
-            .resize((character_image_size, character_image_size))
-        )
-
-        # Open resources
-        image = Image.open(meme_resources_path + "dialogue_box.png")
-        font = ImageFont.truetype(
-            meme_resources_path + "Determination-Sans.otf", size=60
-        )
-        txtPic1 = Image.new("RGBA", (800, 270))
-        draw = ImageDraw.Draw(txtPic1)
-
-        # Convert character picture
-        wpercent = character_image_size / float(sprite.size[0])
-        hsize = int((float(sprite.size[1]) * float(wpercent)))
-        sprite = sprite.resize((character_image_size, hsize), Image.ANTIALIAS)
-        image.paste(sprite, (70, 90))
-
-        # Add text
-        lines = textwrap.wrap(texto, width=25)
-        Y = 20
-        for line in lines:
-            width, height = font.getsize(line)
-            draw.text(((10, Y)), line, font=font, fill=(255, 255, 255, 255))
-            Y = Y + height
-
-        image.paste(txtPic1, (350, 50), txtPic1)
-
-        # Send image
-        bytes_io = io.BytesIO()
-        image.save(bytes_io, "PNG")
         bytes_io.seek(0)
 
         await ctx.send(file=nextcord.File(bytes_io, "output.png"))
