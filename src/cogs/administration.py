@@ -45,7 +45,7 @@ class administration(commands.Cog):
         self,
         ctx: commands.Context,
         canal: nextcord.TextChannel,
-        nsfw: str,
+        visibilidad: str,
         *cuenta: str
     ):
         """[Admin]Permite añadir una cuenta de twitter/subreddit a un canal.
@@ -54,15 +54,11 @@ class administration(commands.Cog):
 
         Args:
             canal: canal al que enviar
-            nsfw: Si/No. Si se quiere que se cojan los posts NSFW o no
+            visibilidad: Si/No. Si se quiere que se cojan los posts NSFW o no
             cuenta: cuenta/cuentas de twitter/subreddit. En caso de varias cuentas separadas por espacios
         """
-        if nsfw.lower() == "si":
-            nsfw = True
-        else:
-            nsfw = False
 
-        if nsfw and not canal.nsfw:
+        if visibilidad == "nsfw" and not canal.nsfw:
             await ctx.send(
                 "El canal no es NSFW, utiliza otro canal o cambia los permisos."
             )
@@ -82,7 +78,7 @@ class administration(commands.Cog):
                 account.append("reddit@" + arg.split("/")[-2])
 
         cuenta = " ".join(account)
-        create_post(ctx.guild, [canal.id, nsfw, cuenta])
+        create_post(ctx.guild, [canal.id, visibilidad, cuenta])
         await ctx.send("Post creado")
 
     @commands.command()
@@ -97,11 +93,7 @@ class administration(commands.Cog):
         output = ""
         for post in posts:
             channel = await self.bot.fetch_channel(post[0])
-            if post[1] == 0:
-                var = "SFW"
-            else:
-                var = "NSFW"
-            output += "- {} ({}): {}\n".format(channel.mention, var, post[2])
+            output += "- {} ({}): {}\n".format(channel.mention, post[1], post[2])
 
         await ctx.send(output)
 

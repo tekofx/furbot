@@ -76,10 +76,11 @@ class tasks(commands.Cog):
             posts = get_posts(guild)
             for post in posts:
                 channel = post[0]
-                if post[1] == 0:
-                    nsfw = False
-                else:
+                nsfw = post[1]
+                if nsfw == "True":
                     nsfw = True
+                else:
+                    nsfw = False
                 account = post[2]
                 channel = await self.bot.fetch_channel(channel)
                 if " " in account:  # Multiple accounts
@@ -130,7 +131,7 @@ class tasks(commands.Cog):
         subreddit = random.choice(subreddits)
 
         memes = await self.bot.reddit.get_hot_subreddit_submissions_with_media(
-            subreddit, 100, 1
+            subreddit, 100
         )
 
         for guild in self.bot.guilds:
