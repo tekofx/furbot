@@ -4,7 +4,6 @@ import nextcord
 from nextcord.ext import commands
 from pyrae import dle
 import requests
-from utils.database import get_roles_by_type
 from utils.bot import Bot
 from PIL import Image, ImageOps, ImageFont, ImageDraw
 

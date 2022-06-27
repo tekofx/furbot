@@ -1,4 +1,3 @@
-from ast import List
 import json
 import os
 from nextcord.ext import commands

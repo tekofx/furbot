@@ -1,13 +1,9 @@
 import asyncio
-from email import message
 import random
-import re
-from time import sleep
 from nextcord.ext import commands
 from utils.bot import Bot
 import requests
 import nextcord
-from utils.data import resources_path
 
 EMOJI_A = "🇦"
 EMOJI_B = "🇧"

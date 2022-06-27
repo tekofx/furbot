@@ -435,7 +435,7 @@ class wordle(commands.Cog):
     @commands.command()
     async def guess(self, ctx: commands.Context, word: str):
         """Intentar adivinar la palabra del wordle"""
-        word=word.lower()
+        word = word.lower()
         # Check requirements are met
         aux = self.correct_input(ctx, word)
         if aux != None:

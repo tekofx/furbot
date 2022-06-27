@@ -3,7 +3,7 @@ import logging
 import requests
 import nextcord
 from nextcord.ext import commands, tasks
-from datetime import date, datetime, timedelta
+from datetime import datetime, timedelta
 import random
 from utils.database import (
     check_entry_in_database,
@@ -26,7 +26,6 @@ class tasks(commands.Cog):
         self.bot = bot
 
         # Start tasks
-        self.meme.start()
         self.post.start()
         self.update_users.start()
         self.discord_status.start()
@@ -34,7 +33,6 @@ class tasks(commands.Cog):
         self.ordure_bizarre.start()
         self.free_games.start()
         self.joined_date.start()
-        log.info("Waiting for tasks to start")
 
     @tasks.loop(hours=2)
     async def free_games(self):
@@ -122,44 +120,6 @@ class tasks(commands.Cog):
                         log.info(
                             "Created user {} with id {}".format(member.name, member.id)
                         )
-
-    @tasks.loop(hours=1)
-    async def meme(self):
-        """Sends a random meme"""
-
-        subreddits = ["dankmemes", "LMDShow", "SpanishMeme", "MemesESP", "orslokx"]
-        subreddit = random.choice(subreddits)
-
-        memes = await self.bot.reddit.get_hot_subreddit_submissions_with_media(
-            subreddit, 100
-        )
-
-        for guild in self.bot.guilds:
-            if not exists_channel(guild, "memes"):
-                continue
-            try:
-                for x in memes:
-                    if not check_record_in_database(guild, x.url):
-                        meme = x
-                        create_record(guild, ["meme", meme.url])
-                        break
-                link = "[Link](https://reddit.com/{})".format(meme.permalink)
-                subreddit = "[{}](https://reddit.com/r/{})".format(subreddit, subreddit)
-
-                embed = nextcord.Embed(title=meme.title)
-                embed.add_field(name="Subreddit", value=subreddit, inline=False)
-                embed.description = link
-                embed.set_image(url=meme.url)
-                embed.set_footer(text="Submitted by {}".format(meme.author))
-                await self.bot.channel_send(
-                    guild, channel_type="memes", msg="a", embed=embed
-                )
-
-                # await self.bot.channel_send(guild, "memes", meme.url)
-                log.info("Sent meme from {}".format(subreddit))
-
-            except (Exception) as error:
-                log.error("Error sending meme to {}: {}".format(guild.name, error))
 
     @tasks.loop(minutes=10)
     async def ordure_bizarre(self):
@@ -259,9 +219,8 @@ class tasks(commands.Cog):
 
     @free_games.before_loop
     @discord_status.before_loop
-    @meme.before_loop
     @joined_date.before_loop
-    # @post.before_loop
+    @post.before_loop
     async def prep(self):
         """Waits some time to execute tasks"""
 

@@ -1,10 +1,6 @@
-import io
 import logging
-import nextcord
 from nextcord.ext import commands
-import os
-import requests
-from utils.database import check_record_in_database, create_connection, create_record
+from utils.database import check_record_in_database, create_record
 from utils.bot import Bot
 
 

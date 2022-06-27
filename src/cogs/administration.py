@@ -4,7 +4,6 @@ from nextcord.ext import commands
 import nextcord
 from utils.database import (
     create_channel,
-    create_connection,
     create_role,
     create_post,
     get_posts,

@@ -2,7 +2,7 @@ import logging
 import nextcord
 from nextcord.ext import commands
 from utils.bot import Bot
-from utils.database import create_connection, create_sentence, get_random_sentence
+from utils.database import create_sentence, get_random_sentence
 
 log = logging.getLogger(__name__)
 
