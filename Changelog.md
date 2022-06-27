@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Añadido
+- Task post. Permite añadir cuentas de twitter/subreddits para que el bot suba a un canal establecido los posts que hagan estas cuentas.
+- Commando posts. Permite ver los posts que se han configurado.
+
 ## [v4.5] - 2022-6-27
 ### Cambios
 - Mejorado el funcionamiento de la base de datos
