@@ -23,7 +23,6 @@ CHANNELS = [
         "channel_type": "audit",
         "channel_description": "mostrar las acciones que hace el bot a los administradores.",
     },
-    {"channel_type": "memes", "channel_description": "mandar memes cada hora"},
     {"channel_type": "lobby", "channel_description": "mandar mensajes de bienvenida"},
     {
         "channel_type": "bot_news",
