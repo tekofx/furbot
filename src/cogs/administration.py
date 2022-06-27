@@ -97,7 +97,11 @@ class administration(commands.Cog):
         output = ""
         for post in posts:
             channel = await self.bot.fetch_channel(post[0])
-            output += "- {}: {}\n".format(channel.mention, post[1])
+            if post[1] == 0:
+                var = "SFW"
+            else:
+                var = "NSFW"
+            output += "- {} ({}): {}\n".format(channel.mention, var, post[2])
 
         await ctx.send(output)
 
