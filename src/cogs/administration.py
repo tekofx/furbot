@@ -95,7 +95,7 @@ class administration(commands.Cog):
     @commands.command()
     @commands.has_permissions(administrator=True)
     async def posts(self, ctx: commands.Context):
-        "Muestra los posts que se han añadido"
+        "[Admin]Muestra los posts que se han añadido"
         posts = get_posts(ctx.guild)
         if not posts:
             await ctx.send("No hay posts para este servidor")

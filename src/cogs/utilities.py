@@ -14,10 +14,16 @@ class utilities(commands.Cog):
 
     @commands.command()
     async def ping(self, context):
+        "Comprobar si el bot está online"
         await context.channel.send("Pim pam trucu trucu")
 
     @commands.command()
     async def carnet(self, context: commands.Context, user: nextcord.Member = None):
+        """Genera un carnet de VF
+
+        Args:
+            user: usuario
+        """
         if not user:
             user = context.author
 

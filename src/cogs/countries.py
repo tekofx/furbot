@@ -13,6 +13,11 @@ class countries(commands.Cog):
 
     @commands.command()
     async def pais(self, ctx: commands.Context, nombre: str):
+        """Información sobre un país
+
+        Args:
+            nombre : nombre del pais
+        """
         url = "https://restcountries.com/v3.1/name/{}".format(nombre.lower())
 
         data = requests.get(url)
