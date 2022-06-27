@@ -75,7 +75,7 @@ class tasks(commands.Cog):
             for post in posts:
                 channel = post[0]
                 nsfw = post[1]
-                if nsfw == "True":
+                if nsfw == "nsfw":
                     nsfw = True
                 else:
                     nsfw = False
