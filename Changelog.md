@@ -9,7 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Añadido
 - Task post. Permite añadir cuentas de twitter/subreddits para que el bot suba a un canal establecido los posts que hagan estas cuentas.
-- Commando posts. Permite ver los posts que se han configurado.
+- Commando posts [Admin]. Permite ver los posts que se han configurado.
+- Comando addpost [Admin]. Permite añadir posts
+- Commando rmpost [Admin]. Permite eliminar posts
 
 ## [v4.5] - 2022-6-27
 ### Cambios
