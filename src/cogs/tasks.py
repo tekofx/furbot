@@ -65,7 +65,7 @@ class tasks(commands.Cog):
     async def remove_records_from_previous_day(self):
         """Removes records from 2 days ago"""
         for guild in self.bot.guilds:
-            remove_records_from_a_date(guild, ("test1", "test2"))
+            remove_records_from_a_date(guild, ("meme", "incident"))
 
     @tasks.loop(hours=6)
     async def update_users(self):
