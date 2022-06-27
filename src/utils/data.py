@@ -63,6 +63,8 @@ class Data:
             else:
                 log.info("Folder {} exists".format(folder))
 
+            log.warning("Folder {} created".format(folder))
+
     def setup_files(self) -> None:
         """Creates needed files if they not exists"""
         for file in self._files:
