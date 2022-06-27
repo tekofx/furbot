@@ -97,7 +97,12 @@ class tasks(commands.Cog):
                     embed = await self.bot.reddit.get_hot_pic_not_repeated(
                         guild, account, "post", nsfw
                     )
-                await channel.send(embed=embed)
+
+                try:
+                    await channel.send(embed=embed)
+                except Exception as error:
+                    log.error(error)
+                    continue
 
     @tasks.loop(hours=6)
     async def update_users(self):

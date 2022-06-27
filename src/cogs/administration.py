@@ -61,7 +61,15 @@ class administration(commands.Cog):
             nsfw = True
         else:
             nsfw = False
+
+        if nsfw and not canal.nsfw:
+            await ctx.send(
+                "El canal no es NSFW, utiliza otro canal o cambia los permisos."
+            )
+            return
+
         account = []
+
         for arg in cuenta:
 
             if "twitter.com/" not in arg and "reddit.com/r/" not in arg:
