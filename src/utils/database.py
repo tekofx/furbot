@@ -319,7 +319,6 @@ def create_record(guild: nextcord.guild, record_data: list) -> None:
               VALUES(?,?,?) """
 
     record_data.append(datetime.date.today())
-    print(datetime.date.today() + datetime.timedelta(days=10))
 
     cur = database_connection.cursor()
     try:
@@ -341,40 +340,34 @@ def create_record(guild: nextcord.guild, record_data: list) -> None:
         database_connection.close()
 
 
-def remove_records_from_a_date(
-    guild: nextcord.guild, date: datetime.date, record_types: list
-) -> None:
+def remove_records_from_a_date(guild: nextcord.guild, record_types: list) -> None:
     """Removes all records older than a date
     Args:
         guild (nextcord.Guild) : Guild to access its database
         date (str): date to compare with
         record(list): record type to delete
     """
+    date = datetime.datetime.now() - datetime.timedelta(days=2)
     database_connection = create_connection(guild)
-    if date.day < 10:
-        date = str(date.year) + "-" + str(date.month) + "-0" + str(date.day)
-    else:
-        date = "{}-{}-{}".format(date.year, date.month, date.day)
 
-    for record_type in record_types:
-
-        sql = "DELETE FROM records WHERE date<'{}' AND type=?".format(date)
-        var = [record_type]
-        cur = database_connection.cursor()
-        try:
-            cur.execute(sql, var)
-            log.info("Deleted records from {} from database".format(date))
-        except Exception as error:
-            log.error(
-                "Error: Could not delete records from {} from database: {}".format(
-                    date, error
-                )
+    sql = "DELETE FROM records WHERE date<date('now', '-2 day') AND type IN {}".format(
+        record_types
+    )
+    cur = database_connection.cursor()
+    try:
+        cur.execute(sql)
+        log.info("Deleted records from {} from database".format(date))
+    except Exception as error:
+        log.error(
+            "Error: Could not delete records from {} from database: {}".format(
+                date, error
             )
-            database_connection.close()
+        )
+        database_connection.close()
 
-        else:
-            database_connection.commit()
-            database_connection.close()
+    else:
+        database_connection.commit()
+        database_connection.close()
 
 
 def create_channel(guild: nextcord.guild, channel_data: list) -> None:

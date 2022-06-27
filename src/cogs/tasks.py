@@ -28,7 +28,7 @@ class tasks(commands.Cog):
         self.meme.start()
         self.update_users.start()
         self.discord_status.start()
-        # self.remove_records_from_previous_day.start()
+        self.remove_records_from_previous_day.start()
         self.ordure_bizarre.start()
         self.free_games.start()
         self.joined_date.start()
@@ -61,14 +61,11 @@ class tasks(commands.Cog):
                         guild, channel_type="games", msg="a", embed=embed
                     )
 
-    @tasks.loop(hours=30)
+    @tasks.loop(hours=48)
     async def remove_records_from_previous_day(self):
         """Removes records from 2 days ago"""
         for guild in self.bot.guilds:
-            var = datetime(
-                date.today().year, date.today().month, date.today().day
-            ) - timedelta(days=3)
-            remove_records_from_a_date(guild, var, ["meme"])
+            remove_records_from_a_date(guild, ("test1", "test2"))
 
     @tasks.loop(hours=6)
     async def update_users(self):
@@ -226,7 +223,6 @@ class tasks(commands.Cog):
     @discord_status.before_loop
     @meme.before_loop
     @joined_date.before_loop
-    # @ordure_bizarre.before_loop
     async def prep(self):
         """Waits some time to execute tasks"""
 
