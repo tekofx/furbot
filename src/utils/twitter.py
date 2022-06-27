@@ -72,9 +72,10 @@ class Twitter:
 
             if "media" in tweet.entities:
                 tweet_url = tweet.entities["media"][0]["media_url"]
+                if not check_record_in_database(guild, tweet_url):
 
-                num += 1
-                images.append(tweet_url)
+                    num += 1
+                    images.append(tweet_url)
 
             if count == num:
                 break
