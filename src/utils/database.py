@@ -42,6 +42,11 @@ channels_table = """ CREATE TABLE IF NOT EXISTS channels (
                                     name text NOT NULL,
                                     PRIMARY KEY(channel_id, type )
                                 ); """
+posts_table = """ CREATE TABLE IF NOT EXISTS posts (
+                                    id integer PRIMARY KEY AUTOINCREMENT,
+                                    channel_id integer NOT NULL,
+                                    accounts text NOT NULL
+                                ); """
 
 tables = [
     users_table,
@@ -49,6 +54,7 @@ tables = [
     sentences_table,
     records_table,
     channels_table,
+    posts_table,
 ]
 log = logging.getLogger(__name__)
 
@@ -401,7 +407,53 @@ def create_channel(guild: nextcord.guild, channel_data: list) -> None:
         database_connection.close()
 
 
+def create_post(guild: nextcord.guild, post_data: list) -> None:
+    """Creates a post in the posts table
+    Args:
+        guild (nextcord.Guild) : Guild to access its database
+        post_data (list): info of post. Containing [channel_id, account]
+    """
+    database_connection = create_connection(guild)
+
+    sql = """ INSERT INTO posts(channel_id,accounts)
+              VALUES(?,?) """
+
+    cur = database_connection.cursor()
+    try:
+        cur.execute(sql, post_data)
+        log.info(
+            "Post {} {} was added to the database".format(post_data[1], post_data[0])
+        )
+    except Exception as error:
+        log.error(
+            "Error: Could not create post {} {}: {}".format(
+                post_data[0], post_data[1], error
+            )
+        )
+        database_connection.close()
+    else:
+        database_connection.commit()
+        database_connection.close()
+
+
 ###################### Getters and setters ######################
+
+
+def get_posts(guild: nextcord.guild):
+    database_connection = create_connection(guild)
+
+    sql = "SELECT channel_id, accounts FROM posts "
+    cur = database_connection.cursor()
+    try:
+        cur.execute(sql)
+    except Exception as error:
+        log.error("Error: could not query posts {}: {}".format(error))
+        database_connection.close()
+    else:
+        info = cur.fetchall()
+        return info
+
+
 def get_roles_by_type(guild: nextcord.guild, role_type: str):
     database_connection = create_connection(guild)
 

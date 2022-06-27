@@ -1,8 +1,11 @@
 import logging
 import tweepy as tw
 import os
-from utils.database import check_record_in_database
+from utils.database import check_record_in_database, create_record
 import nextcord
+from nextcord import Embed
+from nextcord.colour import Colour
+
 
 log = logging.getLogger(__name__)
 
@@ -63,7 +66,7 @@ class Twitter:
             list: containin URLs of latest image posted
         """
 
-        images = []
+        output = []
         num = 0
         tweets = self.api.user_timeline(
             screen_name=username, count=200, include_rts=True, tweet_mode="extended"
@@ -75,9 +78,50 @@ class Twitter:
                 if not check_record_in_database(guild, tweet_url):
 
                     num += 1
-                    images.append(tweet_url)
+                    output.append(tweet_url)
 
             if count == num:
                 break
 
-        return images
+        return output
+
+    def get_latest_image_not_repeated(
+        self,
+        guild: nextcord.Guild,
+        username: str,
+        record_type: str,
+    ) -> list:
+
+        """Gets the URL the latest image url posted by some user
+
+        Args:
+            guild (nextcord.Guild): guild to look
+            username (str): user to look
+
+        Returns:
+            list: containin URLs of latest image posted
+        """
+
+        output = None
+        tweets = self.api.user_timeline(
+            screen_name=username, count=200, include_rts=True, tweet_mode="extended"
+        )
+        for tweet in tweets:
+
+            if "media" in tweet.entities:
+                tweet_url = tweet.entities["media"][0]["media_url"]
+                if not check_record_in_database(guild, tweet_url):
+                    create_record(guild, [record_type, tweet_url])
+
+                    output = tweet
+                    break
+        user = output.user.name
+        text = output.full_text
+        embed = Embed(
+            title="Twitter",
+            description=text,
+            color=Colour.from_rgb(29, 161, 242),
+        )
+        embed.set_image(url=tweet_url)
+        embed.set_author(name=user, icon_url=output.user.profile_image_url)
+        return embed

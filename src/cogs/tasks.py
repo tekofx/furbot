@@ -13,6 +13,7 @@ from utils.database import (
     exists_channel,
     get_joined_dates,
     remove_records_from_a_date,
+    get_posts,
 )
 from utils.bot import Bot
 
@@ -26,6 +27,7 @@ class tasks(commands.Cog):
 
         # Start tasks
         self.meme.start()
+        self.post.start()
         self.update_users.start()
         self.discord_status.start()
         self.remove_records_from_previous_day.start()
@@ -66,6 +68,32 @@ class tasks(commands.Cog):
         """Removes records from 2 days ago"""
         for guild in self.bot.guilds:
             remove_records_from_a_date(guild, ("meme", "incident"))
+
+    @tasks.loop(hours=1)
+    async def post(self):
+        """Posts a meme"""
+        for guild in self.bot.guilds:
+            posts = get_posts(guild)
+            for post in posts:
+                channel = post[0]
+                account = post[1]
+                channel = await self.bot.fetch_channel(channel)
+                if " " in account:  # Multiple accounts
+                    accounts = account.split(" ")
+                    account = random.choice(accounts)
+
+                if "twitter" in account:
+                    account = account.replace("twitter@", "")
+                    embed = self.bot.twitter.get_latest_image_not_repeated(
+                        guild, account, "post"
+                    )
+
+                else:
+                    account = account.replace("reddit@", "")
+                    embed = await self.bot.reddit.get_hot_pic_not_repeated(
+                        guild, account, "post"
+                    )
+                await channel.send(embed=embed)
 
     @tasks.loop(hours=6)
     async def update_users(self):

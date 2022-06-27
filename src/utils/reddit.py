@@ -1,10 +1,11 @@
-from ast import List
 import logging
-import sqlite3
+import nextcord
 from utils.database import check_record_in_database, create_record
 import os
 import asyncpraw
-from asyncpraw import models
+from nextcord import Embed
+from nextcord.colour import Colour
+import pprint
 
 log = logging.getLogger(__name__)
 
@@ -19,7 +20,6 @@ class Reddit:
         self,
         sub_reddit: str,
         posts_limit: int,
-        num: int,
     ) -> list:
         """Gets a list of subreddit pics
 
@@ -49,3 +49,60 @@ class Reddit:
                 posts.append(post)
         await reddit.close()
         return posts
+
+    async def get_hot_pic_not_repeated(
+        self,
+        guild: nextcord.Guild,
+        sub_reddit: str,
+        record_type: str,
+    ) -> list:
+        """Gets a list of subreddit pics
+
+        Args:
+            sub_reddit (str): subreddit to get pics from
+            pics_limit (int): num of pics to charge
+            num (int): num of pics to return
+
+        Returns:
+            list: containing reddit posts
+        """
+        reddit = asyncpraw.Reddit(
+            client_id=self.client_id,
+            client_secret=self.client_secret,
+            user_agent=self.user_agent,
+            check_for_async=False,
+        )
+
+        subreddit = await reddit.subreddit(sub_reddit)
+        hot_posts = subreddit.hot(limit=100)
+
+        output = None
+        async for post in hot_posts:
+
+            if (
+                ("jpg" in post.url or "png" in post.url)
+                and not post.over_18
+                and not check_record_in_database(guild, post.url)
+            ):
+                create_record(guild, [record_type, post.url])
+
+                output = post
+                break
+
+        image = output.url
+
+        link = "[Link](https://reddit.com/{})".format(output.permalink)
+        embed = Embed(
+            title=output.title,
+            description=link,
+            color=Colour.from_rgb(255, 86, 0),
+        )
+
+        embed.set_author(
+            name="r/" + subreddit.display_name,
+            icon_url="https://www.redditinc.com/assets/images/site/reddit-logo.png",
+        )
+
+        embed.set_image(url=image)
+        await reddit.close()
+        return embed

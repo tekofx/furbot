@@ -6,6 +6,8 @@ from utils.database import (
     create_channel,
     create_connection,
     create_role,
+    create_post,
+    get_posts,
 )
 from asyncio import sleep
 from utils.data import config_yaml
@@ -37,10 +39,41 @@ class administration(commands.Cog):
     def __init__(self, bot: Bot) -> None:
         self.bot = bot
 
+    @commands.has_permissions(administrator=True)
+    @commands.command()
+    async def addpost(
+        self, ctx: commands.Context, canal: nextcord.TextChannel, *cuenta: str
+    ):
+        """[Admin]Permite añadir una cuenta de twitter/subreddit a un canal.
+        De esta forma cada hora se publicará el último post de la cuenta en el canal. Si se añaden varias
+        cuentas a la vez, se utilizará una cuenta aleatoria de las añadidas.
+
+        Args:
+            canal: canal al que enviar
+            cuenta: cuenta/cuentas de twitter/subreddit. En caso de varias cuentas separadas por espacios
+        """
+
+        account = []
+        for i, arg in enumerate(cuenta):
+
+            if "twitter.com/" not in arg and "reddit.com/r/" not in arg:
+                await ctx.send("Se ha introducido una cuenta no válida")
+                return
+
+            if "twitter" in arg:
+                account.append("twitter@" + arg.split("/")[-1])
+            else:
+                account.append("reddit@" + arg.split("/")[-2])
+
+        cuenta = " ".join(account)
+        create_post(ctx.guild, [canal.id, cuenta])
+        await ctx.send("Post creado")
+
     @commands.command(name="setup")
     @commands.has_permissions(administrator=True)
     async def setup(self, ctx: commands.Context, canal: str = None) -> None:
-        """Configurar los canales del bot
+
+        """[Admin]Configurar los canales del bot
 
         Si no se especifica ningun canal, se configuraran todos los canales
         """
