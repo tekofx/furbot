@@ -4,7 +4,6 @@ python-dotenv
 pyrae
 qrcode
 setproctitle
-cowpy
 pyyaml
 uvloop
 graphviz

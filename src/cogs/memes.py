@@ -9,7 +9,6 @@ from utils.functions import (
 )
 import os
 import logging
-from cowpy import cow
 import unicodedata
 import requests
 from PIL import Image
@@ -563,33 +562,6 @@ class memes(commands.Cog):
         # Send meme
         await ctx.send(file=nextcord.File(meme, "output.png"))
 
-    @commands.command()
-    async def cowsay(self, ctx: commands.Context, text: str, character: str = None):
-        """Una vaca dice cosas
-
-        Uso:
-           fur cowsay <texto>
-           fur cowsay <texto> <personaje>
-
-           Personajes:
-           beavis budfrogs bunny cheese cower daemon dragonandcow eyes flamingsheep ghostbusters
-           hellokitty kiss kitty koala kosh lukekoala
-           mechandcow meow milk moofasa moose mutilated ren satanic sheep skeleton small
-           squirrel stegosaurus stimpy supermilker surgery threeeyes
-           turkey turtle tux udder vader vaderkoala www
-        """
-
-        if character is None:
-            cow_cls = cow.get_cow("default")
-        else:
-            cow_cls = cow.get_cow(character)
-        cheese = cow_cls()
-        msg = cheese.milk(text)
-        output = "```"
-        output += msg
-        output += "```"
-
-        await ctx.send(output)
 
     @commands.command()
     async def slap(self, ctx: commands.Context, user: nextcord.Member = None):
