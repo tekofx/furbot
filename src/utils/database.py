@@ -5,7 +5,7 @@ import os
 import logging
 from typing import List
 import nextcord
-from utils.data import get_server_path, server_path
+from utils.data import get_server_path
 
 
 users_table = """ CREATE TABLE IF NOT EXISTS users (

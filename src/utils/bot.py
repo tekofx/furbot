@@ -7,7 +7,6 @@ import logging
 from utils.database import (
     check_entry_in_database,
     check_record_in_database,
-    create_connection,
     create_record,
     create_user,
     exists_channel,
@@ -17,7 +16,7 @@ from utils.database import (
 from utils.reddit import Reddit
 from utils.twitter import Twitter
 import requests
-from utils.data import Data, resources_path, config_yaml
+from utils.data import Data, config_yaml
 
 log = logging.getLogger(__name__)
 token = os.getenv("DISCORD_TOKEN")

@@ -5,7 +5,6 @@ import os
 import asyncpraw
 from nextcord import Embed
 from nextcord.colour import Colour
-import pprint
 
 log = logging.getLogger(__name__)
 
