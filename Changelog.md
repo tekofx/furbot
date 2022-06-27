@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Comando addpost [Admin]. Permite añadir posts
 - Commando rmpost [Admin]. Permite eliminar posts
 
-# Eliminado
+### Eliminado
 - Task meme. Se puede hacer lo mismo con la task post, pudiendo personalizar en que canales se suben memes y desde que cuentas.
 - Respuesta cuando alguien pone a
 
