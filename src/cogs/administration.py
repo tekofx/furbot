@@ -69,6 +69,22 @@ class administration(commands.Cog):
         create_post(ctx.guild, [canal.id, cuenta])
         await ctx.send("Post creado")
 
+    @commands.command()
+    @commands.has_permissions(administrator=True)
+    async def posts(self, ctx: commands.Context):
+        "Muestra los posts que se han añadido"
+        posts = get_posts(ctx.guild)
+        if not posts:
+            await ctx.send("No hay posts para este servidor")
+            return
+
+        output = ""
+        for post in posts:
+            channel = await self.bot.fetch_channel(post[0])
+            output += "- {}: {}\n".format(channel.mention, post[1])
+
+        await ctx.send(output)
+
     @commands.command(name="setup")
     @commands.has_permissions(administrator=True)
     async def setup(self, ctx: commands.Context, canal: str = None) -> None:
