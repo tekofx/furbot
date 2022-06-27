@@ -71,7 +71,7 @@ class tasks(commands.Cog):
 
     @tasks.loop(hours=1)
     async def post(self):
-        """Posts a meme"""
+        """Posts a random post from an account/s"""
         for guild in self.bot.guilds:
             posts = get_posts(guild)
             for post in posts:
