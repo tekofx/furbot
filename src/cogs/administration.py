@@ -42,7 +42,11 @@ class administration(commands.Cog):
     @commands.has_permissions(administrator=True)
     @commands.command()
     async def addpost(
-        self, ctx: commands.Context, canal: nextcord.TextChannel, *cuenta: str
+        self,
+        ctx: commands.Context,
+        canal: nextcord.TextChannel,
+        nsfw: str,
+        *cuenta: str
     ):
         """[Admin]Permite añadir una cuenta de twitter/subreddit a un canal.
         De esta forma cada hora se publicará el último post de la cuenta en el canal. Si se añaden varias
@@ -50,11 +54,15 @@ class administration(commands.Cog):
 
         Args:
             canal: canal al que enviar
+            nsfw: Si/No. Si se quiere que se cojan los posts NSFW o no
             cuenta: cuenta/cuentas de twitter/subreddit. En caso de varias cuentas separadas por espacios
         """
-
+        if nsfw.lower() == "si":
+            nsfw = True
+        else:
+            nsfw = False
         account = []
-        for i, arg in enumerate(cuenta):
+        for arg in cuenta:
 
             if "twitter.com/" not in arg and "reddit.com/r/" not in arg:
                 await ctx.send("Se ha introducido una cuenta no válida")
@@ -66,7 +74,7 @@ class administration(commands.Cog):
                 account.append("reddit@" + arg.split("/")[-2])
 
         cuenta = " ".join(account)
-        create_post(ctx.guild, [canal.id, cuenta])
+        create_post(ctx.guild, [canal.id, nsfw, cuenta])
         await ctx.send("Post creado")
 
     @commands.command()

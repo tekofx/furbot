@@ -76,7 +76,11 @@ class tasks(commands.Cog):
             posts = get_posts(guild)
             for post in posts:
                 channel = post[0]
-                account = post[1]
+                if post[1] == 0:
+                    nsfw = False
+                else:
+                    nsfw = True
+                account = post[2]
                 channel = await self.bot.fetch_channel(channel)
                 if " " in account:  # Multiple accounts
                     accounts = account.split(" ")
@@ -91,7 +95,7 @@ class tasks(commands.Cog):
                 else:
                     account = account.replace("reddit@", "")
                     embed = await self.bot.reddit.get_hot_pic_not_repeated(
-                        guild, account, "post"
+                        guild, account, "post", nsfw
                     )
                 await channel.send(embed=embed)
 
@@ -251,7 +255,7 @@ class tasks(commands.Cog):
     @discord_status.before_loop
     @meme.before_loop
     @joined_date.before_loop
-    @post.before_loop
+    # @post.before_loop
     async def prep(self):
         """Waits some time to execute tasks"""
 

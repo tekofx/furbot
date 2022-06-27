@@ -55,6 +55,7 @@ class Reddit:
         guild: nextcord.Guild,
         sub_reddit: str,
         record_type: str,
+        nsfw: bool,
     ) -> list:
         """Gets a list of subreddit pics
 
@@ -81,7 +82,7 @@ class Reddit:
 
             if (
                 ("jpg" in post.url or "png" in post.url)
-                and not post.over_18
+                and post.over_18 is nsfw
                 and not check_record_in_database(guild, post.url)
             ):
                 create_record(guild, [record_type, post.url])

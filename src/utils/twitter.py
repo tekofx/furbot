@@ -115,8 +115,6 @@ class Twitter:
 
                     output = tweet
                     break
-        user = output.user.name
-        text = output.full_text
         embed = self.create_embed(output)
         """ embed = Embed(
             title="Twitter",
