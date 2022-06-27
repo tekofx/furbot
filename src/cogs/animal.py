@@ -25,7 +25,7 @@ class animal(commands.Cog):
         for tweet in tweet_images_urls:
 
             # Write in history
-            create_record(ctx.guild, ["twitter", tweet])
+            create_record(ctx.guild, ["animal", tweet])
             await ctx.send(tweet)
 
     @commands.command()

@@ -65,7 +65,7 @@ class tasks(commands.Cog):
     async def remove_records_from_previous_day(self):
         """Removes records from 2 days ago"""
         for guild in self.bot.guilds:
-            remove_records_from_a_date(guild, ("meme", "incident"))
+            remove_records_from_a_date(guild, ("post", "incident", "animal"))
 
     @tasks.loop(hours=1)
     async def post(self):
@@ -220,7 +220,7 @@ class tasks(commands.Cog):
     @free_games.before_loop
     @discord_status.before_loop
     @joined_date.before_loop
-    @post.before_loop
+    # @post.before_loop
     async def prep(self):
         """Waits some time to execute tasks"""
 
