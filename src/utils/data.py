@@ -60,10 +60,9 @@ class Data:
             if not os.path.isdir(folder):
                 log.warning("Folder {} not exists, creating it".format(folder))
                 os.makedirs(folder)
+                log.warning("Folder {} created".format(folder))
             else:
                 log.info("Folder {} exists".format(folder))
-
-            log.warning("Folder {} created".format(folder))
 
     def setup_files(self) -> None:
         """Creates needed files if they not exists"""
