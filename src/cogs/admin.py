@@ -17,10 +17,10 @@ import yaml
 log = logging.getLogger(__name__)
 ROLE_EXISTS = "UNIQUE constraint failed: roles.id"
 CHANNELS = [
-    {"channel_type": "general", "channel_description": "los mensajes de cumpleaños."},
+    {"channel_type": "general", "channel_description": "enviar mensajes generales."},
     {
         "channel_type": "audit",
-        "channel_description": "mostrar las acciones que hace el bot a los administradores.",
+        "channel_description": "que los administradores vean el estado de los servidores de Discord",
     },
     {"channel_type": "lobby", "channel_description": "mandar mensajes de bienvenida"},
     {
