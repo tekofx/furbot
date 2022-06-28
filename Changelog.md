@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Cog utilities ahora se llama utils
 - Subreddit del comando cat. Ahora se usa la cuenta de twitter HourlyCats.
 - Cambiado texto de comando str8
+- Eliminados puntos de wordle
 
 
 ## [v4.6.2] - 2022-6-27

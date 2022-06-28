@@ -3,7 +3,6 @@ import random
 import sqlite3
 import os
 import logging
-from typing import List
 import nextcord
 from utils.data import get_server_path
 
@@ -11,8 +10,7 @@ from utils.data import get_server_path
 users_table = """ CREATE TABLE IF NOT EXISTS users (
                                     id integer PRIMARY KEY,
                                     name text NOT NULL,
-                                    joined_date date,
-                                    points integer NOT NULL DEFAULT 0
+                                    joined_date date
                                 ); """
 
 
@@ -562,70 +560,6 @@ def get_joined_dates(guild: nextcord.Guild) -> list:
             output.append(var)
         database_connection.close()
         return output
-
-
-def sort_by_points(guild: nextcord.Guild) -> list:
-    """Sorts the users by their points
-
-    Args:
-        guild (nextcord.Guild): guild of the database
-
-    Returns:
-        list: containing [user_id, points]
-    """
-    database_connection = create_connection(guild)
-
-    sql = """ SELECT id,points
-        FROM users
-        ORDER BY points DESC
-        """
-    cur = database_connection.cursor()
-    try:
-        cur.execute(sql)
-    except Exception as error:
-        log.error(
-            "Error: could not query the points of guild {}: {}".format(guild, error)
-        )
-        database_connection.close()
-    else:
-        info = cur.fetchall()
-        output = []
-
-        for x in info:
-            var = []
-            var.append(x[0])
-            var.append(x[1])
-            output.append(var)
-        database_connection.close()
-        return output
-
-
-def increase_points(guild: nextcord.Guild, user_id: int, points: int):
-    """Increases the points of a user
-
-    Args:
-        guild (nextcord.Guild): guild of the database
-        user_id (int): id of the user
-        points (int): amount of points to increase
-    """
-    database_connection = create_connection(guild)
-
-    sql = """ UPDATE users
-        SET points=points + ?
-        WHERE id=?
-        """
-    var = [points, user_id]
-    cur = database_connection.cursor()
-    try:
-        cur.execute(sql, var)
-    except Exception as error:
-        log.error(
-            "Error: could not update the points of user {}: {}".format(user_id, error)
-        )
-        database_connection.close()
-    else:
-        database_connection.commit()
-        database_connection.close()
 
 
 def set_name(guild: nextcord.Guild, user_id: int, name: str) -> None:

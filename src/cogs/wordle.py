@@ -13,10 +13,6 @@ import os
 from PIL import ImageFont, ImageDraw, Image
 from utils.data import meme_resources_path
 
-
-from utils.database import increase_points, sort_by_points
-
-
 log = logging.getLogger(__name__)
 
 
@@ -29,10 +25,6 @@ WORDLE_JSON = "wordle.json"
 GREEN = "#5c824c"
 YELLOW = "#c8a111"
 GREY = "#474b4d"
-
-YELLOW_POINTS = 1
-GREEN_POINTS = 2
-WORD_GUESSED_POINTS = 3
 
 
 WORDLE_DICT = {
@@ -65,9 +57,6 @@ class wordle(commands.Cog):
             if element not in json_object[key]:
                 json_object[key].append(element)
                 json_object[key].sort()
-                if key == "correct_letters":
-
-                    increase_points(ctx.guild, ctx.author.id, YELLOW_POINTS)
 
             f.seek(0)
             json.dump(json_object, f)
@@ -166,8 +155,6 @@ class wordle(commands.Cog):
             f.seek(0)
             json.dump(json_object, f)
             f.truncate()
-
-        increase_points(ctx.guild, ctx.author.id, GREEN_POINTS)
 
     def get_partial_letters(self, guild: nextcord.Guild) -> list:
         """Gets the partial letters
@@ -452,7 +439,6 @@ class wordle(commands.Cog):
         # Check if the word was guessed
         solution = self.get_solution_word(ctx.guild)
         if word == solution:
-            increase_points(ctx.guild, ctx.author.id, WORD_GUESSED_POINTS)
             await ctx.send("Palabra correcta!!!!")
             os.remove(get_server_path(ctx.guild) + WORDLE_JSON)
 
@@ -466,26 +452,6 @@ class wordle(commands.Cog):
                 "wordle",
                 "Nueva palabra generada, intenta adivinarla con `fur guess`",
             )
-
-    @commands.command()
-    async def ranking(self, ctx: commands.Context):
-        """Show the ranking of the wordle"""
-        ranking = sort_by_points(ctx.guild)
-        if ranking == []:
-            return
-
-        count = 1
-        embed = nextcord.Embed(title="Ranking Wordle")
-        # first = await self.bot.fetch_user(ranking[0][0])
-        # first_avatar = first.avatar.url
-        # embed.set_thumbnail(url=first_avatar)
-
-        for user, points in ranking[:5]:
-            user = self.bot.get_user(user)
-            text = "{} - {} puntos".format(user.mention, points)
-            embed.add_field(name="Puesto " + str(count), value=text, inline=False)
-            count += 1
-        # await ctx.send(embed=embed)
 
     @tasks.loop(hours=1)
     async def remove_users_from_wordle(self):
