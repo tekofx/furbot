@@ -34,7 +34,7 @@ CHANNELS = [
 ]
 
 
-class administration(commands.Cog):
+class admin(commands.Cog):
     def __init__(self, bot: Bot) -> None:
         self.bot = bot
 
@@ -268,4 +268,4 @@ class administration(commands.Cog):
 
 
 def setup(bot: commands.Bot):
-    bot.add_cog(administration(bot))
+    bot.add_cog(admin(bot))
