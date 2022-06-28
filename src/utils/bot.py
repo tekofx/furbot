@@ -236,10 +236,6 @@ class Bot(commands.Bot):
         message_content = message_content.split(" ")
         command_used = message_content[1]
 
-        if isinstance(error, commands.errors.UserInputError):
-            log.error("UserInputError: {}".format(error))
-            await context.send("Comprueba que la información introducida es correcta")
-
         # Argument missing
         if isinstance(error, commands.MissingRequiredArgument):
             await context.send("Error: Faltan parámetros")
