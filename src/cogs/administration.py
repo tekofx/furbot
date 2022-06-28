@@ -104,7 +104,7 @@ class administration(commands.Cog):
         output = ""
         for post in posts:
             channel = await self.bot.fetch_channel(post[0])
-            output += "-id={}\n-canal={}\n-visibilidad={}\n-cuenta/s={} \n".format(
+            output += "-id={}\n-canal={}\n-visibilidad={}\n-cuenta/s={} \n\n".format(
                 post[3], channel.mention, post[1], post[2]
             )
 
