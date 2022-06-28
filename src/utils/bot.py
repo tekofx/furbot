@@ -172,9 +172,6 @@ class Bot(commands.Bot):
                 await message.channel.send("EwE!")
             if message.content.lower() == "awa":
                 await message.channel.send("AwA!")
-            if message.content.lower() == "a" or message.content.lower() == "ª":
-                msg = await message.channel.send("Cuidado con Thedax!")
-                await msg.delete(delay=5)
 
         await self.process_commands(message)
 
