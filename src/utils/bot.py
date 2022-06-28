@@ -27,6 +27,7 @@ class Bot(commands.Bot):
     def __init__(self, token):
         intents = nextcord.Intents.default()
         intents.members = True
+        intents.message_content = True
         super().__init__(
             command_prefix=["fur ", "Fur ", "FUR "],
             description="uwu",
