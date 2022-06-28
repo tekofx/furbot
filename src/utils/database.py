@@ -370,6 +370,31 @@ def remove_records_2_days(guild: nextcord.guild, record_types: list) -> None:
         database_connection.close()
 
 
+def remove_record(guild: nextcord.guild, record_id) -> None:
+    """Removes all records older than a date
+    Args:
+        guild (nextcord.Guild) : Guild to access its database
+        id(int): list of records
+    """
+    database_connection = create_connection(guild)
+
+    sql = "DELETE FROM records WHERE record=?"
+    cur = database_connection.cursor()
+    try:
+        cur.execute(sql, [str(record_id)])
+    except Exception as error:
+        log.error(
+            "Error: Could not delete records{} from database: {}".format(
+                record_id, error
+            )
+        )
+        return
+
+    else:
+        database_connection.commit()
+        database_connection.close()
+
+
 def create_channel(guild: nextcord.guild, channel_data: list) -> None:
     """Creates a channel in the channels table
     Args:
@@ -449,6 +474,27 @@ def remove_post(guild: nextcord.guild, id: int) -> None:
 
 
 ###################### Getters and setters ######################
+def get_records_of_type(guild: nextcord.guild, record_type: str) -> list:
+    """Gets records of certain type
+
+    Args:
+        guild (nextcord.guild): guild to get the records for
+
+    Returns:
+        list: containing [(id,record, date),...])]
+    """
+    database_connection = create_connection(guild)
+
+    sql = "SELECT id,record,date FROM records WHERE type=?"
+    cur = database_connection.cursor()
+    try:
+        cur.execute(sql, [record_type])
+    except Exception as error:
+        log.error("Error: could not query records {}: {}".format(record_type, error))
+        database_connection.close()
+    else:
+        info = cur.fetchall()
+        return info
 
 
 def get_posts(guild: nextcord.guild) -> list:

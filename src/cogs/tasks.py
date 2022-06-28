@@ -14,6 +14,8 @@ from utils.database import (
     get_joined_dates,
     remove_records_2_days,
     get_posts,
+    get_records_of_type,
+    remove_record,
 )
 from utils.bot import Bot
 
@@ -34,6 +36,15 @@ class tasks(commands.Cog):
         self.free_games.start()
         self.joined_date.start()
 
+    def remove_games(self, guild: nextcord.Guild, games: list):
+        ids = [i["id"] for i in games]
+        records = get_records_of_type(guild, "game")
+        records = [int(i[1]) for i in records]
+
+        for record in records:
+            if record not in ids:
+                remove_record(guild, record)
+
     @tasks.loop(hours=2)
     async def free_games(self):
         r = requests.get("https://www.gamerpower.com/api/giveaways?type=game")
@@ -41,6 +52,8 @@ class tasks(commands.Cog):
         for guild in self.bot.guilds:
             if not exists_channel(guild, "games"):
                 continue
+
+            self.remove_games(guild, r.json())
 
             for x in r.json():
                 if not check_record_in_database(guild, x["id"]):
@@ -217,7 +230,7 @@ class tasks(commands.Cog):
                         create_record(guild, ["incident", update_id])
                         await self.bot.channel_send(guild, "audit", "a", update_embed)
 
-    @free_games.before_loop
+    # @free_games.before_loop
     @discord_status.before_loop
     @joined_date.before_loop
     @post.before_loop
