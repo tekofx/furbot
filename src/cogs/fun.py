@@ -67,7 +67,7 @@ class fun(commands.Cog):
         """Super str8 el ultimo"""
 
         num = random.randint(0, 100)
-        output = "{} es {}% straight"
+        output = "{} es {}% hetero"
         if user is None:
             usuario = ctx.author.display_name
         else:
