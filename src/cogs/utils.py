@@ -1,5 +1,4 @@
 import io
-from ntpath import join
 import nextcord
 from nextcord.ext import commands
 from pyrae import dle
