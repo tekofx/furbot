@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Eliminados comandos addcolor, addrank y addspecie
 - Modificado comando posts
 - Cog administration ahora se llama admin
+- Cog utilities ahora se llama utils
 - Subreddit del comando cat. Ahora se usa la cuenta de twitter HourlyCats.
 - Cambiado texto de comando str8
 

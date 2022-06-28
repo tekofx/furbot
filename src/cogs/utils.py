@@ -8,7 +8,7 @@ from utils.bot import Bot
 from PIL import Image, ImageOps, ImageFont, ImageDraw
 
 
-class utilities(commands.Cog):
+class utils(commands.Cog):
     def __init__(self, bot: Bot) -> None:
         self.bot = bot
 
@@ -87,4 +87,4 @@ class utilities(commands.Cog):
 
 
 def setup(bot: commands.Bot):
-    bot.add_cog(utilities(bot))
+    bot.add_cog(utils(bot))
