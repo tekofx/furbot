@@ -330,11 +330,6 @@ def create_record(guild: nextcord.guild, record_data: list) -> None:
     cur = database_connection.cursor()
     try:
         cur.execute(sql, record_data)
-        log.info(
-            "record {record} with id {id} was added to the database".format(
-                record=record_data[1], id=record_data[0]
-            )
-        )
     except Exception as error:
         log.error(
             "Error: Could not create record {id} {name}: {error}".format(
