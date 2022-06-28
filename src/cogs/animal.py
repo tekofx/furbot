@@ -66,7 +66,7 @@ class animal(commands.Cog):
     @commands.command()
     async def lizard(self, ctx: commands.Context, num: int = None):
         """Fotos de lagartitos"""
-        message = await ctx.send("Buscando fotos de laganitos")
+        message = await ctx.send("Buscando fotos de lagartitos")
         await self.send_animal_pics_twitter(ctx, "HourlyLizards", num)
         await message.delete()
 
@@ -74,32 +74,7 @@ class animal(commands.Cog):
     async def cat(self, ctx: commands.Context, num: int = None):
         """Fotos de gatitos"""
         message = await ctx.send("Buscando fotos de gatitos")
-
-        if num is None:
-            num = 1
-
-        aux = 0
-
-        with ctx.typing():
-
-            # Get pics from reddit
-            reddit_image_urls = await self.bot.reddit.get_hot_subreddit_images(
-                "catpictures", 50, num
-            )
-
-            # Select pic
-            for x in reddit_image_urls:
-                if aux == num:
-                    break
-
-                if not check_record_in_database(ctx.guild, x):
-                    aux += 1
-
-                    # Write in history
-                    create_record(ctx.guild, ["reddit", x])
-
-                    # Download image
-                    await ctx.send(x)
+        await self.send_animal_pics_twitter(ctx, "HourlyCats", num)
         await message.delete()
 
 
