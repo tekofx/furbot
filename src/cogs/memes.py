@@ -408,12 +408,12 @@ class memes(commands.Cog):
         await ctx.send(file=nextcord.File(meme, "output.png"))
 
     @commands.command()
-    async def palomitas(self, ctx: commands.Context, user: nextcord.Member = None):
+    async def palomitas(self, ctx: commands.Context):
         """Este drama está interesante"""
 
         avatar_info = [
             {
-                "url": get_user(ctx, user).avatar.url,
+                "url": ctx.author.avatar.url,
                 "size": 125,
                 "x": 278,
                 "y": 67,
