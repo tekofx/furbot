@@ -53,6 +53,7 @@ class tasks(commands.Cog):
             if not exists_channel(guild, "games"):
                 continue
 
+            # Remove games records that are not sent by the api
             self.remove_games(guild, r.json())
 
             for x in r.json():
