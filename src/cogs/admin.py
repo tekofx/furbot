@@ -15,22 +15,33 @@ from utils.bot import Bot
 import yaml
 
 log = logging.getLogger(__name__)
-ROLE_EXISTS = "UNIQUE constraint failed: roles.id"
 CHANNELS = [
-    {"channel_type": "general", "channel_description": "enviar mensajes generales."},
+    {
+        "channel_type": "general",
+        "channel_description": "Canal para enviar mensajes generales",
+    },
     {
         "channel_type": "audit",
-        "channel_description": "que los administradores vean el estado de los servidores de Discord",
+        "channel_description": "Canal para que los administradores vean el estado de los servidores de discord y mensajes del estado y las acciones que realizo.",
     },
-    {"channel_type": "lobby", "channel_description": "mandar mensajes de bienvenida"},
+    {
+        "channel_type": "lobby",
+        "channel_description": "Canal para mandar mensajes de bienvenida",
+    },
     {
         "channel_type": "bot_news",
-        "channel_description": "mandar info sobre nuevas versiones del bot",
+        "channel_description": "Canal para publicar noticias de nuevas versiones",
     },
-    {"channel_type": "games", "channel_description": "mandar juegos gratuitos"},
-    {"channel_type": "wordle", "channel_description": "jugar a wordle"},
-    {"channel_type": "numbers", "channel_description": "jugar a contar numeros"},
-    {"channel_type": "ordure", "channel_description": "Cosas bizarras"},
+    {
+        "channel_type": "games",
+        "channel_description": "Para mandar juegos que estén gratis",
+    },
+    {"channel_type": "wordle", "channel_description": "Canal para jugar a wordle"},
+    {"channel_type": "numbers", "channel_description": "Canal jugar a contar numeros"},
+    {
+        "channel_type": "ordure",
+        "channel_description": "Canal para enviar cosas bizarras",
+    },
 ]
 
 
@@ -235,9 +246,7 @@ class admin(commands.Cog):
 
         # General channel
         await ctx.send(
-            "Seleccione el canal {}. Se utiliza para {}".format(
-                channel_type, channel_description
-            )
+            "Seleccione el canal {}. {}".format(channel_type, channel_description)
         )
         msg = await self.bot.wait_for("message", check=check, timeout=60)
         if msg.content.lower() != "skip":
