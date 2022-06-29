@@ -520,57 +520,6 @@ def get_posts(guild: nextcord.guild) -> list:
         return info
 
 
-def get_roles_by_type(guild: nextcord.guild, role_type: str):
-    database_connection = create_connection(guild)
-
-    sql = """ SELECT id
-        FROM roles
-        WHERE type=?
-        """
-    var = [role_type]
-    cur = database_connection.cursor()
-    try:
-        cur.execute(sql, var)
-    except Exception as error:
-        log.error(
-            "Error: could not query roles of type {}: {}".format(role_type, error)
-        )
-        database_connection.close()
-    else:
-        info = cur.fetchall()
-        return info
-
-
-def get_name(guild: nextcord.guild, user_id: int) -> str:
-    """Gets the name of a user
-    Args:
-        guild (nextcord.Guild) : Guild to access its database
-        user_id (int): id of user
-    Returns:
-        [str]: name of user
-    """
-    database_connection = create_connection(guild)
-
-    sql = """ SELECT name
-        FROM users
-        WHERE id=?
-        """
-    var = [user_id]
-    cur = database_connection.cursor()
-    try:
-        cur.execute(sql, var)
-    except Exception as error:
-        log.error(
-            "Error: could not query the name of user {}: {}".format(user_id, error)
-        )
-        database_connection.close()
-    else:
-        info = cur.fetchone()
-        name = info[0]
-        database_connection.close()
-        return name
-
-
 def get_joined_dates(guild: nextcord.Guild) -> list:
     """Gets all the joined dates of the users in the database
 
@@ -606,31 +555,6 @@ def get_joined_dates(guild: nextcord.Guild) -> list:
             output.append(var)
         database_connection.close()
         return output
-
-
-def set_name(guild: nextcord.Guild, user_id: int, name: str) -> None:
-    """Changes the name of a user
-    Args:
-        guild (nextcord.Guild) : Guild to access its database
-        user_id (int): id of user
-        name (str): new name for a user
-    """
-    database_connection = create_connection(guild)
-
-    sql = """ UPDATE users  
-              SET name = ?
-              WHERE id = ?"""
-
-    cur = database_connection.cursor()
-    var = [name, user_id]
-    try:
-        cur.execute(sql, var)
-    except Exception as error:
-        log.error("Error: Could not update name of user {}: {}".format(user_id, error))
-        database_connection.close()
-    else:
-        database_connection.commit()
-        database_connection.close()
 
 
 def get_random_sentence(guild: nextcord.guild, sentence_type: str) -> str:
