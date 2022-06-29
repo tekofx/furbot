@@ -16,6 +16,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Cambiado texto de comando str8
 - Eliminados puntos de wordle
 
+### Añadido
+- Al usar los comandos addpost y setup se comprobará si el bot tiene acceso a los canales que se especifiquen y si tiene permiso para enviar mensajes.
+- Comprobacion de permisos de canal en task post
+
 
 ## [v4.6.2] - 2022-6-27
 

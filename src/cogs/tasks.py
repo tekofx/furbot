@@ -87,14 +87,40 @@ class tasks(commands.Cog):
         for guild in self.bot.guilds:
             posts = get_posts(guild)
             for post in posts:
-                channel = post[0]
+                channel_id = post[0]
                 nsfw = post[1]
+                account = post[2]
+                post_id = post[3]
                 if nsfw == "nsfw":
                     nsfw = True
                 else:
                     nsfw = False
-                account = post[2]
-                channel = await self.bot.fetch_channel(channel)
+                try:
+                    channel = await self.bot.fetch_channel(channel_id)
+                except nextcord.errors.Forbidden:
+                    log.error(f"{guild.name} - {channel_id} is not accesible")
+                    await self.bot.channel_send(
+                        guild,
+                        "audit",
+                        "Error al intentar publicar en canal el post id={}: No tengo acceso al canal".format(
+                            post_id
+                        ),
+                    )
+                    return
+
+                if not channel.permissions_for(guild.me).send_messages:
+                    log.error(
+                        f"{guild.name} - {channel.name} doesn't have permission to send messages in "
+                    )
+                    await self.bot.channel_send(
+                        guild,
+                        "audit",
+                        "Error al intentar publicar en canal {} post id={}: No tengo permiso para enviar mensajes".format(
+                            channel.mention, post_id
+                        ),
+                    )
+                    return
+
                 if " " in account:  # Multiple accounts
                     accounts = account.split(" ")
                     account = random.choice(accounts)
@@ -231,10 +257,10 @@ class tasks(commands.Cog):
                         create_record(guild, ["incident", update_id])
                         await self.bot.channel_send(guild, "audit", "a", update_embed)
 
-    # @free_games.before_loop
+    @free_games.before_loop
     @discord_status.before_loop
     @joined_date.before_loop
-    @post.before_loop
+    # @post.before_loop
     async def prep(self):
         """Waits some time to execute tasks"""
 
