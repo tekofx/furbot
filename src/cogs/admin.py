@@ -265,11 +265,11 @@ class admin(commands.Cog):
         if msg.content.lower() != "skip":
             try:
                 channel = await self.fetch_channel_from_message_content(msg)
-            except nextcord.errors.Forbidden as error:
+            except nextcord.errors.Forbidden:
                 await ctx.send("No tengo permisos para acceder a este canal.")
                 return
 
-            if not channel.permissions_for(ctx.channel.me).send_messages:
+            if not channel.permissions_for(ctx.guild.me).send_messages:
                 await ctx.send("No tengo permisos para enviar mensajes en este canal.")
                 log.error(
                     "Don't have permissions to send messages in channel {}".format(
