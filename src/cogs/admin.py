@@ -1,15 +1,12 @@
 import logging
 from typing import List
-from venv import create
 from nextcord.ext import commands
 import nextcord
 from utils.database import (
     create_channel,
     create_post,
     exists_channel,
-    exists_channel_of_type,
     get_channel,
-    get_channels_with_policy,
     get_posts,
     remove_post,
     set_channel_policy,
