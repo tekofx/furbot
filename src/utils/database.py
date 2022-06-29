@@ -35,10 +35,10 @@ records_table = """ CREATE TABLE IF NOT EXISTS records (
                                 ); """
 
 channels_table = """ CREATE TABLE IF NOT EXISTS channels (
-                                    channel_id integer,
-                                    type text NOT NULL ,
-                                    name text NOT NULL,
-                                    PRIMARY KEY(channel_id, type )
+                                    id integer NOT NULL PRIMARY KEY,
+                                    type text,
+                                    policy text NOT NULL,
+                                    name text NOT NULL
                                 ); """
 posts_table = """ CREATE TABLE IF NOT EXISTS posts (
                                     id integer PRIMARY KEY AUTOINCREMENT,
@@ -395,29 +395,38 @@ def remove_record(guild: nextcord.guild, record_id) -> None:
         database_connection.close()
 
 
-def create_channel(guild: nextcord.guild, channel_data: list) -> None:
+def create_channel(
+    guild: nextcord.guild,
+    channel_id: int,
+    policy: str,
+    name: str,
+    channel_type: str = None,
+) -> None:
     """Creates a channel in the channels table
     Args:
         guild (nextcord.Guild) : Guild to access its database
-        channel (list): info of channel. Containing [channel_id, type, channel]
+        channel_id (int): id of the channel
+        policy (str): policy of the channel
+        name (str): name of the channel
+        channel_type (str): type of the channel
     """
     database_connection = create_connection(guild)
 
-    sql = """ INSERT INTO channels(channel_id,type,name)
-              VALUES(?,?,?) """
+    sql = """ INSERT INTO channels(id,type,policy,name)
+              VALUES(?,?,?,?) """
 
     cur = database_connection.cursor()
     try:
-        cur.execute(sql, channel_data)
+        cur.execute(sql, [channel_id, channel_type, policy, name])
         log.info(
             "channel {channel} with id {id} was added to the database".format(
-                channel=channel_data[1], id=channel_data[0]
+                channel=name, id=channel_id
             )
         )
     except Exception as error:
         log.error(
             "Error: Could not create channel {id} {name}: {error}".format(
-                id=channel_data[0], name=channel_data[1], error=error
+                id=channel_id, name=name, error=error
             )
         )
         database_connection.close()
@@ -520,6 +529,50 @@ def get_posts(guild: nextcord.guild) -> list:
         return info
 
 
+def set_channel_policy(guild: nextcord.guild, channel_id: int, policy: str) -> None:
+    """Sets the policy of a channel
+
+    Args:
+        guild (nextcord.guild): guild to set the policy for
+        channel_id (int): id of the channel
+        policy (str): policy of the channel
+    """
+    database_connection = create_connection(guild)
+
+    sql = "UPDATE channels SET policy=? WHERE id=?"
+    cur = database_connection.cursor()
+    try:
+        cur.execute(sql, [policy, channel_id])
+    except Exception as error:
+        log.error("Error: could not set policy {}: {}".format(policy, error))
+        database_connection.close()
+    else:
+        database_connection.commit()
+        database_connection.close()
+
+
+def set_channel_type(guild: nextcord.guild, channel_id: int, channel_type: str) -> None:
+    """Sets the type of a channel
+
+    Args:
+        guild (nextcord.guild): guild to set the policy for
+        channel_id (int): id of the channel
+        channel_type (str): type of the channel
+    """
+    database_connection = create_connection(guild)
+
+    sql = "UPDATE channels SET type=? WHERE id=?"
+    cur = database_connection.cursor()
+    try:
+        cur.execute(sql, [channel_type, channel_id])
+    except Exception as error:
+        log.error("Error: could not set policy {}: {}".format(channel_type, error))
+        database_connection.close()
+    else:
+        database_connection.commit()
+        database_connection.close()
+
+
 def get_users_with_joined_date_today(guild: nextcord.guild) -> list:
     """Gets the users who joined today
 
@@ -612,7 +665,37 @@ def get_random_sentence(guild: nextcord.guild, sentence_type: str) -> str:
         return output[0]
 
 
-def get_channel(guild: nextcord.guild, channel_type: str) -> int:
+def get_channel(guild: nextcord.guild, channel_id: int) -> int:
+    """Gets a channel
+
+    Args:
+        guild (nextcord.Guild) : Guild to access its database
+        channel_id (int): id of the channel
+
+    Returns:
+        set: containing (id, type, policy, name)
+    """
+    database_connection = create_connection(guild)
+
+    sql = """ SELECT id,type,policy,name
+        FROM channels
+        WHERE id=?
+        """
+    cur = database_connection.cursor()
+    try:
+        cur.execute(sql, [channel_id])
+    except Exception as error:
+        log.error("Error: could not query channel {}: {}".format(channel_id, error))
+        database_connection.close()
+
+    else:
+        info = cur.fetchone()
+        database_connection.close()
+
+        return info
+
+
+def get_channel_of_type(guild: nextcord.guild, channel_type: str) -> int:
     """Gets id of saved channels
 
     Args:
@@ -624,7 +707,7 @@ def get_channel(guild: nextcord.guild, channel_type: str) -> int:
     """
     database_connection = create_connection(guild)
 
-    sql = """ SELECT channel_id
+    sql = """ SELECT id
         FROM channels
         WHERE type=?
         """
@@ -647,6 +730,35 @@ def get_channel(guild: nextcord.guild, channel_type: str) -> int:
             return 0
 
         return int(info[0])
+
+
+def get_channels_with_policy(guild: nextcord.guild) -> int:
+    """Gets id of saved channels
+
+    Args:
+        guild (nextcord.Guild) : Guild to access its database
+
+    Returns:
+        list: containing [(channel_id, policy), (channel_id, policy), ...]
+    """
+    database_connection = create_connection(guild)
+
+    sql = """ SELECT id, policy
+        FROM channels
+        WHERE policy='all'
+        """
+    cur = database_connection.cursor()
+    try:
+        cur.execute(sql)
+    except Exception as error:
+        log.error("Error: could not query the channels with policy: {}".format(error))
+        database_connection.close()
+
+    else:
+        info = cur.fetchall()
+        database_connection.close()
+
+        return info
 
 
 ################################## Checks ##########################################
@@ -731,8 +843,38 @@ def table_empty(guild: nextcord.guild, table: str) -> bool:
         return False
 
 
-def exists_channel(guild: nextcord.Guild, channel_type: str) -> bool:
+def exists_channel(guild: nextcord.Guild, channel_id: int) -> bool:
     """Check if channel exists
+
+    Args:
+        guild (nextcord.Guild) : Guild to access its database
+        channel_id (int): id of the channel
+
+    Returns:
+        bool: false if not exists, true on the contrary
+    """
+    database_connection = create_connection(guild)
+
+    cursor = database_connection.cursor()
+    sql = "SELECT EXISTS(SELECT 1 FROM channels WHERE id=?)"
+    try:
+        cursor.execute(sql, [channel_id])
+    except Exception as error:
+        log.error(
+            "Error: Could not check if channel {} exists: {}".format(channel_id, error)
+        )
+        database_connection.close()
+    else:
+        data = cursor.fetchone()
+        database_connection.close()
+
+        if data == (0,):
+            return False
+        return True
+
+
+def exists_channel_of_type(guild: nextcord.Guild, channel_type: str) -> bool:
+    """Check if channel exists of type
 
     Args:
         guild (nextcord.Guild) : Guild to access its database

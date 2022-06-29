@@ -1,13 +1,19 @@
 import logging
 from typing import List
+from venv import create
 from nextcord.ext import commands
 import nextcord
 from utils.database import (
     create_channel,
-    create_role,
     create_post,
+    exists_channel,
+    exists_channel_of_type,
+    get_channel,
+    get_channels_with_policy,
     get_posts,
     remove_post,
+    set_channel_policy,
+    set_channel_type,
 )
 from asyncio import sleep
 from utils.data import config_yaml
@@ -15,7 +21,7 @@ from utils.bot import Bot
 import yaml
 
 log = logging.getLogger(__name__)
-CHANNELS = [
+PREDEFINED_CHANNELS = [
     {
         "channel_type": "general",
         "channel_description": "Canal para enviar mensajes generales",
@@ -29,7 +35,7 @@ CHANNELS = [
         "channel_description": "Canal para mandar mensajes de bienvenida",
     },
     {
-        "channel_type": "bot_news",
+        "channel_type": "noticias",
         "channel_description": "Canal para publicar noticias de nuevas versiones",
     },
     {
@@ -44,10 +50,111 @@ CHANNELS = [
     },
 ]
 
+CHANNEL_POLICIES = [
+    {
+        "channel_policy": "imagenes",
+        "channel_description": "Canal para solo enviar imágenes. Se borrarán todos los mensajes que no sean imágenes.",
+    },
+    {
+        "channel_policy": "links",
+        "channel_description": "Canal para solo enlaces. Se borrarán todos los mensajes que no sean enlaces.",
+    },
+    {
+        "channel_policy": "arte",
+        "channel_description": "Canal para subir arte. Pueden ser videos/imagenes/audios",
+    },
+]
+
 
 class admin(commands.Cog):
     def __init__(self, bot: Bot) -> None:
         self.bot = bot
+
+    @commands.command()
+    @commands.has_permissions(administrator=True)
+    async def tipos(self, ctx: commands.Context):
+        """Muestra los tipos de canales predefinidos"""
+        output = ""
+        for x in PREDEFINED_CHANNELS:
+            output += "{} - {}\n".format(x["channel_type"], x["channel_description"])
+        await ctx.send(output)
+
+    @commands.has_permissions(administrator=True)
+    @commands.command()
+    async def policies(self, ctx: commands.Context):
+        """[Admin] Muestra las politicas existentes"""
+        output = ""
+        for x in CHANNEL_POLICIES:
+            output += "{} - {}\n".format(x["channel_policy"], x["channel_description"])
+        await ctx.send(output)
+
+    @commands.has_permissions(administrator=True)
+    @commands.command()
+    async def setchannelpolicy(
+        self, ctx: commands.Context, canal: nextcord.TextChannel, *politica: str
+    ):
+        """[Admin] Establece una politica para un canal.
+        Las políticas sirven para que un canal solo se pueda enviar un tipo determinado de mensaje.
+
+        Por ejemplo, si se establece una política imgs, solo se podrá enviar imágenes.
+
+        Args:
+            canal (nextcord.TextChannel): canal que configurar
+            politica (str): politica del canal
+        """
+        for p in politica:
+
+            if not p in self.get_channel_of_type_policies():
+                await ctx.send(
+                    "Canal no valido, la politica debe ser una de las siguientes: `{}`".format(
+                        ", ".join(self.get_channel_of_type_policies())
+                    )
+                )
+                return
+        politica = " ".join(politica)
+        if not exists_channel(ctx.guild, canal.id):
+            create_channel(ctx.guild, canal.id, politica, canal.name)
+        else:
+            set_channel_policy(ctx.guild, canal.id, politica)
+        await ctx.send("Canal {} configurado con politica {}".format(canal, politica))
+        return
+
+    @commands.Cog.listener()
+    async def on_message(self, message: nextcord.Message):
+        if message.author.bot:
+            return
+        guild = message.guild
+        channel = get_channel(guild, message.channel.id)
+        if not channel:
+            return
+
+        channel_policy = channel[2]
+        if channel_policy == "all":
+            return
+
+        if channel_policy == "links" and "https://" in message.content:
+            return
+
+        if channel_policy == "imagenes" and message.attachments:
+            if "image" in message.attachments[0].content_type:
+                return
+
+        if channel_policy == "arte":
+            if message.attachments and (
+                "image" in message.attachments[0].content_type
+                or "video" in message.attachments[0].content_type
+            ):
+                await message.add_reaction("⭐")
+                return
+            if "https://" in message.content:
+                await message.add_reaction("⭐")
+                return
+
+        await message.delete()
+        msg = await message.channel.send(
+            f"En este canal solo se pueden enviar {channel_policy}. Puedes abrir un hilo si quieres escribir texto sobre algún mensaje."
+        )
+        await msg.delete(delay=5)
 
     @commands.has_permissions(administrator=True)
     @commands.command()
@@ -56,7 +163,7 @@ class admin(commands.Cog):
         ctx: commands.Context,
         canal: nextcord.TextChannel,
         visibilidad: str,
-        *cuenta: str
+        *cuenta: str,
     ):
         """[Admin]Permite añadir una cuenta de twitter/subreddit a un canal.
         De esta forma cada hora se publicará el último post de la cuenta en el canal. Si se añaden varias
@@ -125,47 +232,50 @@ class admin(commands.Cog):
 
         await ctx.send(output)
 
-    @commands.command(name="setup")
     @commands.has_permissions(administrator=True)
-    async def setup(self, ctx: commands.Context, canal: str = None) -> None:
+    @commands.command()
+    async def setchannel(
+        self, ctx: commands.Context, canal: nextcord.TextChannel, tipo: str
+    ):
+        """[Admin]Configura un los canal predefinido del bot.
 
-        """[Admin]Configurar los canales del bot
+        Permite establecer canales que sirvan para una función específica. Por ejemplo el canal lobby da la bienvenida
+        a los miembros nuevos
 
-        Si no se especifica ningun canal, se configuraran todos los canales
+        Args:
+            canal (nextcord.TextChannel): canal que configurar
+            tipo (str): tipo del canal
         """
-
-        def check(m: nextcord.Message) -> bool:
-            return m.author == ctx.author and m.channel == ctx.channel
-
-        if canal is not None:
-
-            if not canal in self.get_channel_types():
-                await ctx.send(
-                    "Canal no valido, el canal debe ser uno de los siguientes: `{}`".format(
-                        ", ".join(self.get_channel_types())
-                    )
+        if not tipo in self.get_channel_of_type_types():
+            await ctx.send(
+                "Canal no valido, el canal debe ser uno de los siguientes: `{}`".format(
+                    ", ".join(self.get_channel_of_type_types())
                 )
-                return
-            await ctx.send("Seleccione el canal que servirá como {}".format(canal))
-            msg = await self.bot.wait_for("message", check=check, timeout=60)
-            channel = await self.fetch_channel_from_message_content(msg)
-
-            create_channel(
-                ctx.guild,
-                [
-                    channel.id,
-                    canal,
-                    channel.name,
-                ],
             )
-            await ctx.send("Canal {} configurado".format(canal))
             return
+        if not exists_channel(ctx.guild, canal.id):
+            create_channel(ctx.guild, canal.id, "all", canal.name, tipo)
+        else:
+            set_channel_type(ctx.guild, canal.id, tipo)
+
+        await ctx.send("Canal {} configurado como {}".format(canal.mention, tipo))
+        return
+
+    @commands.command(name="setchannels")
+    @commands.has_permissions(administrator=True)
+    async def setchannels(self, ctx: commands.Context) -> None:
+
+        """[Admin]Configurar los canales predefinidos del bot.
+
+        Permite establecer canales que sirvan para una función específica. Por ejemplo el canal lobby da la bienvenida
+        a los miembros nuevos
+        """
 
         await ctx.send(
             "Empezando configuración. Se le pedirá establecer varios canales. Si no quiere establecer un canal, escriba `skip`"
         )
         await sleep(2)
-        for x in CHANNELS:
+        for x in PREDEFINED_CHANNELS:
             await self.setup_channel(ctx, x["channel_type"], x["channel_description"])
 
         await ctx.send("Configuración finalizada")
@@ -277,26 +387,36 @@ class admin(commands.Cog):
                     )
                 )
                 return
+            if not exists_channel(ctx.guild, channel.id):
+                create_channel(ctx.guild, channel.id, "all", channel.name, channel_type)
+            else:
+                set_channel_type(ctx.guild, channel.id, channel_type)
 
-            create_channel(
-                ctx.guild,
-                [
-                    channel.id,
-                    channel_type,
-                    channel.name,
-                ],
+            await ctx.send(
+                "Canal {} añadido como {}".format(channel.mention, channel_type)
             )
-            await ctx.send("Canal {} añadido".format(channel_type))
 
-    def get_channel_types(self) -> List[str]:
+    def get_channel_of_type_types(self) -> List[str]:
         """Gets the channel_types from CHANNEL
 
         Returns:
             List[str]: contains the channel_types
         """
         output = []
-        for x in CHANNELS:
+        for x in PREDEFINED_CHANNELS:
             output.append(x["channel_type"])
+
+        return output
+
+    def get_channel_of_type_policies(self) -> List[str]:
+        """Gets the channel_policies from CHANNEL
+
+        Returns:
+            List[str]: contains the channel_policies
+        """
+        output = []
+        for x in CHANNEL_POLICIES:
+            output.append(x["channel_policy"])
 
         return output
 

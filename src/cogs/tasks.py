@@ -10,8 +10,7 @@ from utils.database import (
     check_record_in_database,
     create_record,
     create_user,
-    exists_channel,
-    get_joined_dates,
+    exists_channel_of_type,
     remove_records_2_days,
     get_posts,
     get_records_of_type,
@@ -51,7 +50,7 @@ class tasks(commands.Cog):
         r = requests.get("https://www.gamerpower.com/api/giveaways?type=game")
 
         for guild in self.bot.guilds:
-            if not exists_channel(guild, "games"):
+            if not exists_channel_of_type(guild, "games"):
                 continue
 
             # Remove games records that are not sent by the api
@@ -167,7 +166,7 @@ class tasks(commands.Cog):
     async def ordure_bizarre(self):
         post = self.bot.twitter.get_latest_image("ordurebizarree")
         for guild in self.bot.guilds:
-            if not exists_channel(guild, "ordure"):
+            if not exists_channel_of_type(guild, "ordure"):
                 continue
 
             if not check_record_in_database(guild, post):
@@ -185,7 +184,7 @@ class tasks(commands.Cog):
 
         for guild in self.bot.guilds:
 
-            if not exists_channel(guild, "general"):
+            if not exists_channel_of_type(guild, "general"):
                 continue
 
             members = get_users_with_joined_date_today(guild)
@@ -215,7 +214,7 @@ class tasks(commands.Cog):
 
         for guild in self.bot.guilds:
 
-            if not exists_channel(guild, "audit"):
+            if not exists_channel_of_type(guild, "audit"):
                 continue
 
             for incident in data["incidents"]:

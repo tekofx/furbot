@@ -10,8 +10,8 @@ from utils.database import (
     check_record_in_database,
     create_record,
     create_user,
-    exists_channel,
-    get_channel,
+    exists_channel_of_type,
+    get_channel_of_type,
     setup_database,
 )
 from utils.reddit import Reddit
@@ -68,13 +68,13 @@ class Bot(commands.Bot):
                 var = "\n".join(i[1:])
                 embed.add_field(name=i[0], value=var, inline=False)
         for guild in self.guilds:
-            if not exists_channel(guild, "bot_news"):
+            if not exists_channel_of_type(guild, "noticias"):
                 continue
 
             if not check_record_in_database(guild, r[0]["url"]):
                 create_record(guild, ["github", r[0]["url"]])
 
-                await self.channel_send(guild, "bot_news", "a", embed)
+                await self.channel_send(guild, "noticias", "a", embed)
 
     async def on_ready(self):
         """Performs an action when the bot is ready"""
@@ -203,7 +203,7 @@ class Bot(commands.Bot):
         """
 
         # Get general_channel id
-        general_id = get_channel(guild, channel_type)
+        general_id = get_channel_of_type(guild, channel_type)
 
         if general_id != 0:
             try:
