@@ -16,6 +16,7 @@ from utils.database import (
     get_posts,
     get_records_of_type,
     remove_record,
+    get_users_with_joined_date_today,
 )
 from utils.bot import Bot
 
@@ -153,7 +154,8 @@ class tasks(commands.Cog):
                 if not entry_in_database and not member.bot:
                     # Add to database
                     try:
-                        create_user(guild, [member.id, member.name, member.joined_at])
+                        joined_date = datetime.strftime(member.joined_at, "%Y-%m-%d")
+                        create_user(guild, [member.id, member.name, joined_date])
                     except Exception as error:
                         log.error("Error creating user on join: {}".format(error))
                     else:
@@ -177,7 +179,7 @@ class tasks(commands.Cog):
         """Checks if today is somebody's birthday"""
 
         now = datetime.now()
-        if now.hour != 8:
+        if now.hour != 10:
             return
         now = datetime(now.year, now.month, now.day)
 
@@ -185,18 +187,26 @@ class tasks(commands.Cog):
 
             if not exists_channel(guild, "general"):
                 continue
-            dates = get_joined_dates(guild)
-            for user_id, date in dates:
-                now_str = str(now).split(" ")[0][5:]
-                if date[5:] == now_str:
-                    user = await guild.fetch_member(user_id)
-                    years = int(now.year) - int(date[:4])
 
-                    await self.bot.channel_send(
-                        guild,
-                        "general",
-                        "Hoy hace {} años que se unió {}".format(years, user.mention),
-                    )
+            members = get_users_with_joined_date_today(guild)
+
+            for member in members:
+                member_id = member[0]
+                joined_date = member[1]
+
+                member = await guild.fetch_member(member_id)
+                years = now.year - int(joined_date.split("-")[0])
+
+                if years == 0:
+                    return
+
+                await self.bot.channel_send(
+                    guild,
+                    "general",
+                    "Felicidades {}, hoy cumples {} años en el server".format(
+                        member.mention, years
+                    ),
+                )
 
     @tasks.loop(minutes=5)
     async def discord_status(self):
@@ -259,7 +269,7 @@ class tasks(commands.Cog):
 
     @free_games.before_loop
     @discord_status.before_loop
-    @joined_date.before_loop
+    # @joined_date.before_loop
     # @post.before_loop
     async def prep(self):
         """Waits some time to execute tasks"""

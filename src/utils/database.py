@@ -520,6 +520,29 @@ def get_posts(guild: nextcord.guild) -> list:
         return info
 
 
+def get_users_with_joined_date_today(guild: nextcord.guild) -> list:
+    """Gets the users who joined today
+
+    Args:
+        guild (nextcord.guild): guild to get the users for
+
+    Returns:
+        list: containing [(id, date), (id, date), ...]
+    """
+    database_connection = create_connection(guild)
+
+    sql = "SELECT id, joined_date FROM users WHERE joined_date=date('now')"
+    cur = database_connection.cursor()
+    try:
+        cur.execute(sql)
+    except Exception as error:
+        log.error("Error: could not query users {}: {}".format(error))
+        database_connection.close()
+    else:
+        info = cur.fetchall()
+        return info
+
+
 def get_joined_dates(guild: nextcord.Guild) -> list:
     """Gets all the joined dates of the users in the database
 

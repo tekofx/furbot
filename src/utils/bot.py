@@ -1,3 +1,4 @@
+import datetime
 import nextcord
 from nextcord.errors import Forbidden
 from nextcord.ext import commands
@@ -127,7 +128,8 @@ class Bot(commands.Bot):
         if not entry_in_database and not member.bot:
             # Add to database
             try:
-                create_user(member.guild, [member.id, member.name, member.joined_at])
+                joined_date = datetime.datetime.strftime(member.joined_at, "%Y-%m-%d")
+                create_user(member.guild, [member.id, member.name, joined_date])
             except Exception as error:
                 log.error("Error creating user on join: {}".format(error))
             else:
