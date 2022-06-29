@@ -22,6 +22,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Comando setchannelpolicy. Con este comando se puede establecer que tipo de contenido se puede enviar en un canal. Si un mensaje no tiene ese tipo de contenido se eliminará.
 - Comando setchannel. Establecer un canal para que sea un canal predefinido. Por ejemplo en el canal lobby se da la bienvenida a los miembros nuevos. Los canales predefinidos que hay son lobby, general, audit, noticias, games, wordle, numbers y ordure
 - Comando setchannels. Parecido a setchannel pero permite ir estableciendo los canales uno a uno.
+- Comando rmchannelpolicy. Elimina la politica de un canal.
+- Comando channels. Muestra los canales configurados, mostrando el tipo de canal y su politica.
 - Eliminación de contenido que no cumpla las politicas de un canal 
 
 ### Arreglado

@@ -7,7 +7,9 @@ from utils.database import (
     create_post,
     exists_channel,
     get_channel,
+    get_channels,
     get_posts,
+    remove_channel,
     remove_post,
     set_channel_policy,
     set_channel_type,
@@ -20,45 +22,45 @@ import yaml
 log = logging.getLogger(__name__)
 PREDEFINED_CHANNELS = [
     {
-        "channel_type": "general",
-        "channel_description": "Canal para enviar mensajes generales",
+        "type": "general",
+        "description": "Canal para enviar mensajes generales",
     },
     {
-        "channel_type": "audit",
-        "channel_description": "Canal para que los administradores vean el estado de los servidores de discord y mensajes del estado y las acciones que realizo.",
+        "type": "audit",
+        "description": "Canal para que los administradores vean el estado de los servidores de discord y mensajes del estado y las acciones que realizo.",
     },
     {
-        "channel_type": "lobby",
-        "channel_description": "Canal para mandar mensajes de bienvenida",
+        "type": "lobby",
+        "description": "Canal para mandar mensajes de bienvenida",
     },
     {
-        "channel_type": "noticias",
-        "channel_description": "Canal para publicar noticias de nuevas versiones",
+        "type": "noticias",
+        "description": "Canal para publicar noticias de nuevas versiones",
     },
     {
-        "channel_type": "games",
-        "channel_description": "Para mandar juegos que estén gratis",
+        "type": "games",
+        "description": "Para mandar juegos que estén gratis",
     },
-    {"channel_type": "wordle", "channel_description": "Canal para jugar a wordle"},
-    {"channel_type": "numbers", "channel_description": "Canal jugar a contar numeros"},
+    {"type": "wordle", "description": "Canal para jugar a wordle"},
+    {"type": "numbers", "description": "Canal jugar a contar numeros"},
     {
-        "channel_type": "ordure",
-        "channel_description": "Canal para enviar cosas bizarras",
+        "type": "ordure",
+        "description": "Canal para enviar cosas bizarras",
     },
 ]
 
 CHANNEL_POLICIES = [
     {
         "channel_policy": "imagenes",
-        "channel_description": "Canal para solo enviar imágenes. Se borrarán todos los mensajes que no sean imágenes.",
+        "description": "Canal para solo enviar imágenes. Se borrarán todos los mensajes que no sean imágenes.",
     },
     {
         "channel_policy": "links",
-        "channel_description": "Canal para solo enlaces. Se borrarán todos los mensajes que no sean enlaces.",
+        "description": "Canal para solo enlaces. Se borrarán todos los mensajes que no sean enlaces.",
     },
     {
         "channel_policy": "arte",
-        "channel_description": "Canal para subir arte. Pueden ser videos/imagenes/audios",
+        "description": "Canal para subir arte. Pueden ser videos/imagenes/audios",
     },
 ]
 
@@ -69,11 +71,25 @@ class admin(commands.Cog):
 
     @commands.command()
     @commands.has_permissions(administrator=True)
+    async def channels(self, ctx: commands.Context):
+        channels = get_channels(ctx.guild)
+        channels = list(channels)
+
+        output = "Canal: tipo | politica\n"
+        for channel in channels:
+            x = await self.bot.fetch_channel(channel[0])
+            channel_type = channel[1]
+            channel_policy = channel[2]
+            output += "- {}: {} | {}\n".format(x.mention, channel_type, channel_policy)
+        await ctx.send(output)
+
+    @commands.command()
+    @commands.has_permissions(administrator=True)
     async def tipos(self, ctx: commands.Context):
         """[Admin] Muestra los tipos de canales predefinidos"""
         output = ""
         for x in PREDEFINED_CHANNELS:
-            output += "{} - {}\n".format(x["channel_type"], x["channel_description"])
+            output += "{} - {}\n".format(x["type"], x["description"])
         await ctx.send(output)
 
     @commands.has_permissions(administrator=True)
@@ -82,8 +98,23 @@ class admin(commands.Cog):
         """[Admin] Muestra las politicas existentes"""
         output = ""
         for x in CHANNEL_POLICIES:
-            output += "{} - {}\n".format(x["channel_policy"], x["channel_description"])
+            output += "{} - {}\n".format(x["channel_policy"], x["description"])
         await ctx.send(output)
+
+    @commands.has_permissions(administrator=True)
+    @commands.command()
+    async def rmchannelpolicy(self, ctx: commands.Context, canal: nextcord.TextChannel):
+        """[Admin] Elimina politica de un canal"""
+        channel = get_channel(ctx.guild, canal.id)
+
+        if channel[1] is None:  # If has no type
+            remove_channel(ctx.guild, canal.id)
+        else:
+            set_channel_policy(ctx.guild, canal.id, "all")
+
+        await ctx.send(
+            f"Eliminada la politica de {canal.mention}. Ahora se puede enviar todo tipo de mensajes."
+        )
 
     @commands.has_permissions(administrator=True)
     @commands.command()
@@ -118,7 +149,7 @@ class admin(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message: nextcord.Message):
-        if message.author.bot:
+        if message.author.bot or message.author.guild_permissions.administrator:
             return
         guild = message.guild
         channel = get_channel(guild, message.channel.id)
@@ -273,7 +304,7 @@ class admin(commands.Cog):
         )
         await sleep(2)
         for x in PREDEFINED_CHANNELS:
-            await self.setup_channel(ctx, x["channel_type"], x["channel_description"])
+            await self.setup_channel(ctx, x["type"], x["description"])
 
         await ctx.send("Configuración finalizada")
 
@@ -401,7 +432,7 @@ class admin(commands.Cog):
         """
         output = []
         for x in PREDEFINED_CHANNELS:
-            output.append(x["channel_type"])
+            output.append(x["type"])
 
         return output
 

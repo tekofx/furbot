@@ -464,6 +464,31 @@ def create_post(guild: nextcord.guild, post_data: list) -> None:
         database_connection.close()
 
 
+def remove_channel(guild: nextcord.guild, id: int) -> None:
+    """Removes a channel from the channels table
+
+    Args:
+        guild (nextcord.guild): Guild to access its database
+        id (int): id of the channel
+    """
+    database_connection = create_connection(guild)
+
+    sql = "DELETE FROM channels WHERE id=?"
+    cur = database_connection.cursor()
+    try:
+        cur.execute(sql, [id])
+        log.info("Deleted channel {} from database".format(id))
+    except Exception as error:
+        log.error(
+            "Error: Could not delete channel {} from database: {}".format(id, error)
+        )
+        database_connection.close()
+
+    else:
+        database_connection.commit()
+        database_connection.close()
+
+
 def remove_post(guild: nextcord.guild, id: int) -> None:
 
     database_connection = create_connection(guild)
@@ -730,6 +755,34 @@ def get_channel_of_type(guild: nextcord.guild, channel_type: str) -> int:
             return 0
 
         return int(info[0])
+
+
+def get_channels(guild: nextcord.guild):
+    """Gets all saved channels
+
+    Args:
+        guild (nextcord.Guild) : Guild to access its database
+
+    Returns:
+        list: containing [(id,type ,policy,name), ]
+    """
+    database_connection = create_connection(guild)
+
+    sql = """ SELECT id,type ,policy, name
+        FROM channels
+        """
+    cur = database_connection.cursor()
+    try:
+        cur.execute(sql)
+    except Exception as error:
+        log.error("Error: could not query the channels: {}".format(error))
+        database_connection.close()
+
+    else:
+        info = cur.fetchall()
+        database_connection.close()
+
+        return info
 
 
 def get_channels_with_policy(guild: nextcord.guild) -> int:
