@@ -73,7 +73,7 @@ class admin(commands.Cog):
     @commands.command()
     @commands.has_permissions(administrator=True)
     async def tipos(self, ctx: commands.Context):
-        """Muestra los tipos de canales predefinidos"""
+        """[Admin] Muestra los tipos de canales predefinidos"""
         output = ""
         for x in PREDEFINED_CHANNELS:
             output += "{} - {}\n".format(x["channel_type"], x["channel_description"])
@@ -165,7 +165,7 @@ class admin(commands.Cog):
         visibilidad: str,
         *cuenta: str,
     ):
-        """[Admin]Permite añadir una cuenta de twitter/subreddit a un canal.
+        """[Admin] Permite añadir una cuenta de twitter/subreddit a un canal.
         De esta forma cada hora se publicará el último post de la cuenta en el canal. Si se añaden varias
         cuentas a la vez, se utilizará una cuenta aleatoria de las añadidas.
 
@@ -205,7 +205,7 @@ class admin(commands.Cog):
     @commands.command()
     @commands.has_permissions(administrator=True)
     async def rmpost(self, ctx: commands.Context, post_id: int):
-        """[Admin]Permite eliminar una cuenta de twitter/subreddit de un canal.
+        """[Admin] Permite eliminar una cuenta de twitter/subreddit de un canal.
 
         Args:
             id: id del post a eliminar
@@ -217,7 +217,7 @@ class admin(commands.Cog):
     @commands.command()
     @commands.has_permissions(administrator=True)
     async def posts(self, ctx: commands.Context):
-        "[Admin]Muestra los posts que se han añadido"
+        "[Admin] Muestra los posts que se han añadido"
         posts = get_posts(ctx.guild)
         if not posts:
             await ctx.send("No hay posts para este servidor")
@@ -237,7 +237,7 @@ class admin(commands.Cog):
     async def setchannel(
         self, ctx: commands.Context, canal: nextcord.TextChannel, tipo: str
     ):
-        """[Admin]Configura un los canal predefinido del bot.
+        """[Admin] Configura un los canal predefinido del bot.
 
         Permite establecer canales que sirvan para una función específica. Por ejemplo el canal lobby da la bienvenida
         a los miembros nuevos
@@ -265,7 +265,7 @@ class admin(commands.Cog):
     @commands.has_permissions(administrator=True)
     async def setchannels(self, ctx: commands.Context) -> None:
 
-        """[Admin]Configurar los canales predefinidos del bot.
+        """[Admin] Configurar los canales predefinidos del bot.
 
         Permite establecer canales que sirvan para una función específica. Por ejemplo el canal lobby da la bienvenida
         a los miembros nuevos
