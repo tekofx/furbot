@@ -74,6 +74,10 @@ class admin(commands.Cog):
             )
             return
 
+        if not canal.permissions_for(ctx.guild.me).send_messages:
+            await ctx.send("No tengo permisos para enviar mensajes en este canal.")
+            return
+
         account = []
 
         for arg in cuenta:
@@ -134,6 +138,7 @@ class admin(commands.Cog):
             return m.author == ctx.author and m.channel == ctx.channel
 
         if canal is not None:
+
             if not canal in self.get_channel_types():
                 await ctx.send(
                     "Canal no valido, el canal debe ser uno de los siguientes: `{}`".format(
@@ -235,7 +240,15 @@ class admin(commands.Cog):
         """
 
         channel_id = message.content.replace("<#", "").replace(">", "")
-        channel = await self.bot.fetch_channel(channel_id)
+        try:
+            channel = await self.bot.fetch_channel(channel_id)
+        except nextcord.errors.Forbidden as error:
+            log.error(
+                "Don't have permissions to fetch channel {}: {}".format(
+                    channel_id, error
+                )
+            )
+            raise error
         return channel
 
     async def setup_channel(
@@ -250,8 +263,20 @@ class admin(commands.Cog):
         )
         msg = await self.bot.wait_for("message", check=check, timeout=60)
         if msg.content.lower() != "skip":
+            try:
+                channel = await self.fetch_channel_from_message_content(msg)
+            except nextcord.errors.Forbidden as error:
+                await ctx.send("No tengo permisos para acceder a este canal.")
+                return
 
-            channel = await self.fetch_channel_from_message_content(msg)
+            if not channel.permissions_for(ctx.channel.me).send_messages:
+                await ctx.send("No tengo permisos para enviar mensajes en este canal.")
+                log.error(
+                    "Don't have permissions to send messages in channel {}".format(
+                        channel.id
+                    )
+                )
+                return
 
             create_channel(
                 ctx.guild,
