@@ -20,6 +20,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Al usar los comandos addpost y setup se comprobará si el bot tiene acceso a los canales que se especifiquen y si tiene permiso para enviar mensajes.
 - Comprobacion de permisos de canal en task post
 
+### Arreglado
+- Task joined_date que felicita a los usuarios al cumplir x años en el servidor
+
 
 ## [v4.6.2] - 2022-6-27
 
