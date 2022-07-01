@@ -149,7 +149,7 @@ class admin(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message: nextcord.Message):
-        if message.author.bot or message.author.guild_permissions.administrator:
+        if message.author.bot:
             return
         guild = message.guild
         channel = get_channel(guild, message.channel.id)
@@ -173,9 +173,13 @@ class admin(commands.Cog):
                 or "video" in message.attachments[0].content_type
             ):
                 await message.add_reaction("⭐")
+                """ thread = "Publicación de " + message.author.name
+                await message.create_thread(name=thread) """
                 return
             if "https://" in message.content:
                 await message.add_reaction("⭐")
+                """thread = "Publicación de " + message.author.name
+                await message.create_thread(name=thread)"""
                 return
 
         await message.delete()
