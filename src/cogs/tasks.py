@@ -126,21 +126,23 @@ class tasks(commands.Cog):
                     account = random.choice(accounts)
 
                 if "twitter" in account:
-                    account = account.replace("twitter@", "")
+                    twitter_account = account.replace("twitter@", "")
                     embed = self.bot.twitter.get_latest_image_not_repeated(
-                        guild, account, "post"
+                        guild, twitter_account, "post"
                     )
 
                 else:
-                    account = account.replace("reddit@", "")
+                    reddit_account = account.replace("reddit@", "")
                     embed = await self.bot.reddit.get_hot_pic_not_repeated(
-                        guild, account, "post", nsfw
+                        guild, reddit_account, "post", nsfw
                     )
 
                 try:
                     await channel.send(embed=embed)
                 except Exception as error:
-                    log.error(error)
+                    log.error(
+                        f"Could not send post from {account} in {guild.name}: {error}"
+                    )
                     continue
 
     @tasks.loop(hours=6)
@@ -269,7 +271,7 @@ class tasks(commands.Cog):
     @free_games.before_loop
     @discord_status.before_loop
     @joined_date.before_loop
-    @post.before_loop
+    # @post.before_loop
     async def prep(self):
         """Waits some time to execute tasks"""
 

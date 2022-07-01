@@ -89,8 +89,11 @@ class Reddit:
                 output = post
                 break
 
-        embed = self.create_embed(output)
         await reddit.close()
+        if output is None:
+            return None
+
+        embed = self.create_embed(output)
         return embed
 
     def create_embed(

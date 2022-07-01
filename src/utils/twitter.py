@@ -115,14 +115,11 @@ class Twitter:
 
                     output = tweet
                     break
+
+        if output is None:
+            return None
         embed = self.create_embed(output)
-        """ embed = Embed(
-            title="Twitter",
-            description=text,
-            color=Colour.from_rgb(29, 161, 242),
-        )
-        embed.set_image(url=tweet_url)
-        embed.set_author(name=user, icon_url=output.user.profile_image_url) """
+
         return embed
 
     def create_embed(self, tweet) -> Embed:
