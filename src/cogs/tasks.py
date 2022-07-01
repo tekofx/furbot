@@ -167,7 +167,7 @@ class tasks(commands.Cog):
                 continue
             clean_records(guild, "ordure", "ordurebizarree", [post])
             if not check_record_in_database(guild, post):
-                create_record(guild, ["meme", post])
+                create_record(guild, ["ordure", post])
                 await self.bot.channel_send(guild, channel_type="ordure", msg=post)
 
     @tasks.loop(hours=1)
