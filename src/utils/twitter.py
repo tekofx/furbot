@@ -68,7 +68,7 @@ class Twitter:
             if "media" in tweet.entities:
                 tweet_url = tweet.entities["media"][0]["media_url"]
                 if not check_record_in_database(guild, tweet_url):
-                    create_record(guild, [record_type, tweet])
+                    create_record(guild, record_type, tweet_url, username)
                     num += 1
                     output.append(tweet_url)
 
@@ -109,7 +109,7 @@ class Twitter:
             if "media" in tweet.entities:
                 tweet_url = tweet.entities["media"][0]["media_url"]
                 if not check_record_in_database(guild, tweet_url):
-                    create_record(guild, [record_type, username, tweet_url])
+                    create_record(guild, record_type, tweet_url, username)
 
                     output = tweet
                     break

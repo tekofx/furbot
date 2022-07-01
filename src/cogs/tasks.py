@@ -37,15 +37,6 @@ class tasks(commands.Cog):
         self.free_games.start()
         self.joined_date.start()
 
-    def remove_games(self, guild: nextcord.Guild, games: list):
-        ids = [i["id"] for i in games]
-        records = get_records_of_type(guild, "game")
-        records = [int(i[1]) for i in records]
-
-        for record in records:
-            if record not in ids:
-                remove_record(guild, record)
-
     @tasks.loop(hours=2)
     async def free_games(self):
         r = requests.get("https://www.gamerpower.com/api/giveaways?type=game")
@@ -55,11 +46,12 @@ class tasks(commands.Cog):
                 continue
 
             # Remove games records that are not fetched by the api
-            self.remove_games(guild, r.json())
+            ids = [i["id"] for i in r.json()]
+            clean_records_no_account(guild, "game", ids)
 
             for x in r.json():
                 if not check_record_in_database(guild, x["id"]):
-                    create_record(guild, ["game", x["id"]])
+                    create_record(guild, "game", x["id"])
                     title = x["title"]
                     decription = x["description"]
                     url = x["open_giveaway_url"]
@@ -167,7 +159,7 @@ class tasks(commands.Cog):
                 continue
             clean_records(guild, "ordure", "ordurebizarree", [post])
             if not check_record_in_database(guild, post):
-                create_record(guild, ["ordure", post])
+                create_record(guild, "ordure", post, "ordurebizarree")
                 await self.bot.channel_send(guild, channel_type="ordure", msg=post)
 
     @tasks.loop(hours=1)
@@ -242,7 +234,7 @@ class tasks(commands.Cog):
 
                 # Inform about a new incident
                 if not check_record_in_database(guild, incident_id):
-                    create_record(guild, ["incident", incident_id])
+                    create_record(guild, "incident", incident_id)
                     await self.bot.channel_send(guild, "audit", "a", embed)
 
                 # Inform about an incident update
@@ -264,7 +256,7 @@ class tasks(commands.Cog):
                         name="Estado", value=update_status, inline=False
                     )
                     if not check_record_in_database(guild, update_id):
-                        create_record(guild, ["incident", update_id])
+                        create_record(guild, "incident", update_id)
                         await self.bot.channel_send(guild, "audit", "a", update_embed)
 
     @free_games.before_loop

@@ -90,7 +90,7 @@ class Reddit:
                 and post.over_18 is nsfw
                 and not check_record_in_database(guild, post.url)
             ):
-                create_record(guild, [record_type, post.url])
+                create_record(guild, record_type, post.url, sub_reddit)
 
                 output = post
                 break

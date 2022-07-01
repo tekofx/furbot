@@ -1,6 +1,5 @@
 import logging
 from nextcord.ext import commands
-from utils.database import check_record_in_database, create_record
 from utils.bot import Bot
 
 

@@ -72,7 +72,7 @@ class Bot(commands.Bot):
                 continue
 
             if not check_record_in_database(guild, r[0]["url"]):
-                create_record(guild, ["github", r[0]["url"]])
+                create_record(guild, "github", r[0]["url"])
 
                 await self.channel_send(guild, "noticias", "a", embed)
 

@@ -313,28 +313,26 @@ def create_sentence(guild: nextcord.guild, sentence_data: list) -> None:
         database_connection.close()
 
 
-def create_record(guild: nextcord.guild, record_data: list) -> None:
+def create_record(
+    guild: nextcord.guild, record_type: str, record: str, account: str = None
+) -> None:
     """Creates a record in the records table
     Args:
         guild (nextcord.Guild) : Guild to access its database
-        record (list): info of record. Containing [type,account, record, date]
+        record_type (str): type of record
+        record (str): record
+        account (str): account of record
     """
     database_connection = create_connection(guild)
 
-    sql = """ INSERT INTO records(type,account,record,date)
+    sql = """ INSERT INTO records(type,account,record, date)
               VALUES(?,?,?,?) """
-
-    record_data.append(datetime.date.today())
 
     cur = database_connection.cursor()
     try:
-        cur.execute(sql, record_data)
+        cur.execute(sql, [record_type, account, record, datetime.date.today()])
     except Exception as error:
-        log.error(
-            "Error: Could not create record {id} {name}: {error}".format(
-                id=record_data[0], name=record_data[1], error=error
-            )
-        )
+        log.error(f"Error: Could not create record {record_type} {record}: {error}")
         database_connection.close()
     else:
         database_connection.commit()
