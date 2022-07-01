@@ -78,7 +78,7 @@ class Reddit:
         )
 
         subreddit = await reddit.subreddit(sub_reddit)
-        hot_posts = subreddit.hot(limit=10)
+        hot_posts = subreddit.hot(limit=100)
 
         output = None
         posts = []
