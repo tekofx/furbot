@@ -1,3 +1,4 @@
+from html import entities
 import logging
 import tweepy as tw
 import os
@@ -76,7 +77,10 @@ class Twitter:
                 break
 
         # Remove records that are not fetched
-        tweets_urls = [tweet.entities["media"][0]["media_url"] for tweet in tweets]
+        tweets_urls = [
+            tweet.entities["media"][0]["media_url"] if "media" in tweet.entities else ""
+            for tweet in tweets
+        ]
         clean_records(guild, "animal", username, tweets_urls)
 
         return output
@@ -118,7 +122,10 @@ class Twitter:
             return None
 
         # Remove tweets from db if they are not fetched
-        tweets_urls = [tweet.entities["media"][0]["media_url"] for tweet in tweets]
+        tweets_urls = [
+            tweet.entities["media"][0]["media_url"] if "media" in tweet.entities else ""
+            for tweet in tweets
+        ]
         clean_records(guild, record_type, username, tweets_urls)
 
         embed = self.create_embed(output)

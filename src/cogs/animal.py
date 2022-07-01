@@ -35,7 +35,7 @@ class animal(commands.Cog):
     async def arctic_fox(self, ctx: commands.Context, num: int = None):
         """Fotos de zorros articos"""
         message = await ctx.send("Buscando fotos de zorros árticos hermosos")
-        await self.send_animal_pics_twitter(ctx, "DailyArcticFox", num)
+        await self.send_animal_pics_twitter(ctx, "ArcticHourly", num)
         await message.delete()
 
     @commands.command()
