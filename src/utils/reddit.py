@@ -4,8 +4,6 @@ from utils.database import (
     check_record_in_database,
     clean_records,
     create_record,
-    get_records_of_type,
-    remove_record,
 )
 import os
 import asyncpraw
