@@ -101,7 +101,7 @@ class Twitter:
 
         output = None
         tweets = self.api.user_timeline(
-            screen_name=username, count=3, include_rts=True, tweet_mode="extended"
+            screen_name=username, count=100, include_rts=True, tweet_mode="extended"
         )
 
         for tweet in tweets:
