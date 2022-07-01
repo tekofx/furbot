@@ -30,6 +30,7 @@ sentences_table = """ CREATE TABLE IF NOT EXISTS sentences (
 records_table = """ CREATE TABLE IF NOT EXISTS records (
                                     id integer PRIMARY KEY AUTOINCREMENT,
                                     type text NOT NULL ,
+                                    account text,
                                     record text NOT NULL,
                                     date date NOT NULL
                                 ); """
@@ -316,12 +317,12 @@ def create_record(guild: nextcord.guild, record_data: list) -> None:
     """Creates a record in the records table
     Args:
         guild (nextcord.Guild) : Guild to access its database
-        record (list): info of record. Containing [type, record]
+        record (list): info of record. Containing [type,account, record, date]
     """
     database_connection = create_connection(guild)
 
-    sql = """ INSERT INTO records(type,record,date)
-              VALUES(?,?,?) """
+    sql = """ INSERT INTO records(type,account,record,date)
+              VALUES(?,?,?,?) """
 
     record_data.append(datetime.date.today())
 
@@ -370,23 +371,21 @@ def remove_records_2_days(guild: nextcord.guild, record_types: list) -> None:
         database_connection.close()
 
 
-def remove_record(guild: nextcord.guild, record_id) -> None:
+def remove_record(guild: nextcord.guild, record) -> None:
     """Removes all records older than a date
     Args:
         guild (nextcord.Guild) : Guild to access its database
-        id(int): list of records
+        record(int): record
     """
     database_connection = create_connection(guild)
 
     sql = "DELETE FROM records WHERE record=?"
     cur = database_connection.cursor()
     try:
-        cur.execute(sql, [str(record_id)])
+        cur.execute(sql, [str(record)])
     except Exception as error:
         log.error(
-            "Error: Could not delete records{} from database: {}".format(
-                record_id, error
-            )
+            "Error: Could not delete records{} from database: {}".format(record, error)
         )
         return
 
@@ -489,7 +488,7 @@ def remove_channel(guild: nextcord.guild, id: int) -> None:
         database_connection.close()
 
 
-def remove_post(guild: nextcord.guild, id: int) -> None:
+def remove_post(guild: nextcord.Guild, id: int) -> None:
 
     database_connection = create_connection(guild)
 
@@ -507,6 +506,23 @@ def remove_post(guild: nextcord.guild, id: int) -> None:
         database_connection.close()
 
 
+def clean_records(guild: nextcord.Guild, record_type: str, account: str, posts: list):
+    """Removes records that are no longer fetched from twitter/reddit/api/etc
+
+    Args:
+        guild (nextcord.Guild): Guild to access its database
+        record_type (str): type of record
+        account (str): account of the record
+        posts (list): list of posts
+    """
+
+    records = get_records_of_type(guild, record_type)
+    for record in records:
+        if record[1] == account and record[2] not in posts:
+            remove_record(guild, record[2])
+            log.info(f"Removed {record[2]} from database")
+
+
 ###################### Getters and setters ######################
 def get_records_of_type(guild: nextcord.guild, record_type: str) -> list:
     """Gets records of certain type
@@ -515,11 +531,11 @@ def get_records_of_type(guild: nextcord.guild, record_type: str) -> list:
         guild (nextcord.guild): guild to get the records for
 
     Returns:
-        list: containing [(id,record, date),...])]
+        list: containing [(id,account,record, date),...])]
     """
     database_connection = create_connection(guild)
 
-    sql = "SELECT id,record,date FROM records WHERE type=?"
+    sql = "SELECT id,account ,record,date FROM records WHERE type=?"
     cur = database_connection.cursor()
     try:
         cur.execute(sql, [record_type])

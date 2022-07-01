@@ -1,0 +1,13 @@
+CREATE TABLE IF NOT EXISTS records_temp (
+                                    id integer PRIMARY KEY AUTOINCREMENT,
+                                    type text NOT NULL ,
+                                    account text,
+                                    record text NOT NULL,
+                                    date date NOT NULL
+                                );
+
+
+INSERT INTO records_temp (id, type, record, date) SELECT id, type, record, date FROM records;
+DROP TABLE records;
+
+ALTER  TABLE records_temp RENAME TO records;

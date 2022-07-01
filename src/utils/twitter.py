@@ -1,7 +1,13 @@
 import logging
 import tweepy as tw
 import os
-from utils.database import check_record_in_database, create_record
+from utils.database import (
+    check_record_in_database,
+    clean_records,
+    create_record,
+    get_records_of_type,
+    remove_record,
+)
 import nextcord
 from nextcord import Embed
 from nextcord.colour import Colour
@@ -63,7 +69,7 @@ class Twitter:
             count (int): number of images to return
 
         Returns:
-            list: containin URLs of latest image posted
+            list: containing URLs of latest image posted
         """
 
         output = []
@@ -90,34 +96,41 @@ class Twitter:
         guild: nextcord.Guild,
         username: str,
         record_type: str,
-    ) -> list:
+    ) -> nextcord.Embed:
 
         """Gets the URL the latest image url posted by some user
 
         Args:
             guild (nextcord.Guild): guild to look
             username (str): user to look
+            record_type (str): type of record
 
         Returns:
-            list: containin URLs of latest image posted
+            nextcord.Embed: embed
         """
 
         output = None
         tweets = self.api.user_timeline(
-            screen_name=username, count=200, include_rts=True, tweet_mode="extended"
+            screen_name=username, count=3, include_rts=True, tweet_mode="extended"
         )
+
         for tweet in tweets:
 
             if "media" in tweet.entities:
                 tweet_url = tweet.entities["media"][0]["media_url"]
                 if not check_record_in_database(guild, tweet_url):
-                    create_record(guild, [record_type, tweet_url])
+                    create_record(guild, [record_type, username, tweet_url])
 
                     output = tweet
                     break
 
         if output is None:
             return None
+
+        # Remove tweets from db if they are not fetched
+        tweets_urls = [tweet.entities["media"][0]["media_url"] for tweet in tweets]
+        clean_records(guild, record_type, username, tweets_urls)
+
         embed = self.create_embed(output)
 
         return embed

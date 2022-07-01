@@ -128,13 +128,13 @@ class tasks(commands.Cog):
                 if "twitter" in account:
                     twitter_account = account.replace("twitter@", "")
                     embed = self.bot.twitter.get_latest_image_not_repeated(
-                        guild, twitter_account, "post"
+                        guild, twitter_account, "twitter"
                     )
 
                 else:
                     reddit_account = account.replace("reddit@", "")
                     embed = await self.bot.reddit.get_hot_pic_not_repeated(
-                        guild, reddit_account, "post", nsfw
+                        guild, reddit_account, "reddit", nsfw
                     )
 
                 try:

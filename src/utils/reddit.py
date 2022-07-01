@@ -1,6 +1,12 @@
 import logging
 import nextcord
-from utils.database import check_record_in_database, create_record
+from utils.database import (
+    check_record_in_database,
+    clean_records,
+    create_record,
+    get_records_of_type,
+    remove_record,
+)
 import os
 import asyncpraw
 from nextcord import Embed
@@ -89,10 +95,14 @@ class Reddit:
                 output = post
                 break
 
-        await reddit.close()
         if output is None:
             return None
 
+        # Remove posts from db if they are not fetched
+        posts_urls = [post.url for post in hot_posts]
+        clean_records(guild, record_type, sub_reddit, posts_urls)
+
+        await reddit.close()
         embed = self.create_embed(output)
         return embed
 
