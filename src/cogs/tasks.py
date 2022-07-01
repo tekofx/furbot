@@ -46,7 +46,7 @@ class tasks(commands.Cog):
                 continue
 
             # Remove games records that are not fetched by the api
-            ids = [i["id"] for i in r.json()]
+            ids = [str(i["id"]) for i in r.json()]
             clean_records_no_account(guild, "game", ids)
 
             for x in r.json():
@@ -259,10 +259,10 @@ class tasks(commands.Cog):
                         create_record(guild, "incident", update_id)
                         await self.bot.channel_send(guild, "audit", "a", update_embed)
 
-    @free_games.before_loop
-    @discord_status.before_loop
+    # @free_games.before_loop
+    # @discord_status.before_loop
     @joined_date.before_loop
-    @post.before_loop
+    # @post.before_loop
     async def prep(self):
         """Waits some time to execute tasks"""
 
