@@ -78,27 +78,26 @@ class Reddit:
         )
 
         subreddit = await reddit.subreddit(sub_reddit)
-        hot_posts = subreddit.hot(limit=100)
+        hot_posts = subreddit.hot(limit=10)
 
         output = None
+        posts = []
         async for post in hot_posts:
 
-            if (
-                ("jpg" in post.url or "png" in post.url)
-                and post.over_18 is nsfw
-                and not check_record_in_database(guild, post.url)
-            ):
-                create_record(guild, record_type, post.url, sub_reddit)
+            if ("jpg" in post.url or "png" in post.url) and post.over_18 is nsfw:
+                posts.append(post)
 
+        for post in posts:
+            if not check_record_in_database(guild, post.url):
+                create_record(guild, record_type, post.url, sub_reddit)
                 output = post
                 break
 
+        # Remove posts from db if they are not fetched
+        posts_urls = [x.url for x in posts]
+        clean_records(guild, record_type, sub_reddit, posts_urls)
         if output is None:
             return None
-
-        # Remove posts from db if they are not fetched
-        posts_urls = [post.url async for post in hot_posts]
-        clean_records(guild, record_type, sub_reddit, posts_urls)
 
         await reddit.close()
         embed = self.create_embed(output)
