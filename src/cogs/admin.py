@@ -226,7 +226,10 @@ class admin(commands.Cog):
                 return
 
             if "twitter" in arg:
-                account.append("twitter@" + arg.split("/")[-1])
+                var = "twitter@" + arg.split("/")[-1]
+                if "?" in var:
+                    var = var.split("?")[0]
+                account.append(var)
             else:
                 account.append("reddit@" + arg.split("/")[-2])
 

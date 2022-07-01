@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Arreglado 
 - Error que detenia la publicación de posts
+- Error al crear un post con una url de twitter con parámetros a parte del nombre de usuario
 
 ## [v4.7.0] - 2022-6-30
 ### Cambiado
