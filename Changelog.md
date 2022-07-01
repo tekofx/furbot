@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Mejor administración de historial para todo el contenido que se obtiene de reddit y twitter. Como se va a borrar y crear un nuevo historial se repetirá ciertos contenidos.
 
 
+### Cambiado
+- Ahora se usa la cuenta de twitter ArcticHourly para el comando arctic
+
+
 ## [v4.7.2] - 2022-07-01
 ### Arreglado 
 - Error con posts que no se publicaban a en punto
