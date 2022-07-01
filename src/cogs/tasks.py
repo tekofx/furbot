@@ -8,6 +8,8 @@ import random
 from utils.database import (
     check_entry_in_database,
     check_record_in_database,
+    clean_records,
+    clean_records_no_account,
     create_record,
     create_user,
     exists_channel_of_type,
@@ -52,7 +54,7 @@ class tasks(commands.Cog):
             if not exists_channel_of_type(guild, "games"):
                 continue
 
-            # Remove games records that are not sent by the api
+            # Remove games records that are not fetched by the api
             self.remove_games(guild, r.json())
 
             for x in r.json():
@@ -163,7 +165,7 @@ class tasks(commands.Cog):
         for guild in self.bot.guilds:
             if not exists_channel_of_type(guild, "ordure"):
                 continue
-
+            clean_records(guild, "ordure", "ordurebizarree", [post])
             if not check_record_in_database(guild, post):
                 create_record(guild, ["meme", post])
                 await self.bot.channel_send(guild, channel_type="ordure", msg=post)
@@ -211,6 +213,10 @@ class tasks(commands.Cog):
 
             if not exists_channel_of_type(guild, "audit"):
                 continue
+
+            # Remove records that are not fetched anymore
+            incidents_ids = [incident["id"] for incident in data["incidents"]]
+            clean_records_no_account(guild, "incident", incidents_ids)
 
             for incident in data["incidents"]:
 

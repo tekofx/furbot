@@ -20,12 +20,9 @@ class animal(commands.Cog):
 
         # Get images
         tweet_images_urls = self.bot.twitter.get_latest_images_not_repeated(
-            ctx.guild, username, num
+            ctx.guild, username, num, "animal"
         )
         for tweet in tweet_images_urls:
-
-            # Write in history
-            create_record(ctx.guild, ["animal", tweet])
             await ctx.send(tweet)
 
     @commands.command()

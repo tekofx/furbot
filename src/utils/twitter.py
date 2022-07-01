@@ -26,20 +26,6 @@ class Twitter:
         self.auth.set_access_token(access_token, access_token_secret)
         self.api = tw.API(self.auth, wait_on_rate_limit=True)
 
-    def get_timeline(self, username: str) -> list:
-        """Get the first 200 posts of a user
-
-        Args:
-            username (str): user to get posts from
-
-        Returns:
-            list: containing tweets
-        """
-        tweets = self.api.user_timeline(
-            screen_name=username, count=200, include_rts=False, tweet_mode="extended"
-        )
-        return tweets
-
     def get_latest_image(self, username: str) -> str:
         """Gets the URL the latest image url posted by some user
 
@@ -58,7 +44,7 @@ class Twitter:
                 return tweet.entities["media"][0]["media_url"]
 
     def get_latest_images_not_repeated(
-        self, guild: nextcord.Guild, username: str, count: int
+        self, guild: nextcord.Guild, username: str, count: int, record_type: str
     ) -> list:
 
         """Gets the URL the latest images urls posted by some user
@@ -75,19 +61,23 @@ class Twitter:
         output = []
         num = 0
         tweets = self.api.user_timeline(
-            screen_name=username, count=200, include_rts=True, tweet_mode="extended"
+            screen_name=username, count=100, include_rts=True, tweet_mode="extended"
         )
         for tweet in tweets:
 
             if "media" in tweet.entities:
                 tweet_url = tweet.entities["media"][0]["media_url"]
                 if not check_record_in_database(guild, tweet_url):
-
+                    create_record(guild, [record_type, tweet])
                     num += 1
                     output.append(tweet_url)
 
             if count == num:
                 break
+
+        # Remove records that are not fetched
+        tweets_urls = [tweet.entities["media"][0]["media_url"] for tweet in tweets]
+        clean_records(guild, "animal", username, tweets_urls)
 
         return output
 

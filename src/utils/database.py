@@ -523,6 +523,23 @@ def clean_records(guild: nextcord.Guild, record_type: str, account: str, posts: 
             log.info(f"Removed {record[2]} from database")
 
 
+def clean_records_no_account(guild: nextcord.Guild, record_type: str, posts: list):
+    """Removes records that are no longer fetched from twitter/reddit/api/etc
+
+    Args:
+        guild (nextcord.Guild): Guild to access its database
+        record_type (str): type of record
+        account (str): account of the record
+        posts (list): list of posts
+    """
+
+    records = get_records_of_type(guild, record_type)
+    for record in records:
+        if record[2] not in posts:
+            remove_record(guild, record[2])
+            log.info(f"Removed {record[2]} from database")
+
+
 ###################### Getters and setters ######################
 def get_records_of_type(guild: nextcord.guild, record_type: str) -> list:
     """Gets records of certain type
