@@ -31,7 +31,6 @@ class tasks(commands.Cog):
         self.post.start()
         self.update_users.start()
         self.discord_status.start()
-        self.remove_records_from_previous_day.start()
         self.ordure_bizarre.start()
         self.free_games.start()
         self.joined_date.start()
@@ -74,12 +73,6 @@ class tasks(commands.Cog):
                     await self.bot.channel_send(
                         guild, channel_type="games", msg="a", embed=embed
                     )
-
-    @tasks.loop(hours=48)
-    async def remove_records_from_previous_day(self):
-        """Removes records from 2 days ago"""
-        for guild in self.bot.guilds:
-            remove_records_2_days(guild, ("post", "incident", "animal"))
 
     @tasks.loop(hours=1)
     async def post(self):
