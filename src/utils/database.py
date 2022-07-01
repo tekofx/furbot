@@ -535,7 +535,7 @@ def clean_records_no_account(guild: nextcord.Guild, record_type: str, posts: lis
     for record in records:
         if record[2] not in posts:
             remove_record(guild, record[2])
-            log.info(f"Removed {record[2]} from database")
+            log.info(f"Removed {record_type} {record[2]} from database")
 
 
 ###################### Getters and setters ######################
