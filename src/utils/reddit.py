@@ -97,7 +97,7 @@ class Reddit:
             return None
 
         # Remove posts from db if they are not fetched
-        posts_urls = [post.url for post in hot_posts]
+        posts_urls = [post.url async for post in hot_posts]
         clean_records(guild, record_type, sub_reddit, posts_urls)
 
         await reddit.close()
