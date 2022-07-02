@@ -518,7 +518,7 @@ def clean_records(guild: nextcord.Guild, record_type: str, account: str, posts: 
     for record in records:
         if record[1] == account and record[2] not in posts:
             remove_record(guild, record[2])
-            log.info(f"Removed {record[2]} of account {record[1]}")
+            log.debug(f"Removed {record[2]} of account {record[1]}")
 
 
 def clean_records_no_account(guild: nextcord.Guild, record_type: str, posts: list):
@@ -535,7 +535,7 @@ def clean_records_no_account(guild: nextcord.Guild, record_type: str, posts: lis
     for record in records:
         if record[2] not in posts:
             remove_record(guild, record[2])
-            log.info(f"Removed {record[2]} of account {record[1]}")
+            log.debug(f"Removed {record[2]} of account {record[1]}")
 
 
 ###################### Getters and setters ######################
