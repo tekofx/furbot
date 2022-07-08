@@ -4,7 +4,6 @@ from nextcord.errors import Forbidden
 from nextcord.ext import commands
 import os
 import yaml
-import logging
 from utils.database import (
     check_entry_in_database,
     check_record_in_database,
@@ -18,8 +17,9 @@ from utils.reddit import Reddit
 from utils.twitter import Twitter
 import requests
 from utils.data import Data, config_yaml
+from utils import logger
 
-log = logging.getLogger(__name__)
+log = logger.getLogger(__name__)
 token = os.getenv("DISCORD_TOKEN")
 MAX_JOIN_TIMES = 3
 

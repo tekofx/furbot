@@ -2,13 +2,11 @@ import os
 import setproctitle
 from dotenv import load_dotenv
 import sys
-import coloredlogs, logging, colorama
 from utils.bot import Bot
+from utils import logger
 
 # Set logs
-coloredlogs.install()
-log = logging.getLogger(__name__)
-log.setLevel("INFO")
+log = logger.getLogger(__name__)
 
 # Set workdir
 path = os.path.dirname(os.path.abspath(__file__))
@@ -48,10 +46,10 @@ for var in env_vars:
 
 
 if "-t" in sys.argv:
-    print(colorama.Fore.MAGENTA + "Executing in TEST mode")
+    log.info("Executing in TEST mode")
     load_dotenv("env/tests.env")
 else:
-    print(colorama.Fore.MAGENTA + "Executing in NORMAL mode")
+    log.info("Executing in NORMAL mode")
 
     load_dotenv("env/furbot.env")
 

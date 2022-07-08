@@ -14,8 +14,9 @@ import requests
 from PIL import Image
 from utils.bot import Bot
 from utils.data import get_server_path, meme_resources_path
+from utils import logger
 
-log = logging.getLogger(__name__)
+log = logger.getLogger(__name__)
 
 
 class memes(commands.Cog):
@@ -135,7 +136,7 @@ class memes(commands.Cog):
 
             async with ctx.typing():
                 await ctx.send(file=nextcord.File(memes_path + output))
-        logging.info("Meme " + output + " sent")
+        log.info("Meme " + output + " sent", extra={"guild": ctx.guild.id})
 
     @commands.command()
     async def horny(self, ctx: commands.Context, user: nextcord.Member = None):
