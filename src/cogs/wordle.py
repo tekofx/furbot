@@ -3,7 +3,7 @@ from nextcord.ext import commands, tasks
 from utils.bot import Bot
 from utils.data import get_server_path, resources_path
 import random
-import logging
+from utils import logger
 from datetime import datetime, timedelta
 import asyncio
 import nextcord
@@ -13,7 +13,7 @@ import os
 from PIL import ImageFont, ImageDraw, Image
 from utils.data import meme_resources_path
 
-log = logging.getLogger(__name__)
+log = logger.getLogger(__name__)
 
 
 GREEN_SQUARE = "🟩"

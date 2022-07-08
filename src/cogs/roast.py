@@ -1,10 +1,9 @@
-import logging
 import nextcord
 from nextcord.ext import commands
 from utils.bot import Bot
 from utils.database import create_sentence, get_random_sentence
-
-log = logging.getLogger(__name__)
+from utils import logger
+log = logger.getLogger(__name__)
 
 
 class roast(commands.Cog):

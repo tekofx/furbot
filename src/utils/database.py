@@ -2,7 +2,7 @@ import datetime
 import random
 import sqlite3
 import os
-import logging
+from utils import logger
 import nextcord
 from utils.data import get_server_path
 
@@ -56,7 +56,7 @@ tables = [
     channels_table,
     posts_table,
 ]
-log = logging.getLogger(__name__)
+log = logger.getLogger(__name__)
 
 
 def create_connection(guild: nextcord.Guild) -> sqlite3.Connection:

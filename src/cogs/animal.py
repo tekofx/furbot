@@ -1,9 +1,8 @@
-import logging
 from nextcord.ext import commands
 from utils.bot import Bot
+from utils import logger
 
-
-log = logging.getLogger(__name__)
+log = logger.getLogger(__name__)
 temp_image = "image.jpg"
 
 

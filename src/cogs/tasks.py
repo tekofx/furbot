@@ -1,5 +1,5 @@
 import asyncio
-import logging
+from utils import logger
 import requests
 import nextcord
 from nextcord.ext import commands, tasks
@@ -22,7 +22,7 @@ from utils.database import (
 from utils.bot import Bot
 
 
-log = logging.getLogger(__name__)
+log = logger.getLogger(__name__)
 
 
 class tasks(commands.Cog):

@@ -1,5 +1,6 @@
 from html import entities
-import logging
+from utils import logger
+
 import tweepy as tw
 import os
 from utils.database import (
@@ -14,7 +15,7 @@ from nextcord import Embed
 from nextcord.colour import Colour
 
 
-log = logging.getLogger(__name__)
+log = logger.getLogger(__name__)
 
 
 class Twitter:

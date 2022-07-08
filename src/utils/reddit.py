@@ -1,4 +1,4 @@
-import logging
+from utils import logger
 import nextcord
 from utils.database import (
     check_record_in_database,
@@ -10,7 +10,7 @@ import asyncpraw
 from nextcord import Embed
 from nextcord.colour import Colour
 
-log = logging.getLogger(__name__)
+log = logger.getLogger(__name__)
 
 
 class Reddit:

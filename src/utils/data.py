@@ -1,8 +1,8 @@
 import os
-import logging
+from utils import logger
 import nextcord
 
-log = logging.getLogger(__name__)
+log = logger.getLogger(__name__)
 
 data_path = "data/"
 server_path = data_path + "servers/{guild_id} - {guild_name}/"

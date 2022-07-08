@@ -1,4 +1,3 @@
-import logging
 from pathlib import Path
 import nextcord
 from nextcord.ext import commands
@@ -7,8 +6,9 @@ from utils.data import get_server_path
 from utils.functions import convert_pic
 import os
 from utils.bot import Bot
+from utils import logger
 
-log = logging.getLogger(__name__)
+log = logger.getLogger(__name__)
 
 stickers_subpath = "stickers/"
 

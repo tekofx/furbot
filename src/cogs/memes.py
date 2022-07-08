@@ -8,7 +8,6 @@ from utils.functions import (
     get_user,
 )
 import os
-import logging
 import unicodedata
 import requests
 from PIL import Image
@@ -90,7 +89,10 @@ class memes(commands.Cog):
         newname = meme_name.replace("_", " ")
         new = memes_path + newname + meme_extension
         os.rename(old, new)
-        logging.info("Meme " + newname + " added by" + str(ctx.author))
+        log.info(
+            "Meme " + newname + " added by" + str(ctx.author),
+            extra={"guild": ctx.guild.id},
+        )
         await ctx.send("Meme " + newname + " añadido")
 
     @commands.command()

@@ -1,7 +1,7 @@
 # Contains all functions that are not commands
 from PIL import Image
 import os
-import logging
+from utils import logger
 import nextcord
 from nextcord.ext import commands
 from utils.data import meme_resources_path
@@ -60,4 +60,4 @@ def delete_files(elements: list):
     for x in elements:
         if os.path.isfile(meme_resources_path + x):
             os.remove(meme_resources_path + x)
-    logging.info("Removed dependencies")
+    logger.info("Removed dependencies")

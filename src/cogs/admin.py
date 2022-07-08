@@ -1,4 +1,3 @@
-import logging
 from typing import List
 from nextcord.ext import commands
 import nextcord
@@ -18,8 +17,9 @@ from asyncio import sleep
 from utils.data import config_yaml
 from utils.bot import Bot
 import yaml
+from utils import logger
 
-log = logging.getLogger(__name__)
+log = logger.getLogger(__name__)
 PREDEFINED_CHANNELS = [
     {
         "type": "general",
