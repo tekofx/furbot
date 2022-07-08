@@ -79,18 +79,19 @@ class Data:
                     f.close()
 
         # Create a JSON file with server info
-        var = {
-            "name": self.guild.name,
-            "id": self.guild.id,
-            "created_at": str(self.guild.created_at),
-            "owner": {
-                "name": self.guild.owner.name,
-                "id": self.guild.owner.id,
-            },
-        }
+        if not os.path.isfile(self.server_path + "server.json"):
+            var = {
+                "name": self.guild.name,
+                "id": self.guild.id,
+                "created_at": str(self.guild.created_at),
+                "owner": {
+                    "name": self.guild.owner.name,
+                    "id": self.guild.owner.id,
+                },
+            }
 
-        with open(self.server_path + "server.json", "w") as f:
-            f.write(json.dumps(var))
+            with open(self.server_path + "server.json", "w") as f:
+                f.write(json.dumps(var))
 
 
 def get_server_path(guild: nextcord.Guild) -> str:
