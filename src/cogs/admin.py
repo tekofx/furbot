@@ -149,7 +149,7 @@ class admin(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message: nextcord.Message):
-        if message.author.bot and not message.author.guild_permissions.administrator:
+        if message.author.bot or message.author.guild_permissions.administrator:
             return
         guild = message.guild
         channel = get_channel(guild, message.channel.id)
@@ -420,7 +420,8 @@ class admin(commands.Cog):
                 log.error(
                     "Don't have permissions to send messages in channel {}".format(
                         channel.id
-                    ),extra={"guild": ctx.guild.id}
+                    ),
+                    extra={"guild": ctx.guild.id},
                 )
                 return
             if not exists_channel(ctx.guild, channel.id):
