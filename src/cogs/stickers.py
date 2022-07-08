@@ -80,7 +80,7 @@ class stickers(commands.Cog):
             stickerName += sticker
             stickerName += ".png"
             await ctx.send(file=nextcord.File(stickerName))
-            log.info("Sticker " + sticker + " sent")
+            log.info("Sticker " + sticker + " sent", extra={"guild": ctx.guild.id})
         else:
             await ctx.send("No existe el sticker " + sticker)
 

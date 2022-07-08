@@ -131,9 +131,15 @@ class Bot(commands.Bot):
                 joined_date = datetime.datetime.strftime(member.joined_at, "%Y-%m-%d")
                 create_user(member.guild, [member.id, member.name, joined_date])
             except Exception as error:
-                log.error("Error creating user on join: {}".format(error))
+                log.error(
+                    "Error creating user on join: {}".format(error),
+                    extra={"guild": member.guild.id},
+                )
             else:
-                log.info("Created user {} with id {}".format(member.name, member.id))
+                log.info(
+                    "Created user {} with id {}".format(member.name, member.id),
+                    extra={"guild": member.guild.id},
+                )
 
     async def on_member_remove(self, member: nextcord.Member):
         # When a user leaves a server
@@ -181,7 +187,7 @@ class Bot(commands.Bot):
 
         user = str(ctx.author)
         command = str(ctx.command)
-        log.info(user + " used command " + command)
+        log.info(user + " used command " + command, extra={"guild": ctx.guild.id})
 
     async def channel_send(
         self,
@@ -213,7 +219,8 @@ class Bot(commands.Bot):
                 log.error(
                     "Error getting {} channel from server {}: {}".format(
                         channel_type, guild, error
-                    )
+                    ),
+                    extra={"guild": general_channel.id},
                 )
                 raise Forbidden
 

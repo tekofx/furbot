@@ -90,7 +90,7 @@ class memes(commands.Cog):
         new = memes_path + newname + meme_extension
         os.rename(old, new)
         log.info(
-            "Meme " + newname + " added by" + str(ctx.author),
+            "Meme " + newname + " added by " + str(ctx.author),
             extra={"guild": ctx.guild.id},
         )
         await ctx.send("Meme " + newname + " añadido")

@@ -391,7 +391,8 @@ class admin(commands.Cog):
             log.error(
                 "Don't have permissions to fetch channel {}: {}".format(
                     channel_id, error
-                )
+                ),
+                extra={"guild": message.guild.id},
             )
             raise error
         return channel
@@ -419,7 +420,7 @@ class admin(commands.Cog):
                 log.error(
                     "Don't have permissions to send messages in channel {}".format(
                         channel.id
-                    )
+                    ),extra={"guild": ctx.guild.id}
                 )
                 return
             if not exists_channel(ctx.guild, channel.id):

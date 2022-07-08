@@ -76,7 +76,10 @@ def create_connection(guild: nextcord.Guild) -> sqlite3.Connection:
         database_connection = sqlite3.connect(database)
         return database_connection
     except Exception as e:
-        log.error("Error: Could not connect to database . {}".format(e))
+        log.error(
+            "Error: Could not connect to database . {}".format(e),
+            extra={"guild": guild.id},
+        )
 
 
 def create_table(guild: nextcord.Guild, table_sql_sentence: str) -> None:
@@ -92,11 +95,14 @@ def create_table(guild: nextcord.Guild, table_sql_sentence: str) -> None:
         if not table_exists(guild, database_name):
             c = database_connection.cursor()
             c.execute(table_sql_sentence)
-            log.info("Created table {}".format(database_name))
+            log.info(
+                "Created table {}".format(database_name), extra={"guild": guild.id}
+            )
 
     except Exception as e:
         log.error(
-            "Error: Could not create table {}. Reason: {}".format(database_name, e)
+            "Error: Could not create table {}. Reason: {}".format(database_name, e),
+            extra={"guild": guild.id},
         )
         database_connection.close()
     else:
@@ -129,7 +135,8 @@ def table_exists(guild: nextcord.Guild, table_name: str) -> bool:
         log.error(
             "Error: Could not check if table {} exists in database: {}".format(
                 table_name, error
-            )
+            ),
+            extra={"guild": guild.id},
         )
         database_connection.close()
     else:
@@ -148,7 +155,10 @@ def setup_database(guild: nextcord.Guild) -> None:
 
     # Create db files
     if not os.path.isfile(database):
-        log.info("Database file {} not exists, creating it".format(database))
+        log.info(
+            "Database file {} not exists, creating it".format(database),
+            extra={"guild": guild.id},
+        )
         f = open(database, "x")
         f.close()
 
@@ -177,13 +187,15 @@ def create_user(guild: nextcord.guild, user_data) -> None:
         log.info(
             "User {user} with id {id} was added to the database".format(
                 user=user_data[1], id=user_data[0]
-            )
+            ),
+            extra={"guild": guild.id},
         )
     except Exception as error:
         log.error(
             "Error: Could not create user {id} {name}: {error}".format(
                 id=user_data[0], name=user_data[1], error=error
-            )
+            ),
+            extra={"guild": guild.id},
         )
         database_connection.close()
     else:
@@ -205,10 +217,13 @@ def remove_user(guild: nextcord.guild, user_id: int) -> None:
     cur = database_connection.cursor()
     try:
         cur.execute(sql, var)
-        log.info("Deleted user {} from database".format(user_id))
+        log.info(
+            "Deleted user {} from database".format(user_id), extra={"guild": guild.id}
+        )
     except Exception as error:
         log.error(
-            "Error: Could not delete user {} from database: {}".format(user_id, error)
+            "Error: Could not delete user {} from database: {}".format(user_id, error),
+            extra={"guild": guild.id},
         )
         database_connection.close()
     else:
@@ -241,13 +256,15 @@ def create_role(
         log.info(
             "Role {role} with id {id} was added to the database".format(
                 role=name, id=role_id
-            )
+            ),
+            extra={"guild": guild.id},
         )
     except Exception as error:
         log.error(
             "Error: Could not add role {id} {name}: {error}".format(
                 id=role_id, name=name, error=error
-            )
+            ),
+            extra={"guild": guild.id},
         )
         database_connection.close()
         raise error
@@ -273,7 +290,8 @@ def remove_role(guild: nextcord.guild, role_id: int) -> None:
         log.info("Deleted role {} from database".format(role_id))
     except Exception as error:
         log.error(
-            "Error: Could not delete role {} from database: {}".format(role_id, error)
+            "Error: Could not delete role {} from database: {}".format(role_id, error),
+            extra={"guild": guild.id},
         )
         database_connection.close()
     else:
@@ -298,13 +316,15 @@ def create_sentence(guild: nextcord.guild, sentence_data: list) -> None:
         log.info(
             "sentence {sentence} with id {id} was added to the database".format(
                 sentence=sentence_data[1], id=sentence_data[0]
-            )
+            ),
+            extra={"guild": guild.id},
         )
     except Exception as error:
         log.error(
             "Error: Could not create sentence {id} {name}: {error}".format(
                 id=sentence_data[0], name=sentence_data[1], error=error
-            )
+            ),
+            extra={"guild": guild.id},
         )
         database_connection.close()
         raise error
@@ -332,7 +352,10 @@ def create_record(
     try:
         cur.execute(sql, [record_type, account, record, datetime.date.today()])
     except Exception as error:
-        log.error(f"Error: Could not create record {record_type} {record}: {error}")
+        log.error(
+            f"Error: Could not create record {record_type} {record}: {error}",
+            extra={"guild": guild.id},
+        )
         database_connection.close()
     else:
         database_connection.commit()
@@ -355,12 +378,16 @@ def remove_records_2_days(guild: nextcord.guild, record_types: list) -> None:
     cur = database_connection.cursor()
     try:
         cur.execute(sql)
-        log.info("Deleted records from {} from database".format(date))
+        log.info(
+            "Deleted records from {} from database".format(date),
+            extra={"guild": guild.id},
+        )
     except Exception as error:
         log.error(
             "Error: Could not delete records from {} from database: {}".format(
                 date, error
-            )
+            ),
+            extra={"guild": guild.id},
         )
         database_connection.close()
 
@@ -383,7 +410,8 @@ def remove_record(guild: nextcord.guild, record) -> None:
         cur.execute(sql, [str(record)])
     except Exception as error:
         log.error(
-            "Error: Could not delete records{} from database: {}".format(record, error)
+            "Error: Could not delete records{} from database: {}".format(record, error),
+            extra={"guild": guild.id},
         )
         return
 
@@ -418,13 +446,15 @@ def create_channel(
         log.info(
             "channel {channel} with id {id} was added to the database".format(
                 channel=name, id=channel_id
-            )
+            ),
+            extra={"guild": guild.id},
         )
     except Exception as error:
         log.error(
             "Error: Could not create channel {id} {name}: {error}".format(
                 id=channel_id, name=name, error=error
-            )
+            ),
+            extra={"guild": guild.id},
         )
         database_connection.close()
     else:
@@ -447,13 +477,15 @@ def create_post(guild: nextcord.guild, post_data: list) -> None:
     try:
         cur.execute(sql, post_data)
         log.info(
-            "Post {} {} was added to the database".format(post_data[1], post_data[0])
+            "Post {} {} was added to the database".format(post_data[1], post_data[0]),
+            extra={"guild": guild.id},
         )
     except Exception as error:
         log.error(
             "Error: Could not create post {} {}: {}".format(
                 post_data[0], post_data[1], error
-            )
+            ),
+            extra={"guild": guild.id},
         )
         database_connection.close()
     else:
@@ -474,10 +506,13 @@ def remove_channel(guild: nextcord.guild, id: int) -> None:
     cur = database_connection.cursor()
     try:
         cur.execute(sql, [id])
-        log.info("Deleted channel {} from database".format(id))
+        log.info(
+            "Deleted channel {} from database".format(id), extra={"guild": guild.id}
+        )
     except Exception as error:
         log.error(
-            "Error: Could not delete channel {} from database: {}".format(id, error)
+            "Error: Could not delete channel {} from database: {}".format(id, error),
+            extra={"guild": guild.id},
         )
         database_connection.close()
 
@@ -494,9 +529,12 @@ def remove_post(guild: nextcord.Guild, id: int) -> None:
     cur = database_connection.cursor()
     try:
         cur.execute(sql, [id])
-        log.info("Deleted post {} from database".format(id))
+        log.info("Deleted post {} from database".format(id), extra={"guild": guild.id})
     except Exception as error:
-        log.error("Error: Could not delete post {} from database: {}".format(id, error))
+        log.error(
+            "Error: Could not delete post {} from database: {}".format(id, error),
+            extra={"guild": guild.id},
+        )
         database_connection.close()
 
     else:
@@ -555,7 +593,10 @@ def get_records_of_type(guild: nextcord.guild, record_type: str) -> list:
     try:
         cur.execute(sql, [record_type])
     except Exception as error:
-        log.error("Error: could not query records {}: {}".format(record_type, error))
+        log.error(
+            "Error: could not query records {}: {}".format(record_type, error),
+            extra={"guild": guild.id},
+        )
         database_connection.close()
     else:
         info = cur.fetchall()
@@ -578,7 +619,10 @@ def get_posts(guild: nextcord.guild) -> list:
     try:
         cur.execute(sql)
     except Exception as error:
-        log.error("Error: could not query posts {}: {}".format(error))
+        log.error(
+            "Error: could not query posts {}: {}".format(error),
+            extra={"guild": guild.id},
+        )
         database_connection.close()
     else:
         info = cur.fetchall()
@@ -600,7 +644,10 @@ def set_channel_policy(guild: nextcord.guild, channel_id: int, policy: str) -> N
     try:
         cur.execute(sql, [policy, channel_id])
     except Exception as error:
-        log.error("Error: could not set policy {}: {}".format(policy, error))
+        log.error(
+            "Error: could not set policy {}: {}".format(policy, error),
+            extra={"guild": guild.id},
+        )
         database_connection.close()
     else:
         database_connection.commit()
@@ -622,7 +669,10 @@ def set_channel_type(guild: nextcord.guild, channel_id: int, channel_type: str) 
     try:
         cur.execute(sql, [channel_type, channel_id])
     except Exception as error:
-        log.error("Error: could not set policy {}: {}".format(channel_type, error))
+        log.error(
+            "Error: could not set policy {}: {}".format(channel_type, error),
+            extra={"guild": guild.id},
+        )
         database_connection.close()
     else:
         database_connection.commit()
@@ -645,7 +695,10 @@ def get_users_with_joined_date_today(guild: nextcord.guild) -> list:
     try:
         cur.execute(sql)
     except Exception as error:
-        log.error("Error: could not query users {}: {}".format(error))
+        log.error(
+            "Error: could not query users {}: {}".format(error),
+            extra={"guild": guild.id},
+        )
         database_connection.close()
     else:
         info = cur.fetchall()
@@ -673,7 +726,8 @@ def get_joined_dates(guild: nextcord.Guild) -> list:
         log.error(
             "Error: could not query the joined_dates of guild {}: {}".format(
                 guild, error
-            )
+            ),
+            extra={"guild": guild.id},
         )
         database_connection.close()
     else:
@@ -713,7 +767,10 @@ def get_random_sentence(guild: nextcord.guild, sentence_type: str) -> str:
         cur.execute(sql, sentence_type)
         info = cur.fetchall()
     except Exception as error:
-        log.error("Error: could not query sentences: {}".format(error))
+        log.error(
+            "Error: could not query sentences: {}".format(error),
+            extra={"guild": guild.id},
+        )
         database_connection.close()
     else:
         database_connection.close()
@@ -741,7 +798,10 @@ def get_channel(guild: nextcord.guild, channel_id: int) -> int:
     try:
         cur.execute(sql, [channel_id])
     except Exception as error:
-        log.error("Error: could not query channel {}: {}".format(channel_id, error))
+        log.error(
+            "Error: could not query channel {}: {}".format(channel_id, error),
+            extra={"guild": guild.id},
+        )
         database_connection.close()
 
     else:
@@ -775,7 +835,8 @@ def get_channel_of_type(guild: nextcord.guild, channel_type: str) -> int:
         log.error(
             "Error: could not query the channel of type {}: {}".format(
                 channel_type, error
-            )
+            ),
+            extra={"guild": guild.id},
         )
         database_connection.close()
 
@@ -806,7 +867,10 @@ def get_channels(guild: nextcord.guild):
     try:
         cur.execute(sql)
     except Exception as error:
-        log.error("Error: could not query the channels: {}".format(error))
+        log.error(
+            "Error: could not query the channels: {}".format(error),
+            extra={"guild": guild.id},
+        )
         database_connection.close()
 
     else:
@@ -835,7 +899,10 @@ def get_channels_with_policy(guild: nextcord.guild) -> int:
     try:
         cur.execute(sql)
     except Exception as error:
-        log.error("Error: could not query the channels with policy: {}".format(error))
+        log.error(
+            "Error: could not query the channels with policy: {}".format(error),
+            extra={"guild": guild.id},
+        )
         database_connection.close()
 
     else:
@@ -866,7 +933,8 @@ def check_entry_in_database(guild: nextcord.guild, table: str, entry_id: int) ->
         cursor.execute(sql, var)
     except Exception as error:
         log.error(
-            "Error: Could not check if user {} exists: {}".format(entry_id, error)
+            "Error: Could not check if user {} exists: {}".format(entry_id, error),
+            extra={"guild": guild.id},
         )
         database_connection.close()
     else:
@@ -895,7 +963,8 @@ def check_record_in_database(guild: nextcord.Guild, record: str) -> bool:
         cursor.execute(sql, (record,))
     except Exception as error:
         log.error(
-            "Error: Could not check if record {} exists: {}".format(record, error)
+            "Error: Could not check if record {} exists: {}".format(record, error),
+            extra={"guild": guild.id},
         )
         database_connection.close()
     else:
@@ -916,7 +985,8 @@ def table_empty(guild: nextcord.guild, table: str) -> bool:
         cursor.execute(sql)
     except Exception as error:
         log.error(
-            "Error: Could not check if table {} is empty: {}".format(table, error)
+            "Error: Could not check if table {} is empty: {}".format(table, error),
+            extra={"guild": guild.id},
         )
         database_connection.close()
     else:
@@ -945,7 +1015,8 @@ def exists_channel(guild: nextcord.Guild, channel_id: int) -> bool:
         cursor.execute(sql, [channel_id])
     except Exception as error:
         log.error(
-            "Error: Could not check if channel {} exists: {}".format(channel_id, error)
+            "Error: Could not check if channel {} exists: {}".format(channel_id, error),
+            extra={"guild": guild.id},
         )
         database_connection.close()
     else:
@@ -978,7 +1049,8 @@ def exists_channel_of_type(guild: nextcord.Guild, channel_type: str) -> bool:
         log.error(
             "Error: Could not check if channel {} exists: {}".format(
                 channel_type, error
-            )
+            ),
+            extra={"guild": guild.id},
         )
         database_connection.close()
     else:

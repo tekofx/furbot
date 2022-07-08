@@ -85,7 +85,10 @@ class tasks(commands.Cog):
                 try:
                     channel = await self.bot.fetch_channel(channel_id)
                 except nextcord.errors.Forbidden:
-                    log.error(f"{guild.name} - {channel_id} is not accesible")
+                    log.error(
+                        f"{guild.name} - {channel_id} is not accesible",
+                        extra={"guild": guild.id},
+                    )
                     await self.bot.channel_send(
                         guild,
                         "audit",
@@ -97,7 +100,8 @@ class tasks(commands.Cog):
 
                 if not channel.permissions_for(guild.me).send_messages:
                     log.error(
-                        f"{guild.name} - {channel.name} doesn't have permission to send messages in "
+                        f"{guild.name} - {channel.name} doesn't have permission to send messages in ",
+                        extra={"guild": guild.id},
                     )
                     await self.bot.channel_send(
                         guild,
@@ -128,7 +132,8 @@ class tasks(commands.Cog):
                     await channel.send(embed=embed)
                 except Exception as error:
                     log.error(
-                        f"Could not send post from {account} in {guild.name}: {error}"
+                        f"Could not send post from {account} in {guild.name}: {error}",
+                        extra={"guild": guild.id},
                     )
                     continue
 
@@ -145,10 +150,14 @@ class tasks(commands.Cog):
                         joined_date = datetime.strftime(member.joined_at, "%Y-%m-%d")
                         create_user(guild, [member.id, member.name, joined_date])
                     except Exception as error:
-                        log.error("Error creating user on join: {}".format(error))
+                        log.error(
+                            "Error creating user on join: {}".format(error),
+                            extra={"guild": guild.id},
+                        )
                     else:
                         log.info(
-                            "Created user {} with id {}".format(member.name, member.id)
+                            "Created user {} with id {}".format(member.name, member.id),
+                            extra={"guild": guild.id},
                         )
 
     @tasks.loop(minutes=10)

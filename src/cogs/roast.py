@@ -3,6 +3,7 @@ from nextcord.ext import commands
 from utils.bot import Bot
 from utils.database import create_sentence, get_random_sentence
 from utils import logger
+
 log = logger.getLogger(__name__)
 
 
@@ -26,7 +27,7 @@ class roast(commands.Cog):
             else:
                 await ctx.send(content=user.mention + " " + output)
         except Exception:
-            log.error("Error: {}".format(Exception))
+            log.error("Error: {}".format(Exception),extra={"guild": ctx.guild.id})
 
     @commands.command()
     @commands.has_permissions(administrator=True)
@@ -44,12 +45,14 @@ class roast(commands.Cog):
             try:
                 create_sentence(ctx.guild, ["insult", insult])
             except Exception as error:
-                log.error("Error adding insult: {}".format(error))
+                log.error("Error adding insult: {}".format(error),extra={"guild": ctx.guild.id})
                 await ctx.reply(
                     "Error añadiendo insulto {}: insulto ya existente".format(insult)
                 )
             else:
-                log.info("Added insult {}".format(insult))
+                log.info(
+                    "Added insult {}".format(insult), extra={"guild": ctx.guild.id}
+                )
                 await ctx.reply("Insulto añadido")
 
     @commands.command()
@@ -62,7 +65,7 @@ class roast(commands.Cog):
             else:
                 await ctx.send(content=user.mention + " " + output)
         except Exception:
-            log.error("Error: {}".format(Exception))
+            log.error("Error: {}".format(Exception),extra={"guild": ctx.guild.id})
 
     @commands.command()
     @commands.has_permissions(administrator=True)
@@ -81,12 +84,12 @@ class roast(commands.Cog):
             try:
                 create_sentence(ctx.guild, ["animo", animo])
             except Exception as error:
-                log.error("Error adding anim: {}".format(error))
+                log.error("Error adding anim: {}".format(error),extra={"guild": ctx.guild.id})
                 await ctx.reply(
                     "Error añadiendo animo {}: animo ya existente".format(animo)
                 )
             else:
-                log.info("Added animo {}".format(animo))
+                log.info("Added animo {}".format(animo), extra={"guild": ctx.guild.id})
                 await ctx.reply("Animo añadido")
 
 
