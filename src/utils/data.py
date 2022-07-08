@@ -1,6 +1,7 @@
 import os
 from utils import logger
 import nextcord
+import json
 
 log = logger.getLogger(__name__)
 
@@ -76,6 +77,20 @@ class Data:
                     f = open(file, "w")
                     f.write("activity: online")
                     f.close()
+
+        # Create a JSON file with server info
+        var = {
+            "name": self.guild.name,
+            "id": self.guild.id,
+            "created_at": str(self.guild.created_at),
+            "owner": {
+                "name": self.guild.owner.name,
+                "id": self.guild.owner.id,
+            },
+        }
+
+        with open(self.server_path + "server.json", "w") as f:
+            f.write(json.dumps(var))
 
 
 def get_server_path(guild: nextcord.Guild) -> str:
