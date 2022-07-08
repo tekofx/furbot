@@ -101,8 +101,8 @@ class memes(commands.Cog):
 
         if name is None:
             output = random.choice(os.listdir(memes_path))
-
-            await ctx.send(file=nextcord.File(memes_path + output))
+            async with ctx.channel.typing():
+                await ctx.send(file=nextcord.File(memes_path + output))
 
         else:
             uwu = []
@@ -133,7 +133,8 @@ class memes(commands.Cog):
             else:
                 output = random.choice(uwu)
 
-            await ctx.send(file=nextcord.File(memes_path + output))
+            async with ctx.typing():
+                await ctx.send(file=nextcord.File(memes_path + output))
         logging.info("Meme " + output + " sent")
 
     @commands.command()
