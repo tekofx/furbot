@@ -8,7 +8,5 @@ pyyaml
 uvloop
 graphviz
 tweepy
-colorama
-coloredlogs
 nextcord==2.0.0
 unidecode
