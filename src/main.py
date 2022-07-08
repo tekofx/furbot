@@ -6,7 +6,7 @@ from utils.bot import Bot
 from utils import logger
 
 # Set logs
-log = logger.getLogger(__name__)
+log = logger.getLogger("main")
 
 # Set workdir
 path = os.path.dirname(os.path.abspath(__file__))
