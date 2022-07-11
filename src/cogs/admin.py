@@ -220,6 +220,10 @@ class admin(commands.Cog):
             await ctx.send("No tengo permisos para enviar mensajes en este canal.")
             return
 
+        if intervalo < 5:
+            await ctx.send("El intervalo debe ser mayor que 5 minutos.")
+            return
+
         account = []
 
         for arg in cuenta:

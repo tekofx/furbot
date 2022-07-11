@@ -146,8 +146,7 @@ class tasks(commands.Cog):
                     f"Could not send post from {account} in {guild.name}: {error}",
                     extra={"guild": guild.id},
                 )
-            # await asyncio.sleep(post_inteval * 60)
-            await asyncio.sleep(post_inteval)
+            await asyncio.sleep(post_inteval * 60)
 
     @tasks.loop(hours=1)
     async def update_users(self):
