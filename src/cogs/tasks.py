@@ -30,12 +30,24 @@ class tasks(commands.Cog):
         self.bot = bot
 
         # Start tasks
-        self.post.start()
+        # self.post.start()
         self.update_users.start()
         self.discord_status.start()
-        self.ordure_bizarre.start()
+        # self.ordure_bizarre.start()
         self.free_games.start()
         self.joined_date.start()
+
+        # Get posts from database
+        for guild in self.bot.guilds:
+            posts = get_posts(guild)
+            if posts:
+                for post in posts:
+
+                    self.bot.loop.create_task(self.post_task(guild, post))
+                    log.info(
+                        f"Created post task of account {post[2]}",
+                        extra={"guild": guild.id},
+                    )
 
     @tasks.loop(hours=2)
     async def free_games(self):
@@ -67,6 +79,89 @@ class tasks(commands.Cog):
                     await self.bot.channel_send(
                         guild, channel_type="games", msg="a", embed=embed
                     )
+
+    @commands.command()
+    async def uwu(self, ctx: commands.Context, text: str):
+        self.bg_task = self.bot.loop.create_task(self.my_background_task(text))
+        await ctx.send("uwu")
+
+    async def my_background_task(self, text: str):
+        await self.bot.wait_until_ready()
+        while not self.bot.is_closed():
+            print(text)
+            await asyncio.sleep(5)  # task runs every 60 seconds
+
+    async def post_task(self, guild: nextcord.Guild, post: list):
+        """Creates a new task
+
+        Args:
+            guild (nextcord.Guild): guild
+            post (list): post to be posted
+        """
+        channel_id = post[0]
+        nsfw = post[1]
+        account = post[2]
+        post_id = post[3]
+        post_inteval = post[4]
+        if nsfw == "nsfw":
+            nsfw = True
+        else:
+            nsfw = False
+        try:
+            channel = await self.bot.fetch_channel(channel_id)
+        except nextcord.errors.Forbidden:
+            log.error(
+                f"{guild.name} - {channel_id} is not accesible",
+                extra={"guild": guild.id},
+            )
+            await self.bot.channel_send(
+                guild,
+                "audit",
+                "Error al intentar publicar en canal el post id={}: No tengo acceso al canal".format(
+                    post_id
+                ),
+            )
+            return
+
+        if not channel.permissions_for(guild.me).send_messages:
+            log.error(
+                f"{guild.name} - {channel.name} doesn't have permission to send messages in ",
+                extra={"guild": guild.id},
+            )
+            await self.bot.channel_send(
+                guild,
+                "audit",
+                "Error al intentar publicar en canal {} post id={}: No tengo permiso para enviar mensajes".format(
+                    channel.mention, post_id
+                ),
+            )
+            return
+
+        while True:
+            if " " in account:  # Multiple accounts
+                accounts = account.split(" ")
+                account = random.choice(accounts)
+
+            if "twitter" in account:
+                twitter_account = account.replace("twitter@", "")
+                embed = self.bot.twitter.get_latest_image_not_repeated(
+                    guild, twitter_account, "twitter"
+                )
+
+            else:
+                reddit_account = account.replace("reddit@", "")
+                embed = await self.bot.reddit.get_hot_pic_not_repeated(
+                    guild, reddit_account, "reddit", nsfw
+                )
+            try:
+                await channel.send(embed=embed)
+            except Exception as error:
+                log.error(
+                    f"Could not send post from {account} in {guild.name}: {error}",
+                    extra={"guild": guild.id},
+                )
+            # await asyncio.sleep(post_inteval * 60)
+            await asyncio.sleep(post_inteval)
 
     @tasks.loop(hours=1)
     async def post(self):

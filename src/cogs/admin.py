@@ -195,6 +195,7 @@ class admin(commands.Cog):
         ctx: commands.Context,
         canal: nextcord.TextChannel,
         visibilidad: str,
+        intervalo: int,
         *cuenta: str,
     ):
         """[Admin] Permite añadir una cuenta de twitter/subreddit a un canal.
@@ -204,6 +205,7 @@ class admin(commands.Cog):
         Args:
             canal: canal al que enviar
             visibilidad: Si/No. Si se quiere que se cojan los posts NSFW o no
+            intervalo: Minutos entre un post y otro
             cuenta: cuenta/cuentas de twitter/subreddit. En caso de varias cuentas separadas por espacios
         """
 
@@ -234,7 +236,7 @@ class admin(commands.Cog):
                 account.append("reddit@" + arg.split("/")[-2])
 
         cuenta = " ".join(account)
-        create_post(ctx.guild, [canal.id, visibilidad, cuenta])
+        create_post(ctx.guild, [canal.id, visibilidad, cuenta, intervalo])
         await ctx.send("Post creado")
 
     @commands.command()
