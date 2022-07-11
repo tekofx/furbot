@@ -13,6 +13,7 @@ from utils.database import (
     set_channel_policy,
     set_channel_type,
 )
+
 from asyncio import sleep
 from utils.data import config_yaml
 from utils.bot import Bot
@@ -238,6 +239,12 @@ class admin(commands.Cog):
         cuenta = " ".join(account)
         create_post(ctx.guild, [canal.id, visibilidad, cuenta, intervalo])
         await ctx.send("Post creado")
+
+        # Get tasks cog and create task
+        tasks = self.bot.cogs.get("tasks")
+        self.bot.loop.create_task(
+            tasks.post_task(ctx.guild, [canal.id, visibilidad, cuenta, 3, intervalo])
+        )
 
     @commands.command()
     @commands.has_permissions(administrator=True)
