@@ -45,7 +45,8 @@ posts_table = """ CREATE TABLE IF NOT EXISTS posts (
                                     id integer PRIMARY KEY AUTOINCREMENT,
                                     channel_id integer NOT NULL,
                                     visibility text NOT NULL, 
-                                    accounts text NOT NULL
+                                    accounts text NOT NULL, 
+                                    interval integer NOT NULL
                                 ); """
 
 tables = [
@@ -466,12 +467,12 @@ def create_post(guild: nextcord.guild, post_data: list) -> None:
     """Creates a post in the posts table
     Args:
         guild (nextcord.Guild) : Guild to access its database
-        post_data (list): info of post. Containing [channel_id, visibility(SFW/NSFW), account]
+        post_data (list): info of post. Containing [channel_id, visibility(SFW/NSFW), account, interval]
     """
     database_connection = create_connection(guild)
 
-    sql = """ INSERT INTO posts(channel_id,visibility,accounts)
-              VALUES(?,?,?) """
+    sql = """ INSERT INTO posts(channel_id,visibility,accounts, interval)
+              VALUES(?,?,?,?) """
 
     cur = database_connection.cursor()
     try:
@@ -610,11 +611,11 @@ def get_posts(guild: nextcord.guild) -> list:
         guild (nextcord.guild): guild to get the posts for
 
     Returns:
-        list: containing [(channel_id, visibility,account, id), (channel_id, visibility,account, id), ...]
+        list: containing [(channel_id, visibility,account, id, interval), (channel_id, visibility,account, id, interval), ...]
     """
     database_connection = create_connection(guild)
 
-    sql = "SELECT channel_id, visibility, accounts, id FROM posts "
+    sql = "SELECT channel_id, visibility, accounts, id, interval FROM posts "
     cur = database_connection.cursor()
     try:
         cur.execute(sql)
