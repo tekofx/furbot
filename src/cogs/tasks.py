@@ -162,7 +162,7 @@ class tasks(commands.Cog):
 
     @tasks.loop(minutes=10)
     async def ordure_bizarre(self):
-        post = self.bot.twitter.get_latest_image("ordurebizarree")
+        post = self.bot.twitter.get_latest_media("ordurebizarree")
         for guild in self.bot.guilds:
             if not exists_channel_of_type(guild, "ordure"):
                 continue

@@ -28,7 +28,7 @@ class Twitter:
         self.auth.set_access_token(access_token, access_token_secret)
         self.api = tw.API(self.auth, wait_on_rate_limit=True)
 
-    def get_latest_image(self, username: str) -> str:
+    def get_latest_media(self, username: str) -> str:
         """Gets the URL the latest image url posted by some user
 
         Args:
@@ -42,8 +42,7 @@ class Twitter:
         )
         for tweet in tweets:
             if "media" in tweet.entities:
-
-                return tweet.entities["media"][0]["media_url"]
+                return tweet.entities["media"][0]["expanded_url"]
 
     def get_latest_images_not_repeated(
         self, guild: nextcord.Guild, username: str, count: int, record_type: str
