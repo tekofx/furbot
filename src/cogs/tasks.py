@@ -141,6 +141,7 @@ class tasks(commands.Cog):
                 )
             try:
                 await channel.send(embed=embed)
+                log.info(f"Post from {account} sent", extra={"guild": guild.id})
             except Exception as error:
                 log.error(
                     f"Could not send post from {account} in {guild.name}: {error}",
