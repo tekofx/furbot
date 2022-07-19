@@ -28,7 +28,7 @@ PREDEFINED_CHANNELS = [
     },
     {
         "type": "audit",
-        "description": "Canal para que los administradores vean el estado de los servidores de discord y mensajes del estado y las acciones que realizo.",
+        "description": "Canal para que los administradores vean mensajes del estado y las acciones que realizo.",
     },
     {
         "type": "lobby",
