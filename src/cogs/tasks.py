@@ -8,15 +8,11 @@ import random
 from utils.database import (
     check_entry_in_database,
     check_record_in_database,
-    clean_records,
     clean_records_no_account,
     create_record,
     create_user,
     exists_channel_of_type,
-    remove_records_2_days,
     get_posts,
-    get_records_of_type,
-    remove_record,
     get_users_with_joined_date_today,
 )
 from utils.bot import Bot
