@@ -7,13 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] - 2022-07-08
 
+### Añadido
+
+- Mensajes dependiendo del dia del año. Por ejemplo del orgullo o navidad.
+
 ### Eliminado
 
 - Task discord status que mostraba el estado del servidor de discord.
 
 ### Modificado
 
-- Ahora al crear un post se puede elegir cada cuantos minutos se publique. El tiempo minimo es de 5 mins
+- Ahora al crear un post se puede elegir cada cuantos minutos se publique. El tiempo minimo es de 5 mins.
+- Los admins no podrán saltarse las politicas de un canal
 
 ## [v4.7.8] - 2022-07-08
 
