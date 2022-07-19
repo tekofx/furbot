@@ -150,7 +150,7 @@ class admin(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message: nextcord.Message):
-        if message.author.bot or message.author.guild_permissions.administrator:
+        if message.author.bot :
             return
         guild = message.guild
         channel = get_channel(guild, message.channel.id)
