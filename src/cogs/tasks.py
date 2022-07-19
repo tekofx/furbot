@@ -123,6 +123,11 @@ class tasks(commands.Cog):
                 ),
             )
             return
+
+        # Wait until oclock to run post
+        await self.wait_until_oclock()
+
+        # Loop execution
         while True:
             if " " in account:  # Multiple accounts
                 accounts = account.split(" ")
@@ -271,7 +276,7 @@ class tasks(commands.Cog):
 
     @free_games.before_loop
     @joined_date.before_loop
-    async def prep(self):
+    async def wait_until_oclock(self):
         """Waits some time to execute tasks"""
 
         hours_from_now = 1
@@ -286,7 +291,7 @@ class tasks(commands.Cog):
 
         delta = (after - now).total_seconds()
 
-        await asyncio.sleep(5)
+        await asyncio.sleep(delta)
 
 
 def setup(bot: commands.Bot):
