@@ -207,68 +207,7 @@ class tasks(commands.Cog):
                     ),
                 )
 
-    @tasks.loop(minutes=5)
-    async def discord_status(self):
-        r = requests.get("https://discordstatus.com/api/v2/summary.json")
-        data = r.json()
-
-        for guild in self.bot.guilds:
-
-            if not exists_channel_of_type(guild, "audit"):
-                continue
-
-            # Remove records that are not fetched anymore
-            incidents_ids = [incident["id"] for incident in data["incidents"]]
-            clean_records_no_account(guild, "incident", incidents_ids)
-
-            for incident in data["incidents"]:
-
-                incident_id = incident["id"]
-                incident_name = incident["name"]
-                incident_status = incident["status"]
-                incident_impact = incident["impact"]
-
-                if incident_impact == "Minor":
-                    color = nextcord.Color.yellow()
-                elif incident_impact == "Major":
-                    color = nextcord.Color.orange()
-                elif incident_impact == "Critical":
-                    color = nextcord.Color.red()
-                else:
-                    color = nextcord.Color.green()
-
-                embed = nextcord.Embed(title="Discord Status", color=color)
-                embed.add_field(name="Incidencia", value=incident_name)
-                embed.add_field(name="Estado", value=incident_status)
-                embed.add_field(name="ID", value=incident_id)
-                embed.add_field(name="Impacto", value=incident_impact)
-
-                # Inform about a new incident
-                if not check_record_in_database(guild, incident_id):
-                    create_record(guild, "incident", incident_id)
-                    await self.bot.channel_send(guild, "audit", "a", embed)
-
-                # Inform about an incident update
-
-                for update in incident["incident_updates"]:
-
-                    update_id = update["id"]
-                    update_body = update["body"]
-                    update_status = update["status"]
-                    update_embed = nextcord.Embed(
-                        title="Actualización incidencia",
-                        color=nextcord.Color.dark_grey(),
-                    )
-                    update_embed.add_field(name="ID", value=update_id, inline=False)
-                    update_embed.add_field(
-                        name="Actualización", value=update_body, inline=False
-                    )
-                    update_embed.add_field(
-                        name="Estado", value=update_status, inline=False
-                    )
-                    if not check_record_in_database(guild, update_id):
-                        create_record(guild, "incident", update_id)
-                        await self.bot.channel_send(guild, "audit", "a", update_embed)
+    
 
     @free_games.before_loop
     @joined_date.before_loop
