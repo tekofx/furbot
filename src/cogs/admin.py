@@ -65,10 +65,38 @@ CHANNEL_POLICIES = [
     },
 ]
 
+emojis = ["🟥", "🟧", "🟨", "🟩", "🟦", "🟪", "🟫", "⬜"]
+
 
 class admin(commands.Cog):
     def __init__(self, bot: Bot) -> None:
         self.bot = bot
+
+    @commands.has_permissions(administrator=True)
+    @commands.command()
+    async def votacion(
+        self, ctx: commands.Context, titulo: str, descripcion: str, *opciones
+    ):
+        """Crea una votacion
+
+        Args:
+            titulo (str): de la votacion
+            descripcion (str): texto descriptivo sobre lo que se va a votar
+            opciones (str): opciones de la votacion. Debe escribirse cada votacion entre comillas.
+
+        Ej:
+            fur votacion "Votacion seria" "Votad alguna opcion" "Enviar un meme" "Enviar un sticker"
+        """
+        embed = nextcord.Embed(title=titulo, description=descripcion)
+        for opcion, emoji in zip(opciones, emojis):
+            embed.add_field(name=opcion, value=emoji, inline=True)
+
+        msg = await ctx.send(embed=embed)
+        for emoji, op in zip(emojis, opciones):
+            try:
+                await msg.add_reaction(emoji)
+            except Exception as error:
+                log.error(error)
 
     @commands.command()
     @commands.has_permissions(administrator=True)
@@ -150,7 +178,7 @@ class admin(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message: nextcord.Message):
-        if message.author.bot :
+        if message.author.bot:
             return
         guild = message.guild
         channel = get_channel(guild, message.channel.id)

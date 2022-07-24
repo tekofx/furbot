@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Añadido
 
 - Mensajes dependiendo del dia del año. Por ejemplo del orgullo o navidad.
+- Comando votacion: Permite crear una votacion
 
 ### Eliminado
 
