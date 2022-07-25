@@ -41,32 +41,29 @@ class tasks(commands.Cog):
                         f"Started post task of account {post[2]}",
                         extra={"guild": guild.id},
                     )
+
     @tasks.loop(hours=1)
     async def estaciones(self):
         now = datetime.now()
         if now.hour != 10:
             return
-        msg=None
-        if now.month==6 and now.day==28:
-            msg="Feliz Orgullo :rainbow: :rainbow: :rainbow:"
-        if now.month==12 and now.day==25:
-            msg="Feliz Navidad :santa: :santa: :santa:"
-        if now.month==1 and now.day==1:
-            msg="Feliz Año Nuevo :christmas_tree: :christmas_tree: :christmas_tree:"
-        if now.month==10 and now.day==31:
-            msg="Feliz Halloween :ghost: :ghost: :ghost:"
+        msg = None
+        if now.month == 6 and now.day == 28:
+            msg = "Feliz Orgullo :rainbow: :rainbow: :rainbow:"
+        if now.month == 12 and now.day == 25:
+            msg = "Feliz Navidad :santa: :santa: :santa:"
+        if now.month == 1 and now.day == 1:
+            msg = "Feliz Año Nuevo :christmas_tree: :christmas_tree: :christmas_tree:"
+        if now.month == 10 and now.day == 31:
+            msg = "Feliz Halloween :ghost: :ghost: :ghost:"
 
         if msg:
             for guild in self.bot.guilds:
                 if not exists_channel_of_type(guild, "general"):
                     continue
-            
-                await self.bot.channel_send(
-                    guild,
-                    "general",
-                    msg
-                )
-           
+
+                await self.bot.channel_send(guild, "general", msg)
+
     @tasks.loop(hours=2)
     async def free_games(self):
         r = requests.get("https://www.gamerpower.com/api/giveaways?type=game")
@@ -108,7 +105,6 @@ class tasks(commands.Cog):
         channel_id = post[0]
         nsfw = post[1]
         account = post[2]
-        post_id = post[3]
         post_inteval = post[4]
         if nsfw == "nsfw":
             nsfw = True
@@ -125,7 +121,7 @@ class tasks(commands.Cog):
                 guild,
                 "audit",
                 "Error al intentar publicar en canal el post id={}: No tengo acceso al canal".format(
-                    post_id
+                    accounts
                 ),
             )
             return
@@ -138,8 +134,8 @@ class tasks(commands.Cog):
             await self.bot.channel_send(
                 guild,
                 "audit",
-                "Error al intentar publicar en canal {} post id={}: No tengo permiso para enviar mensajes".format(
-                    channel.mention, post_id
+                "Error al intentar publicar en canal {} post {}: No tengo permiso para enviar mensajes".format(
+                    channel.mention, account
                 ),
             )
             return
@@ -230,8 +226,6 @@ class tasks(commands.Cog):
                         member.mention, years
                     ),
                 )
-
-    
 
     @free_games.before_loop
     @joined_date.before_loop

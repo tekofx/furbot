@@ -274,7 +274,7 @@ class admin(commands.Cog):
         # Get tasks cog and create task
         tasks = self.bot.cogs.get("tasks")
         self.bot.loop.create_task(
-            tasks.post_task(ctx.guild, [canal.id, visibilidad, cuenta, 3, intervalo])
+            tasks.post_task(ctx.guild, [canal.id, visibilidad, cuenta, 0, intervalo])
         )
 
     @commands.command()
