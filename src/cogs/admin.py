@@ -257,17 +257,15 @@ class admin(commands.Cog):
 
         for arg in cuenta:
 
-            if "twitter.com/" not in arg and "reddit.com/r/" not in arg:
+            if "twitter@" not in arg and "twitter.com" not in arg:
                 await ctx.send("Se ha introducido una cuenta no válida")
+                await ctx.send(
+                    "La cuenta tiene que ser del formato: twitter@cuenta, reddit@cuenta"
+                )
                 return
 
-            if "twitter" in arg:
-                var = "twitter@" + arg.split("/")[-1]
-                if "?" in var:
-                    var = var.split("?")[0]
-                account.append(var)
-            else:
-                account.append("reddit@" + arg.split("/")[-2])
+            print("a")
+            account.append(arg)
 
         cuenta = " ".join(account)
         create_post(ctx.guild, [canal.id, visibilidad, cuenta, intervalo])

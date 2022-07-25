@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ahora al crear un post se puede elegir cada cuantos minutos se publique. El tiempo minimo es de 5 mins.
 - Los admins no podrán saltarse las politicas de un canal
+- Ahora las cuentas de los posts tienen que seguir el formato twitter@username y reddit@subreddit
 
 ## [v4.7.8] - 2022-07-08
 
