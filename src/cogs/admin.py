@@ -257,14 +257,13 @@ class admin(commands.Cog):
 
         for arg in cuenta:
 
-            if "twitter@" not in arg and "twitter.com" not in arg:
+            if "twitter@" not in arg and "reddit@" not in arg:
                 await ctx.send("Se ha introducido una cuenta no válida")
                 await ctx.send(
                     "La cuenta tiene que ser del formato: twitter@cuenta, reddit@cuenta"
                 )
                 return
 
-            print("a")
             account.append(arg)
 
         cuenta = " ".join(account)
