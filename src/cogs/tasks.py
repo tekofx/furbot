@@ -187,11 +187,6 @@ class tasks(commands.Cog):
                             "Error creating user on join: {}".format(error),
                             extra={"guild": guild.id},
                         )
-                    else:
-                        log.info(
-                            "Created user {} with id {}".format(member.name, member.id),
-                            extra={"guild": guild.id},
-                        )
 
     @tasks.loop(hours=1)
     async def joined_date(self):

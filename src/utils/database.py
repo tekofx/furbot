@@ -621,10 +621,11 @@ def get_posts(guild: nextcord.guild) -> list:
         cur.execute(sql)
     except Exception as error:
         log.error(
-            "Error: could not query posts {}: {}".format(error),
+            "Error: could not query posts: {}".format(error),
             extra={"guild": guild.id},
         )
         database_connection.close()
+        return []
     else:
         info = cur.fetchall()
         return info
