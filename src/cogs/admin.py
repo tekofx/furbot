@@ -87,6 +87,7 @@ class admin(commands.Cog):
         Ej:
             fur votacion "Votacion seria" "Votad alguna opcion" "Enviar un meme" "Enviar un sticker"
         """
+        await ctx.message.delete(delay=1)
         embed = nextcord.Embed(title=titulo, description=descripcion)
         for opcion, emoji in zip(opciones, emojis):
             embed.add_field(name=opcion, value=emoji, inline=True)
