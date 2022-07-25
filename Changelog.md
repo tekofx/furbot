@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [v4.7.9] - 2022-07-25
 
+### Arreglado
+
+- Error que congelaba los posts
+
+## [v4.7.9] - 2022-07-25
+
 ### Añadido
 
 - Mensajes dependiendo del dia del año. Por ejemplo del orgullo o navidad.
