@@ -110,6 +110,8 @@ class Bot(commands.Bot):
                 self.load_extension("cogs." + c[:-3])
                 log.info("Loaded {}".format(c))
 
+        await self.sync_all_application_commands()
+
         log.info("We have logged in as {}".format(self.user))
 
     async def on_member_join(self, member: nextcord.Member):
