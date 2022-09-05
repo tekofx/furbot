@@ -1,13 +1,10 @@
-import io
 import nextcord
 from nextcord import Interaction
 from nextcord.ext import commands
 from pyrae import dle
-import requests
 from utils.bot import Bot
-from PIL import Image, ImageOps, ImageFont, ImageDraw
 
-test_guild = 788479325787258961
+test_guild = 0
 
 
 class utils(commands.Cog):
