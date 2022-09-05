@@ -1,9 +1,11 @@
 import asyncio
+from code import interact
 import random
 from nextcord.ext import commands
 from utils.bot import Bot
 import requests
 import nextcord
+from nextcord import Interaction
 
 EMOJI_A = "🇦"
 EMOJI_B = "🇧"
@@ -16,15 +18,21 @@ ANSWERS_DICT = {
     EMOJI_C: "C",
     EMOJI_D: "D",
 }
+test_guild = 0
 
 
 class trivia(commands.Cog):
     def __init__(self, bot: Bot) -> None:
         self.bot = bot
 
-    @commands.command()
-    async def trivial(self, ctx: commands.Context, rondas: int = 1):
+    @nextcord.slash_command(
+        guild_ids=[test_guild],
+        name="trivial",
+        description="Preguntas entre varias personas, a ver quien acierta mas",
+    )
+    async def trivial(self, interaction: Interaction, rondas: int = 1):
         """Preguntas entre varias personas, a ver quien acierta mas"""
+        await interaction.send("Responded a las siguientes preguntas:")
         victories = {}
         for _ in range(rondas):
 
@@ -34,19 +42,20 @@ class trivia(commands.Cog):
 
             # Create and send embed
             embed = self.create_embed(var)
-            embed_msg = await ctx.send(embed=embed)
+            embed_msg = await interaction.channel.send(embed=embed)
+
             await embed_msg.add_reaction(EMOJI_A)
             await embed_msg.add_reaction(EMOJI_B)
             await embed_msg.add_reaction(EMOJI_C)
             await embed_msg.add_reaction(EMOJI_D)
 
             # Wait for answer
-            await ctx.send("Esperando 10 segundos")
+            await interaction.channel.send("Esperando 10 segundos")
             await asyncio.sleep(5)
-            await ctx.send("Quedan 5 segundos")
+            await interaction.channel.send("Quedan 5 segundos")
             await asyncio.sleep(5)
 
-            message = await ctx.channel.fetch_message(embed_msg.id)
+            message = await interaction.channel.fetch_message(embed_msg.id)
             reactions = message.reactions
             for reaction in reactions:
                 reaction_answer = var["answers"][reaction.emoji]
@@ -67,10 +76,12 @@ class trivia(commands.Cog):
                 msg = "No hay ganadores"
             else:
                 msg = "{} ganó la trivia".format("".join(str(x.mention) for x in users))
-            await ctx.send(msg)
+            await interaction.channel.send(msg)
 
         for x in victories:
-            await ctx.send("{} ganó {} rondas".format(x.mention, victories[x]))
+            await interaction.channel.send(
+                "{} ganó {} rondas".format(x.mention, victories[x])
+            )
 
     def create_embed(self, trivial_dict: dict) -> nextcord.Embed:
         """Creates a embed
@@ -152,12 +163,17 @@ class trivia(commands.Cog):
         }
         return var
 
-    @commands.command()
-    async def pregunta(self, ctx: commands.Context):
+    @nextcord.slash_command(
+        guild_ids=[test_guild],
+        name="pregunta",
+        description="Pregunta al azar",
+    )
+    async def pregunta(self, interaction: Interaction):
         """Pregunta al azar"""
+        await interaction.send("Responde a las siguientes preguntas:")
 
         def check(reaction: nextcord.Reaction, user: nextcord.Member) -> bool:
-            return user.id == ctx.author.id
+            return user.id == interaction.user.id
 
         # Get Trivia data
         var = self.get_trivia_data()
@@ -166,7 +182,7 @@ class trivia(commands.Cog):
 
         # Create and send embed
         embed = self.create_embed(var)
-        embed_msg = await ctx.send(embed=embed)
+        embed_msg = await interaction.channel.send(embed=embed)
         await embed_msg.add_reaction(EMOJI_A)
         await embed_msg.add_reaction(EMOJI_B)
         await embed_msg.add_reaction(EMOJI_C)
@@ -177,13 +193,13 @@ class trivia(commands.Cog):
                 "reaction_add", timeout=60.0, check=check
             )
         except asyncio.TimeoutError:
-            await ctx.send("Tiempo agotado")
+            await interaction.channel.send("Tiempo agotado")
             return
 
         if answers[reaction.emoji] == correct_answer:
-            await ctx.send("Correcto")
+            await interaction.channel.send("Correcto")
         else:
-            await ctx.send(
+            await interaction.channel.send(
                 "Incorrecto, la respuesta correcta es: {}".format(correct_answer)
             )
 
