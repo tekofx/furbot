@@ -1,9 +1,11 @@
 from nextcord.ext import commands
 from utils.bot import Bot
 from utils import logger
+import nextcord
+from nextcord import Interaction
 
 log = logger.getLogger(__name__)
-temp_image = "image.jpg"
+test_guild = 0
 
 
 class animal(commands.Cog):
@@ -11,66 +13,73 @@ class animal(commands.Cog):
         self.bot = bot
 
     async def send_animal_pics_twitter(
-        self, ctx: commands.Context, username: str, num: int
+        self, interaction: Interaction, username: str, num: int
     ):
         if num is None:
             num = 1
-
         # Get images
         tweet_images_urls = self.bot.twitter.get_latest_images_not_repeated(
-            ctx.guild, username, num, "animal"
+            interaction.guild, username, num, "animal"
         )
         for tweet in tweet_images_urls:
-            await ctx.send(tweet)
+            await interaction.send(tweet)
 
-    @commands.command()
-    async def fox(self, ctx: commands.Context, num: int = None):
+    @nextcord.slash_command(
+        guild_ids=[test_guild],
+        name="fox",
+        description="Fotos de zorros hermosos",
+    )
+    async def fox(self, interaction: Interaction, num: int = None):
         """Fotos de zorros hermosos"""
-        message = await ctx.send("Buscando fotos de zorros hermosos")
-        await self.send_animal_pics_twitter(ctx, "hourlyFox", num)
-        await message.delete()
+        await self.send_animal_pics_twitter(interaction, "hourlyFox", num)
 
-    @commands.command(name="arctic")
-    async def arctic_fox(self, ctx: commands.Context, num: int = None):
-        """Fotos de zorros articos"""
-        message = await ctx.send("Buscando fotos de zorros árticos hermosos")
-        await self.send_animal_pics_twitter(ctx, "ArcticHourly", num)
-        await message.delete()
+    @nextcord.slash_command(
+        guild_ids=[test_guild],
+        name="arctic_fox",
+        description="Fotos de zorros articos",
+    )
+    async def arctic_fox(self, interaction: Interaction, num: int = None):
+        await self.send_animal_pics_twitter(interaction, "ArcticHourly", num)
 
-    @commands.command()
-    async def wolf(self, ctx: commands.Context, num: int = None):
-        """Fotos de lobetes"""
-        message = await ctx.send("Buscando fotos de lobos lobitos lobones")
-        await self.send_animal_pics_twitter(ctx, "hourlywolvesbot", num)
-        await message.delete()
+    @nextcord.slash_command(
+        guild_ids=[test_guild],
+        name="wolf",
+        description="Fotos de lobetes",
+    )
+    async def wolf(self, interaction: Interaction, num: int = None):
+        await self.send_animal_pics_twitter(interaction, "hourlywolvesbot", num)
 
-    @commands.command()
-    async def bird(self, ctx: commands.Context, num: int = None):
-        """Fotos de pajaros"""
-        message = await ctx.send("Buscando fotos de pajaritos")
-        await self.send_animal_pics_twitter(ctx, "kerrybv1", num)
-        await message.delete()
+    @nextcord.slash_command(
+        guild_ids=[test_guild],
+        name="bird",
+        description="Fotos de pajaros",
+    )
+    async def bird(self, interaction: Interaction, num: int = None):
+        await self.send_animal_pics_twitter(interaction, "kerrybv1", num)
 
-    @commands.command()
-    async def pigeon(self, ctx: commands.Context, num: int = None):
-        """Fotos de palomas"""
-        message = await ctx.send("Buscando fotos de palomas")
-        await self.send_animal_pics_twitter(ctx, "a_london_pigeon", num)
-        await message.delete()
+    @nextcord.slash_command(
+        guild_ids=[test_guild],
+        name="pigeon",
+        description="Fotos de palomas",
+    )
+    async def pigeon(self, interaction: Interaction, num: int = None):
+        await self.send_animal_pics_twitter(interaction, "a_london_pigeon", num)
 
-    @commands.command()
-    async def lizard(self, ctx: commands.Context, num: int = None):
-        """Fotos de lagartitos"""
-        message = await ctx.send("Buscando fotos de lagartitos")
-        await self.send_animal_pics_twitter(ctx, "HourlyLizards", num)
-        await message.delete()
+    @nextcord.slash_command(
+        guild_ids=[test_guild],
+        name="lizard",
+        description="Fotos de lagartitos",
+    )
+    async def lizard(self, interaction: Interaction, num: int = None):
+        await self.send_animal_pics_twitter(interaction, "HourlyLizards", num)
 
-    @commands.command()
-    async def cat(self, ctx: commands.Context, num: int = None):
-        """Fotos de gatitos"""
-        message = await ctx.send("Buscando fotos de gatitos")
-        await self.send_animal_pics_twitter(ctx, "HourlyCats", num)
-        await message.delete()
+    @nextcord.slash_command(
+        guild_ids=[test_guild],
+        name="cat",
+        description="Fotos de gatitos",
+    )
+    async def cat(self, interaction: Interaction, num: int = None):
+        await self.send_animal_pics_twitter(interaction, "HourlyCats", num)
 
 
 def setup(bot: commands.Bot):
