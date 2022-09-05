@@ -5,25 +5,33 @@ import requests
 import nextcord
 import asyncio
 import unidecode
+from nextcord import Interaction
+
+test_guild = 0
 
 
 class countries(commands.Cog):
     def __init__(self, bot: Bot) -> None:
         self.bot = bot
 
-    @commands.command()
-    async def pais(self, ctx: commands.Context, nombre: str):
-        """Información sobre un país
+    @nextcord.slash_command(
+        guild_ids=[test_guild],
+        name="pais",
+        description="""Información sobre un país
 
         Args:
             nombre : nombre del pais
-        """
+        """,
+    )
+    async def pais(self, interaction: Interaction, nombre: str):
         url = "https://restcountries.com/v3.1/name/{}".format(nombre.lower())
 
         data = requests.get(url)
 
         if data.status_code != 200:
-            await ctx.send("Error, no se encuentra el pais. Prueba el nombre en inglés")
+            await interaction.send(
+                "Error, no se encuentra el pais. Prueba el nombre en inglés"
+            )
             return
 
         data = data.json()[0]
@@ -51,14 +59,18 @@ class countries(commands.Cog):
             name="Google Maps", value=data["maps"]["googleMaps"], inline=False
         )
 
-        await ctx.send(embed=embed)
+        await interaction.send(embed=embed)
 
-    @commands.command()
-    async def bandera(self, ctx: commands.Context):
+    @nextcord.slash_command(
+        guild_ids=[test_guild],
+        name="bandera",
+        description="Intenta adivinar la bandera del país",
+    )
+    async def bandera(self, interaction: Interaction):
         """Intenta adivinar la bandera del país"""
 
         def check(msg=nextcord.Message) -> bool:
-            return msg.author == ctx.author and msg.channel == ctx.channel
+            return msg.author == interaction.user and msg.channel == interaction.channel
 
         data = requests.get("https://restcountries.com/v3.1/all").json()
         country = random.choice(data)
@@ -73,12 +85,12 @@ class countries(commands.Cog):
         embed = nextcord.Embed(title="Adivina la bandera")
         embed.set_image(url=flag)
 
-        await ctx.send(embed=embed)
+        await interaction.send(embed=embed)
         try:
             message = await self.bot.wait_for("message", timeout=60.0, check=check)
         except asyncio.TimeoutError:
-            await ctx.send("Tiempo agotado")
-            await ctx.send(name)
+            await interaction.send("Tiempo agotado")
+            await interaction.send(name)
             return
 
         if (
@@ -86,9 +98,9 @@ class countries(commands.Cog):
             in unidecode.unidecode(name.lower())
             and len(message.content.lower()) > 2
         ):
-            await ctx.send("Correcto")
+            await interaction.send("Correcto")
         else:
-            await ctx.send("Incorrecto: {}".format(name))
+            await interaction.send("Incorrecto: {}".format(name))
 
         embed = nextcord.Embed(title=name)
         embed.add_field(name="Capital", value=capital)
@@ -96,7 +108,7 @@ class countries(commands.Cog):
         embed.add_field(name="Subregión", value=subregion)
         embed.add_field(name="Google Maps", value=google_maps)
         embed.set_image(url=flag)
-        await ctx.send(embed=embed)
+        await interaction.send(embed=embed)
 
 
 def setup(bot: commands.Bot):
