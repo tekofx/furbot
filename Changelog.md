@@ -11,7 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Comandos carnet, teodio, insult, animo, addinsult, addanimo
 - Cog roast
 
-
+### Modificado
+- Debido a los cambios en la politica de bots de Discord, ahora los comandos se invocan con / y algunos comandos han cambiado de nombre
+- Los comandos relacionados con stickers o memes se pueden invocar poniendo /sticker o /meme respectivamente
 
 ## [v4.7.11] - 2022-07-25
 
