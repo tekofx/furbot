@@ -3,8 +3,10 @@ from nextcord import Interaction
 from nextcord.ext import commands
 from pyrae import dle
 from utils.bot import Bot
+import os
 
-test_guild = 0
+
+local_guild = os.getenv("LOCAL_GUILD")
 
 
 class utils(commands.Cog):
@@ -12,7 +14,7 @@ class utils(commands.Cog):
         self.bot = bot
 
     @nextcord.slash_command(
-        guild_ids=[test_guild],
+        guild_ids=[local_guild],
         name="ping",
         description="Comprobar si el bot está online",
     )
@@ -20,7 +22,7 @@ class utils(commands.Cog):
         await interaction.send("Pim pam trucu trucu")
 
     @nextcord.slash_command(
-        guild_ids=[test_guild],
+        guild_ids=[local_guild],
         name="rae",
         description="Comprobar si el bot está online",
     )

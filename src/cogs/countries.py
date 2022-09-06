@@ -6,8 +6,9 @@ import nextcord
 import asyncio
 import unidecode
 from nextcord import Interaction
+import os
 
-test_guild = 0
+local_guild = os.getenv("LOCAL_GUILD")
 
 
 class countries(commands.Cog):
@@ -15,7 +16,7 @@ class countries(commands.Cog):
         self.bot = bot
 
     @nextcord.slash_command(
-        guild_ids=[test_guild],
+        guild_ids=[local_guild],
         name="pais",
         description="""Información sobre un país
 
@@ -62,7 +63,7 @@ class countries(commands.Cog):
         await interaction.send(embed=embed)
 
     @nextcord.slash_command(
-        guild_ids=[test_guild],
+        guild_ids=[local_guild],
         name="bandera",
         description="Intenta adivinar la bandera del país",
     )

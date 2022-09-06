@@ -3,9 +3,10 @@ from utils.bot import Bot
 from utils import logger
 import nextcord
 from nextcord import Interaction
+import os
 
 log = logger.getLogger(__name__)
-test_guild = 0
+local_guild = os.getenv("LOCAL_GUILD")
 
 
 class animal(commands.Cog):
@@ -25,7 +26,7 @@ class animal(commands.Cog):
             await interaction.send(tweet)
 
     @nextcord.slash_command(
-        guild_ids=[test_guild],
+        guild_ids=[local_guild],
         name="fox",
         description="Fotos de zorros hermosos",
     )
@@ -34,7 +35,7 @@ class animal(commands.Cog):
         await self.send_animal_pics_twitter(interaction, "hourlyFox", num)
 
     @nextcord.slash_command(
-        guild_ids=[test_guild],
+        guild_ids=[local_guild],
         name="arctic_fox",
         description="Fotos de zorros articos",
     )
@@ -42,7 +43,7 @@ class animal(commands.Cog):
         await self.send_animal_pics_twitter(interaction, "ArcticHourly", num)
 
     @nextcord.slash_command(
-        guild_ids=[test_guild],
+        guild_ids=[local_guild],
         name="wolf",
         description="Fotos de lobetes",
     )
@@ -50,7 +51,7 @@ class animal(commands.Cog):
         await self.send_animal_pics_twitter(interaction, "hourlywolvesbot", num)
 
     @nextcord.slash_command(
-        guild_ids=[test_guild],
+        guild_ids=[local_guild],
         name="bird",
         description="Fotos de pajaros",
     )
@@ -58,7 +59,7 @@ class animal(commands.Cog):
         await self.send_animal_pics_twitter(interaction, "kerrybv1", num)
 
     @nextcord.slash_command(
-        guild_ids=[test_guild],
+        guild_ids=[local_guild],
         name="pigeon",
         description="Fotos de palomas",
     )
@@ -66,7 +67,7 @@ class animal(commands.Cog):
         await self.send_animal_pics_twitter(interaction, "a_london_pigeon", num)
 
     @nextcord.slash_command(
-        guild_ids=[test_guild],
+        guild_ids=[local_guild],
         name="lizard",
         description="Fotos de lagartitos",
     )
@@ -74,7 +75,7 @@ class animal(commands.Cog):
         await self.send_animal_pics_twitter(interaction, "HourlyLizards", num)
 
     @nextcord.slash_command(
-        guild_ids=[test_guild],
+        guild_ids=[local_guild],
         name="cat",
         description="Fotos de gatitos",
     )

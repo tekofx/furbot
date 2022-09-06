@@ -12,7 +12,8 @@ from nextcord import Interaction
 log = logger.getLogger(__name__)
 
 stickers_subpath = "stickers/"
-test_guild = 0
+
+local_guild = os.getenv("LOCAL_GUILD")
 
 
 class stickers(commands.Cog):
@@ -20,7 +21,7 @@ class stickers(commands.Cog):
         self.bot = bot
 
     @nextcord.slash_command(
-        guild_ids=[test_guild],
+        guild_ids=[local_guild],
         name="sticker",
     )
     async def sticker(self, interaction: Interaction):

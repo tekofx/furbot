@@ -21,6 +21,8 @@ import yaml
 from utils import logger
 from nextcord.ext import application_checks
 from nextcord import Interaction, SlashOption
+import os
+
 
 log = logger.getLogger(__name__)
 PREDEFINED_CHANNELS = dict(
@@ -51,8 +53,7 @@ CHANNEL_POLICIES = {
 
 
 emojis = ["🟥", "🟧", "🟨", "🟩", "🟦", "🟪", "🟫", "⬜"]
-
-test_guild = 0
+local_guild = os.getenv("LOCAL_GUILD")
 
 
 class admin(commands.Cog):
@@ -60,7 +61,7 @@ class admin(commands.Cog):
         self.bot = bot
 
     @nextcord.slash_command(
-        guild_ids=[test_guild],
+        guild_ids=[local_guild],
         name="votacion",
         description="Crea una votacion",
     )
@@ -97,7 +98,7 @@ class admin(commands.Cog):
                 log.error(error)
 
     @nextcord.slash_command(
-        guild_ids=[test_guild],
+        guild_ids=[local_guild],
         name="canales",
         description="Muestra los canales",
     )
@@ -295,7 +296,7 @@ class admin(commands.Cog):
         await msg.delete(delay=5)
 
     @nextcord.slash_command(
-        guild_ids=[test_guild],
+        guild_ids=[local_guild],
         name="post",
     )
     @application_checks.has_permissions(administrator=True)
@@ -399,7 +400,7 @@ class admin(commands.Cog):
         await interaction.send(output)
 
     @nextcord.slash_command(
-        guild_ids=[test_guild],
+        guild_ids=[local_guild],
         name="activity",
     )
     @application_checks.has_permissions(administrator=True)
@@ -433,7 +434,7 @@ class admin(commands.Cog):
             log.info("Changed activity to " + activity_name)
 
     @nextcord.slash_command(
-        guild_ids=[test_guild],
+        guild_ids=[local_guild],
         name="clear",
     )
     @application_checks.has_permissions(administrator=True)

@@ -3,8 +3,9 @@ from nextcord.ext import commands
 import random
 from utils.bot import Bot
 from nextcord import Interaction
+import os
 
-test_guild = 0
+local_guild = os.getenv("LOCAL_GUILD")
 
 
 class fun(commands.Cog):
@@ -12,7 +13,7 @@ class fun(commands.Cog):
         self.bot = bot
 
     @nextcord.slash_command(
-        guild_ids=[test_guild],
+        guild_ids=[local_guild],
         name="penis",
         description="Buena tula",
     )
@@ -31,7 +32,7 @@ class fun(commands.Cog):
         await interaction.send(output.format(usuario))
 
     @nextcord.slash_command(
-        guild_ids=[test_guild],
+        guild_ids=[local_guild],
         name="communist",
         description="Serás un comunista bolivariano que apoya al Coletas?",
     )
@@ -50,7 +51,7 @@ class fun(commands.Cog):
         await interaction.send(output.format(usuario, num))
 
     @nextcord.slash_command(
-        guild_ids=[test_guild],
+        guild_ids=[local_guild],
         name="capitalist",
         description="Serás capitalista y te convertirás en el nuevo lobo de Wall Street?",
     )
@@ -69,7 +70,7 @@ class fun(commands.Cog):
         await interaction.send(output.format(usuario, num))
 
     @nextcord.slash_command(
-        guild_ids=[test_guild],
+        guild_ids=[local_guild],
         name="gay",
         description="Maricon el ultimo",
     )
@@ -86,7 +87,7 @@ class fun(commands.Cog):
         await interaction.send(output.format(usuario, num))
 
     @nextcord.slash_command(
-        guild_ids=[test_guild],
+        guild_ids=[local_guild],
         name="str8",
         description="Super str8 el ultimo",
     )

@@ -1,11 +1,11 @@
 import asyncio
-from code import interact
 import random
 from nextcord.ext import commands
 from utils.bot import Bot
 import requests
 import nextcord
 from nextcord import Interaction
+import os
 
 EMOJI_A = "🇦"
 EMOJI_B = "🇧"
@@ -18,7 +18,8 @@ ANSWERS_DICT = {
     EMOJI_C: "C",
     EMOJI_D: "D",
 }
-test_guild = 0
+
+local_guild = os.getenv("LOCAL_GUILD")
 
 
 class trivia(commands.Cog):
@@ -26,7 +27,7 @@ class trivia(commands.Cog):
         self.bot = bot
 
     @nextcord.slash_command(
-        guild_ids=[test_guild],
+        guild_ids=[local_guild],
         name="trivial",
         description="Preguntas entre varias personas, a ver quien acierta mas",
     )
@@ -164,7 +165,7 @@ class trivia(commands.Cog):
         return var
 
     @nextcord.slash_command(
-        guild_ids=[test_guild],
+        guild_ids=[local_guild],
         name="pregunta",
         description="Pregunta al azar",
     )

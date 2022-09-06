@@ -13,9 +13,10 @@ import os
 from PIL import ImageFont, ImageDraw, Image
 from utils.data import meme_resources_path
 from nextcord import Interaction, SlashOption
+import os
 
-test_guild = 0
 
+local_guild = os.getenv("LOCAL_GUILD")
 
 log = logger.getLogger(__name__)
 
@@ -424,7 +425,7 @@ class wordle(commands.Cog):
         return var
 
     @nextcord.slash_command(
-        guild_ids=[test_guild],
+        guild_ids=[local_guild],
         name="guess",
     )
     async def guess(self, interaction: Interaction, word: str):

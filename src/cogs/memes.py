@@ -17,7 +17,7 @@ from utils import logger
 from nextcord import Interaction, SlashOption
 
 log = logger.getLogger(__name__)
-test_guild = 0
+local_guild = os.getenv("LOCAL_GUILD")
 
 
 class memes(commands.Cog):
@@ -25,7 +25,7 @@ class memes(commands.Cog):
         self.bot = bot
 
     @nextcord.slash_command(
-        guild_ids=[test_guild],
+        guild_ids=[local_guild],
         name="meme",
     )
     async def meme(self, interaction: Interaction):
@@ -147,7 +147,7 @@ class memes(commands.Cog):
         log.info("Meme " + output + " sent", extra={"guild": interaction.guild.id})
 
     @nextcord.slash_command(
-        guild_ids=[test_guild],
+        guild_ids=[local_guild],
         name="horny",
     )
     async def horny(self, interaction: Interaction, user: nextcord.Member = None):
@@ -169,7 +169,7 @@ class memes(commands.Cog):
         await interaction.send(file=nextcord.File(meme, "output.png"))
 
     @nextcord.slash_command(
-        guild_ids=[test_guild],
+        guild_ids=[local_guild],
         name="patada",
     )
     async def patada(self, interaction: Interaction, user: nextcord.Member = None):
@@ -196,7 +196,7 @@ class memes(commands.Cog):
         await interaction.send(file=nextcord.File(meme, "output.png"))
 
     @nextcord.slash_command(
-        guild_ids=[test_guild],
+        guild_ids=[local_guild],
         name="quote",
     )
     async def quote(
@@ -308,7 +308,7 @@ class memes(commands.Cog):
         await interaction.send(file=nextcord.File(bytes_io, "output.png"))
 
     @nextcord.slash_command(
-        guild_ids=[test_guild],
+        guild_ids=[local_guild],
         name="stonks",
     )
     async def stonks(self, interaction: Interaction, usuario: nextcord.Member = None):
@@ -329,7 +329,7 @@ class memes(commands.Cog):
         await interaction.send(file=nextcord.File(meme, "output.png"))
 
     @nextcord.slash_command(
-        guild_ids=[test_guild],
+        guild_ids=[local_guild],
         name="jojo",
     )
     async def jojo(self, interaction: Interaction, usuario: nextcord.Member):
@@ -356,7 +356,7 @@ class memes(commands.Cog):
         await interaction.send(file=nextcord.File(meme, "output.png"))
 
     @nextcord.slash_command(
-        guild_ids=[test_guild],
+        guild_ids=[local_guild],
         name="cute",
     )
     async def cute(self, interaction: Interaction, usuario: nextcord.Member = None):
@@ -376,7 +376,7 @@ class memes(commands.Cog):
         await interaction.send(file=nextcord.File(meme, "output.png"))
 
     @nextcord.slash_command(
-        guild_ids=[test_guild],
+        guild_ids=[local_guild],
         name="suicidio",
     )
     async def suicidio(self, interaction: Interaction):
@@ -397,7 +397,7 @@ class memes(commands.Cog):
         await interaction.send(file=nextcord.File(meme, "output.png"))
 
     @nextcord.slash_command(
-        guild_ids=[test_guild],
+        guild_ids=[local_guild],
         name="coding",
     )
     async def coding(self, interaction: Interaction, usuario: nextcord.Member = None):
@@ -418,7 +418,7 @@ class memes(commands.Cog):
         await interaction.send(file=nextcord.File(meme, "output.png"))
 
     @nextcord.slash_command(
-        guild_ids=[test_guild],
+        guild_ids=[local_guild],
         name="unsee",
     )
     async def unsee(self, interaction: Interaction, usuario: nextcord.Member = None):
@@ -439,7 +439,7 @@ class memes(commands.Cog):
         await interaction.send(file=nextcord.File(meme, "output.png"))
 
     @nextcord.slash_command(
-        guild_ids=[test_guild],
+        guild_ids=[local_guild],
         name="palomitas",
     )
     async def palomitas(self, interaction: Interaction):
@@ -460,7 +460,7 @@ class memes(commands.Cog):
         await interaction.send(file=nextcord.File(meme, "output.png"))
 
     @nextcord.slash_command(
-        guild_ids=[test_guild],
+        guild_ids=[local_guild],
         name="quien",
     )
     async def quien(
@@ -512,7 +512,7 @@ class memes(commands.Cog):
         await interaction.send(file=nextcord.File(bytes_io, "output.png"))
 
     @nextcord.slash_command(
-        guild_ids=[test_guild],
+        guild_ids=[local_guild],
         name="palanca",
     )
     async def palanca(self, interaction: Interaction, usuario: nextcord.Member):
@@ -539,7 +539,7 @@ class memes(commands.Cog):
         await interaction.send(file=nextcord.File(meme, "output.png"))
 
     @nextcord.slash_command(
-        guild_ids=[test_guild],
+        guild_ids=[local_guild],
         name="tren",
     )
     async def tren(self, interaction: Interaction, user: nextcord.Member):
@@ -566,7 +566,7 @@ class memes(commands.Cog):
         await interaction.send(file=nextcord.File(meme, "output.png"))
 
     @nextcord.slash_command(
-        guild_ids=[test_guild],
+        guild_ids=[local_guild],
         name="slap",
     )
     async def slap(self, interaction: Interaction, usuario: nextcord.Member = None):
@@ -587,7 +587,7 @@ class memes(commands.Cog):
         await interaction.send(file=nextcord.File(meme, "output.png"))
 
     @nextcord.slash_command(
-        guild_ids=[test_guild],
+        guild_ids=[local_guild],
         name="reviento",
     )
     async def reviento(self, interaction: Interaction):
@@ -608,7 +608,7 @@ class memes(commands.Cog):
         await interaction.send(file=nextcord.File(meme, "output.png"))
 
     @nextcord.slash_command(
-        guild_ids=[test_guild],
+        guild_ids=[local_guild],
         name="radiopatio",
     )
     async def radiopatio(
@@ -631,7 +631,7 @@ class memes(commands.Cog):
         await interaction.send(file=nextcord.File(meme, "output.png"))
 
     @nextcord.slash_command(
-        guild_ids=[test_guild],
+        guild_ids=[local_guild],
         name="coche",
     )
     async def coche(
@@ -713,7 +713,7 @@ class memes(commands.Cog):
         await interaction.send(file=nextcord.File(bytes_io, "output.png"))
 
     @nextcord.slash_command(
-        guild_ids=[test_guild],
+        guild_ids=[local_guild],
         name="skeletor",
     )
     async def skeletor(self, interaction: Interaction, texto1: str, texto2: str):
@@ -753,7 +753,7 @@ class memes(commands.Cog):
         await interaction.send(file=nextcord.File(bytes_io, "output.png"))
 
     @nextcord.slash_command(
-        guild_ids=[test_guild],
+        guild_ids=[local_guild],
         name="huracan",
     )
     async def huracan(
