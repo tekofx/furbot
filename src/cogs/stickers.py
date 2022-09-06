@@ -21,10 +21,16 @@ class stickers(commands.Cog):
 
     @nextcord.slash_command(
         guild_ids=[test_guild],
-        name="addsticker",
+        name="sticker",
+    )
+    async def sticker(self, interaction: Interaction):
+        pass
+
+    @sticker.subcommand(
+        name="add",
         description="Añade un sticker",
     )
-    async def add_sticker(
+    async def sticker_add(
         self, interaction: Interaction, nombre: str, image: nextcord.Attachment
     ):
         stickers_path = get_server_path(interaction.guild) + stickers_subpath
@@ -53,12 +59,11 @@ class stickers(commands.Cog):
             os.remove(stickers_path + sticker_fileName)
         await interaction.send("Sticker " + nombre + " añadido")
 
-    @nextcord.slash_command(
-        guild_ids=[test_guild],
+    @sticker.subcommand(
         name="list",
         description="Lista de los stickers añadidos",
     )
-    async def list_stickers(self, interaction: Interaction):
+    async def sticker_list(self, interaction: Interaction):
         stickers_path = get_server_path(interaction.guild) + stickers_subpath
 
         output = os.listdir(stickers_path)
@@ -67,12 +72,11 @@ class stickers(commands.Cog):
         output = ", ".join(output)
         await interaction.send(output)
 
-    @nextcord.slash_command(
-        guild_ids=[test_guild],
-        name="s",
+    @sticker.subcommand(
+        name="use",
         description="Usar un sticker",
     )
-    async def use_sticker(
+    async def sticker_use(
         self,
         interaction: Interaction,
         sticker: str,
