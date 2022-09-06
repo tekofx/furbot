@@ -38,7 +38,7 @@ class tasks(commands.Cog):
 
                     self.bot.loop.create_task(self.post_task(guild, post))
                     log.info(
-                        f"Started post task of account {post[2]}",
+                        f"Created post task of account {post[2]}",
                         extra={"guild": guild.id},
                     )
 
