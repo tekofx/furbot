@@ -60,8 +60,13 @@ class Bot(commands.Bot):
         embed.set_thumbnail(
             url="https://raw.githubusercontent.com/tekofx/furbot/main/assets/furbot_logo.png"
         )
+
         release_changelog = release_changelog.replace("\r", "")
+
         release_changelog = release_changelog.split("#")
+
+        embed.description = release_changelog.pop(0)
+
         for i in release_changelog:
             if i != "":
                 i = i.splitlines()
@@ -110,9 +115,11 @@ class Bot(commands.Bot):
                 self.load_extension("cogs." + c[:-3])
                 log.info("Loaded {}".format(c))
 
-        await self.sync_all_application_commands()
+        log.info("Syncing application commands")
+        await self.sync_application_commands()
+        log.info("Application commands synced")
 
-        log.info("We have logged in as {}".format(self.user))
+        log.info("Furbot fully started as {}".format(self.user))
 
     async def on_member_join(self, member: nextcord.Member):
         # Message in lobby
