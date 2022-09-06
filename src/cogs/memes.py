@@ -14,98 +14,121 @@ from PIL import Image
 from utils.bot import Bot
 from utils.data import get_server_path, meme_resources_path
 from utils import logger
+from nextcord import Interaction, SlashOption
 
 log = logger.getLogger(__name__)
+test_guild = 0
 
 
 class memes(commands.Cog):
     def __init__(self, bot: Bot) -> None:
         self.bot = bot
 
-    @commands.command()
-    async def addmeme(self, ctx: commands.Context, meme_name: str):
+    @nextcord.slash_command(
+        guild_ids=[test_guild],
+        name="meme",
+    )
+    async def meme(self, interaction: Interaction):
+        pass
+
+    @meme.subcommand(
+        name="add",
+    )
+    async def meme_add(
+        self, interaction: Interaction, meme: nextcord.Attachment, nombre: str
+    ):
         """Añade un meme al bot
 
-        Uso:
-            fur addmeme <nombres personas en el meme>
-
+        Args:
+            meme (nextcord.Attachment): meme
+            nombre (str): nombre del meme
         """
-        memes_path = get_server_path(ctx.guild) + "/memes/"
+        memes_path = get_server_path(interaction.guild) + "/memes/"
 
-        meme_extension = "." + ctx.message.attachments[0].filename
+        meme_extension = "." + meme.filename.split(".")[-1]
         meme_extension = meme_extension[-4:]
         count = 1
 
         # Remove "
-        meme_name = meme_name.replace('"', "")
+        nombre = nombre.replace('"', "")
 
         # Remove accents
-        meme_name = unicodedata.normalize("NFD", meme_name)
-        meme_name = meme_name.encode("ascii", "ignore")
-        meme_name = meme_name.decode("utf-8")
+        nombre = unicodedata.normalize("NFD", nombre)
+        nombre = nombre.encode("ascii", "ignore")
+        nombre = nombre.decode("utf-8")
 
         # Capitalize all names
-        meme_name = meme_name.lower()
-        meme_name = meme_name.title()
+        nombre = nombre.lower()
+        nombre = nombre.title()
 
         # split into a list
-        names = meme_name.split()
+        names = nombre.split()
 
         # Order names in case they are not in order
         names = sorted(names)
-        meme_name = " ".join(names)
+        nombre = " ".join(names)
 
         # Count the number to add to the name
         if meme_extension == ".png" or meme_extension == ".jpg":
             for x in os.listdir(memes_path):
                 aux2 = x.split(" (", 1)
-                if "jpg" in aux2[1] and aux2[0] == meme_name:
+                if "jpg" in aux2[1] and aux2[0] == nombre:
                     count = count + 1
 
         if meme_extension == ".mp4":
             for x in os.listdir(memes_path):
                 aux2 = x.split(" (", 1)
-                if "mp4" in x and aux2[0] == meme_name:
+                if "mp4" in x and aux2[0] == nombre:
                     count = count + 1
 
         count = str(count)
 
-        meme_name = meme_name + " (" + count + ")"
+        nombre = nombre + " (" + count + ")"
 
-        meme_name = meme_name.replace(" ", "_")
-        meme_url = ctx.message.attachments[0].url
+        nombre = nombre.replace(" ", "_")
+        meme_url = meme.url
 
         r = requests.get(meme_url, allow_redirects=True)
-        open(memes_path + meme_name + meme_extension, "wb").write(r.content)
+        open(memes_path + nombre + meme_extension, "wb").write(r.content)
 
         if meme_extension == ".png":
-            im = Image.open(memes_path + meme_name + meme_extension)
+            im = Image.open(memes_path + nombre + meme_extension)
             rgb_im = im.convert("RGB")
             meme_extension = ".jpg"
-            rgb_im.save(memes_path + meme_name + meme_extension)
-            os.remove(memes_path + meme_name + ".png")
+            rgb_im.save(memes_path + nombre + meme_extension)
+            os.remove(memes_path + nombre + ".png")
 
-        old = memes_path + meme_name + meme_extension
-        newname = meme_name.replace("_", " ")
+        old = memes_path + nombre + meme_extension
+        newname = nombre.replace("_", " ")
         new = memes_path + newname + meme_extension
         os.rename(old, new)
         log.info(
-            "Meme " + newname + " added by " + str(ctx.author),
-            extra={"guild": ctx.guild.id},
+            "Meme " + newname + " added by " + str(interaction.user),
+            extra={"guild": interaction.guild.id},
         )
-        await ctx.send("Meme " + newname + " añadido")
+        await interaction.send("Meme " + newname + " añadido")
 
-    @commands.command()
-    async def meme(self, ctx: commands.Context, name: str = None, tipo: str = None):
-        """Meme random de los nuestros"""
+    @meme.subcommand(
+        name="send",
+    )
+    async def meme_send(
+        self,
+        interaction: Interaction,
+        name: str = None,
+    ):
+        """Envia un meme
+
+        Args:
+            name (str, optional): Nombre del meme. Defaults to None.
+        """
 
         # If all memes have been sent, delete history
-        memes_path = get_server_path(ctx.guild) + "/memes/"
+        memes_path = get_server_path(interaction.guild) + "/memes/"
 
         if name is None:
             output = random.choice(os.listdir(memes_path))
-            async with ctx.channel.typing():
-                await ctx.send(file=nextcord.File(memes_path + output))
+            async with interaction.channel.typing():
+                await interaction.send(file=nextcord.File(memes_path + output))
 
         else:
             uwu = []
@@ -114,39 +137,25 @@ class memes(commands.Cog):
                     uwu.append(filenames)
             # check if exists a meme with the filters
             if len(uwu) == 0:
-                await ctx.send("No hay memes con " + name)
-                return
-            if (tipo == "video" and not any(".mp4" in s for s in uwu)) or (
-                tipo == "imagen" and not any(".jpg" in s for s in uwu)
-            ):
-                await ctx.send("No hay memes de " + tipo + " que sean de " + name)
+                await interaction.send("No hay memes con " + name)
                 return
 
-            if tipo is not None:
-                if tipo == "video":
-                    output = "0"
-                    while ".mp4" not in output:
+            output = random.choice(uwu)
 
-                        output = random.choice(uwu)
-                if tipo == "imagen":
-                    output = "0"
-                    while ".jpg" not in output:
-                        output = random.choice(uwu)
+            async with interaction.typing():
+                await interaction.send(file=nextcord.File(memes_path + output))
+        log.info("Meme " + output + " sent", extra={"guild": interaction.guild.id})
 
-            else:
-                output = random.choice(uwu)
-
-            async with ctx.typing():
-                await ctx.send(file=nextcord.File(memes_path + output))
-        log.info("Meme " + output + " sent", extra={"guild": ctx.guild.id})
-
-    @commands.command()
-    async def horny(self, ctx: commands.Context, user: nextcord.Member = None):
+    @nextcord.slash_command(
+        guild_ids=[test_guild],
+        name="horny",
+    )
+    async def horny(self, interaction: Interaction, user: nextcord.Member = None):
         """Mucho horny"""
 
         avatar_info = [
             {
-                "url": get_user(ctx, user).avatar.url,
+                "url": get_user(interaction, user).avatar.url,
                 "size": 300,
                 "x": 410,
                 "y": 180,
@@ -157,22 +166,25 @@ class memes(commands.Cog):
         meme = create_meme("horny", avatar_info)
 
         # Send meme
-        await ctx.send(file=nextcord.File(meme, "output.png"))
+        await interaction.send(file=nextcord.File(meme, "output.png"))
 
-    @commands.command()
-    async def patada(self, ctx: commands.Context, user: nextcord.Member = None):
+    @nextcord.slash_command(
+        guild_ids=[test_guild],
+        name="patada",
+    )
+    async def patada(self, interaction: Interaction, user: nextcord.Member = None):
         """Te vas a comer mi pie"""
 
         # Create meme
         avatar_info = [
             {
-                "url": get_user(ctx, user).avatar.url,
+                "url": get_user(interaction, user).avatar.url,
                 "size": 110,
                 "x": 198,
                 "y": 229,
             },
             {
-                "url": get_user(ctx, user).avatar.url,
+                "url": get_user(interaction, user).avatar.url,
                 "size": 85,
                 "x": 348,
                 "y": 915,
@@ -181,32 +193,29 @@ class memes(commands.Cog):
         meme = create_meme("patada", avatar_info)
 
         # Send meme
-        await ctx.send(file=nextcord.File(meme, "output.png"))
+        await interaction.send(file=nextcord.File(meme, "output.png"))
 
-    @commands.command()
+    @nextcord.slash_command(
+        guild_ids=[test_guild],
+        name="quote",
+    )
     async def quote(
         self,
-        ctx: commands.Context,
+        interaction: Interaction,
         quote: str,
-        title: str,
+        titulo: str,
         user: nextcord.Member = None,
     ):
-        """Crea una quote en imagen
+        """Crear una quote
 
-        Uso: fur quote "<quote>" "<titulo>" <@usuario para poner foto>
-
-        - Si el quote tiene " reemplazar por '
-        Ejemplo: fur quote "Gala: 'Ala Teko que racista'" "Gala, antiracistas" @Gala
-
-        - Si se quiere poner algo tipo:
-            Gala:"Hola que ase"
-            Enana:"He reparido"
-        se tiene que poner una / entre las dos lineas.
-        Ejemplo: fur quote "Gala:'Hola que ase'/Enana:'He reparido' "Gala, antiracistas" @Gala
+        Args:
+            quote (str): Frase graciosa. Para poner saltos de línea escribir /
+            titulo (str): Titulo de la quote
+            user (nextcord.Member, optional): Usuario de la quote.
         """
         # Variables
 
-        userName = get_user(ctx, user)
+        userName = get_user(interaction, user)
         avatarSize = 300
         txtSize = 40
         textX = 10
@@ -276,7 +285,7 @@ class memes(commands.Cog):
 
         # Write title
         firstLine = True
-        lines = textwrap.wrap(title, width=lineWidth)
+        lines = textwrap.wrap(titulo, width=lineWidth)
         if len(lines) > 1:
             textY += 15
             for line in lines:
@@ -285,7 +294,7 @@ class memes(commands.Cog):
                 cont += 0.4
                 textY += height + 5
         else:
-            d.text(((textX) + 5, textY + 30), title, font=fontTitle, fill=None)
+            d.text(((textX) + 5, textY + 30), titulo, font=fontTitle, fill=None)
 
         # Paste in meme picture
         pic.paste(avatar, (avatarX, avatarY), avatar)
@@ -296,15 +305,18 @@ class memes(commands.Cog):
         pic.save(bytes_io, "PNG")
         bytes_io.seek(0)
 
-        await ctx.send(file=nextcord.File(bytes_io, "output.png"))
+        await interaction.send(file=nextcord.File(bytes_io, "output.png"))
 
-    @commands.command()
-    async def stonks(self, ctx: commands.Context, user: nextcord.Member = None):
+    @nextcord.slash_command(
+        guild_ids=[test_guild],
+        name="stonks",
+    )
+    async def stonks(self, interaction: Interaction, usuario: nextcord.Member = None):
         """Stonks"""
 
         avatar_info = [
             {
-                "url": get_user(ctx, user).avatar.url,
+                "url": get_user(interaction, usuario).avatar.url,
                 "size": 236,
                 "x": 63,
                 "y": 25,
@@ -314,21 +326,24 @@ class memes(commands.Cog):
         meme = create_meme("stonks", avatar_info)
 
         # Send meme
-        await ctx.send(file=nextcord.File(meme, "output.png"))
+        await interaction.send(file=nextcord.File(meme, "output.png"))
 
-    @commands.command()
-    async def jojo(self, ctx: commands.Context, user: nextcord.Member):
+    @nextcord.slash_command(
+        guild_ids=[test_guild],
+        name="jojo",
+    )
+    async def jojo(self, interaction: Interaction, usuario: nextcord.Member):
         """Za warudo"""
 
         avatar_info = [
             {
-                "url": get_user(ctx, user).avatar.url,
+                "url": get_user(interaction, usuario).avatar.url,
                 "size": 65,
                 "x": 162,
                 "y": 19,
             },
             {
-                "url": ctx.author.avatar.url,
+                "url": interaction.user.avatar.url,
                 "size": 65,
                 "x": 469,
                 "y": 130,
@@ -338,15 +353,18 @@ class memes(commands.Cog):
         meme = create_meme("jojo", avatar_info)
 
         # Send meme
-        await ctx.send(file=nextcord.File(meme, "output.png"))
+        await interaction.send(file=nextcord.File(meme, "output.png"))
 
-    @commands.command()
-    async def cute(self, ctx: commands.Context, user: nextcord.Member = None):
+    @nextcord.slash_command(
+        guild_ids=[test_guild],
+        name="cute",
+    )
+    async def cute(self, interaction: Interaction, usuario: nextcord.Member = None):
         """You are cute"""
 
         avatar_info = [
             {
-                "url": get_user(ctx, user).avatar.url,
+                "url": get_user(interaction, usuario).avatar.url,
                 "size": 387,
                 "x": 210,
                 "y": 75,
@@ -355,15 +373,18 @@ class memes(commands.Cog):
         meme = create_meme("cute", avatar_info)
 
         # Send meme
-        await ctx.send(file=nextcord.File(meme, "output.png"))
+        await interaction.send(file=nextcord.File(meme, "output.png"))
 
-    @commands.command()
-    async def suicidio(self, ctx: commands.Context):
+    @nextcord.slash_command(
+        guild_ids=[test_guild],
+        name="suicidio",
+    )
+    async def suicidio(self, interaction: Interaction):
         """Es hora del suisidio"""
 
         avatar_info = [
             {
-                "url": ctx.author.avatar.url,
+                "url": interaction.user.avatar.url,
                 "size": 54,
                 "x": 172,
                 "y": 182,
@@ -373,15 +394,18 @@ class memes(commands.Cog):
         meme = create_meme("suicidio", avatar_info)
 
         # Send meme
-        await ctx.send(file=nextcord.File(meme, "output.png"))
+        await interaction.send(file=nextcord.File(meme, "output.png"))
 
-    @commands.command()
-    async def coding(self, ctx: commands.Context, user: nextcord.Member = None):
+    @nextcord.slash_command(
+        guild_ids=[test_guild],
+        name="coding",
+    )
+    async def coding(self, interaction: Interaction, usuario: nextcord.Member = None):
         """Programa como un pro hacker"""
 
         avatar_info = [
             {
-                "url": get_user(ctx, user).avatar.url,
+                "url": get_user(interaction, usuario).avatar.url,
                 "size": 167,
                 "x": 218,
                 "y": 137,
@@ -391,15 +415,18 @@ class memes(commands.Cog):
         meme = create_meme("coding", avatar_info)
 
         # Send meme
-        await ctx.send(file=nextcord.File(meme, "output.png"))
+        await interaction.send(file=nextcord.File(meme, "output.png"))
 
-    @commands.command()
-    async def unsee(self, ctx: commands.Context, user: nextcord.Member = None):
+    @nextcord.slash_command(
+        guild_ids=[test_guild],
+        name="unsee",
+    )
+    async def unsee(self, interaction: Interaction, usuario: nextcord.Member = None):
         """No por favor"""
 
         avatar_info = [
             {
-                "url": get_user(ctx, user).avatar.url,
+                "url": get_user(interaction, usuario).avatar.url,
                 "size": 108,
                 "x": 256,
                 "y": 112,
@@ -409,15 +436,18 @@ class memes(commands.Cog):
         meme = create_meme("unsee", avatar_info)
 
         # Send meme
-        await ctx.send(file=nextcord.File(meme, "output.png"))
+        await interaction.send(file=nextcord.File(meme, "output.png"))
 
-    @commands.command()
-    async def palomitas(self, ctx: commands.Context):
+    @nextcord.slash_command(
+        guild_ids=[test_guild],
+        name="palomitas",
+    )
+    async def palomitas(self, interaction: Interaction):
         """Este drama está interesante"""
 
         avatar_info = [
             {
-                "url": ctx.author.avatar.url,
+                "url": interaction.user.avatar.url,
                 "size": 125,
                 "x": 278,
                 "y": 67,
@@ -427,39 +457,37 @@ class memes(commands.Cog):
         meme = create_meme("palomitas", avatar_info)
 
         # Send meme
-        await ctx.send(file=nextcord.File(meme, "output.png"))
+        await interaction.send(file=nextcord.File(meme, "output.png"))
 
-    @commands.command()
+    @nextcord.slash_command(
+        guild_ids=[test_guild],
+        name="quien",
+    )
     async def quien(
         self,
-        ctx: commands.Context,
-        text1: str,
-        text2: str,
-        user: nextcord.Member = None,
+        interaction: Interaction,
+        pregunta: str,
+        respuesta: str = SlashOption(name="respuesta", choices={"Si", "No"}),
+        usuario: nextcord.Member = None,
     ):
-        """Quien ha sido?
+        """Meme de quien es quien
 
-        Uso:
-            fur quien <texto1> <texto2> @<usuario>
-
-        Ejemplo:
-            fur quien "Le gustan los chilenos?" "Si" @Thedax
+        Args:
+            pregunta (str): Pregunta de quien es quien
+            respuesta (str): Respuesta de si/no
+            usuario (nextcord.Member, optional): Usuario
         """
 
         Y = 20
-        Y_aux = 10
 
         avatar_info = [
             {
-                "url": get_user(ctx, user).avatar.url,
+                "url": get_user(interaction, usuario).avatar.url,
                 "size": 130,
                 "x": 210,
                 "y": 570,
             }
         ]
-
-        # Get user avatar
-        avatarUrl = get_user(ctx, user).avatar.url
 
         meme = create_meme("quien", avatar_info)
         txtPic = Image.new("RGBA", (200, 200))
@@ -467,12 +495,12 @@ class memes(commands.Cog):
         draw = ImageDraw.Draw(txtPic)
         font = ImageFont.truetype(meme_resources_path + "Calibri.ttf", 24)
 
-        lines = textwrap.wrap(text1, width=18)
+        lines = textwrap.wrap(pregunta, width=18)
         for line in lines:
             draw.text(((0, Y)), line, font=font, fill=(0, 0, 0, 255))
             Y = Y + 25
 
-        draw.text(((170, 170)), text2, font=font, fill=(0, 0, 0, 255))
+        draw.text(((170, 170)), respuesta, font=font, fill=(0, 0, 0, 255))
         img.paste(txtPic, (180, 10), txtPic)
 
         # Save
@@ -481,21 +509,24 @@ class memes(commands.Cog):
         bytes_io.seek(0)
 
         # Send meme
-        await ctx.send(file=nextcord.File(bytes_io, "output.png"))
+        await interaction.send(file=nextcord.File(bytes_io, "output.png"))
 
-    @commands.command()
-    async def palanca(self, ctx: commands.Context, user: nextcord.Member):
+    @nextcord.slash_command(
+        guild_ids=[test_guild],
+        name="palanca",
+    )
+    async def palanca(self, interaction: Interaction, usuario: nextcord.Member):
         """Tira de la palanca Cronk"""
 
         avatar_info = [
             {
-                "url": ctx.author.avatar.url,
+                "url": interaction.user.avatar.url,
                 "size": 62,
                 "x": 240,
                 "y": 79,
             },
             {
-                "url": user.avatar.url,
+                "url": usuario.avatar.url,
                 "size": 55,
                 "x": 137,
                 "y": 177,
@@ -505,15 +536,18 @@ class memes(commands.Cog):
         meme = create_meme("palanca", avatar_info)
 
         # Send meme
-        await ctx.send(file=nextcord.File(meme, "output.png"))
+        await interaction.send(file=nextcord.File(meme, "output.png"))
 
-    @commands.command()
-    async def tren(self, ctx: commands.Context, user: nextcord.Member):
+    @nextcord.slash_command(
+        guild_ids=[test_guild],
+        name="tren",
+    )
+    async def tren(self, interaction: Interaction, user: nextcord.Member):
         """Atropella gente con un tren"""
 
         avatar_info = [
             {
-                "url": ctx.author.avatar.url,
+                "url": interaction.user.avatar.url,
                 "size": 212,
                 "x": 422,
                 "y": 148,
@@ -529,15 +563,18 @@ class memes(commands.Cog):
         meme = create_meme("tren", avatar_info)
 
         # Send meme
-        await ctx.send(file=nextcord.File(meme, "output.png"))
+        await interaction.send(file=nextcord.File(meme, "output.png"))
 
-    @commands.command()
-    async def slap(self, ctx: commands.Context, user: nextcord.Member = None):
+    @nextcord.slash_command(
+        guild_ids=[test_guild],
+        name="slap",
+    )
+    async def slap(self, interaction: Interaction, usuario: nextcord.Member = None):
         """slap"""
 
         avatar_info = [
             {
-                "url": get_user(ctx, user).avatar.url,
+                "url": get_user(interaction, usuario).avatar.url,
                 "size": 160,
                 "x": 120,
                 "y": 88,
@@ -547,15 +584,18 @@ class memes(commands.Cog):
         meme = create_meme("slap", avatar_info)
 
         # Send meme
-        await ctx.send(file=nextcord.File(meme, "output.png"))
+        await interaction.send(file=nextcord.File(meme, "output.png"))
 
-    @commands.command()
-    async def reviento(self, ctx: commands.Context, user: nextcord.Member = None):
+    @nextcord.slash_command(
+        guild_ids=[test_guild],
+        name="reviento",
+    )
+    async def reviento(self, interaction: Interaction):
         """a que me reviento"""
 
         avatar_info = [
             {
-                "url": get_user(ctx, user).avatar.url,
+                "url": interaction.user.avatar.url,
                 "size": 78,
                 "x": 315,
                 "y": 80,
@@ -565,15 +605,20 @@ class memes(commands.Cog):
         meme = create_meme("reviento", avatar_info)
 
         # Send meme
-        await ctx.send(file=nextcord.File(meme, "output.png"))
+        await interaction.send(file=nextcord.File(meme, "output.png"))
 
-    @commands.command()
-    async def radiopatio(self, ctx: commands.Context, user: nextcord.Member = None):
+    @nextcord.slash_command(
+        guild_ids=[test_guild],
+        name="radiopatio",
+    )
+    async def radiopatio(
+        self, interaction: Interaction, usuario: nextcord.Member = None
+    ):
         """Es hora del cotilleo"""
 
         avatar_info = [
             {
-                "url": get_user(ctx, user).avatar.url,
+                "url": get_user(interaction, usuario).avatar.url,
                 "size": 88,
                 "x": 188,
                 "y": 45,
@@ -583,48 +628,43 @@ class memes(commands.Cog):
         meme = create_meme("radiopatio", avatar_info)
 
         # Send meme
-        await ctx.send(file=nextcord.File(meme, "output.png"))
+        await interaction.send(file=nextcord.File(meme, "output.png"))
 
-    @commands.command()
+    @nextcord.slash_command(
+        guild_ids=[test_guild],
+        name="coche",
+    )
     async def coche(
         self,
-        ctx: commands.Context,
-        text1: str,
-        text2: str,
-        text3: str,
-        user: nextcord.Member,
+        interaction: Interaction,
+        texto1: str,
+        texto2: str,
+        texto3: str,
+        usuario: nextcord.Member,
     ):
-        """Fuera de mi coche
-
-        Uso:
-            fur coche <Texto1> <Texto2> <Texto3> @<usuario>
-
-        Ejemplo:
-            fur coche "Eres de madrid?" "Si" "Fuera de mi coche" @Frank
-
-        """
+        """Fuera de mi coche"""
 
         avatar_info = [
             {
-                "url": ctx.author.avatar.url,
+                "url": interaction.user.avatar.url,
                 "size": 205,
                 "x": 171,
                 "y": 0,
             },
             {
-                "url": ctx.author.avatar.url,
+                "url": interaction.user.avatar.url,
                 "size": 205,
                 "x": 170,
                 "y": 616,
             },
             {
-                "url": user.avatar.url,
+                "url": usuario.avatar.url,
                 "size": 205,
                 "x": 603,
                 "y": 10,
             },
             {
-                "url": user.avatar.url,
+                "url": usuario.avatar.url,
                 "size": 120,
                 "x": 766,
                 "y": 741,
@@ -640,7 +680,7 @@ class memes(commands.Cog):
         txtPic1 = Image.new("RGBA", (450, 230))
         draw = ImageDraw.Draw(txtPic1)
         font = ImageFont.truetype(meme_resources_path + "Calibri.ttf", 40)
-        lines1 = textwrap.wrap(text1, width=25)
+        lines1 = textwrap.wrap(texto1, width=25)
         for line in lines1:
             draw.text(((10, Y)), line, font=font, fill=(255, 255, 255, 255))
             Y = Y + 40
@@ -648,7 +688,7 @@ class memes(commands.Cog):
         Y = 8
         txtPic2 = Image.new("RGBA", (320, 220))
         draw = ImageDraw.Draw(txtPic2)
-        lines2 = textwrap.wrap(text2, width=19)
+        lines2 = textwrap.wrap(texto2, width=19)
         for line in lines2:
             draw.text(((10, Y)), line, font=font, fill=(255, 255, 255, 255))
             Y = Y + 40
@@ -656,7 +696,7 @@ class memes(commands.Cog):
         Y = 8
         txtPic3 = Image.new("RGBA", (540, 120))
         draw = ImageDraw.Draw(txtPic3)
-        lines3 = textwrap.wrap(text3, width=30)
+        lines3 = textwrap.wrap(texto3, width=30)
         for line in lines3:
             draw.text(((10, Y)), line, font=font, fill=(255, 255, 255, 255))
             Y = Y + 40
@@ -670,15 +710,14 @@ class memes(commands.Cog):
         meme.save(bytes_io, "PNG")
         bytes_io.seek(0)
 
-        await ctx.send(file=nextcord.File(bytes_io, "output.png"))
+        await interaction.send(file=nextcord.File(bytes_io, "output.png"))
 
-    @commands.command()
-    async def skeletor(self, ctx: commands.Context, text1: str, text2: str):
-        """Datos perturbadores de Skeletor
-
-        Uso:
-            fur skeletor <text1> <text2>
-        """
+    @nextcord.slash_command(
+        guild_ids=[test_guild],
+        name="skeletor",
+    )
+    async def skeletor(self, interaction: Interaction, texto1: str, texto2: str):
+        """Datos perturbadores de Skeletor"""
 
         meme_width = 994
         meme_hegiht = 680
@@ -688,7 +727,7 @@ class memes(commands.Cog):
         d = ImageDraw.Draw(txtPic1)
 
         # Write text1
-        lines = textwrap.wrap(text1.upper(), width=35)
+        lines = textwrap.wrap(texto1.upper(), width=35)
         textY = 0
         for line in lines:
             width, height = font.getsize(line)
@@ -696,7 +735,7 @@ class memes(commands.Cog):
             d.text(((meme_width - width) / 2, textY), line, font=font, fill=None)
             textY += height
 
-        lines = textwrap.wrap(text2.upper(), width=35)
+        lines = textwrap.wrap(texto2.upper(), width=35)
         textY = 520
         for line in lines:
             width, height = font.getsize(line)
@@ -711,37 +750,36 @@ class memes(commands.Cog):
         pic.save(bytes_io, "PNG")
         bytes_io.seek(0)
 
-        await ctx.send(file=nextcord.File(bytes_io, "output.png"))
+        await interaction.send(file=nextcord.File(bytes_io, "output.png"))
 
-    @commands.command()
+    @nextcord.slash_command(
+        guild_ids=[test_guild],
+        name="huracan",
+    )
     async def huracan(
         self,
-        ctx: commands.Context,
-        user1: nextcord.Member,
-        user2: nextcord.Member,
-        user3: nextcord.Member,
+        interaction: Interaction,
+        usuario1: nextcord.Member,
+        usuario2: nextcord.Member,
+        usuario3: nextcord.Member,
     ):
-        """Jaja huracán
-
-        Uso:
-            fur huracan <usuario1> <usuario2> <usuario3>
-        """
+        """Jaja huracán"""
 
         avatar_info = [
             {
-                "url": user1.avatar.url,
+                "url": usuario1.avatar.url,
                 "size": 265,
                 "x": 683,
                 "y": 473,
             },
             {
-                "url": user2.avatar.url,
+                "url": usuario2.avatar.url,
                 "size": 230,
                 "x": 420,
                 "y": 630,
             },
             {
-                "url": user3.avatar.url,
+                "url": usuario3.avatar.url,
                 "size": 170,
                 "x": 650,
                 "y": 870,
@@ -750,7 +788,7 @@ class memes(commands.Cog):
         meme = create_meme("huracan", avatar_info)
 
         # Send meme
-        await ctx.send(file=nextcord.File(meme, "output.png"))
+        await interaction.send(file=nextcord.File(meme, "output.png"))
 
 
 def create_meme(meme_picture: str, avatars_info: list) -> io.BytesIO:

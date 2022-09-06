@@ -6,6 +6,7 @@ import nextcord
 from nextcord.ext import commands
 from utils.data import meme_resources_path
 import io
+from nextcord import Interaction
 
 
 def convert_pic(picture: str, img_name: str, img_size: str = None):
@@ -30,7 +31,7 @@ def convert_pic(picture: str, img_name: str, img_size: str = None):
     return bytes_io
 
 
-def get_user(ctx: commands.Context, user: nextcord.Member = None) -> nextcord.Member:
+def get_user(interaction: Interaction, user: nextcord.Member = None) -> nextcord.Member:
     """Gets user from a message
 
     Args:
@@ -41,7 +42,7 @@ def get_user(ctx: commands.Context, user: nextcord.Member = None) -> nextcord.Me
         hikari.User: user
     """
     if user is None:
-        output = ctx.author
+        output = interaction.user
     else:
         output = user
 
