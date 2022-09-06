@@ -127,8 +127,7 @@ class memes(commands.Cog):
 
         if name is None:
             output = random.choice(os.listdir(memes_path))
-            async with interaction.channel.typing():
-                await interaction.send(file=nextcord.File(memes_path + output))
+            await interaction.send(file=nextcord.File(memes_path + output))
 
         else:
             uwu = []
@@ -142,8 +141,7 @@ class memes(commands.Cog):
 
             output = random.choice(uwu)
 
-            async with interaction.typing():
-                await interaction.send(file=nextcord.File(memes_path + output))
+            await interaction.send(file=nextcord.File(memes_path + output))
         log.info("Meme " + output + " sent", extra={"guild": interaction.guild.id})
 
     @nextcord.slash_command(
