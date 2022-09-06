@@ -6,7 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
-## [v5.0.0] -
+## [v5.0.0] - 
+
+Ahora Furbot funciona por medio de comandos de barra diagonal, para usarlos basta con escribir / y seleccionar el comando a usar. Debido a este cambio hay comandos que han sufrido cambios
+
 ### Eliminado 
 - Comandos carnet, teodio, insult, animo, addinsult, addanimo
 - Cog roast
@@ -14,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Modificado
 - Debido a los cambios en la politica de bots de Discord, ahora los comandos se invocan con / y algunos comandos han cambiado de nombre
 - Los comandos relacionados con stickers o memes se pueden invocar poniendo /sticker o /meme respectivamente
+- Ahora las noticias tienen un apartado de descripción donde se resumen las novedades
 
 ## [v4.7.11] - 2022-07-25
 
