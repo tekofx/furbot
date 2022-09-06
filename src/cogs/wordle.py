@@ -12,6 +12,10 @@ import json
 import os
 from PIL import ImageFont, ImageDraw, Image
 from utils.data import meme_resources_path
+from nextcord import Interaction, SlashOption
+
+test_guild = 0
+
 
 log = logger.getLogger(__name__)
 
@@ -42,7 +46,7 @@ class wordle(commands.Cog):
         self.generate_word.start()
         self.remove_users_from_wordle.start()
 
-    def add_to_list(self, ctx: commands.Context, key: str, element: str):
+    def add_to_list(self, interaction: Interaction, key: str, element: str):
         """Adds an element to the json file
 
         Args:
@@ -50,7 +54,7 @@ class wordle(commands.Cog):
             key (str): key of the element
             element (str): element to add
         """
-        server_path = get_server_path(ctx.guild)
+        server_path = get_server_path(interaction.guild)
         with open(server_path + WORDLE_JSON, "r+") as f:
 
             json_object = json.load(f)
@@ -133,14 +137,14 @@ class wordle(commands.Cog):
             json.dump(json_object, f)
             f.truncate()
 
-    def add_partial_letter(self, ctx: commands.Context, letter: str, index: int):
+    def add_partial_letter(self, interaction: Interaction, letter: str, index: int):
         """Adds a letter to the partial letters list
 
         Args:
             guild (nextcord.Guild): guild to add the letter
             letter (str): letter to add
         """
-        server_path = get_server_path(ctx.guild)
+        server_path = get_server_path(interaction.guild)
 
         with open(server_path + WORDLE_JSON, "r+") as f:
 
@@ -296,7 +300,7 @@ class wordle(commands.Cog):
         return False
 
     async def create_and_send_embed(
-        self, ctx: commands.Context, word: str
+        self, interaction: Interaction, word: str
     ) -> nextcord.Embed:
         """Creates and sends an embed with the word
 
@@ -307,14 +311,14 @@ class wordle(commands.Cog):
         Returns:
             nextcord.Embed: embed with the word
         """
-        info = self.process_word(ctx, word)
+        info = self.process_word(interaction, word)
         word = info["word"] + "\n" + "".join(info["squares"])
         picture = self.word_picture(info["word"], info["colors"])
         file = nextcord.File(picture, "output.png")
 
-        discarded_letters = self.get_discarded_letters(ctx.guild)
-        correct_letters = self.get_correct_letters(ctx.guild)
-        partial_letters = self.get_partial_letters(ctx.guild)
+        discarded_letters = self.get_discarded_letters(interaction.guild)
+        correct_letters = self.get_correct_letters(interaction.guild)
+        partial_letters = self.get_partial_letters(interaction.guild)
 
         if correct_letters == []:
             correct_letters = "."
@@ -338,13 +342,13 @@ class wordle(commands.Cog):
         embed.add_field(name="Letras descartadas", value=discarded_letters, inline=True)
         embed.set_image(url="attachment://output.png")
 
-        await ctx.send(file=file, embed=embed)
+        await interaction.send(file=file, embed=embed)
 
-    def correct_input(self, ctx: commands.Context, word: str) -> str:
-        if self.word_guessed(ctx.guild):
+    def correct_input(self, interaction: Interaction, word: str) -> str:
+        if self.word_guessed(interaction.guild):
             return "La palabra ya fue adivinada, espera hasta la siguiente palabra"
 
-        if ctx.author.id in self.get_users(ctx.guild):
+        if interaction.user.id in self.get_users(interaction.guild):
             now = datetime.now().hour
             return "No puedes jugar más hasta las {}:00".format(now + 1)
 
@@ -386,7 +390,7 @@ class wordle(commands.Cog):
         bytes_io.seek(0)
         return bytes_io
 
-    def process_word(self, ctx: commands.Context, word: str) -> dict:
+    def process_word(self, interaction: Interaction, word: str) -> dict:
         """Processes the word to get the correct letters
 
         Args:
@@ -396,16 +400,16 @@ class wordle(commands.Cog):
             dict: dictionary with {word:"word", squares:[], colors:[]}
         """
         var = {"word": word, "squares": [], "colors": []}
-        solution = self.get_solution_word(ctx.guild)
+        solution = self.get_solution_word(interaction.guild)
         count = 0
         for char1, char2 in zip(word, solution):
             if char1 in solution:
-                self.add_to_list(ctx, "correct_letters", char1)
+                self.add_to_list(interaction, "correct_letters", char1)
 
                 if char1 == char2:
                     var["squares"].append(GREEN_SQUARE)
                     var["colors"].append(GREEN)
-                    self.add_partial_letter(ctx, char1, count)
+                    self.add_partial_letter(interaction, char1, count)
 
                 else:
                     var["squares"].append(YELLOW_SQUARE)
@@ -414,41 +418,44 @@ class wordle(commands.Cog):
             else:
                 var["squares"].append(GREY_SQUARE)
                 var["colors"].append(GREY)
-                self.add_to_list(ctx, "discarded_letters", char1)
+                self.add_to_list(interaction, "discarded_letters", char1)
             count += 1
 
         return var
 
-    @commands.command()
-    async def guess(self, ctx: commands.Context, word: str):
+    @nextcord.slash_command(
+        guild_ids=[test_guild],
+        name="guess",
+    )
+    async def guess(self, interaction: Interaction, word: str):
         """Intentar adivinar la palabra del wordle"""
         word = word.lower()
         # Check requirements are met
-        aux = self.correct_input(ctx, word)
+        aux = self.correct_input(interaction, word)
         if aux != None:
-            msg = await ctx.send(aux)
+            msg = await interaction.send(aux)
             await msg.delete(delay=5)
             return
 
         # Add user to json
-        self.add_user(ctx.guild, ctx.author.id)
+        self.add_user(interaction.guild, interaction.user.id)
 
         # Send embed
-        await self.create_and_send_embed(ctx, word)
+        await self.create_and_send_embed(interaction, word)
 
         # Check if the word was guessed
-        solution = self.get_solution_word(ctx.guild)
+        solution = self.get_solution_word(interaction.guild)
         if word == solution:
-            await ctx.send("Palabra correcta!!!!")
-            os.remove(get_server_path(ctx.guild) + WORDLE_JSON)
+            await interaction.send("Palabra correcta!!!!")
+            os.remove(get_server_path(interaction.guild) + WORDLE_JSON)
 
             # Get definition
             definicion = str(dle.search_by_word(word))
-            await ctx.send('"{}": {}'.format(word, definicion))
+            await interaction.send('"{}": {}'.format(word, definicion))
 
-            self.get_random_word(ctx.guild)
+            self.get_random_word(interaction.guild)
             await self.bot.channel_send(
-                ctx.guild,
+                interaction.guild,
                 "wordle",
                 "Nueva palabra generada, intenta adivinarla con `fur guess`",
             )
