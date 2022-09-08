@@ -94,9 +94,6 @@ class Bot(commands.Bot):
             # Setup database
             setup_database(guild)
 
-        # Check if there is a new release on github
-        await self.new_github_release()
-
         # Set activity
         with open(config_yaml, "r") as stream:
             try:
@@ -118,6 +115,9 @@ class Bot(commands.Bot):
         log.info("Syncing application commands")
         await self.sync_application_commands()
         log.info("Application commands synced")
+
+        # Send new version message if there's one
+        await self.new_github_release()
 
         log.info("Furbot fully started as {}".format(self.user))
 
