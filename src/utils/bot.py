@@ -116,7 +116,7 @@ class Bot(commands.Bot):
                 log.info("Loaded {}".format(c))
 
         log.info("Syncing application commands")
-        await self.sync_all_application_commands()
+        await self.sync_application_commands()
         log.info("Application commands synced")
 
         log.info("Furbot fully started as {}".format(self.user))
