@@ -6,27 +6,18 @@ from utils.bot import Bot
 import os
 
 
-local_guild = os.getenv("LOCAL_GUILD")
-
-
 class utils(commands.Cog):
     def __init__(self, bot: Bot) -> None:
         self.bot = bot
 
-    @nextcord.slash_command(
-        guild_ids=[local_guild],
-        name="ping",
-        description="Comprobar si el bot está online",
-    )
+    @nextcord.slash_command(name="ping")
     async def ping(self, interaction: Interaction):
+        """Comprobar si el bot está online"""
         await interaction.send("Pim pam trucu trucu")
 
-    @nextcord.slash_command(
-        guild_ids=[local_guild],
-        name="rae",
-        description="Comprobar si el bot está online",
-    )
+    @nextcord.slash_command(name="rae")
     async def rae(self, interaction: Interaction, palabra: str):
+        """Define una palabra"""
 
         msg = await interaction.send("Buscando en la RAE")
 

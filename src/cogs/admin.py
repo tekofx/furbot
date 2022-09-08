@@ -53,18 +53,13 @@ CHANNEL_POLICIES = {
 
 
 emojis = ["🟥", "🟧", "🟨", "🟩", "🟦", "🟪", "🟫", "⬜"]
-local_guild = os.getenv("LOCAL_GUILD")
 
 
 class admin(commands.Cog):
     def __init__(self, bot: Bot) -> None:
         self.bot = bot
 
-    @nextcord.slash_command(
-        guild_ids=[local_guild],
-        name="votacion",
-        description="Crea una votacion",
-    )
+    @nextcord.slash_command(name="votacion")
     @application_checks.has_permissions(administrator=True)
     async def votacion(
         self,
@@ -97,19 +92,12 @@ class admin(commands.Cog):
             except Exception as error:
                 log.error(error)
 
-    @nextcord.slash_command(
-        guild_ids=[local_guild],
-        name="canales",
-        description="Muestra los canales",
-    )
+    @nextcord.slash_command(name="canales")
     @application_checks.has_permissions(administrator=True)
     async def canales(self, interaction: Interaction):
         pass
 
-    @canales.subcommand(
-        name="mostrar",
-        description="Mostrar todos los canales configurados",
-    )
+    @canales.subcommand(name="mostrar")
     @application_checks.has_permissions(administrator=True)
     async def show_channels(self, interaction: Interaction):
         channels = get_channels(interaction.guild)
@@ -125,9 +113,7 @@ class admin(commands.Cog):
         pass
 
     @application_checks.has_permissions(administrator=True)
-    @canales.subcommand(
-        name="rmchannelpolicy", description=" Elimina politica de un canal"
-    )
+    @canales.subcommand(name="rmchannelpolicy")
     async def canales_rmchannelpolicy(
         self, interaction: Interaction, canal: nextcord.TextChannel
     ):
@@ -148,10 +134,7 @@ class admin(commands.Cog):
     async def channels_list(self, interaction: Interaction):
         pass
 
-    @channels_list.subcommand(
-        name="tipos",
-        description="Mostrar tipos de canales predefinidos",
-    )
+    @channels_list.subcommand(name="tipos")
     @application_checks.has_permissions(administrator=True)
     async def channel_types(self, interaction: Interaction):
         output = ""
@@ -160,10 +143,7 @@ class admin(commands.Cog):
         await interaction.send(output)
 
     @application_checks.has_permissions(administrator=True)
-    @channels_list.subcommand(
-        name="politicas",
-        description="Mostrar las politicas que se pueden aplicar a un canal",
-    )
+    @channels_list.subcommand(name="politicas")
     async def channle_policies(self, interaction: Interaction):
         output = ""
         for x, y in CHANNEL_POLICIES.items():
@@ -176,9 +156,7 @@ class admin(commands.Cog):
         pass
 
     @application_checks.has_permissions(administrator=True)
-    @channel_set.subcommand(
-        name="policy", description="Establece una politica para un canal."
-    )
+    @channel_set.subcommand(name="policy")
     async def channel_set_policy(
         self,
         interaction: Interaction,
@@ -295,10 +273,7 @@ class admin(commands.Cog):
         )
         await msg.delete(delay=5)
 
-    @nextcord.slash_command(
-        guild_ids=[local_guild],
-        name="post",
-    )
+    @nextcord.slash_command(name="post")
     @application_checks.has_permissions(administrator=True)
     async def post(self, interaction: Interaction):
         pass
@@ -399,10 +374,7 @@ class admin(commands.Cog):
 
         await interaction.send(output)
 
-    @nextcord.slash_command(
-        guild_ids=[local_guild],
-        name="activity",
-    )
+    @nextcord.slash_command(name="activity")
     @application_checks.has_permissions(administrator=True)
     async def change_activity(self, interaction: Interaction, activity_name: str):
         """[Admin] Cambiar actividad del bot
@@ -433,10 +405,7 @@ class admin(commands.Cog):
             await interaction.send("Cambiada actividad a " + activity_name)
             log.info("Changed activity to " + activity_name)
 
-    @nextcord.slash_command(
-        guild_ids=[local_guild],
-        name="clear",
-    )
+    @nextcord.slash_command(name="clear")
     @application_checks.has_permissions(administrator=True)
     async def clear(self, interaction: Interaction, num: int):
         """[Admin] Elimina mensajes de un canal

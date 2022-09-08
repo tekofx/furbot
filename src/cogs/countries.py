@@ -8,23 +8,18 @@ import unidecode
 from nextcord import Interaction
 import os
 
-local_guild = os.getenv("LOCAL_GUILD")
-
 
 class countries(commands.Cog):
     def __init__(self, bot: Bot) -> None:
         self.bot = bot
 
-    @nextcord.slash_command(
-        guild_ids=[local_guild],
-        name="pais",
-        description="""Información sobre un país
+    @nextcord.slash_command(name="pais")
+    async def pais(self, interaction: Interaction, nombre: str):
+        """Información sobre un país
 
         Args:
             nombre : nombre del pais
-        """,
-    )
-    async def pais(self, interaction: Interaction, nombre: str):
+        """
         url = "https://restcountries.com/v3.1/name/{}".format(nombre.lower())
 
         data = requests.get(url)
@@ -62,11 +57,7 @@ class countries(commands.Cog):
 
         await interaction.send(embed=embed)
 
-    @nextcord.slash_command(
-        guild_ids=[local_guild],
-        name="bandera",
-        description="Intenta adivinar la bandera del país",
-    )
+    @nextcord.slash_command(name="bandera")
     async def bandera(self, interaction: Interaction):
         """Intenta adivinar la bandera del país"""
 

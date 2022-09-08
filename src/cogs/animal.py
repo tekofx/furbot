@@ -6,7 +6,6 @@ from nextcord import Interaction
 import os
 
 log = logger.getLogger(__name__)
-local_guild = os.getenv("LOCAL_GUILD")
 
 
 class animal(commands.Cog):
@@ -25,61 +24,63 @@ class animal(commands.Cog):
         for tweet in tweet_images_urls:
             await interaction.send(tweet)
 
-    @nextcord.slash_command(
-        guild_ids=[local_guild],
-        name="fox",
-        description="Fotos de zorros hermosos",
-    )
+    @nextcord.slash_command(name="fox")
     async def fox(self, interaction: Interaction, num: int = None):
         """Fotos de zorros hermosos"""
         await self.send_animal_pics_twitter(interaction, "hourlyFox", num)
 
-    @nextcord.slash_command(
-        guild_ids=[local_guild],
-        name="arctic_fox",
-        description="Fotos de zorros articos",
-    )
+    @nextcord.slash_command(name="arctic_fox")
     async def arctic_fox(self, interaction: Interaction, num: int = None):
+        """Fotos de zorros articos
+
+        Args:
+            num (int, optional): numero de fotos
+        """
         await self.send_animal_pics_twitter(interaction, "ArcticHourly", num)
 
-    @nextcord.slash_command(
-        guild_ids=[local_guild],
-        name="wolf",
-        description="Fotos de lobetes",
-    )
+    @nextcord.slash_command(name="wolf")
     async def wolf(self, interaction: Interaction, num: int = None):
+        """Fotos de lobetes
+
+        Args:
+            num (int, optional): numero de fotos
+        """
         await self.send_animal_pics_twitter(interaction, "hourlywolvesbot", num)
 
-    @nextcord.slash_command(
-        guild_ids=[local_guild],
-        name="bird",
-        description="Fotos de pajaros",
-    )
+    @nextcord.slash_command(name="bird")
     async def bird(self, interaction: Interaction, num: int = None):
+        """Fotos de pajaros
+
+        Args:
+            num (int, optional): numero de fotos
+        """
         await self.send_animal_pics_twitter(interaction, "kerrybv1", num)
 
-    @nextcord.slash_command(
-        guild_ids=[local_guild],
-        name="pigeon",
-        description="Fotos de palomas",
-    )
+    @nextcord.slash_command(name="pigeon")
     async def pigeon(self, interaction: Interaction, num: int = None):
+        """Fotos de palomas
+
+        Args:
+            num (int, optional): numero de fotos
+        """
         await self.send_animal_pics_twitter(interaction, "a_london_pigeon", num)
 
-    @nextcord.slash_command(
-        guild_ids=[local_guild],
-        name="lizard",
-        description="Fotos de lagartitos",
-    )
+    @nextcord.slash_command(name="lizard")
     async def lizard(self, interaction: Interaction, num: int = None):
+        """Fotos de lagartitos
+
+        Args:
+            num (int, optional): numero de fotos
+        """
         await self.send_animal_pics_twitter(interaction, "HourlyLizards", num)
 
-    @nextcord.slash_command(
-        guild_ids=[local_guild],
-        name="cat",
-        description="Fotos de gatitos",
-    )
+    @nextcord.slash_command(name="cat")
     async def cat(self, interaction: Interaction, num: int = None):
+        """Fotos de gatitos
+
+        Args:
+            num (int, optional): numero de fotos
+        """
         await self.send_animal_pics_twitter(interaction, "HourlyCats", num)
 
 

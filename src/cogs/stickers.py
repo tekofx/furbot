@@ -13,27 +13,27 @@ log = logger.getLogger(__name__)
 
 stickers_subpath = "stickers/"
 
-local_guild = os.getenv("LOCAL_GUILD")
-
 
 class stickers(commands.Cog):
     def __init__(self, bot: Bot) -> None:
         self.bot = bot
 
     @nextcord.slash_command(
-        guild_ids=[local_guild],
         name="sticker",
     )
     async def sticker(self, interaction: Interaction):
         pass
 
-    @sticker.subcommand(
-        name="add",
-        description="Añade un sticker",
-    )
+    @sticker.subcommand(name="add")
     async def sticker_add(
         self, interaction: Interaction, nombre: str, image: nextcord.Attachment
     ):
+        """Añade un sticker al bot
+
+        Args:
+            nombre (str): nombre del sticker
+            image (nextcord.Attachment): foto que añadir como sticker
+        """
         stickers_path = get_server_path(interaction.guild) + stickers_subpath
 
         # Checks if a picture is correct
@@ -60,11 +60,9 @@ class stickers(commands.Cog):
             os.remove(stickers_path + sticker_fileName)
         await interaction.send("Sticker " + nombre + " añadido")
 
-    @sticker.subcommand(
-        name="list",
-        description="Lista de los stickers añadidos",
-    )
+    @sticker.subcommand(name="list")
     async def sticker_list(self, interaction: Interaction):
+        """Lista los stickers añadidos"""
         stickers_path = get_server_path(interaction.guild) + stickers_subpath
 
         output = os.listdir(stickers_path)
@@ -73,20 +71,13 @@ class stickers(commands.Cog):
         output = ", ".join(output)
         await interaction.send(output)
 
-    @sticker.subcommand(
-        name="use",
-        description="Usar un sticker",
-    )
+    @sticker.subcommand(name="use")
     async def sticker_use(
         self,
         interaction: Interaction,
         sticker: str,
     ):
-        """Usar un sticker
-
-        Uso:
-            fur s <nombre_sticker>
-        """
+        """Usar un sticker"""
         stickers_path = get_server_path(interaction.guild) + stickers_subpath
 
         if Path(stickers_path + sticker + ".png").is_file():

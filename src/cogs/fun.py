@@ -5,19 +5,14 @@ from utils.bot import Bot
 from nextcord import Interaction
 import os
 
-local_guild = os.getenv("LOCAL_GUILD")
-
 
 class fun(commands.Cog):
     def __init__(self, bot: Bot) -> None:
         self.bot = bot
 
-    @nextcord.slash_command(
-        guild_ids=[local_guild],
-        name="penis",
-        description="Buena tula",
-    )
+    @nextcord.slash_command(name="penis")
     async def penis(self, interaction: Interaction, usuario: nextcord.Member = None):
+        """Buna tula"""
         num = random.randint(1, 15)
         output = "El pene de {}\n"
         if usuario is None:
@@ -31,14 +26,11 @@ class fun(commands.Cog):
         output += "D"
         await interaction.send(output.format(usuario))
 
-    @nextcord.slash_command(
-        guild_ids=[local_guild],
-        name="communist",
-        description="Serás un comunista bolivariano que apoya al Coletas?",
-    )
+    @nextcord.slash_command(name="communist")
     async def communist(
         self, interaction: Interaction, usuario: nextcord.Member = None
     ):
+        """Serás un comunista bolivariano que apoya al Coletas?"""
         num = random.randint(0, 100)
 
         output = "{} es {}% comunista"
@@ -50,14 +42,11 @@ class fun(commands.Cog):
 
         await interaction.send(output.format(usuario, num))
 
-    @nextcord.slash_command(
-        guild_ids=[local_guild],
-        name="capitalist",
-        description="Serás capitalista y te convertirás en el nuevo lobo de Wall Street?",
-    )
+    @nextcord.slash_command(name="capitalist")
     async def capitalist(
         self, interaction: Interaction, usuario: nextcord.Member = None
     ):
+        """Serás capitalista y te convertirás en el nuevo lobo de Wall Street?"""
         num = random.randint(0, 100)
 
         output = "{} es {}% capitalista"
@@ -69,12 +58,9 @@ class fun(commands.Cog):
 
         await interaction.send(output.format(usuario, num))
 
-    @nextcord.slash_command(
-        guild_ids=[local_guild],
-        name="gay",
-        description="Maricon el ultimo",
-    )
+    @nextcord.slash_command(name="gay")
     async def gay(self, interaction: Interaction, usuario: nextcord.Member = None):
+        """Maricon el ultimo"""
         num = random.randint(0, 100)
 
         output = "{} es {}% gay"
@@ -86,12 +72,9 @@ class fun(commands.Cog):
 
         await interaction.send(output.format(usuario, num))
 
-    @nextcord.slash_command(
-        guild_ids=[local_guild],
-        name="str8",
-        description="Super str8 el ultimo",
-    )
+    @nextcord.slash_command(name="str8")
     async def straight(self, interaction: Interaction, usuario: nextcord.Member = None):
+        """Super str8 el ultimo"""
         num = random.randint(0, 100)
 
         output = "{} es {}% gay"

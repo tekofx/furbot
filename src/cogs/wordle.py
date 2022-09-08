@@ -16,8 +16,6 @@ from nextcord import Interaction, SlashOption
 import os
 
 
-local_guild = os.getenv("LOCAL_GUILD")
-
 log = logger.getLogger(__name__)
 
 
@@ -424,10 +422,7 @@ class wordle(commands.Cog):
 
         return var
 
-    @nextcord.slash_command(
-        guild_ids=[local_guild],
-        name="guess",
-    )
+    @nextcord.slash_command(name="guess")
     async def guess(self, interaction: Interaction, word: str):
         """Intentar adivinar la palabra del wordle"""
         word = word.lower()

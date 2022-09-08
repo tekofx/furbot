@@ -19,18 +19,12 @@ ANSWERS_DICT = {
     EMOJI_D: "D",
 }
 
-local_guild = os.getenv("LOCAL_GUILD")
-
 
 class trivia(commands.Cog):
     def __init__(self, bot: Bot) -> None:
         self.bot = bot
 
-    @nextcord.slash_command(
-        guild_ids=[local_guild],
-        name="trivial",
-        description="Preguntas entre varias personas, a ver quien acierta mas",
-    )
+    @nextcord.slash_command(name="trivial")
     async def trivial(self, interaction: Interaction, rondas: int = 1):
         """Preguntas entre varias personas, a ver quien acierta mas"""
         await interaction.send("Responded a las siguientes preguntas:")
@@ -164,11 +158,7 @@ class trivia(commands.Cog):
         }
         return var
 
-    @nextcord.slash_command(
-        guild_ids=[local_guild],
-        name="pregunta",
-        description="Pregunta al azar",
-    )
+    @nextcord.slash_command(name="pregunta")
     async def pregunta(self, interaction: Interaction):
         """Pregunta al azar"""
         await interaction.send("Responde a las siguientes preguntas:")
