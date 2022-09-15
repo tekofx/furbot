@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ## Unreleased
+
+### Añadido
+- Al añadir un meme se añade una estrella de reacción
+  
 ### Arreglado
 - Error con posts que hacia que siempre se publicara con la misma cuenta
 

@@ -104,7 +104,8 @@ class memes(commands.Cog):
         )
 
         meme_file = await meme.to_file()
-        await interaction.send(file=meme_file)
+        msg = await interaction.channel.send(file=meme_file)
+        await msg.add_reaction("⭐")
         await interaction.send("Meme " + newname + " añadido")
 
     @meme.subcommand(name="send")
