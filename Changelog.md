@@ -6,13 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
-## Unreleased
+## [v5.0.3] - 2022-09-23
+Versión menor que arregla un par de errores con los posts
 
 ### Añadido
 - Al añadir un meme se añade una estrella de reacción
   
 ### Arreglado
 - Error con posts que hacia que siempre se publicara con la misma cuenta
+- Retraso que se forma poco a poco segun se van enviando posts
 
 ## [v5.0.2] - 2022-09-08
 Cambios menores debido al cambio a comandos /

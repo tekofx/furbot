@@ -104,7 +104,7 @@ class tasks(commands.Cog):
         """
         channel_id = post[0]
         nsfw = post[1]
-        account = post[2]
+        post_account = post[2]
         post_inteval = post[4]
         if nsfw == "nsfw":
             nsfw = True
@@ -121,7 +121,7 @@ class tasks(commands.Cog):
                 guild,
                 "audit",
                 "Error al intentar publicar en canal el post id={}: No tengo acceso al canal".format(
-                    account
+                    post_account
                 ),
             )
             return
@@ -135,20 +135,22 @@ class tasks(commands.Cog):
                 guild,
                 "audit",
                 "Error al intentar publicar en canal {} post {}: No tengo permiso para enviar mensajes".format(
-                    channel.mention, account
+                    channel.mention, post_account
                 ),
             )
             return
 
-        log.info(f"Started task {account}", extra={"guild": guild.id})
+        log.info(f"Started task {post_account}", extra={"guild": guild.id})
 
         # Wait until oclock to run post
-        await self.wait_until_oclock()
+        # await self.wait_until_oclock()
 
         # Loop execution
         while True:
-            if " " in account:  # Multiple accounts
-                post_account = account.split(" ")
+            next_task = datetime.now() + timedelta(seconds=post_inteval * 60)
+
+            if " " in post_account:  # Multiple accounts
+                post_account = post_account.split(" ")
                 post_account = random.choice(post_account)
 
             if "twitter" in post_account:
@@ -162,6 +164,7 @@ class tasks(commands.Cog):
                 embed = await self.bot.reddit.get_hot_pic_not_repeated(
                     guild, reddit_account, "reddit", nsfw
                 )
+
             try:
                 await channel.send(embed=embed)
                 log.info(f"Post from {post_account} sent", extra={"guild": guild.id})
@@ -170,7 +173,9 @@ class tasks(commands.Cog):
                     f"Could not send post from {post_account} in {guild.name}: {error}",
                     extra={"guild": guild.id},
                 )
-            await asyncio.sleep(post_inteval * 60)
+
+            new_interval = next_task - datetime.now()
+            await asyncio.sleep(new_interval.seconds)
 
     @tasks.loop(hours=1)
     async def update_users(self):
