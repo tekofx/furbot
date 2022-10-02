@@ -330,6 +330,17 @@ class admin(commands.Cog):
                 )
                 return
 
+            if "reddit@" in arg:
+                exists = await self.bot.reddit.exists_subreddit(
+                    arg.replace("reddit@", "")
+                )
+                if not exists:
+                    await interaction.send(
+                        "El subreddit {} no existe, comprueba el subreddit y vuelve a intentarlo".format(
+                            arg
+                        )
+                    )
+                    return
             account.append(arg)
 
         cuenta = " ".join(account)

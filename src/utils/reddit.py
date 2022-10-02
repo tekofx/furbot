@@ -18,6 +18,20 @@ class Reddit:
         self.client_id = os.getenv("REDDIT_CLIENT_ID")
         self.client_secret = os.getenv("REDDIT_CLIENT_SECRET")
         self.user_agent = os.getenv("REDDIT_USER_AGENT")
+        self.reddit = asyncpraw.Reddit(
+            client_id=self.client_id,
+            client_secret=self.client_secret,
+            user_agent=self.user_agent,
+            check_for_async=False,
+        )
+
+    async def exists_subreddit(self, name: str):
+        exists = True
+        try:
+            await self.reddit.subreddits.search_by_name(name, exact=True)
+        except Exception as error:
+            exists = False
+        return exists
 
     async def get_hot_subreddit_submissions_with_media(
         self,
@@ -34,14 +48,8 @@ class Reddit:
         Returns:
             list: containing reddit posts
         """
-        reddit = asyncpraw.Reddit(
-            client_id=self.client_id,
-            client_secret=self.client_secret,
-            user_agent=self.user_agent,
-            check_for_async=False,
-        )
 
-        subreddit = await reddit.subreddit(sub_reddit)
+        subreddit = await self.reddit.subreddit(sub_reddit)
         hot_posts = subreddit.hot(limit=posts_limit)
 
         posts = []
@@ -50,7 +58,7 @@ class Reddit:
             if ("jpg" in post.url or "png" in post.url) and not post.over_18:
 
                 posts.append(post)
-        await reddit.close()
+        # await reddit.close()
         return posts
 
     async def get_hot_pic_not_repeated(
@@ -70,14 +78,8 @@ class Reddit:
         Returns:
             list: containing reddit posts
         """
-        reddit = asyncpraw.Reddit(
-            client_id=self.client_id,
-            client_secret=self.client_secret,
-            user_agent=self.user_agent,
-            check_for_async=False,
-        )
 
-        subreddit = await reddit.subreddit(sub_reddit)
+        subreddit = await self.reddit.subreddit(sub_reddit)
         hot_posts = subreddit.hot(limit=100)
 
         output = None
@@ -99,7 +101,7 @@ class Reddit:
         if output is None:
             return None
 
-        await reddit.close()
+        # await reddit.close()
         embed = self.create_embed(output)
         return embed
 
