@@ -35,8 +35,11 @@ class tasks(commands.Cog):
             posts = get_posts(guild)
             if posts:
                 for post in posts:
+                    post_id = post[3]
 
-                    self.bot.loop.create_task(self.post_task(guild, post))
+                    self.bot.loop.create_task(
+                        self.post_task(guild, post), name=str(post_id)
+                    )
                     log.info(
                         f"Created post task of account {post[2]}",
                         extra={"guild": guild.id},
@@ -104,7 +107,7 @@ class tasks(commands.Cog):
         """
         channel_id = post[0]
         nsfw = post[1]
-        post_account = post[2]
+        account = post[2]
         post_inteval = post[4]
         if nsfw == "nsfw":
             nsfw = True
@@ -121,7 +124,7 @@ class tasks(commands.Cog):
                 guild,
                 "audit",
                 "Error al intentar publicar en canal el post id={}: No tengo acceso al canal".format(
-                    post_account
+                    account
                 ),
             )
             return
@@ -135,45 +138,42 @@ class tasks(commands.Cog):
                 guild,
                 "audit",
                 "Error al intentar publicar en canal {} post {}: No tengo permiso para enviar mensajes".format(
-                    channel.mention, post_account
+                    channel.mention, account
                 ),
             )
             return
 
-        log.info(f"Started task {post_account}", extra={"guild": guild.id})
+        log.info(f"Started task {account}", extra={"guild": guild.id})
 
         # Wait until oclock to run post
         # await self.wait_until_oclock()
 
         # Loop execution
         while True:
-            next_task = datetime.now() + timedelta(seconds=post_inteval * 60)
+            # next_task = datetime.now() + timedelta(seconds=post_inteval * 60)
+            next_task = datetime.now() + timedelta(seconds=post_inteval)
 
-            if " " in post_account:  # Multiple accounts
-                post_account = post_account.split(" ")
+            if " " in account:  # Multiple accounts
+                post_account = account.split(" ")
                 post_account = random.choice(post_account)
 
-            if "twitter" in post_account:
-                twitter_account = post_account.replace("twitter@", "")
+            if "twitter" in account:
+                post_account = post_account.replace("twitter@", "")
                 embed = self.bot.twitter.get_latest_image_not_repeated(
-                    guild, twitter_account, "twitter"
+                    guild, post_account, "twitter"
                 )
 
             else:
-                reddit_account = post_account.replace("reddit@", "")
+                post_account = account.replace("reddit@", "")
                 embed = await self.bot.reddit.get_hot_pic_not_repeated(
-                    guild, reddit_account, "reddit", nsfw
+                    guild, post_account, "reddit", nsfw
                 )
 
             try:
                 await channel.send(embed=embed)
                 log.info(f"Post from {post_account} sent", extra={"guild": guild.id})
             except Exception as error:
-                log.error(
-                    f"Could not send post from {post_account} in {guild.name}: {error}",
-                    extra={"guild": guild.id},
-                )
-
+                pass
             new_interval = next_task - datetime.now()
             await asyncio.sleep(new_interval.seconds)
 
