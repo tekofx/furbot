@@ -146,7 +146,7 @@ class tasks(commands.Cog):
         log.info(f"Started task {account}", extra={"guild": guild.id})
 
         # Wait until oclock to run post
-        # await self.wait_until_oclock()
+        await self.wait_until_oclock()
 
         # Loop execution
         while True:
