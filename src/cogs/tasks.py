@@ -156,6 +156,8 @@ class tasks(commands.Cog):
             if " " in account:  # Multiple accounts
                 post_account = account.split(" ")
                 post_account = random.choice(post_account)
+            else:
+                post_account = account
 
             if "twitter" in account:
                 post_account = post_account.replace("twitter@", "")

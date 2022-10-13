@@ -341,6 +341,17 @@ class admin(commands.Cog):
                         )
                     )
                     return
+
+            if "twitter@" in arg:
+                var = self.bot.twitter.exists_account(arg.replace("twitter@", ""))
+
+                if not var:
+                    await interaction.send(
+                        "La cuenta {} no existe, comprueba la cuenta y vuelve a intentarlo".format(
+                            arg
+                        )
+                    )
+                    return
             account.append(arg)
 
         cuenta = " ".join(account)

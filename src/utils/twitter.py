@@ -28,6 +28,19 @@ class Twitter:
         self.auth.set_access_token(access_token, access_token_secret)
         self.api = tw.API(self.auth, wait_on_rate_limit=True)
 
+    def exists_account(self, username: str) -> bool:
+        try:
+            tweets = self.api.user_timeline(
+                screen_name=username,
+                count=200,
+                include_rts=False,
+                tweet_mode="extended",
+            )
+        except Exception:
+            return False
+
+        return True
+
     def get_latest_media(self, username: str) -> str:
         """Gets the URL the latest image url posted by some user
 

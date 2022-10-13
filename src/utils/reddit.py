@@ -25,13 +25,24 @@ class Reddit:
             check_for_async=False,
         )
 
-    async def exists_subreddit(self, name: str):
-        exists = True
+    async def exists_subreddit(self, name: str) -> bool:
+        """Checks if a subreddit exists
+
+        Args:
+            name (str): name of subrredit
+
+        Returns:
+            bool: True if subreddit exists
+        """
         try:
-            await self.reddit.subreddits.search_by_name(name, exact=True)
-        except Exception as error:
-            exists = False
-        return exists
+            subreddit = await self.reddit.subreddit(name)
+            hot_posts = subreddit.hot(limit=1)
+            async for post in hot_posts:
+                pass
+        except:
+            return False
+
+        return True
 
     async def get_hot_subreddit_submissions_with_media(
         self,
