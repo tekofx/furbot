@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Añadido 
 - Al crear un post se comprueba si la/s cuenta/s introducidas existen
 
+### Eliminado
+- Comando activity
+
 
 ## [v5.0.3] - 2022-09-23
 Versión menor que arregla un par de errores con los posts

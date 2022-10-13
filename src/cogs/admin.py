@@ -15,7 +15,6 @@ from utils.database import (
 )
 
 from asyncio import sleep
-from utils.data import config_yaml
 from utils.bot import Bot
 import yaml
 from utils import logger
@@ -395,37 +394,6 @@ class admin(commands.Cog):
             )
 
         await interaction.send(output)
-
-    @nextcord.slash_command(name="activity")
-    @application_checks.has_permissions(administrator=True)
-    async def change_activity(self, interaction: Interaction, activity_name: str):
-        """[Admin] Cambiar actividad del bot
-
-        Uso:
-            fur activity <texto>
-        """
-        activity = nextcord.Game(activity_name)
-
-        # Change activity in config.yaml
-        with open(config_yaml, "r") as f:
-            content = yaml.safe_load(f)
-            content["activity"] = activity_name
-        with open(config_yaml, "w") as f:
-            yaml.dump(content, f, allow_unicode=True)
-
-        # Change activity in bot
-        try:
-            await self.bot.change_presence(
-                status=nextcord.Status.online, activity=activity
-            )
-
-        except Exception as error:
-            await interaction.send("Error: Contacte con un administrador")
-            log.error("Error: {}".format(error))
-            return
-        else:
-            await interaction.send("Cambiada actividad a " + activity_name)
-            log.info("Changed activity to " + activity_name)
 
     @nextcord.slash_command(name="clear")
     @application_checks.has_permissions(administrator=True)
