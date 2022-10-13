@@ -16,7 +16,7 @@ from utils.database import (
 from utils.reddit import Reddit
 from utils.twitter import Twitter
 import requests
-from utils.data import Data, get_activity
+from utils.data import Data, get_activity, get_config
 from utils import logger
 
 log = logger.getLogger(__name__)
@@ -106,7 +106,7 @@ class Bot(commands.Bot):
                 log.info("Loaded {}".format(c))
 
         log.info("Syncing application commands")
-        # await self.sync_application_commands(guild_id=788479325787258961)
+        await self.sync_application_commands(guild_id=788479325787258961)
         log.info("Application commands synced")
 
         # Send new version message if there's one
@@ -115,15 +115,17 @@ class Bot(commands.Bot):
         log.info("Furbot fully started as {}".format(self.user))
 
     async def on_member_join(self, member: nextcord.Member):
-        # Message in lobby
-        mensaje_lobby_usuario = """Bienvenid@ a {} {}. No olvides mirar el canal de normas y pasarlo bien""".format(
-            member.guild.name, member.mention
-        )
-        mensaje_lobby_bot = "Se ha añadido el bot {}".format(member.mention)
 
         if not member.bot:
-            await self.channel_send(member.guild, "lobby", mensaje_lobby_usuario)
+            msg_join_user = get_config()["msg_join_user"].format(
+                member.guild.name, member.display_name
+            )
+            msg_dm = get_config()["msg_dm"].format(member.guild.name, member.name)
+            await self.channel_send(member.guild, "lobby", msg_join_user)
+            await member.send(msg_dm)
         else:
+            mensaje_lobby_bot = get_config()["msg_join_bot"].format(member.mention)
+
             await self.channel_send(member.guild, "lobby", mensaje_lobby_bot)
 
         entry_in_database = check_entry_in_database(member.guild, "users", member.id)
@@ -145,17 +147,17 @@ class Bot(commands.Bot):
 
     async def on_member_remove(self, member: nextcord.Member):
         # When a user leaves a server
-        mensaje_lobby_usuario = "{}({}) se fue, una pena. ".format(
-            member.mention, member.name
-        )
-        mensaje_lobby_bot = "Se ha eliminado el bot {}({})".format(
-            member.mention, member.name
-        )
 
         if not member.bot:
-            await self.channel_send(member.guild, "lobby", mensaje_lobby_usuario)
+            msg_leave_user = get_config()["msg_leave_user"].format(
+                member.mention, member.name
+            )
+            await self.channel_send(member.guild, "lobby", msg_leave_user)
         else:
-            await self.channel_send(member.guild, "lobby", mensaje_lobby_bot)
+            msg_leave_bot = get_config()["msg_leave_bot"].format(
+                member.mention, member.name
+            )
+            await self.channel_send(member.guild, "lobby", msg_leave_bot)
 
     def run(self):
 

@@ -105,18 +105,30 @@ def get_server_path(guild: nextcord.Guild) -> str:
     return server_path.format(guild_name=guild.name, guild_id=guild.id)
 
 
-def get_activity():
-    # Opening JSON file
-    f = open(config_json)
+def get_config() -> dict:
+    """Gets info from config file
 
-    # returns JSON object as
-    # a dictionary
-    data = json.load(f)
+    Returns:
+        dict: all config values
+    """
 
-    # Iterating through the json
-    # list
-    activity = data["activity"]
+    with open(config_json) as f:
+        data = json.load(f)
 
-    # Closing file
-    f.close()
+    return data
+
+
+def get_activity() -> str:
+    """Gets activity from config
+
+    Returns:
+        str: activity
+    """
+
+    activity = ""
+
+    with open(config_json) as f:
+        data = json.load(f)
+        activity = data["activity"]
+
     return activity
