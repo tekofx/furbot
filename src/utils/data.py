@@ -3,6 +3,7 @@ from utils import logger
 import nextcord
 import json
 
+
 log = logger.getLogger(__name__)
 
 data_path = "data/"
@@ -11,7 +12,7 @@ server_path = data_path + "servers/{guild_id} - {guild_name}/"
 # Resources
 resources_path = data_path + "resources/"
 meme_resources_path = resources_path + "memes/"
-config_yaml = resources_path + "config.yaml"
+config_json = resources_path + "config.json"
 
 
 class Data:
@@ -35,7 +36,7 @@ class Data:
         ]
 
         # Datafiles
-        self._files = [config_yaml]
+        self._files = [config_json]
 
     @property
     def files(self) -> list:
@@ -73,10 +74,11 @@ class Data:
                 log.warning("file {} not exists, creating it".format(file))
                 fp = open(file, "x")
                 fp.close()
-                if file == config_yaml:
-                    f = open(file, "w")
-                    f.write("activity: online")
-                    f.close()
+                if file == config_json:
+                    dictionary = {"activity": "online"}
+
+                with open(config_json, "w") as outfile:
+                    json.dump(dictionary, outfile)
 
         # Create a JSON file with server info
         if not os.path.isfile(self.server_path + "server.json"):
@@ -101,3 +103,20 @@ def get_server_path(guild: nextcord.Guild) -> str:
         str
     """
     return server_path.format(guild_name=guild.name, guild_id=guild.id)
+
+
+def get_activity():
+    # Opening JSON file
+    f = open(config_json)
+
+    # returns JSON object as
+    # a dictionary
+    data = json.load(f)
+
+    # Iterating through the json
+    # list
+    activity = data["activity"]
+
+    # Closing file
+    f.close()
+    return activity

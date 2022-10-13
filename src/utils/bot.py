@@ -3,7 +3,7 @@ import nextcord
 from nextcord.errors import Forbidden
 from nextcord.ext import commands
 import os
-import yaml
+
 from utils.database import (
     check_entry_in_database,
     check_record_in_database,
@@ -16,12 +16,11 @@ from utils.database import (
 from utils.reddit import Reddit
 from utils.twitter import Twitter
 import requests
-from utils.data import Data, config_yaml
+from utils.data import Data, get_activity
 from utils import logger
 
 log = logger.getLogger(__name__)
 token = os.getenv("DISCORD_TOKEN")
-MAX_JOIN_TIMES = 3
 
 
 class Bot(commands.Bot):
@@ -95,13 +94,7 @@ class Bot(commands.Bot):
             setup_database(guild)
 
         # Set activity
-        with open(config_yaml, "r") as stream:
-            try:
-                content = yaml.safe_load(stream)
-            except yaml.YAMLError as error:
-                log.error("Error at getting YAML content: {}".format(error))
-
-        activity = nextcord.Game(content["activity"])
+        activity = nextcord.Game(get_activity())
         await self.change_presence(activity=activity, status=nextcord.Status.online)
 
         # Load cogs
@@ -113,7 +106,7 @@ class Bot(commands.Bot):
                 log.info("Loaded {}".format(c))
 
         log.info("Syncing application commands")
-        await self.sync_application_commands()
+        # await self.sync_application_commands(guild_id=788479325787258961)
         log.info("Application commands synced")
 
         # Send new version message if there's one
