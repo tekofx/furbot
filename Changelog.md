@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Añadido 
 - Al crear un post se comprueba si la/s cuenta/s introducidas existen
+- Se enviará un mensaje privado a los nuevos miembros
 
 ### Eliminado
 - Comando activity

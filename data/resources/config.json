@@ -1,6 +1,6 @@
 {
   "activity": "online",
-  "msg_dm": "Bienvenid@ a {} {}\n\nPara evitar trolleos los miembros nuevos solo tienen acceso a los canales de informacion (categoria misc), general y feedback. Para tener acceso al resto de canales contacta con algún administrador para que te de el rol de usuario y así poder interactuar con todo el servidor.\n\nMuchas gracias por tu atencion",
+  "msg_dm": "Bienvenid@ a {} {}\n\nPara evitar troleos y spam, los miembros nuevos solo tienen acceso a los canales de informacion (lobby, anuncios y normas), general y feedback. Para tener acceso al resto de canales contacta con algún administrador para que te de el rol de usuario y así poder interactuar con todo el servidor.\n\nMuchas gracias por tu atención",
   "msg_join_user": "Bienvenid@ a {} {}. No olvides mirar el canal de normas y pasarlo bien",
   "msg_join_bot": "Se ha añadido el bot {}",
   "msg_leave_user": "{}({}) se fue, una pena.",

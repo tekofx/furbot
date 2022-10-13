@@ -122,7 +122,15 @@ class Bot(commands.Bot):
             )
             msg_dm = get_config()["msg_dm"].format(member.guild.name, member.name)
             await self.channel_send(member.guild, "lobby", msg_join_user)
-            await member.send(msg_dm)
+            try:
+                await member.send(msg_dm)
+            except:
+                await self.channel_send(
+                    member.guild,
+                    "lobby",
+                    get_config()["msg_dm"].format(member.guild.name, member.mention),
+                )
+
         else:
             mensaje_lobby_bot = get_config()["msg_join_bot"].format(member.mention)
 
