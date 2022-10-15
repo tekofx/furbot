@@ -16,11 +16,9 @@ from utils.database import (
 
 from asyncio import sleep
 from utils.bot import Bot
-import yaml
 from utils import logger
 from nextcord.ext import application_checks
 from nextcord import Interaction, SlashOption
-import os
 
 
 log = logger.getLogger(__name__)

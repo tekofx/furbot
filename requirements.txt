@@ -2,9 +2,7 @@ pillow
 asyncpraw
 python-dotenv
 pyrae
-qrcode
 setproctitle
-pyyaml
 uvloop
 graphviz
 tweepy
