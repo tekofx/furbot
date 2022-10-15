@@ -2,6 +2,7 @@ import datetime
 import nextcord
 from nextcord.errors import Forbidden
 from nextcord.ext import commands
+import nextcord.ext.application_checks
 import os
 
 from utils.database import (
@@ -198,6 +199,36 @@ class Bot(commands.Bot):
         user = str(ctx.author)
         command = str(ctx.command)
         log.info(user + " used command " + command, extra={"guild": ctx.guild.id})
+
+    async def on_application_command_completion(
+        self, interaction: nextcord.Interaction
+    ):
+
+        options = interaction.data["options"]
+        var = ""
+        for x in options:
+            if x["type"] == 6:
+                user = await self.fetch_user(x["value"])
+                user = user.display_name
+                var += x["name"] + ":" + str(user) + " "
+            else:
+                var += x["name"] + ":" + str(x["value"]) + " "
+
+        log.info(
+            "{} ({}) ha utilizado /{} {}".format(
+                interaction.user.display_name,
+                interaction.user,
+                interaction.application_command.name,
+                var,
+            ),
+            extra={"guild": interaction.guild_id},
+        )
+
+    async def on_application_command_error(
+        self, interaction: nextcord.Interaction, error: Exception
+    ):
+        # TODO: Change error format
+        log.error(error)
 
     async def channel_send(
         self,
