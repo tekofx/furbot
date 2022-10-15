@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [v5.0.3] - 2022-10-15
 
+Pequeña actualizacion con mejoras de las tasks y mensajes de error
+
 ### Arreglado
 - Error con posts que hacia que siempre se publicara con la misma cuenta (otra vez)
 
