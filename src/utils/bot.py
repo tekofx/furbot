@@ -105,7 +105,7 @@ class Bot(commands.Bot):
                 log.info("Loaded {}".format(c))
 
         log.info("Syncing application commands")
-        await self.sync_application_commands()
+        await self.sync_application_commands(guild_id=788479325787258961)
         log.info("Application commands synced")
 
         # Send new version message if there's one
@@ -203,6 +203,7 @@ class Bot(commands.Bot):
     async def format_options(self, options: dict):
         var = ""
         for x in options:
+            print(x)
             if x["type"] == 6:
                 user = await self.fetch_user(x["value"])
                 user = user.display_name
@@ -219,9 +220,22 @@ class Bot(commands.Bot):
         Args:
             interaction (nextcord.Interaction): slash command interaction
         """
+
+        # FIXME: This does not work
         options = ""
-        if "options" in interaction.data:
-            options = await self.format_options(interaction.data["options"])
+        if "options" in interaction.data.keys():
+            opt = interaction.data["options"]
+            print(interaction.application_command.options)
+            for x in interaction.application_command.options:
+                print(x)
+            print(opt)
+            print()
+            if "options" in opt:
+                print(opt)
+                opt = opt["options"]
+                print(opt)
+
+            options = await self.format_options(opt)
         log.info(
             "{} ({}) in #{} used /{} {}".format(
                 interaction.user.display_name,
