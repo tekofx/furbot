@@ -8,5 +8,5 @@ pyyaml
 uvloop
 graphviz
 tweepy
-nextcord==2.1.0
+nextcord==2.2.0
 unidecode
