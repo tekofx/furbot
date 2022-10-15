@@ -200,11 +200,7 @@ class Bot(commands.Bot):
         command = str(ctx.command)
         log.info(user + " used command " + command, extra={"guild": ctx.guild.id})
 
-    async def on_application_command_completion(
-        self, interaction: nextcord.Interaction
-    ):
-
-        options = interaction.data["options"]
+    async def format_options(self, options: dict):
         var = ""
         for x in options:
             if x["type"] == 6:
@@ -213,13 +209,26 @@ class Bot(commands.Bot):
                 var += x["name"] + ":" + str(user) + " "
             else:
                 var += x["name"] + ":" + str(x["value"]) + " "
+        return var
 
+    async def on_application_command_completion(
+        self, interaction: nextcord.Interaction
+    ):
+        """When an slash command completes
+
+        Args:
+            interaction (nextcord.Interaction): slash command interaction
+        """
+        options = ""
+        if "options" in interaction.data:
+            options = await self.format_options(interaction.data["options"])
         log.info(
-            "{} ({}) ha utilizado /{} {}".format(
+            "{} ({}) in #{} used /{} {}".format(
                 interaction.user.display_name,
                 interaction.user,
+                interaction.channel.name,
                 interaction.application_command.name,
-                var,
+                options,
             ),
             extra={"guild": interaction.guild_id},
         )
@@ -227,8 +236,29 @@ class Bot(commands.Bot):
     async def on_application_command_error(
         self, interaction: nextcord.Interaction, error: Exception
     ):
-        # TODO: Change error format
-        log.error(error)
+        """Error in slash command
+
+        Args:
+            interaction (nextcord.Interaction): slash command interaction
+            error (Exception): error of slash command
+        """
+        options = ""
+        if "options" in interaction.data:
+            options = await self.format_options(interaction.data["options"])
+        log.error(
+            "{} ({}) in #{} used /{} {}".format(
+                interaction.user.display_name,
+                interaction.user,
+                interaction.channel.name,
+                interaction.application_command.name,
+                options,
+            ),
+            extra={"guild": interaction.guild_id},
+        )
+
+        await interaction.channel.send(
+            "Error: comprueba si has usado el comando correctamente. Es posible que se trate de un error interno"
+        )
 
     async def channel_send(
         self,
@@ -282,3 +312,7 @@ class Bot(commands.Bot):
         await context.send(
             "Ya no soporto el uso del comando fur. Para acceder a mis comandos usa la barra diagonal `/`"
         )
+
+
+def aux(dictionary: dict):
+    pass
