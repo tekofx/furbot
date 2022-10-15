@@ -173,7 +173,6 @@ class tasks(commands.Cog):
 
             try:
                 await channel.send(embed=embed)
-                log.info(f"Post from {post_account} sent", extra={"guild": guild.id})
             except Exception as error:
                 pass
             new_interval = next_task - datetime.now()
