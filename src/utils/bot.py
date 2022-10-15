@@ -29,8 +29,6 @@ class Bot(commands.Bot):
         intents.members = True
         intents.message_content = True
         super().__init__(
-            command_prefix=["fur ", "Fur ", "FUR "],
-            description="uwu",
             intents=intents,
         )
 
@@ -106,7 +104,7 @@ class Bot(commands.Bot):
                 log.info("Loaded {}".format(c))
 
         log.info("Syncing application commands")
-        await self.sync_application_commands(guild_id=788479325787258961)
+        await self.sync_application_commands()
         log.info("Application commands synced")
 
         # Send new version message if there's one
@@ -247,33 +245,9 @@ class Bot(commands.Bot):
     ) -> None:
         """Checks error on commands
         Args:
-            context ([type]): [Where the command was used]
-            error ([type]): [Error of the command]
+            context (commands.Context): Where the command was used
+            error (commands.CommandError): Error of the command
         """
-        message_content = str(context.message.content)
-        message_content = message_content.split(" ")
-        command_used = message_content[1]
-
-        # Argument missing
-        if isinstance(error, commands.MissingRequiredArgument):
-            await context.send("Error: Faltan parámetros")
-            await context.send_help(self.get_command(command_used))
-
-        # Command does not exist
-        if isinstance(error, commands.CommandNotFound):
-            await context.send(
-                "Error: Comando no existente, escribe `fur help` para ver los comandos disponibles"
-            )
-            # Check if exists a similar command
-            bot_commands = []
-            for command in self.commands:
-                if command_used in command.name:
-                    bot_commands.append(command.name)
-
-            if len(bot_commands) > 0:
-                output = "Igual quisiste usar: {}\n".format(",".join(bot_commands))
-                await context.send(output)
-
-        # Not admin access
-        if isinstance(error, commands.CheckFailure):
-            await context.send("Error: No tienes permiso para usar este comando")
+        await context.send(
+            "Ya no soporto el uso del comando fur. Para acceder a mis comandos usa la barra diagonal `/`"
+        )
