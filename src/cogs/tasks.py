@@ -150,8 +150,7 @@ class tasks(commands.Cog):
 
         # Loop execution
         while True:
-            # next_task = datetime.now() + timedelta(seconds=post_inteval * 60)
-            next_task = datetime.now() + timedelta(seconds=post_inteval)
+            next_task = datetime.now() + timedelta(seconds=post_inteval * 60)
 
             if " " in account:  # Multiple accounts
                 post_account = account.split(" ")
@@ -170,11 +169,14 @@ class tasks(commands.Cog):
                 embed = await self.bot.reddit.get_hot_pic_not_repeated(
                     guild, post_account, "reddit", nsfw
                 )
-
-            try:
-                await channel.send(embed=embed)
-            except Exception as error:
-                pass
+            if embed:
+                try:
+                    await channel.send(embed=embed)
+                except Exception as error:
+                    log.error(
+                        "Task of account {}: {}".format(post_account, error),
+                        extra={"guild": guild.id},
+                    )
             new_interval = next_task - datetime.now()
             await asyncio.sleep(new_interval.seconds)
 
