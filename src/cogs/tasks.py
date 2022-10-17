@@ -165,7 +165,7 @@ class tasks(commands.Cog):
                 )
 
             else:
-                post_account = account.replace("reddit@", "")
+                post_account = post_account.replace("reddit@", "")
                 embed = await self.bot.reddit.get_hot_pic_not_repeated(
                     guild, post_account, "reddit", nsfw
                 )
