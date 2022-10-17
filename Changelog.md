@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Arreglado
 - Error en posts con varias cuentas
+- Añadido mensaje al usar fur en vez de /
+
+### Modificado
+- Cambiado mensaje de bienvenida al server para que mencione al usuario
 
 ## [v5.0.5] - 2022-10-15
 

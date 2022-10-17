@@ -117,7 +117,7 @@ class Bot(commands.Bot):
 
         if not member.bot:
             msg_join_user = get_config()["msg_join_user"].format(
-                member.guild.name, member.display_name
+                member.guild.name, member.mention
             )
             msg_dm = get_config()["msg_dm"].format(member.guild.name, member.name)
             await self.channel_send(member.guild, "lobby", msg_join_user)
@@ -191,26 +191,33 @@ class Bot(commands.Bot):
                 await message.channel.send("EwE!")
             if message.content.lower() == "awa":
                 await message.channel.send("AwA!")
+            if "fur " in message.content.lower():
+                await message.channel.send(
+                    "Ahora no funciono por medio del comando `fur` prueba a utilizar `/`"
+                )
 
         await self.process_commands(message)
 
-    async def on_command(self, ctx):
+    def format_options(self, interaction: nextcord.Interaction) -> str:
+        """Formats slash command options
 
-        user = str(ctx.author)
-        command = str(ctx.command)
-        log.info(user + " used command " + command, extra={"guild": ctx.guild.id})
+        Args:
+            interaction (nextcord.Interaction): Slash command interaction
 
-    async def format_options(self, options: dict):
-        var = ""
-        for x in options:
-            print(x)
-            if x["type"] == 6:
-                user = await self.fetch_user(x["value"])
-                user = user.display_name
-                var += x["name"] + ":" + str(user) + " "
-            else:
-                var += x["name"] + ":" + str(x["value"]) + " "
-        return var
+        Returns:
+            str: string formatted
+        """
+        output = ""
+        if "options" in interaction.data.keys():
+            options = interaction.data["options"]
+
+            if "options" in options[0]:
+                options = options[0]["options"]
+
+            for x in options:
+                output += x.get("name") + ":" + str(x.get("value")) + " "
+
+        return output
 
     async def on_application_command_completion(
         self, interaction: nextcord.Interaction
@@ -221,21 +228,7 @@ class Bot(commands.Bot):
             interaction (nextcord.Interaction): slash command interaction
         """
 
-        # FIXME: This does not work
-        options = ""
-        if "options" in interaction.data.keys():
-            opt = interaction.data["options"]
-            print(interaction.application_command.options)
-            for x in interaction.application_command.options:
-                print(x)
-            print(opt)
-            print()
-            if "options" in opt:
-                print(opt)
-                opt = opt["options"]
-                print(opt)
-
-            options = await self.format_options(opt)
+        options = self.format_options(interaction)
         log.info(
             "{} ({}) in #{} used /{} {}".format(
                 interaction.user.display_name,
@@ -256,16 +249,15 @@ class Bot(commands.Bot):
             interaction (nextcord.Interaction): slash command interaction
             error (Exception): error of slash command
         """
-        options = ""
-        if "options" in interaction.data:
-            options = await self.format_options(interaction.data["options"])
+        options = self.format_options(interaction)
         log.error(
-            "{} ({}) in #{} used /{} {}".format(
+            "{} ({}) in #{} used /{} {}. {}".format(
                 interaction.user.display_name,
                 interaction.user,
                 interaction.channel.name,
                 interaction.application_command.name,
                 options,
+                error,
             ),
             extra={"guild": interaction.guild_id},
         )
@@ -314,18 +306,6 @@ class Bot(commands.Bot):
                 await general_channel.send(embed=embed)
             else:
                 await general_channel.send(msg)
-
-    async def on_command_error(
-        self, context: commands.Context, error: commands.CommandError
-    ) -> None:
-        """Checks error on commands
-        Args:
-            context (commands.Context): Where the command was used
-            error (commands.CommandError): Error of the command
-        """
-        await context.send(
-            "Ya no soporto el uso del comando fur. Para acceder a mis comandos usa la barra diagonal `/`"
-        )
 
 
 def aux(dictionary: dict):
