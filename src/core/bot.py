@@ -5,7 +5,7 @@ from nextcord.ext import commands
 import nextcord.ext.application_checks
 import os
 
-from utils.database import (
+from core.database import (
     check_entry_in_database,
     check_record_in_database,
     create_record,
@@ -14,11 +14,11 @@ from utils.database import (
     get_channel_of_type,
     setup_database,
 )
-from utils.reddit import Reddit
-from utils.twitter import Twitter
+from core.reddit import Reddit
+from core.twitter import Twitter
 import requests
-from utils.data import Data, get_activity, get_config
-from utils import logger
+from core.data import Data, get_activity, get_config
+from core import logger
 
 log = logger.getLogger(__name__)
 token = os.getenv("DISCORD_TOKEN")

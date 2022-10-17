@@ -2,11 +2,11 @@ import nextcord
 from nextcord import Interaction
 from nextcord.ext import commands
 from pyrae import dle
-from utils.bot import Bot
+from core.bot import Bot
 import os
 
 
-class utils(commands.Cog):
+class core(commands.Cog):
     def __init__(self, bot: Bot) -> None:
         self.bot = bot
 
@@ -30,4 +30,4 @@ class utils(commands.Cog):
 
 
 def setup(bot: commands.Bot):
-    bot.add_cog(utils(bot))
+    bot.add_cog(core(bot))

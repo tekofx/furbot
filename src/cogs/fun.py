@@ -1,7 +1,7 @@
 import nextcord
 from nextcord.ext import commands
 import random
-from utils.bot import Bot
+from core.bot import Bot
 from nextcord import Interaction
 import os
 

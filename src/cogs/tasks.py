@@ -1,11 +1,11 @@
 import asyncio
-from utils import logger
+from core import logger
 import requests
 import nextcord
 from nextcord.ext import commands, tasks
 from datetime import datetime, timedelta
 import random
-from utils.database import (
+from core.database import (
     check_entry_in_database,
     check_record_in_database,
     clean_records_no_account,
@@ -15,7 +15,7 @@ from utils.database import (
     get_posts,
     get_users_with_joined_date_today,
 )
-from utils.bot import Bot
+from core.bot import Bot
 
 
 log = logger.getLogger(__name__)

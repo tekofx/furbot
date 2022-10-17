@@ -2,11 +2,11 @@ from pathlib import Path
 import nextcord
 from nextcord.ext import commands
 import requests
-from utils.data import get_server_path
-from utils.functions import convert_pic
+from core.data import get_server_path
+from core.functions import convert_pic
 import os
-from utils.bot import Bot
-from utils import logger
+from core.bot import Bot
+from core import logger
 from nextcord import Interaction
 
 log = logger.getLogger(__name__)

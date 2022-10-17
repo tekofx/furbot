@@ -1,10 +1,10 @@
 # Contains all functions that are not commands
 from PIL import Image
 import os
-from utils import logger
+from core import logger
 import nextcord
 from nextcord.ext import commands
-from utils.data import meme_resources_path
+from core.data import meme_resources_path
 import io
 from nextcord import Interaction
 

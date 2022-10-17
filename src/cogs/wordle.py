@@ -1,9 +1,9 @@
 import io
 from nextcord.ext import commands, tasks
-from utils.bot import Bot
-from utils.data import get_server_path, resources_path
+from core.bot import Bot
+from core.data import get_server_path, resources_path
 import random
-from utils import logger
+from core import logger
 from datetime import datetime, timedelta
 import asyncio
 import nextcord
@@ -11,7 +11,7 @@ from pyrae import dle
 import json
 import os
 from PIL import ImageFont, ImageDraw, Image
-from utils.data import meme_resources_path
+from core.data import meme_resources_path
 from nextcord import Interaction, SlashOption
 import os
 

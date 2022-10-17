@@ -1,9 +1,9 @@
 from html import entities
-from utils import logger
+from core import logger
 
 import tweepy as tw
 import os
-from utils.database import (
+from core.database import (
     check_record_in_database,
     clean_records,
     create_record,

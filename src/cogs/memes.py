@@ -4,16 +4,16 @@ from nextcord.ext import commands
 import random
 import textwrap
 from PIL import ImageFont, ImageDraw
-from utils.functions import (
+from core.functions import (
     get_user,
 )
 import os
 import unicodedata
 import requests
 from PIL import Image
-from utils.bot import Bot
-from utils.data import get_server_path, meme_resources_path
-from utils import logger
+from core.bot import Bot
+from core.data import get_server_path, meme_resources_path
+from core import logger
 from nextcord import Interaction, SlashOption
 
 log = logger.getLogger(__name__)

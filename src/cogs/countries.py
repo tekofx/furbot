@@ -1,6 +1,6 @@
 import random
 from nextcord.ext import commands
-from utils.bot import Bot
+from core.bot import Bot
 import requests
 import nextcord
 import asyncio

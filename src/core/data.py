@@ -1,5 +1,5 @@
 import os
-from utils import logger
+from core import logger
 import nextcord
 import json
 

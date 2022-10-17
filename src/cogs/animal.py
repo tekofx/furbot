@@ -1,6 +1,6 @@
 from nextcord.ext import commands
-from utils.bot import Bot
-from utils import logger
+from core.bot import Bot
+from core import logger
 import nextcord
 from nextcord import Interaction
 import os

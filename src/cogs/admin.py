@@ -1,7 +1,7 @@
 from typing import List
 from nextcord.ext import commands
 import nextcord
-from utils.database import (
+from core.database import (
     create_channel,
     create_post,
     exists_channel,
@@ -15,8 +15,8 @@ from utils.database import (
 )
 
 from asyncio import sleep
-from utils.bot import Bot
-from utils import logger
+from core.bot import Bot
+from core import logger
 from nextcord.ext import application_checks
 from nextcord import Interaction, SlashOption
 

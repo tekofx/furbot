@@ -2,8 +2,8 @@ import os
 import setproctitle
 from dotenv import load_dotenv
 import sys
-from utils.bot import Bot
-from utils import logger
+from core.bot import Bot
+from core import logger
 
 # Set logs
 log = logger.getLogger("main")

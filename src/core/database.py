@@ -2,9 +2,9 @@ import datetime
 import random
 import sqlite3
 import os
-from utils import logger
+from core import logger
 import nextcord
-from utils.data import get_server_path
+from core.data import get_server_path
 
 
 users_table = """ CREATE TABLE IF NOT EXISTS users (
