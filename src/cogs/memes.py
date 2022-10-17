@@ -100,7 +100,7 @@ class memes(commands.Cog):
         os.rename(old, new)
         log.info(
             "Meme " + newname + " added by " + str(interaction.user),
-            extra={"guild": interaction.guild.id},
+            extra={"guild": interaction.guild.name},
         )
 
         meme_file = await meme.to_file()

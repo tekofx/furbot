@@ -42,7 +42,7 @@ class tasks(commands.Cog):
                     )
                     log.info(
                         f"Created post task of account {post[2]}",
-                        extra={"guild": guild.id},
+                        extra={"guild": guild.name},
                     )
 
     @tasks.loop(hours=1)
@@ -118,7 +118,7 @@ class tasks(commands.Cog):
         except nextcord.errors.Forbidden:
             log.error(
                 f"{guild.name} - {channel_id} is not accesible",
-                extra={"guild": guild.id},
+                extra={"guild": guild.name},
             )
             await self.bot.channel_send(
                 guild,
@@ -132,7 +132,7 @@ class tasks(commands.Cog):
         if not channel.permissions_for(guild.me).send_messages:
             log.error(
                 f"{guild.name} - {channel.name} doesn't have permission to send messages in ",
-                extra={"guild": guild.id},
+                extra={"guild": guild.name},
             )
             await self.bot.channel_send(
                 guild,
@@ -143,7 +143,7 @@ class tasks(commands.Cog):
             )
             return
 
-        log.info(f"Started task {account}", extra={"guild": guild.id})
+        log.info(f"Started task {account}", extra={"guild": guild.name})
 
         # Wait until oclock to run post
         await self.wait_until_oclock()
@@ -175,7 +175,7 @@ class tasks(commands.Cog):
                 except Exception as error:
                     log.error(
                         "Task of account {}: {}".format(post_account, error),
-                        extra={"guild": guild.id},
+                        extra={"guild": guild.name},
                     )
             new_interval = next_task - datetime.now()
             await asyncio.sleep(new_interval.seconds)
@@ -195,7 +195,7 @@ class tasks(commands.Cog):
                     except Exception as error:
                         log.error(
                             "Error creating user on join: {}".format(error),
-                            extra={"guild": guild.id},
+                            extra={"guild": guild.name},
                         )
 
     @tasks.loop(hours=1)

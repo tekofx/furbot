@@ -144,12 +144,12 @@ class Bot(commands.Bot):
             except Exception as error:
                 log.error(
                     "Error creating user on join: {}".format(error),
-                    extra={"guild": member.guild.id},
+                    extra={"guild": member.guild.name},
                 )
             else:
                 log.info(
                     "Created user {} with id {}".format(member.name, member.id),
-                    extra={"guild": member.guild.id},
+                    extra={"guild": member.guild.name},
                 )
 
     async def on_member_remove(self, member: nextcord.Member):
@@ -237,7 +237,7 @@ class Bot(commands.Bot):
                 interaction.application_command.name,
                 options,
             ),
-            extra={"guild": interaction.guild_id},
+            extra={"guild": interaction.guild.name},
         )
 
     async def on_application_command_error(
@@ -259,7 +259,7 @@ class Bot(commands.Bot):
                 options,
                 error,
             ),
-            extra={"guild": interaction.guild_id},
+            extra={"guild": interaction.guild.name},
         )
 
         await interaction.channel.send(
@@ -297,7 +297,7 @@ class Bot(commands.Bot):
                     "Error getting {} channel from server {}: {}".format(
                         channel_type, guild, error
                     ),
-                    extra={"guild": general_channel.id},
+                    extra={"guild": guild.name},
                 )
                 raise Forbidden
 
