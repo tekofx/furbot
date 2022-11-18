@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+
+## [v5.0.7] - unreleased
+
+Versión menor con mejoras y actualización de librerías
+
+### Modificado
+- Ahora al usar un comando como horny, patada, jojo, etc, se menciona al usuario.
+
 ## [v5.0.6] - 2022-10-17
 
 Parche para arreglar problemas y errores 

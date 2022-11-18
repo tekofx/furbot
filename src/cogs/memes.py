@@ -143,47 +143,42 @@ class memes(commands.Cog):
         log.info("Meme " + output + " sent", extra={"guild": interaction.guild.id})
 
     @nextcord.slash_command(name="horny")
-    async def horny(self, interaction: Interaction, user: nextcord.Member = None):
+    async def horny(self, interaction: Interaction, usuario: nextcord.Member = None):
         """Mucho horny"""
 
         avatar_info = [
             {
-                "url": get_user(interaction, user).avatar.url,
+                "url": get_user(interaction, usuario).avatar.url,
                 "size": 300,
                 "x": 410,
                 "y": 180,
             }
         ]
 
-        # Create meme
         meme = create_meme("horny", avatar_info)
-
-        # Send meme
-        await interaction.send(file=nextcord.File(meme, "output.png"))
+        await send_meme(interaction, meme, usuario)
 
     @nextcord.slash_command(name="patada")
-    async def patada(self, interaction: Interaction, user: nextcord.Member = None):
+    async def patada(self, interaction: Interaction, usuario: nextcord.Member = None):
         """Te vas a comer mi pie"""
 
         # Create meme
         avatar_info = [
             {
-                "url": get_user(interaction, user).avatar.url,
+                "url": get_user(interaction, usuario).avatar.url,
                 "size": 110,
                 "x": 198,
                 "y": 229,
             },
             {
-                "url": get_user(interaction, user).avatar.url,
+                "url": get_user(interaction, usuario).avatar.url,
                 "size": 85,
                 "x": 348,
                 "y": 915,
             },
         ]
         meme = create_meme("patada", avatar_info)
-
-        # Send meme
-        await interaction.send(file=nextcord.File(meme, "output.png"))
+        await send_meme(interaction, meme, usuario)
 
     @nextcord.slash_command(name="quote")
     async def quote(
@@ -191,18 +186,18 @@ class memes(commands.Cog):
         interaction: Interaction,
         quote: str,
         titulo: str,
-        user: nextcord.Member = None,
+        usuario: nextcord.Member = None,
     ):
         """Crear una quote
 
         Args:
             quote (str): Frase graciosa. Para poner saltos de línea escribir /
             titulo (str): Titulo de la quote
-            user (nextcord.Member, optional): Usuario de la quote.
+            usuario (nextcord.Member, optional): Usuario de la quote.
         """
         # Variables
 
-        userName = get_user(interaction, user)
+        userName = get_user(interaction, usuario)
         avatarSize = 300
         txtSize = 40
         textX = 10
@@ -292,7 +287,7 @@ class memes(commands.Cog):
         pic.save(bytes_io, "PNG")
         bytes_io.seek(0)
 
-        await interaction.send(file=nextcord.File(bytes_io, "output.png"))
+        await send_meme(interaction, bytes_io, usuario)
 
     @nextcord.slash_command(name="stonks")
     async def stonks(self, interaction: Interaction, usuario: nextcord.Member = None):
@@ -308,9 +303,7 @@ class memes(commands.Cog):
         ]
 
         meme = create_meme("stonks", avatar_info)
-
-        # Send meme
-        await interaction.send(file=nextcord.File(meme, "output.png"))
+        await send_meme(interaction, meme, usuario)
 
     @nextcord.slash_command(name="jojo")
     async def jojo(self, interaction: Interaction, usuario: nextcord.Member):
@@ -332,9 +325,7 @@ class memes(commands.Cog):
         ]
 
         meme = create_meme("jojo", avatar_info)
-
-        # Send meme
-        await interaction.send(file=nextcord.File(meme, "output.png"))
+        await send_meme(interaction, meme, usuario)
 
     @nextcord.slash_command(name="cute")
     async def cute(self, interaction: Interaction, usuario: nextcord.Member = None):
@@ -349,9 +340,7 @@ class memes(commands.Cog):
             }
         ]
         meme = create_meme("cute", avatar_info)
-
-        # Send meme
-        await interaction.send(file=nextcord.File(meme, "output.png"))
+        await send_meme(interaction, meme, usuario)
 
     @nextcord.slash_command(name="suicidio")
     async def suicidio(self, interaction: Interaction):
@@ -367,9 +356,7 @@ class memes(commands.Cog):
         ]
 
         meme = create_meme("suicidio", avatar_info)
-
-        # Send meme
-        await interaction.send(file=nextcord.File(meme, "output.png"))
+        await send_meme(interaction, meme)
 
     @nextcord.slash_command(name="coding")
     async def coding(self, interaction: Interaction, usuario: nextcord.Member = None):
@@ -385,9 +372,7 @@ class memes(commands.Cog):
         ]
 
         meme = create_meme("coding", avatar_info)
-
-        # Send meme
-        await interaction.send(file=nextcord.File(meme, "output.png"))
+        await send_meme(interaction, meme, usuario)
 
     @nextcord.slash_command(name="unsee")
     async def unsee(self, interaction: Interaction, usuario: nextcord.Member = None):
@@ -403,9 +388,7 @@ class memes(commands.Cog):
         ]
 
         meme = create_meme("unsee", avatar_info)
-
-        # Send meme
-        await interaction.send(file=nextcord.File(meme, "output.png"))
+        await send_meme(interaction, meme, usuario)
 
     @nextcord.slash_command(name="palomitas")
     async def palomitas(self, interaction: Interaction):
@@ -421,9 +404,7 @@ class memes(commands.Cog):
         ]
 
         meme = create_meme("palomitas", avatar_info)
-
-        # Send meme
-        await interaction.send(file=nextcord.File(meme, "output.png"))
+        await send_meme(interaction, meme)
 
     @nextcord.slash_command(name="quien")
     async def quien(
@@ -470,9 +451,7 @@ class memes(commands.Cog):
         bytes_io = io.BytesIO()
         img.save(bytes_io, "PNG")
         bytes_io.seek(0)
-
-        # Send meme
-        await interaction.send(file=nextcord.File(bytes_io, "output.png"))
+        await send_meme(interaction, bytes_io, usuario)
 
     @nextcord.slash_command(name="palanca")
     async def palanca(self, interaction: Interaction, usuario: nextcord.Member):
@@ -494,12 +473,10 @@ class memes(commands.Cog):
         ]
 
         meme = create_meme("palanca", avatar_info)
-
-        # Send meme
-        await interaction.send(file=nextcord.File(meme, "output.png"))
+        await send_meme(interaction, meme, usuario)
 
     @nextcord.slash_command(name="tren")
-    async def tren(self, interaction: Interaction, user: nextcord.Member):
+    async def tren(self, interaction: Interaction, usuario: nextcord.Member):
         """Atropella gente con un tren"""
 
         avatar_info = [
@@ -510,7 +487,7 @@ class memes(commands.Cog):
                 "y": 148,
             },
             {
-                "url": user.avatar.url,
+                "url": usuario.avatar.url,
                 "size": 133,
                 "x": 110,
                 "y": 275,
@@ -518,9 +495,7 @@ class memes(commands.Cog):
         ]
 
         meme = create_meme("tren", avatar_info)
-
-        # Send meme
-        await interaction.send(file=nextcord.File(meme, "output.png"))
+        await send_meme(interaction, meme, usuario)
 
     @nextcord.slash_command(name="slap")
     async def slap(self, interaction: Interaction, usuario: nextcord.Member = None):
@@ -536,9 +511,7 @@ class memes(commands.Cog):
         ]
 
         meme = create_meme("slap", avatar_info)
-
-        # Send meme
-        await interaction.send(file=nextcord.File(meme, "output.png"))
+        await send_meme(interaction, meme, usuario)
 
     @nextcord.slash_command(name="reviento")
     async def reviento(self, interaction: Interaction):
@@ -554,9 +527,7 @@ class memes(commands.Cog):
         ]
 
         meme = create_meme("reviento", avatar_info)
-
-        # Send meme
-        await interaction.send(file=nextcord.File(meme, "output.png"))
+        await send_meme(interaction, meme)
 
     @nextcord.slash_command(name="radiopatio")
     async def radiopatio(
@@ -574,9 +545,7 @@ class memes(commands.Cog):
         ]
 
         meme = create_meme("radiopatio", avatar_info)
-
-        # Send meme
-        await interaction.send(file=nextcord.File(meme, "output.png"))
+        await send_meme(interaction, meme, usuario)
 
     @nextcord.slash_command(name="coche")
     async def coche(
@@ -654,8 +623,7 @@ class memes(commands.Cog):
         bytes_io = io.BytesIO()
         meme.save(bytes_io, "PNG")
         bytes_io.seek(0)
-
-        await interaction.send(file=nextcord.File(bytes_io, "output.png"))
+        await send_meme(interaction, bytes_io, usuario)
 
     @nextcord.slash_command(name="skeletor")
     async def skeletor(self, interaction: Interaction, texto1: str, texto2: str):
@@ -691,8 +659,7 @@ class memes(commands.Cog):
         bytes_io = io.BytesIO()
         pic.save(bytes_io, "PNG")
         bytes_io.seek(0)
-
-        await interaction.send(file=nextcord.File(bytes_io, "output.png"))
+        await send_meme(interaction, bytes_io)
 
     @nextcord.slash_command(name="huracan")
     async def huracan(
@@ -725,9 +692,9 @@ class memes(commands.Cog):
             },
         ]
         meme = create_meme("huracan", avatar_info)
-
-        # Send meme
-        await interaction.send(file=nextcord.File(meme, "output.png"))
+        await interaction.send(
+            file=nextcord.File(meme, "output.png"),
+        )
 
 
 def create_meme(meme_picture: str, avatars_info: list) -> io.BytesIO:
@@ -773,6 +740,27 @@ def create_meme(meme_picture: str, avatars_info: list) -> io.BytesIO:
     bytes_io.seek(0)
 
     return bytes_io
+
+
+async def send_meme(
+    interaction: nextcord.Interaction, meme: io.BytesIO, user: nextcord.Member = None
+):
+    """Send a meme
+
+    Args:
+        interaction (nextcord.Interaction): interaction to reply
+        meme (io.BytesIO): meme to send
+        user (_type_): user mentioned. Can be None
+    """
+    try:
+        content = ""
+        if user is not None:
+            content = user.mention
+
+        # Send meme
+        await interaction.send(content=content, file=nextcord.File(meme, "output.png"))
+    except Exception as error:
+        log.error("Error sending meme: {}".format(error))
 
 
 def setup(bot: commands.Bot):
