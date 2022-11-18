@@ -3,7 +3,6 @@ from nextcord import Interaction
 from nextcord.ext import commands
 from pyrae import dle
 from core.bot import Bot
-import os
 
 
 class core(commands.Cog):
