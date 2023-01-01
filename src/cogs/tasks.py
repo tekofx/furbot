@@ -48,7 +48,7 @@ class tasks(commands.Cog):
     @tasks.loop(hours=1)
     async def estaciones(self):
         now = datetime.now()
-        if now.hour != 10:
+        if now.hour != 0:
             return
         msg = None
         if now.month == 6 and now.day == 28:
@@ -56,7 +56,7 @@ class tasks(commands.Cog):
         if now.month == 12 and now.day == 25:
             msg = "Feliz Navidad :santa: :santa: :santa:"
         if now.month == 1 and now.day == 1:
-            msg = "Feliz Año Nuevo :christmas_tree: :christmas_tree: :christmas_tree:"
+            msg = "Feliz Año Nuevo 🎉🎉🎉"
         if now.month == 10 and now.day == 31:
             msg = "Feliz Halloween :ghost: :ghost: :ghost:"
 
