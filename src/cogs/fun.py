@@ -41,6 +41,22 @@ class fun(commands.Cog):
             usuario = usuario.mention
 
         await interaction.send(output.format(usuario, num))
+        
+    @nextcord.slash_command(name="femboy")
+    async def femboy(
+        self, interaction: Interaction, usuario: nextcord.Member = None
+    ):
+        """Eres femboy?"""
+        num = random.randint(0, 100)
+
+        output = "{} es {}% femboy"
+
+        if usuario is None:
+            usuario = interaction.user.mention
+        else:
+            usuario = usuario.mention
+
+        await interaction.send(output.format(usuario, num))
 
     @nextcord.slash_command(name="capitalist")
     async def capitalist(
