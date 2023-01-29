@@ -21,7 +21,6 @@ from core.data import Data, get_activity, get_config
 from core import logger
 
 log = logger.getLogger(__name__)
-token = os.getenv("DISCORD_TOKEN")
 
 
 class Bot(commands.Bot):
@@ -36,6 +35,9 @@ class Bot(commands.Bot):
         self.token = token
         self._twitter = Twitter()
         self._reddit = Reddit()
+        self._local_guild = int(
+            os.getenv("LOCAL_GUILD")
+        )  # Guild to fetch commands at startup
 
     @property
     def twitter(self) -> Twitter:
@@ -105,7 +107,7 @@ class Bot(commands.Bot):
                 log.info("Loaded {}".format(c))
 
         log.info("Syncing application commands")
-        await self.sync_application_commands(guild_id=922913000590024724)
+        await self.sync_application_commands(guild_id=self._local_guild)
         log.info("Application commands synced")
 
         # Send new version message if there's one
