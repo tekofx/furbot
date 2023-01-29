@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [v5.2.0] - 2023-01-08
+
+Primera versión del año!
+
+### Añadido
+- Comando birthday set: Añade tu cumpleaños al bot
+- Comando birtday get: Obtén el cumpleaños de un usuario
+- Task birthday: El bot felicitará a los usuarios que hayan añadido su cumpleaños
+
 ## [v5.1.0] - 2023-01-08
 
 Primera versión del año!
