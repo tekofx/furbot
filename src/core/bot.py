@@ -105,7 +105,7 @@ class Bot(commands.Bot):
                 log.info("Loaded {}".format(c))
 
         log.info("Syncing application commands")
-        await self.sync_application_commands(guild_id=788479325787258961)
+        await self.sync_application_commands(guild_id=922913000590024724)
         log.info("Application commands synced")
 
         # Send new version message if there's one
