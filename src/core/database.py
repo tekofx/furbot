@@ -2,6 +2,7 @@ import datetime
 import random
 import sqlite3
 import os
+from typing import List
 from core import logger
 import nextcord
 from core.data import get_server_path
@@ -651,7 +652,6 @@ def get_birthday(guild: nextcord.guild, user: nextcord.Member) -> datetime.date:
     else:
         info = cur.fetchone()[0]
         info = datetime.datetime.strptime(info, "%Y-%m-%d")
-        print(type(info))
         return info
 
 
@@ -756,6 +756,37 @@ def get_users_with_joined_date_today(guild: nextcord.guild) -> list:
     else:
         info = cur.fetchall()
         return info
+
+
+def get_birthdays(guild: nextcord.Guild) -> list:
+    """Gets id and birthday of all users with birthday in database
+
+    Args:
+        guild (nextcord.Guild): guild
+
+    Returns:
+        list: containing [[id, birthday], ...]
+    """
+    database_connection = create_connection(guild)
+
+    sql = "SELECT id, birthday FROM users WHERE birthday IS NOT NULL"
+    cur = database_connection.cursor()
+    try:
+        cur.execute(sql)
+    except Exception as error:
+        log.error(
+            "Error: could not query users {}: {}".format(error),
+            extra={"guild": guild.name},
+        )
+        database_connection.close()
+    else:
+        info = cur.fetchall()
+        output = []
+        for x in info:
+            user_id = x[0]
+            birthday = datetime.datetime.strptime(x[1], "%Y-%m-%d")
+            output.append([user_id, birthday])
+        return output
 
 
 def get_joined_dates(guild: nextcord.Guild) -> list:

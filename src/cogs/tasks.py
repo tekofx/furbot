@@ -14,6 +14,7 @@ from core.database import (
     exists_channel_of_type,
     get_posts,
     get_users_with_joined_date_today,
+    get_birthdays,
 )
 from core.bot import Bot
 
@@ -30,6 +31,7 @@ class tasks(commands.Cog):
         self.free_games.start()
         self.joined_date.start()
         self.estaciones.start()
+        self.birthday.start()
         # Get posts from database
         for guild in self.bot.guilds:
             posts = get_posts(guild)
@@ -231,6 +233,34 @@ class tasks(commands.Cog):
                         member.mention, years
                     ),
                 )
+
+    @tasks.loop(hours=1)
+    async def birthday(self):
+        """Checks if today is somebody's birthday"""
+
+        now = datetime.now()
+        if now.hour != 0:
+            return
+
+        for guild in self.bot.guilds:
+
+            if not exists_channel_of_type(guild, "general"):
+                continue
+
+            members = get_birthdays(guild)
+            for member in members:
+                member_id = member[0]
+                birthday = member[1]
+
+                if birthday.day == now.day and birthday.month == now.month:
+
+                    member = await guild.fetch_member(member_id)
+
+                    await self.bot.channel_send(
+                        guild,
+                        "general",
+                        f"Hoy es el cumple de {member.mention}, Felicidades!",
+                    )
 
     @free_games.before_loop
     @joined_date.before_loop
