@@ -7,7 +7,7 @@ from core.database import set_birthday, get_birthday
 import datetime
 
 
-class core(commands.Cog):
+class Utils(commands.Cog):
     def __init__(self, bot: Bot) -> None:
         self.bot = bot
 
@@ -54,10 +54,15 @@ class core(commands.Cog):
     async def birthday_get(self, interaction: Interaction, usuario: nextcord.Member):
 
         cumple = get_birthday(interaction.guild, usuario)
+        if not cumple:
+            await interaction.send(
+                f"No existe el cumpleaños de {usuario.display_name} en la base de datos"
+            )
+            return
         await interaction.send(
             f"El cumpleaños de {usuario.display_name} es el {cumple.day}-{cumple.month}-{cumple.year}"
         )
 
 
 def setup(bot: commands.Bot):
-    bot.add_cog(core(bot))
+    bot.add_cog(Utils(bot))

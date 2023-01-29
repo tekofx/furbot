@@ -650,9 +650,12 @@ def get_birthday(guild: nextcord.guild, user: nextcord.Member) -> datetime.date:
         database_connection.close()
         return []
     else:
-        info = cur.fetchone()[0]
-        info = datetime.datetime.strptime(info, "%Y-%m-%d")
-        return info
+        result = cur.fetchone()
+        if result:
+            print("result")
+            result = result[0]
+            result = datetime.datetime.strptime(result, "%Y-%m-%d")
+        return result
 
 
 def set_channel_policy(guild: nextcord.guild, channel_id: int, policy: str) -> None:
