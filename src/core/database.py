@@ -10,7 +10,8 @@ from core.data import get_server_path
 users_table = """ CREATE TABLE IF NOT EXISTS users (
                                     id integer PRIMARY KEY,
                                     name text NOT NULL,
-                                    joined_date date
+                                    joined_date date,
+                                    birthday date
                                 ); """
 
 
@@ -70,7 +71,7 @@ def create_connection(guild: nextcord.Guild) -> sqlite3.Connection:
         sqlite3.Connection
     """
     databases_path = get_server_path(guild)
-    database = databases_path + "database.db"
+    database = databases_path + "database.sqlite"
 
     database_connection = None
     try:
@@ -152,7 +153,7 @@ def setup_database(guild: nextcord.Guild) -> None:
     """
     databases_path = get_server_path(guild)
 
-    database = databases_path + "database.db"
+    database = databases_path + "database.sqlite"
 
     # Create db files
     if not os.path.isfile(database):
@@ -530,7 +531,9 @@ def remove_post(guild: nextcord.Guild, id: int) -> None:
     cur = database_connection.cursor()
     try:
         cur.execute(sql, [id])
-        log.info("Deleted post {} from database".format(id), extra={"guild": guild.name})
+        log.info(
+            "Deleted post {} from database".format(id), extra={"guild": guild.name}
+        )
     except Exception as error:
         log.error(
             "Error: Could not delete post {} from database: {}".format(id, error),
@@ -631,6 +634,27 @@ def get_posts(guild: nextcord.guild) -> list:
         return info
 
 
+def get_birthday(guild: nextcord.guild, user: nextcord.Member) -> datetime.date:
+    database_connection = create_connection(guild)
+
+    sql = "SELECT birthday FROM users WHERE id=?"
+    cur = database_connection.cursor()
+    try:
+        cur.execute(sql, [user.id])
+    except Exception as error:
+        log.error(
+            "Error: could not query posts: {}".format(error),
+            extra={"guild": guild.name},
+        )
+        database_connection.close()
+        return []
+    else:
+        info = cur.fetchone()[0]
+        info = datetime.datetime.strptime(info, "%Y-%m-%d")
+        print(type(info))
+        return info
+
+
 def set_channel_policy(guild: nextcord.guild, channel_id: int, policy: str) -> None:
     """Sets the policy of a channel
 
@@ -673,6 +697,33 @@ def set_channel_type(guild: nextcord.guild, channel_id: int, channel_type: str) 
     except Exception as error:
         log.error(
             "Error: could not set policy {}: {}".format(channel_type, error),
+            extra={"guild": guild.name},
+        )
+        database_connection.close()
+    else:
+        database_connection.commit()
+        database_connection.close()
+
+
+def set_birthday(
+    guild: nextcord.guild, user: nextcord.Member, birthday: datetime.date
+) -> None:
+    """Sets the type of a channel
+
+    Args:
+        guild (nextcord.guild): guild to set the policy for
+        channel_id (int): id of the channel
+        channel_type (str): type of the channel
+    """
+    database_connection = create_connection(guild)
+
+    sql = "UPDATE users SET birthday=? WHERE id=?"
+    cur = database_connection.cursor()
+    try:
+        cur.execute(sql, [birthday, user.id])
+    except Exception as error:
+        log.error(
+            "Error: could not set birthday of user {}: {}".format(user, error),
             extra={"guild": guild.name},
         )
         database_connection.close()
