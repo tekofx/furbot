@@ -652,7 +652,6 @@ def get_birthday(guild: nextcord.guild, user: nextcord.Member) -> datetime.date:
     else:
         result = cur.fetchone()
         if result:
-            print("result")
             result = result[0]
             result = datetime.datetime.strptime(result, "%Y-%m-%d")
         return result
