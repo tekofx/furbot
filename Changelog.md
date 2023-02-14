@@ -5,12 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [unreleased]
+
+### Arreglado
+
+- Error en /post list que no mostraba el intervalo de los posts
 
 ## [v5.2.2] - 2023-01-29
 
 Correción de error en comando birthday get
 
 ### Arreglado
+
 - Error al usar birthday get en un usuario sin cumpleaños
 
 ## [v5.2.1] - 2023-01-29
@@ -18,6 +24,7 @@ Correción de error en comando birthday get
 Correción de error
 
 ### Arreglado
+
 - Cambiado el servidor principal con el que sincronizar los comandos. Esto producia un error al iniciar el bot.
 
 ## [v5.2.0] - 2023-01-29
@@ -25,6 +32,7 @@ Correción de error
 Nuevas opciones de cumpleaños
 
 ### Añadido
+
 - Comando birthday set: Añade tu cumpleaños al bot
 - Comando birtday get: Obtén el cumpleaños de un usuario
 - Task birthday: El bot felicitará a los usuarios que hayan añadido su cumpleaños
@@ -34,6 +42,7 @@ Nuevas opciones de cumpleaños
 Primera versión del año!
 
 ### Añadido
+
 - Comando femboy: Descubre que porcentaje de femboy hay en ti
 
 ## [v5.0.7] - 2022-11-18
@@ -41,17 +50,20 @@ Primera versión del año!
 Versión menor con mejoras y actualización de librerías
 
 ### Modificado
+
 - Ahora al usar un comando como horny, patada, jojo, etc, se menciona al usuario.
 
 ## [v5.0.6] - 2022-10-17
 
-Parche para arreglar problemas y errores 
+Parche para arreglar problemas y errores
 
 ### Arreglado
+
 - Error en posts con varias cuentas
 - Añadido mensaje al usar fur en vez de /
 
 ### Modificado
+
 - Cambiado mensaje de bienvenida al server para que mencione al usuario
 
 ## [v5.0.5] - 2022-10-15
@@ -59,6 +71,7 @@ Parche para arreglar problemas y errores
 Parche para arreglar un problema con los posts
 
 ### Arreglado
+
 - Error con task que publicaba cada minuto
 
 ## [v5.0.4] - 2022-10-15
@@ -66,47 +79,62 @@ Parche para arreglar un problema con los posts
 Pequeña actualizacion con mejoras de las tasks y mensajes de error
 
 ### Arreglado
+
 - Error con posts que hacia que siempre se publicara con la misma cuenta (otra vez)
 
-### Añadido 
+### Añadido
+
 - Al crear un post se comprueba si la/s cuenta/s introducidas existen
 - Se enviará un mensaje privado a los nuevos miembros
 
 ### Eliminado
+
 - Comando activity
 
-
 ## [v5.0.3] - 2022-09-23
+
 Versión menor que arregla un par de errores con los posts
 
 ### Añadido
+
 - Al añadir un meme se añade una estrella de reacción
-  
+
 ### Arreglado
+
 - Error con posts que hacia que siempre se publicara con la misma cuenta
 - Retraso que se forma poco a poco segun se van enviando posts
 
 ## [v5.0.2] - 2022-09-08
+
 Cambios menores debido al cambio a comandos /
+
 ### Modificado
+
 - Ahora al añadir un meme con meme add se envia el meme por el canal para que se pueda ver
-### Arreglado 
+
+### Arreglado
+
 - Error que no dejaba enviar memes al especificar el nombre
 
 ## [v5.0.1] - 2022-09-06
+
 Correccion de errores
-### Arreglado 
+
+### Arreglado
+
 - Error que impide funcionar los comandos nada mas iniciar el bot
 
 ## [v5.0.0] - 2022-09-06
 
 Ahora Furbot funciona por medio de comandos de barra diagonal, para usarlos basta con escribir / y seleccionar el comando a usar. Debido a este cambio hay comandos que han sufrido cambios
 
-### Eliminado 
+### Eliminado
+
 - Comandos carnet, teodio, insult, animo, addinsult, addanimo
 - Cog roast
 
 ### Modificado
+
 - Debido a los cambios en la politica de bots de Discord, ahora los comandos se invocan con / y algunos comandos han cambiado de nombre
 - Los comandos relacionados con stickers o memes se pueden invocar poniendo /sticker o /meme respectivamente
 - Ahora las noticias tienen un apartado de descripción donde se resumen las novedades

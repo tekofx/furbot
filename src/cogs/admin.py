@@ -373,6 +373,7 @@ class admin(commands.Cog):
         """
 
         remove_post(interaction.guild, post_id)
+
         await interaction.send("Post eliminado")
 
     @application_checks.has_permissions(administrator=True)
@@ -388,7 +389,7 @@ class admin(commands.Cog):
         for post in posts:
             channel = await self.bot.fetch_channel(post[0])
             output += "-id={}\n-canal={}\n-visibilidad={}\n-cuenta/s={} \n-intevalo={}m\n\n".format(
-                post[3], channel.mention, post[1], post[2], post[3]
+                post[3], channel.mention, post[1], post[2], post[4]
             )
 
         await interaction.send(output)
