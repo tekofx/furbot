@@ -110,7 +110,9 @@ class admin(commands.Cog):
         pass
 
     @application_checks.has_permissions(administrator=True)
-    @canales.subcommand(name="rmchannelpolicy")
+    @canales.subcommand(
+        name="rmpolicy",
+    )
     async def canales_rmchannelpolicy(
         self, interaction: Interaction, canal: nextcord.TextChannel
     ):

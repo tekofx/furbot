@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+### Modificado
+
+- Cambiado comando /canales rmchannelpolicy a /canales rmpolicy
+
 ### Arreglado
 
 - Error en /post list que no mostraba el intervalo de los posts
