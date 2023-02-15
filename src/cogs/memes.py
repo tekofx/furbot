@@ -161,6 +161,21 @@ class memes(commands.Cog):
     async def meme(self, interaction: Interaction):
         pass
 
+    @meme.subcommand(name="count")
+    async def meme_list(self, interaction: Interaction, usuario: str = None):
+        """Cuenta el numero de memes de un usuario o en total
+
+        Args:
+            interaction (Interaction): Interaction
+        """
+        memes_path = get_server_path(interaction.guild) + "/memes/"
+        output = []
+        for file in os.listdir(memes_path):
+            if (usuario and usuario.lower() in file.lower()) or not usuario:
+                output.append(file)
+
+        await interaction.send(f"Hay guardados {len(output)} memes")
+
     @meme.subcommand(name="send")
     async def meme_send(
         self,
