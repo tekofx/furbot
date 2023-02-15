@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+### Añadido
+
+- Comando meme count: Cuenta el numero de memes que hay para un usuario o en general
+- Ahora los memes se añaden por medio de un foro, en el que el bot preguntará que miembros aparecen en el meme.
+
 ### Modificado
 
 - Cambiado comando /canales rmchannelpolicy a /canales rmpolicy
