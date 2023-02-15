@@ -51,9 +51,11 @@ class memes(commands.Cog):
         def check(msg=nextcord.Message) -> bool:
             return msg.author == message.author and msg.channel == message.thread
 
-        await message.reply("Que miembros salen en el meme? (separados por comas)")
+        await message.reply(
+            "Que miembros salen en el meme? Escribe sus nombres separados por espacios"
+        )
         try:
-            name = await self.bot.wait_for("message", timeout=60.0, check=check)
+            name = await self.bot.wait_for("message", timeout=80.0, check=check)
         except asyncio.TimeoutError:
             await message.thread.send("Tiempo agotado")
             await message.thread.delete()
