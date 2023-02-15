@@ -32,6 +32,7 @@ PREDEFINED_CHANNELS = dict(
         "wordle": "Canal para jugar a wordle",
         "numbers": "Canal jugar a contar numeros",
         "ordure": "Canal para enviar cosas bizarras",
+        "memes": "Canal para enviar memes del server",
     },
 )
 
@@ -183,7 +184,7 @@ class admin(commands.Cog):
     async def channel_set_type(
         self,
         interaction: Interaction,
-        canal: nextcord.TextChannel,
+        canal: nextcord.TextChannel | nextcord.ForumChannel,
         tipo: str = SlashOption(name="tipo", choices=PREDEFINED_CHANNELS.keys()),
     ):
         """[Admin] Configura un canal predefinido del bot.
