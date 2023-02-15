@@ -1,4 +1,6 @@
+import asyncio
 import io
+import time
 import nextcord
 from nextcord.ext import commands
 import random
@@ -15,6 +17,7 @@ from core.bot import Bot
 from core.data import get_server_path, meme_resources_path
 from core import logger
 from nextcord import Interaction, SlashOption
+from core.database import get_channel_of_type
 
 log = logger.getLogger(__name__)
 
@@ -23,90 +26,140 @@ class memes(commands.Cog):
     def __init__(self, bot: Bot) -> None:
         self.bot = bot
 
+    @commands.Cog.listener()
+    async def on_message(self, message: nextcord.Message) -> None:
+        """Listens for messages of meme channel, asking the user who are in the meme and saving the meme
+
+        Args:
+            message (nextcord.Message): message to check
+        """
+        if not message.thread:
+            return
+
+        memes_forum_id = get_channel_of_type(message.guild, "memes")
+        if message.thread.parent_id != memes_forum_id:
+            return
+
+        if not message.attachments:
+            await message.thread.send(
+                "No hay un meme adjunto. Debes añadir el meme al crear el hilo. Se borrará el hilo en 5 segundos"
+            )
+            time.sleep(5)
+            await message.thread.delete()
+            return
+
+        def check(msg=nextcord.Message) -> bool:
+            return msg.author == message.author and msg.channel == message.thread
+
+        await message.reply("Que miembros salen en el meme? (separados por comas)")
+        try:
+            name = await self.bot.wait_for("message", timeout=60.0, check=check)
+        except asyncio.TimeoutError:
+            await message.thread.send("Tiempo agotado")
+            await message.thread.delete()
+            return
+
+        finally:
+            image = message.attachments[0]
+
+            result = self.save_meme(name.content, image, message.guild, message.author)
+            if result:
+                await message.thread.send("Meme guardado")
+            else:
+                await message.thread.send("Error al guardar el meme")
+
+    def save_meme(
+        self,
+        name: str,
+        meme: nextcord.Attachment,
+        guild: nextcord.Guild,
+        author: nextcord.Member,
+    ) -> bool:
+        """Saves a meme in the meme folder
+
+        Args:
+            name (str): of the meme
+            meme (nextcord.Attachment): image
+            guild (nextcord.Guild): the guild that meme belong to
+            author (nextcord.Member): the author of the meme
+
+        Returns:
+            bool: True if meme was saved, False if not
+        """
+        try:
+            memes_path = get_server_path(guild) + "/memes/"
+
+            meme_extension = "." + meme.filename.split(".")[-1]
+            meme_extension = meme_extension[-4:]
+            count = 1
+
+            # Remove "
+            name = name.replace('"', "")
+
+            # Remove accents
+            name = unicodedata.normalize("NFD", name)
+            name = name.encode("ascii", "ignore")
+            name = name.decode("utf-8")
+
+            # Capitalize all names
+            name = name.lower()
+            name = name.title()
+
+            # split into a list
+            names = name.split()
+
+            # Order names in case they are not in order
+            names = sorted(names)
+            name = " ".join(names)
+
+            # Count the number to add to the name
+            if meme_extension == ".png" or meme_extension == ".jpg":
+                for x in os.listdir(memes_path):
+                    aux2 = x.split(" (", 1)
+                    if "jpg" in aux2[1] and aux2[0] == name:
+                        count = count + 1
+
+            if meme_extension == ".mp4":
+                for x in os.listdir(memes_path):
+                    aux2 = x.split(" (", 1)
+                    if "mp4" in x and aux2[0] == name:
+                        count = count + 1
+
+            count = str(count)
+
+            name = name + " (" + count + ")"
+
+            name = name.replace(" ", "_")
+            meme_url = meme.url
+
+            r = requests.get(meme_url, allow_redirects=True)
+            open(memes_path + name + meme_extension, "wb").write(r.content)
+
+            if meme_extension == ".png":
+                im = Image.open(memes_path + name + meme_extension)
+                rgb_im = im.convert("RGB")
+                meme_extension = ".jpg"
+                rgb_im.save(memes_path + name + meme_extension)
+                os.remove(memes_path + name + ".png")
+
+            old = memes_path + name + meme_extension
+            newname = name.replace("_", " ")
+            new = memes_path + newname + meme_extension
+            os.rename(old, new)
+            log.info(
+                f"Meme {newname} added by {author.name}",
+                extra={"guild": guild.name},
+            )
+        except Exception as e:
+            log.error(f"Error adding meme: {e}", extra={"guild": guild.name})
+            return False
+
+        finally:
+            return True
+
     @nextcord.slash_command(name="meme")
     async def meme(self, interaction: Interaction):
         pass
-
-    @meme.subcommand(
-        name="add",
-    )
-    async def meme_add(
-        self, interaction: Interaction, meme: nextcord.Attachment, nombre: str
-    ):
-        """Añade un meme al bot
-
-        Args:
-            meme (nextcord.Attachment): meme
-            nombre (str): nombre del meme
-        """
-        memes_path = get_server_path(interaction.guild) + "/memes/"
-
-        meme_extension = "." + meme.filename.split(".")[-1]
-        meme_extension = meme_extension[-4:]
-        count = 1
-
-        # Remove "
-        nombre = nombre.replace('"', "")
-
-        # Remove accents
-        nombre = unicodedata.normalize("NFD", nombre)
-        nombre = nombre.encode("ascii", "ignore")
-        nombre = nombre.decode("utf-8")
-
-        # Capitalize all names
-        nombre = nombre.lower()
-        nombre = nombre.title()
-
-        # split into a list
-        names = nombre.split()
-
-        # Order names in case they are not in order
-        names = sorted(names)
-        nombre = " ".join(names)
-
-        # Count the number to add to the name
-        if meme_extension == ".png" or meme_extension == ".jpg":
-            for x in os.listdir(memes_path):
-                aux2 = x.split(" (", 1)
-                if "jpg" in aux2[1] and aux2[0] == nombre:
-                    count = count + 1
-
-        if meme_extension == ".mp4":
-            for x in os.listdir(memes_path):
-                aux2 = x.split(" (", 1)
-                if "mp4" in x and aux2[0] == nombre:
-                    count = count + 1
-
-        count = str(count)
-
-        nombre = nombre + " (" + count + ")"
-
-        nombre = nombre.replace(" ", "_")
-        meme_url = meme.url
-
-        r = requests.get(meme_url, allow_redirects=True)
-        open(memes_path + nombre + meme_extension, "wb").write(r.content)
-
-        if meme_extension == ".png":
-            im = Image.open(memes_path + nombre + meme_extension)
-            rgb_im = im.convert("RGB")
-            meme_extension = ".jpg"
-            rgb_im.save(memes_path + nombre + meme_extension)
-            os.remove(memes_path + nombre + ".png")
-
-        old = memes_path + nombre + meme_extension
-        newname = nombre.replace("_", " ")
-        new = memes_path + newname + meme_extension
-        os.rename(old, new)
-        log.info(
-            "Meme " + newname + " added by " + str(interaction.user),
-            extra={"guild": interaction.guild.name},
-        )
-
-        meme_file = await meme.to_file()
-        msg = await interaction.channel.send(file=meme_file)
-        await msg.add_reaction("⭐")
-        await interaction.send("Meme " + newname + " añadido")
 
     @meme.subcommand(name="send")
     async def meme_send(
