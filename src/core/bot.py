@@ -108,6 +108,10 @@ class Bot(commands.Bot):
 
         log.info("Syncing application commands")
         await self.sync_application_commands(guild_id=self._local_guild)
+
+        # If commands sync not work uncomment this and run the bot
+        """ self.add_all_application_commands()
+        await self.sync_all_application_commands() """
         log.info("Application commands synced")
 
         # Send new version message if there's one
