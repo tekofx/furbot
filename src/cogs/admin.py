@@ -298,7 +298,7 @@ class admin(commands.Cog):
             canal: canal al que enviar
             visibilidad: Si/No. Si se quiere que se cojan los posts NSFW o no
             intervalo: Minutos entre un post y otro. Debe ser mayor a los 5 mins
-            cuentas: cuenta/cuentas de twitter/subreddit. En caso de varias cuentas separadas por espacios
+            cuentas: Deben escribirse como reddit@subreddit o twitter@cuenta. Ej: twitter@teko_fx. Para varias cuentas separar por espacios
         """
 
         if visibilidad == "nsfw" and not canal.nsfw:
