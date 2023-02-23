@@ -32,8 +32,6 @@ class memes(commands.Cog):
 
         Args:
             thread (nextcord.Thread): thread created
-
-
         """
         memes_forum_id = get_channel_of_type(thread.guild, "memes")
         if thread.parent_id != memes_forum_id:
