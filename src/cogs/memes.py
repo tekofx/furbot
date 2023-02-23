@@ -27,25 +27,27 @@ class memes(commands.Cog):
         self.bot = bot
 
     @commands.Cog.listener()
-    async def on_message(self, message: nextcord.Message) -> None:
-        """Listens for messages of meme channel, asking the user who are in the meme and saving the meme
+    async def on_thread_create(self, thread: nextcord.Thread) -> None:
+        """On Thread creation
 
         Args:
-            message (nextcord.Message): message to check
+            thread (nextcord.Thread): thread created
+
+
         """
-        if not message.thread:
+        memes_forum_id = get_channel_of_type(thread.guild, "memes")
+        if thread.parent_id != memes_forum_id:
             return
 
-        memes_forum_id = get_channel_of_type(message.guild, "memes")
-        if message.thread.parent_id != memes_forum_id:
-            return
+        message = await thread.history(limit=1).flatten()
+        message = message[0]
 
         if not message.attachments:
-            await message.thread.send(
-                "No hay un meme adjunto. Debes añadir el meme al crear el hilo. Se borrará el hilo en 5 segundos"
+            await thread.send(
+                "No hay un meme adjunto. Debes añadir el meme al crear el hilo. Se borrará el hilo."
             )
             time.sleep(5)
-            await message.thread.delete()
+            await thread.delete()
             return
 
         def check(msg=nextcord.Message) -> bool:
