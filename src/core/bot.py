@@ -121,42 +121,24 @@ class Bot(commands.Bot):
 
     async def on_member_join(self, member: nextcord.Member):
 
-        if not member.bot:
-            msg_join_user = get_config()["msg_join_user"].format(
-                member.guild.name, member.mention
-            )
-            msg_dm = get_config()["msg_dm"].format(member.guild.name, member.name)
-            await self.channel_send(member.guild, "lobby", msg_join_user)
-            try:
-                await member.send(msg_dm)
-            except:
-                await self.channel_send(
-                    member.guild,
-                    "lobby",
-                    get_config()["msg_dm"].format(member.guild.name, member.mention),
-                )
-
-        else:
+        if member.bot:
             mensaje_lobby_bot = get_config()["msg_join_bot"].format(member.mention)
-
             await self.channel_send(member.guild, "lobby", mensaje_lobby_bot)
+            return
 
-        entry_in_database = check_entry_in_database(member.guild, "users", member.id)
-        if not entry_in_database and not member.bot:
-            # Add to database
-            try:
-                joined_date = datetime.datetime.strftime(member.joined_at, "%Y-%m-%d")
-                create_user(member.guild, [member.id, member.name, joined_date])
-            except Exception as error:
-                log.error(
-                    "Error creating user on join: {}".format(error),
-                    extra={"guild": member.guild.name},
-                )
-            else:
-                log.info(
-                    "Created user {} with id {}".format(member.name, member.id),
-                    extra={"guild": member.guild.name},
-                )
+        msg_join_user = get_config()["msg_join_user"].format(
+            member.guild.name, member.mention
+        )
+        msg_dm = get_config()["msg_dm"].format(member.guild.name, member.name)
+        await self.channel_send(member.guild, "lobby", msg_join_user)
+        try:
+            await member.send(msg_dm)
+        except:
+            await self.channel_send(
+                member.guild,
+                "lobby",
+                get_config()["msg_dm"].format(member.guild.name, member.mention),
+            )
 
     async def on_member_remove(self, member: nextcord.Member):
         # When a user leaves a server
