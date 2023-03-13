@@ -95,6 +95,30 @@ def create_connection(guild: nextcord.Guild) -> sqlite3.Connection:
         )
 
 
+def drop_table(guild: nextcord.Guild, table_name: str) -> None:
+    """Drops a table from the database
+
+    Args:
+        guild (nextcord.Guild) : Guild to access its database
+        table_name (str): name of the table
+    """
+    database_connection = create_connection(guild)
+
+    try:
+        c = database_connection.cursor()
+        c.execute("DROP TABLE IF EXISTS {}".format(table_name))
+        log.info("Dropped table {}".format(table_name), extra={"guild": guild.name})
+
+    except Exception as e:
+        log.error(
+            "Error: Could not drop table {}. Reason: {}".format(table_name, e),
+            extra={"guild": guild.name},
+        )
+        database_connection.close()
+    else:
+        database_connection.close()
+
+
 def create_table(guild: nextcord.Guild, table_sql_sentence: str) -> None:
     """Creates a table in the database
     Args:
@@ -175,9 +199,8 @@ def setup_database(guild: nextcord.Guild) -> None:
         f = open(database, "x")
         f.close()
 
-    # create a database connection
-
     # create tables
+    drop_table(guild, "messages")
     for table in tables:
         create_table(guild, table)
 
