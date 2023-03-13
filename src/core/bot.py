@@ -178,11 +178,7 @@ class Bot(commands.Bot):
             # Time out the user
             try:
                 await message.author.timeout(timeout=None, reason="Spam")
-                await self.channel_send(
-                    message.guild,
-                    "audit",
-                    f"Se ha aislado de forma indefinida al usuario {message.author.mention}",
-                )
+                
             except Exception as e:
                 log.error(
                     f"Error al aislar al usuario {message.author.display_name}: {e}"
@@ -191,6 +187,12 @@ class Bot(commands.Bot):
                     message.guild,
                     "audit",
                     f"No he podido aislar al usuario {message.author.mention}. Puede que me falten permisos para ello.",
+                )
+            finally:
+                await self.channel_send(
+                    message.guild,
+                    "audit",
+                    f"Se ha aislado de forma indefinida al usuario {message.author.mention}",
                 )
 
             # Delete messages with spam
