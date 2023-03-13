@@ -5,16 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v5.4.0] - 2023-03-13
+
+Debido al aumento de ataques de spam y la inutilidad de discord para detectar el spam, se ha añadido al bot la opción de detectar el spam, aislar indefinidamente al usuario y borrar los mensajes de spam.
+
+### Añadido
+
+- Antispam: Aisla de forma indefinida a un usuario que spamee el mismo mensaje aunque sea en varios canales y borra los mensajes de spam.
+
 ## [v5.3.2] - 2023-02-15
 
 Correccion de errores
+
 ### Arreglado
+
 - Actualizado Python a versión 3.10
 
 ## [v5.3.1] - 2023-02-15
 
 Correccion de errores
+
 ### Arreglado
+
 - Actualizada libreria de discord
 
 ## [v5.3.0] - 2023-02-15
