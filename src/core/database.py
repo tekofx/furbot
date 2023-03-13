@@ -51,6 +51,15 @@ posts_table = """ CREATE TABLE IF NOT EXISTS posts (
                                     interval integer NOT NULL
                                 ); """
 
+
+messages_table = """ CREATE TABLE IF NOT EXISTS messages (
+                                    message_id integer PRIMARY KEY,
+                                    channel_id integer NOT NULL,
+                                    user_id integer NOT NULL, 
+                                    content text NOT NULL,
+                                    date text NOT NULL
+                                ); """
+
 tables = [
     users_table,
     roles_table,
@@ -58,6 +67,7 @@ tables = [
     records_table,
     channels_table,
     posts_table,
+    messages_table,
 ]
 log = logger.getLogger(__name__)
 
@@ -582,6 +592,128 @@ def clean_records_no_account(guild: nextcord.Guild, record_type: str, posts: lis
 
 
 ###################### Getters and setters ######################
+
+
+def delete_message(message_id: int, guild: nextcord.Guild):
+    database_connection = create_connection(guild)
+
+    sql = "DELETE FROM messages WHERE message_id=?"
+    cur = database_connection.cursor()
+    try:
+        cur.execute(sql, [message_id])
+        log.info(
+            "Deleted message {} from database".format(message_id),
+            extra={"guild": guild.name},
+        )
+    except Exception as error:
+        log.error(
+            "Error: Could not delete message {} from database: {}".format(
+                message_id, error
+            ),
+            extra={"guild": guild.name},
+        )
+        database_connection.close()
+    else:
+        database_connection.commit()
+        database_connection.close()
+
+
+def get_messages_with_same_content(message: nextcord.Message) -> list:
+    database_connection = create_connection(message.guild)
+
+    sql = """ SELECT channel_id,message_id FROM messages WHERE content = ? and user_id = ?"""
+    cur = database_connection.cursor()
+    try:
+        cur.execute(sql, [message.content, message.author.id])
+    except Exception as error:
+        log.error(
+            "Error: could not get messages with content {}: {}".format(
+                message.content, error
+            ),
+            extra={"guild": message.guild.name},
+        )
+        database_connection.close()
+    else:
+        info = cur.fetchall()
+        return info
+
+
+def count_content_message(message: nextcord.Message) -> int:
+    database_connection = create_connection(message.guild)
+
+    sql = """ SELECT COUNT(*) FROM messages WHERE content = ? and date > ?"""
+    cur = database_connection.cursor()
+    try:
+        cur.execute(
+            sql,
+            [message.content, message.created_at - datetime.timedelta(seconds=10)],
+        )
+    except Exception as error:
+        log.error(
+            "Error: could not count messages with content {}: {}".format(
+                message.content, error
+            ),
+            extra={"guild": message.guild.name},
+        )
+        database_connection.close()
+    else:
+        info = cur.fetchone()
+        return info[0]
+
+
+def create_message(message: nextcord.Message):
+    database_connection = create_connection(message.guild)
+
+    sql = """ INSERT INTO messages(message_id,channel_id,user_id,content,date)
+              VALUES(?,?,?,?,?) """
+
+    cur = database_connection.cursor()
+    try:
+        cur.execute(
+            sql,
+            [
+                message.id,
+                message.channel.id,
+                message.author.id,
+                message.content,
+                message.created_at,
+            ],
+        )
+        log.debug(
+            f"Message from {message.author.display_name} was added to the database",
+            extra={"guild": message.guild.name},
+        )
+    except Exception as error:
+        log.error(
+            f"Error: Could not create message from {message.author.display_name}: {error}",
+            extra={"guild": message.guild.name},
+        )
+        database_connection.close()
+    else:
+        database_connection.commit()
+        database_connection.close()
+
+
+def get_latest_messages(guild: nextcord.guild, user: nextcord.Member):
+    database_connection = create_connection(guild)
+
+    sql = "SELECT message_id, channel_id,user_id,content,date FROM messages WHERE user_id=? LIMIT 10"
+    cur = database_connection.cursor()
+    try:
+        cur.execute(sql, [user.id])
+    except Exception as error:
+        log.error(
+            "Error: could not query messages of {}: {}".format(
+                user.display_name, error
+            ),
+            extra={"guild": guild.name},
+        )
+        database_connection.close()
+    else:
+        info = cur.fetchall()
+        return info
+
+
 def get_records_of_type(guild: nextcord.guild, record_type: str) -> list:
     """Gets records of certain type
 
