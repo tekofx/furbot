@@ -32,6 +32,7 @@ class tasks(commands.Cog):
         self.joined_date.start()
         self.estaciones.start()
         self.birthday.start()
+        self.sync_commands.start()
         # Get posts from database
         for guild in self.bot.guilds:
             posts = get_posts(guild)
@@ -46,6 +47,11 @@ class tasks(commands.Cog):
                         f"Created post task of account {post[2]}",
                         extra={"guild": guild.name},
                     )
+    
+    @tasks.loop(hour=1)
+    async def sync_commands(self):
+        await self.bot.sync_application_commands()
+        
 
     @tasks.loop(hours=1)
     async def estaciones(self):
