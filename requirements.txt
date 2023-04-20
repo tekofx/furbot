@@ -6,5 +6,5 @@ setproctitle
 uvloop
 graphviz
 tweepy
-nextcord==2.4.0
+nextcord==2.4.2
 unidecode
