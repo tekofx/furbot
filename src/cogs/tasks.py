@@ -48,7 +48,7 @@ class tasks(commands.Cog):
                         extra={"guild": guild.name},
                     )
     
-    @tasks.loop(hour=1)
+    @tasks.loop(hours=1)
     async def sync_commands(self):
         await self.bot.sync_application_commands()
         
@@ -154,7 +154,7 @@ class tasks(commands.Cog):
         log.info(f"Started task {account}", extra={"guild": guild.name})
 
         # Wait until oclock to run post
-        await self.wait_until_oclock()
+        #await self.wait_until_oclock()
 
         # Loop execution
         while True:
