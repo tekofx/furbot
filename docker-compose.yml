@@ -3,11 +3,9 @@ services:
   furbot:
     image: ghcr.io/tekofx/furbot
     container_name: furbot
-    ports:
-      - "100:80"
 
+    env_file: .env
     volumes:
-      - ./env:/bot/env
       - ./data/servers:/bot/data/servers
 
     restart: unless-stopped
