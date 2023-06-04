@@ -285,7 +285,9 @@ class admin(commands.Cog):
         interaction: Interaction,
         canal: nextcord.TextChannel,
         intervalo: int,
-        cuentas: str,
+        servicio:str = SlashOption(
+            name="Servicios", choices={"Twitter": "twitter", "Reddit": "reddit"}),
+        cuenta: str="cuenta",
         visibilidad: str = SlashOption(
             name="visibilidad", choices={"SFW": "sfw", "NSFW": "nsfw"}
         ),
@@ -298,7 +300,7 @@ class admin(commands.Cog):
             canal: canal al que enviar
             visibilidad: Si/No. Si se quiere que se cojan los posts NSFW o no
             intervalo: Minutos entre un post y otro. Debe ser mayor a los 5 mins
-            cuentas: Deben escribirse como reddit@subreddit o twitter@cuenta. Ej: twitter@teko_fx. Para varias cuentas separar por espacios
+            cuenta: Cuenta/subreddit
         """
 
         if visibilidad == "nsfw" and not canal.nsfw:
@@ -317,52 +319,34 @@ class admin(commands.Cog):
             await interaction.send("El intervalo debe ser mayor que 5 minutos.")
             return
 
-        account = []
-
-        cuentas = cuentas.split(" ")
-
-        for arg in cuentas:
-
-            if "twitter@" not in arg and "reddit@" not in arg:
-                await interaction.send("Se ha introducido una cuenta no válida")
+        if servicio=="reddit":
+            exists = await self.bot.reddit.exists_subreddit(
+                cuenta
+            )
+            if not exists:
                 await interaction.send(
-                    "La cuenta tiene que ser del formato: twitter@cuenta, reddit@cuenta"
+                    f"El subreddit {cuenta} no existe, comprueba el subreddit y vuelve a intentarlo"
                 )
                 return
 
-            if "reddit@" in arg:
-                exists = await self.bot.reddit.exists_subreddit(
-                    arg.replace("reddit@", "")
+        if servicio=="twitter":
+            var = self.bot.twitter.exists_account(cuenta)
+
+            if not var:
+                await interaction.send(
+                    f"La cuenta {cuenta} no existe, comprueba la cuenta y vuelve a intentarlo"
                 )
-                if not exists:
-                    await interaction.send(
-                        "El subreddit {} no existe, comprueba el subreddit y vuelve a intentarlo".format(
-                            arg
-                        )
-                    )
-                    return
+                return
 
-            if "twitter@" in arg:
-                var = self.bot.twitter.exists_account(arg.replace("twitter@", ""))
-
-                if not var:
-                    await interaction.send(
-                        "La cuenta {} no existe, comprueba la cuenta y vuelve a intentarlo".format(
-                            arg
-                        )
-                    )
-                    return
-            account.append(arg)
-
-        cuenta = " ".join(account)
-        create_post(interaction.guild, [canal.id, visibilidad, cuenta, intervalo])
+        create_post(interaction.guild, canal.id,visibilidad,servicio,cuenta,intervalo)
         await interaction.send("Post creado")
 
         # Get tasks cog and create task
         tasks = self.bot.cogs.get("tasks")
+        
         self.bot.loop.create_task(
             tasks.post_task(
-                interaction.guild, [canal.id, visibilidad, cuenta, 0, intervalo]
+                interaction.guild, canal.id, visibilidad,servicio, cuenta,  intervalo
             )
         )
 
@@ -387,13 +371,18 @@ class admin(commands.Cog):
         if not posts:
             await interaction.send("No hay posts para este servidor")
             return
+        channel_id=post[0]
+        visibility=post[1]
+        service=post[2]
+        account=post[3]
+        post_id=post[4]
+        interval=post[5]
 
         output = ""
         for post in posts:
             channel = await self.bot.fetch_channel(post[0])
-            output += "-id={}\n-canal={}\n-visibilidad={}\n-cuenta/s={} \n-intevalo={}m\n\n".format(
-                post[3], channel.mention, post[1], post[2], post[4]
-            )
+            output += f"-id={post_id}\n-canal={channel.mention}\n-visibilidad={visibility}\n-servicio={service}\n-cuenta={account} \n-intevalo={interval}m\n\n"
+            
 
         await interaction.send(output)
 

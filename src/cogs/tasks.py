@@ -106,21 +106,17 @@ class tasks(commands.Cog):
                         guild, channel_type="games", msg="a", embed=embed
                     )
 
-    async def post_task(self, guild: nextcord.Guild, post: list):
+    async def post_task(self, guild: nextcord.Guild, channel_id:int, visibility:str,service:str, account:str,interval:str):
         """Creates a new task
 
         Args:
             guild (nextcord.Guild): guild
             post (list): post to be posted
         """
-        channel_id = post[0]
-        nsfw = post[1]
-        account = post[2]
-        post_inteval = post[4]
-        if nsfw == "nsfw":
-            nsfw = True
+        if visibility== "nsfw":
+            visibility= True
         else:
-            nsfw = False
+            visibility= False
         try:
             channel = await self.bot.fetch_channel(channel_id)
         except nextcord.errors.Forbidden:
@@ -154,35 +150,29 @@ class tasks(commands.Cog):
         log.info(f"Started task {account}", extra={"guild": guild.name})
 
         # Wait until oclock to run post
-        #await self.wait_until_oclock()
+        await self.wait_until_oclock()
 
         # Loop execution
         while True:
-            next_task = datetime.now() + timedelta(seconds=post_inteval * 60)
+            next_task = datetime.now() + timedelta(seconds=interval * 60)
 
-            if " " in account:  # Multiple accounts
-                post_account = account.split(" ")
-                post_account = random.choice(post_account)
-            else:
-                post_account = account
+            
 
-            if "twitter" in account:
-                post_account = post_account.replace("twitter@", "")
+            if service=="twitter":
                 embed = self.bot.twitter.get_latest_image_not_repeated(
-                    guild, post_account, "twitter"
+                    guild, account, "twitter"
                 )
 
-            else:
-                post_account = post_account.replace("reddit@", "")
+            if service=="reddit":
                 embed = await self.bot.reddit.get_hot_pic_not_repeated(
-                    guild, post_account, "reddit", nsfw
+                    guild, account, "reddit", visibility
                 )
             if embed:
                 try:
                     await channel.send(embed=embed)
                 except Exception as error:
                     log.error(
-                        "Task of account {}: {}".format(post_account, error),
+                        f"Task of account {account}({service}): {error}",
                         extra={"guild": guild.name},
                     )
             new_interval = next_task - datetime.now()

@@ -47,7 +47,8 @@ posts_table = """ CREATE TABLE IF NOT EXISTS posts (
                                     id integer PRIMARY KEY AUTOINCREMENT,
                                     channel_id integer NOT NULL,
                                     visibility text NOT NULL, 
-                                    accounts text NOT NULL, 
+                                    service text NOT NULL,
+                                    account text NOT NULL, 
                                     interval integer NOT NULL
                                 ); """
 
@@ -498,15 +499,21 @@ def create_channel(
         database_connection.close()
 
 
-def create_post(guild: nextcord.guild, post_data: list) -> None:
+def create_post(guild: nextcord.guild, channel_id:int,visibility:str,service:str, account:str, interval:int) -> None:
     """Creates a post in the posts table
-    Args:
-        guild (nextcord.Guild) : Guild to access its database
-        post_data (list): info of post. Containing [channel_id, visibility(SFW/NSFW), account, interval]
-    """
-    database_connection = create_connection(guild)
 
-    sql = """ INSERT INTO posts(channel_id,visibility,accounts, interval)
+    Args:
+        guild (nextcord.guild): Guild 
+        channel_id (int): channel to send post
+        visibility (str): SFW/NSFW
+        service (str): Social network to get post (Twitter, Reddit)
+        account (str): Account/subreddit to get post from
+        interval (int): frequency of post publication
+    """    
+    database_connection = create_connection(guild)
+    post_data=[channel_id,visibility,service,account,interval]
+
+    sql = """ INSERT INTO posts(channel_id,visibility,service, account, interval)
               VALUES(?,?,?,?) """
 
     cur = database_connection.cursor()
@@ -774,7 +781,7 @@ def get_posts(guild: nextcord.guild) -> list:
     """
     database_connection = create_connection(guild)
 
-    sql = "SELECT channel_id, visibility, accounts, id, interval FROM posts "
+    sql = "SELECT channel_id, visibility,service, account, id, interval FROM posts "
     cur = database_connection.cursor()
     try:
         cur.execute(sql)
