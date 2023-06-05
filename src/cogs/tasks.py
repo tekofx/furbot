@@ -38,20 +38,26 @@ class tasks(commands.Cog):
             posts = get_posts(guild)
             if posts:
                 for post in posts:
-                    post_id = post[3]
-
+                    channel_id = post[0]
+                    visibility = post[1]
+                    service = post[2]
+                    account = post[3]
+                    post_id = post[4]
+                    interval = post[5]
                     self.bot.loop.create_task(
-                        self.post_task(guild, post), name=str(post_id)
+                        self.post_task(
+                            guild, channel_id, visibility, service, account, interval
+                        ),
+                        name=str(post_id),
                     )
                     log.info(
                         f"Created post task of account {post[2]}",
                         extra={"guild": guild.name},
                     )
-    
+
     @tasks.loop(hours=1)
     async def sync_commands(self):
         await self.bot.sync_application_commands()
-        
 
     @tasks.loop(hours=1)
     async def estaciones(self):
@@ -106,17 +112,25 @@ class tasks(commands.Cog):
                         guild, channel_type="games", msg="a", embed=embed
                     )
 
-    async def post_task(self, guild: nextcord.Guild, channel_id:int, visibility:str,service:str, account:str,interval:str):
+    async def post_task(
+        self,
+        guild: nextcord.Guild,
+        channel_id: int,
+        visibility: str,
+        service: str,
+        account: str,
+        interval: str,
+    ):
         """Creates a new task
 
         Args:
             guild (nextcord.Guild): guild
             post (list): post to be posted
         """
-        if visibility== "nsfw":
-            visibility= True
+        if visibility == "nsfw":
+            visibility = True
         else:
-            visibility= False
+            visibility = False
         try:
             channel = await self.bot.fetch_channel(channel_id)
         except nextcord.errors.Forbidden:
@@ -156,14 +170,12 @@ class tasks(commands.Cog):
         while True:
             next_task = datetime.now() + timedelta(seconds=interval * 60)
 
-            
-
-            if service=="twitter":
+            if service == "twitter":
                 embed = self.bot.twitter.get_latest_image_not_repeated(
                     guild, account, "twitter"
                 )
 
-            if service=="reddit":
+            if service == "reddit":
                 embed = await self.bot.reddit.get_hot_pic_not_repeated(
                     guild, account, "reddit", visibility
                 )

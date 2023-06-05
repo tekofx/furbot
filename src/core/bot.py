@@ -13,11 +13,6 @@ from core.database import (
     exists_channel_of_type,
     get_channel_of_type,
     setup_database,
-    get_latest_messages,
-    create_message,
-    count_content_message,
-    get_messages_with_same_content,
-    delete_message,
 )
 from core.reddit import Reddit
 from core.twitter import Twitter
@@ -111,8 +106,12 @@ class Bot(commands.Bot):
                 self.load_extension("cogs." + c[:-3])
                 log.info("Loaded {}".format(c))
 
-        log.info("Syncing application commands")
-        await self.sync_application_commands(guild_id=self._local_guild)
+        try:
+
+            log.info("Syncing application commands")
+            await self.sync_application_commands(guild_id=self._local_guild)
+        except Exception as e:
+            log.error("Error syncing application commands: {}".format(e))
 
         # If commands sync not work uncomment this and run the bot
         """ self.add_all_application_commands()
@@ -168,61 +167,6 @@ class Bot(commands.Bot):
         Args:
             message ([nextcord.Message]): Message to check
         """
-
-        # Save message in database
-        create_message(message)
-        # Test message content is in database, from the same user in other channel
-        count = count_content_message(message)
-
-        if count > 5:
-            # Time out the user
-            try:
-                await message.author.timeout(timeout=None, reason="Spam")
-                
-            except Exception as e:
-                log.error(
-                    f"Error al aislar al usuario {message.author.display_name}: {e}"
-                )
-                await self.channel_send(
-                    message.guild,
-                    "audit",
-                    f"No he podido aislar al usuario {message.author.mention}. Puede que me falten permisos para ello.",
-                )
-            finally:
-                await self.channel_send(
-                    message.guild,
-                    "audit",
-                    f"Se ha aislado de forma indefinida al usuario {message.author.mention}",
-                )
-
-            # Delete messages with spam
-            spam_messages = get_messages_with_same_content(message)
-            deleted_messages = 0
-            for x in spam_messages:
-
-                # Delete from discord guild
-                channel = await self.fetch_channel(x[0])
-                try:
-                    spam_message = await channel.fetch_message(x[1])
-                    await spam_message.delete()
-                except:
-                    pass
-
-                # delete from database
-                delete_message(x[1], message.guild)
-                deleted_messages += 1
-
-            await self.channel_send(
-                message.guild,
-                "audit",
-                f"Se han eliminado {deleted_messages} mensajes de spam",
-            )
-
-            await self.channel_send(
-                message.guild,
-                "lobby",
-                f"Se ha detectado spam por parte del usuario {message.author.mention}. Es posible que su cuenta haya sido hackeada, no hagais click en ningun enlace que os mande.",
-            )
 
         if not message.author.bot:
 
