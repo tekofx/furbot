@@ -361,8 +361,16 @@ class admin(commands.Cog):
         Args:
             id: id del post a eliminar
         """
+        post_id = int(str(interaction.guild.id) + str(post_id))
 
+        # Remove from db
         remove_post(interaction.guild, post_id)
+
+        # Cancel the task
+        self.bot.tasks[post_id].cancel()
+
+        # Remove from tasks dict
+        del self.bot.tasks[post_id]
 
         await interaction.send("Post eliminado")
 
@@ -374,16 +382,16 @@ class admin(commands.Cog):
         if not posts:
             await interaction.send("No hay posts para este servidor")
             return
-        channel_id = post[0]
-        visibility = post[1]
-        service = post[2]
-        account = post[3]
-        post_id = post[4]
-        interval = post[5]
 
         output = ""
         for post in posts:
-            channel = await self.bot.fetch_channel(post[0])
+            channel_id = post[0]
+            visibility = post[1]
+            service = post[2]
+            account = post[3]
+            post_id = post[4]
+            interval = post[5]
+            channel = await self.bot.fetch_channel(channel_id)
             output += f"-id={post_id}\n-canal={channel.mention}\n-visibilidad={visibility}\n-servicio={service}\n-cuenta={account} \n-intevalo={interval}m\n\n"
 
         await interaction.send(output)
