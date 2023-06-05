@@ -1,3 +1,4 @@
+import asyncio
 import datetime
 import nextcord
 from nextcord.errors import Forbidden
@@ -39,6 +40,8 @@ class Bot(commands.Bot):
             os.getenv("LOCAL_GUILD")
         )  # Guild to fetch commands at startup
 
+        self._tasks = {}
+
     @property
     def twitter(self) -> Twitter:
         return self._twitter
@@ -46,6 +49,15 @@ class Bot(commands.Bot):
     @property
     def reddit(self) -> Reddit:
         return self._reddit
+
+    @property
+    def tasks(self) -> dict[int, asyncio.Task]:
+        """Dict of tasks containing the task_id as key and the task as value
+
+        Returns:
+            dict[int, asyncio.Task]: Dict of tasks
+        """
+        return self._tasks
 
     async def new_github_release(self):
         "Checks if there is a new release on github and sends a message to the channel"

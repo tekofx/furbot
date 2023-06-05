@@ -359,18 +359,18 @@ class admin(commands.Cog):
         """[Admin] Permite eliminar una cuenta de twitter/subreddit de un canal.
 
         Args:
-            id: id del post a eliminar
+            post_id: id del post a eliminar
         """
-        post_id = int(str(interaction.guild.id) + str(post_id))
+        task_id = int(str(interaction.guild.id) + str(post_id))
 
         # Remove from db
         remove_post(interaction.guild, post_id)
 
         # Cancel the task
-        self.bot.tasks[post_id].cancel()
+        self.bot.tasks[task_id].cancel()
 
         # Remove from tasks dict
-        del self.bot.tasks[post_id]
+        del self.bot.tasks[task_id]
 
         await interaction.send("Post eliminado")
 
