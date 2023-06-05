@@ -17,6 +17,7 @@ from core.database import (
 )
 from core.reddit import Reddit
 from core.twitter import Twitter
+from core.mastodon import Mastodon
 import requests
 from core.data import Data, get_activity, get_config
 from core import logger
@@ -34,8 +35,13 @@ class Bot(commands.Bot):
         )
 
         self.token = token
-        self._twitter = Twitter()
-        self._reddit = Reddit()
+        if os.getenv("TWITTER_ACCESS_TOKEN"):
+            self._twitter = Twitter()
+        if os.getenv("REDDIT_CLIENT_ID"):
+            self._reddit = Reddit()
+        if os.getenv("MASTODON_TOKEN"):
+            self._mastodon = Mastodon()
+
         self._local_guild = int(
             os.getenv("LOCAL_GUILD")
         )  # Guild to fetch commands at startup
@@ -49,6 +55,10 @@ class Bot(commands.Bot):
     @property
     def reddit(self) -> Reddit:
         return self._reddit
+
+    @property
+    def mastodon(self) -> Mastodon:
+        return self._mastodon
 
     @property
     def tasks(self) -> dict[int, asyncio.Task]:
@@ -297,14 +307,14 @@ class Bot(commands.Bot):
             try:
                 # Fetch general_channel
                 general_channel = await self.fetch_channel(general_id)
-            except Forbidden as error:
+            except Exception as error:
                 log.error(
                     "Error getting {} channel from server {}: {}".format(
                         channel_type, guild, error
                     ),
                     extra={"guild": guild.name},
                 )
-                raise Forbidden
+                raise error
 
             # Send message
             if embed:

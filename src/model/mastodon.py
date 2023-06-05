@@ -1,5 +1,6 @@
 import datetime
 from typing import List
+from bs4 import BeautifulSoup
 
 
 class UserField:
@@ -45,17 +46,28 @@ class Status:
         self.replies_count = data["replies_count"]
         self.reblogs_count = data["reblogs_count"]
         self.favourites_count = data["favourites_count"]
-        self.content = data["content"]
+
+        soup = BeautifulSoup(data["content"], "html.parser")
+        self.content = soup.get_text()
         self.account = User(data["account"])
-        self.media_attachments = data["media_attachments"]
+        self.media_attachments = []
+        for x in data["media_attachments"]:
+            self.media_attachments.append(x["url"])
         self.mentions = data["mentions"]
         self.tags = data["tags"]
         self.emojis = data["emojis"]
         self.card = data["card"]
         self.poll = data["poll"]
+        self.raw_data = data
 
     def __str__(self) -> str:
         return f"Status by {self.account.display_name}: {self.content}"
+
+    def is_reblog(self) -> bool:
+        return False
+
+    def has_media_attachment(self) -> bool:
+        return len(self.media_attachments) > 0
 
 
 class RebloggedStatus(Status):
@@ -68,3 +80,6 @@ class RebloggedStatus(Status):
 
     def __str__(self) -> str:
         return f"Status of {self.reblog.account.display_name} rebloged by {self.account.display_name}: {self.reblog.content}"
+
+    def is_reblog(self) -> bool:
+        return True

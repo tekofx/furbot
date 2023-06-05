@@ -88,7 +88,7 @@ class Mastodon:
                 output.append(status)
         return output
 
-    def get_latest_status(self, username: str, instance: str) -> str:
+    def get_latest_status(self, username: str, instance: str) -> Status:
         """Get latest status from a user
 
         Args:
@@ -102,9 +102,9 @@ class Mastodon:
             str: Latest status
         """
         statuses = self.get_statuses(username, instance)
-        return statuses[0]
+        return statuses[5]
 
-    def get_embed(self, status: list) -> str:
+    def get_embed(self, status: Status | RebloggedStatus) -> Embed:
         """Creates an embed from a status
 
         Args:
@@ -113,30 +113,28 @@ class Mastodon:
         Returns:
             Embed: embed of status
         """
-        user = status["account"]["username"]
-        avatar = status["account"]["avatar"]
-
-        # Status is a reblog
-        if "reblog":
-            text = status["reblog"]["content"]
-        else:
-            text = status["content"]
 
         embed = Embed(
-            title="Twitter",
-            description=text,
             color=Colour.from_rgb(99, 100, 255),
         )
-        embed.set_image(url=tweet.entities["media"][0]["media_url"])
-        embed.set_author(name=user, icon_url=avatar)
+
+        if status.is_reblog():
+            embed.title = f"{status.account.display_name} reblogged {status.reblog.account.display_name}"
+            embed.description = status.reblog.content
+            embed.set_author(
+                name=status.reblog.account.display_name,
+                icon_url=status.reblog.account.avatar,
+            )
+
+            if status.reblog.has_media_attachment():
+                embed.set_image(url=status.reblog.media_attachments[0])
+        else:
+            embed.title = status.account.display_name
+            embed.description = status.content
+            embed.set_author(
+                name=status.account.display_name, icon_url=status.account.avatar
+            )
+            if status.has_media_attachment():
+                embed.set_image(url=status.media_attachments[0])
+
         return embed
-
-
-load_dotenv("dev.env")
-mastodon = Mastodon()
-
-user = mastodon._get_user("teko", "meow.social")
-print(user.created_at)
-
-status = mastodon.get_latest_status("teko", "meow.social")
-print(status)
