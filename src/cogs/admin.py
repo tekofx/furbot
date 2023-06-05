@@ -347,11 +347,15 @@ class admin(commands.Cog):
         # Get tasks cog and create task
         tasks = self.bot.cogs.get("tasks")
 
-        self.bot.loop.create_task(
+        task = self.bot.loop.create_task(
             tasks.post_task(
                 interaction.guild, canal.id, visibilidad, servicio, cuenta, intervalo
             )
         )
+
+        # Add task to tasks dict
+        task_id = int(str(interaction.guild.id) + str(canal.id))
+        self.bot.tasks[task_id] = task
 
     @application_checks.has_permissions(administrator=True)
     @post.subcommand(name="rm")
