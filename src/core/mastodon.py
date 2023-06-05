@@ -1,8 +1,9 @@
+from typing import List
 from dotenv import load_dotenv
 import requests
 import os
 from nextcord import Embed, Colour
-from model.mastodon import User
+from model.mastodon import User, UserField, Status, RebloggedStatus
 
 
 class Mastodon:
@@ -31,15 +32,15 @@ class Mastodon:
             return False
         return True
 
-    def _get_user_id(self, username: str, instance: str) -> int:
-        """Get user id from username and instance
+    def _get_user(self, username: str, instance: str) -> User:
+        """Gets user object from username and instance
 
         Args:
             username (str): Username of user (without @)
             instance (str): Instance where the user is hosted (without @)
 
         Returns:
-            int: User id
+            model.mastodon.User: User object
         """
         user = f"@{username}@{instance}"
         headers = {
@@ -50,14 +51,15 @@ class Mastodon:
             headers=headers,
             params={"q": f"{user}"},
         ).json()[0]
-        print(result)
+        user_fields = []
+        for field in result["fields"]:
+            user_fields.append(UserField(field))
 
-        user_id = 0
-        for x in result:
-            user_id = x["id"]
-            return user_id
+        user = User(result)
 
-    def get_statuses(self, username: str, instance: str) -> list:
+        return user
+
+    def get_statuses(self, username: str, instance: str) -> List[Status]:
         """Get latest statuses from a user
 
         Args:
@@ -70,12 +72,21 @@ class Mastodon:
         Returns:
             list: List of statuses
         """
-        user_id = self._get_user_id(username, instance)
+        user = self._get_user(username, instance)
 
         result = requests.get(
-            f"https://{self._app_instance}/api/v1/accounts/{user_id}/statuses"
+            f"https://{self._app_instance}/api/v1/accounts/{user.id}/statuses"
         ).json()
-        return result
+        output = []
+        for x in result:
+            if x["reblog"] != None:  # Rebloged status
+                rebloged_status = RebloggedStatus(x)
+                output.append(rebloged_status)
+
+            else:
+                status = Status(x)
+                output.append(status)
+        return output
 
     def get_latest_status(self, username: str, instance: str) -> str:
         """Get latest status from a user
@@ -91,7 +102,7 @@ class Mastodon:
             str: Latest status
         """
         statuses = self.get_statuses(username, instance)
-        return statuses[3]
+        return statuses[0]
 
     def get_embed(self, status: list) -> str:
         """Creates an embed from a status
@@ -123,7 +134,9 @@ class Mastodon:
 
 load_dotenv("dev.env")
 mastodon = Mastodon()
-""" status = mastodon.get_latest_status("RadioRabbitHole", "meow.social")
-print(status) """
-user = mastodon._get_user_id("teko", "meow.social")
-print(user)
+
+user = mastodon._get_user("teko", "meow.social")
+print(user.created_at)
+
+status = mastodon.get_latest_status("teko", "meow.social")
+print(status)
