@@ -1,8 +1,10 @@
 from typing import List
 from dotenv import load_dotenv
+import nextcord
 import requests
 import os
 from nextcord import Embed, Colour
+from core.database import check_record_in_database, clean_records, create_record
 from model.mastodon import User, UserField, Status, RebloggedStatus
 
 
@@ -17,7 +19,7 @@ class Mastodon:
         self._token = os.getenv("MASTODON_TOKEN")
         self._app_instance = os.getenv("MASTODON_APP_INSTANCE")
 
-    def instance_exists(self, instance: str) -> bool:
+    def exists_instance(self, instance: str) -> bool:
         """Check if instance exists
 
         Args:
@@ -31,6 +33,7 @@ class Mastodon:
         except:
             return False
         return True
+    
 
     def _get_user(self, username: str, instance: str) -> User:
         """Gets user object from username and instance
@@ -59,7 +62,7 @@ class Mastodon:
 
         return user
 
-    def get_statuses(self, username: str, instance: str) -> List[Status]:
+    def get_statuses(self, username: str, instance: str,limit:int=20) -> List[Status]:
         """Get latest statuses from a user
 
         Args:
@@ -75,7 +78,8 @@ class Mastodon:
         user = self._get_user(username, instance)
 
         result = requests.get(
-            f"https://{self._app_instance}/api/v1/accounts/{user.id}/statuses"
+            f"https://{self._app_instance}/api/v1/accounts/{user.id}/statuses",
+            params={"limit": limit},
         ).json()
         output = []
         for x in result:
@@ -103,8 +107,52 @@ class Mastodon:
         """
         statuses = self.get_statuses(username, instance)
         return statuses[5]
+    
+    def get_latest_image_not_repeated(
+        self,
+        guild: nextcord.Guild,
+        username: str,
+        instance:str,
+    ) -> Embed:
+        """ Creates an embed from the latest image of a user
 
-    def get_embed(self, status: Status | RebloggedStatus) -> Embed:
+        Args:
+            guild (nextcord.Guild): To get the database
+            username (str): Of the account
+            instance (str): Instance where the account is hosted
+
+        Returns:
+            Embed: Embed of the image
+        """
+        output = None
+        statuses= self.get_statuses(username, instance,200)
+       
+
+        for status in statuses:
+
+            if status.has_media_attachment():
+                media_attachment = status.media_attachments[0]
+                if not check_record_in_database(guild, media_attachment):
+                    create_record(guild, instance, media_attachment, username)
+
+                    output = status
+                    break
+
+        if output is None:
+            return None
+
+        # Remove statuses from db if they are not fetched
+        media_attachments = [
+            status.media_attachments[0] if status.has_media_attachment() else ""
+            for x in statuses
+        ]
+        clean_records(guild, instance, username, media_attachments)
+
+        embed = self.create_embed(output)
+
+        return embed
+
+    def create_embed(self, status: Status | RebloggedStatus) -> Embed:
         """Creates an embed from a status
 
         Args:
@@ -125,6 +173,7 @@ class Mastodon:
                 name=status.reblog.account.display_name,
                 icon_url=status.reblog.account.avatar,
             )
+            embed.add_field(name="Link to post", value=status.reblog.url, inline=False)
 
             if status.reblog.has_media_attachment():
                 embed.set_image(url=status.reblog.media_attachments[0])
@@ -134,7 +183,8 @@ class Mastodon:
             embed.set_author(
                 name=status.account.display_name, icon_url=status.account.avatar
             )
+            embed.add_field(name="Link to post", value=status.url, inline=False)
+            
             if status.has_media_attachment():
                 embed.set_image(url=status.media_attachments[0])
-
         return embed
