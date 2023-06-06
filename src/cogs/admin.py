@@ -1,18 +1,7 @@
 from typing import List
 from nextcord.ext import commands
 import nextcord
-from core.database import (
-    create_channel,
-    create_post,
-    exists_channel,
-    get_channel,
-    get_channels,
-    get_posts,
-    remove_channel,
-    remove_post,
-    set_channel_policy,
-    set_channel_type,
-)
+
 from ui.Modal import Modal
 from asyncio import sleep
 from core.bot import Bot
@@ -67,14 +56,15 @@ class admin(commands.Cog):
     @canales.subcommand(name="mostrar")
     @application_checks.has_permissions(administrator=True)
     async def show_channels(self, interaction: Interaction):
-        channels = get_channels(interaction.guild)
+        channels = self.bot.db.get_channels(interaction.guild.id)
         channels = list(channels)
 
         output = "Canal: tipo | politica\n"
         for channel in channels:
-            x = await self.bot.fetch_channel(channel[0])
-            channel_type = channel[1]
-            channel_policy = channel[2]
+            channel_id = channel[0]
+            channel_type = channel[2]
+            channel_policy = channel[3]
+            x = await self.bot.fetch_channel(channel_id)
             output += "- {}: {} | {}\n".format(x.mention, channel_type, channel_policy)
         await interaction.send(output)
         pass
@@ -87,12 +77,14 @@ class admin(commands.Cog):
         self, interaction: Interaction, canal: nextcord.TextChannel
     ):
         """[Admin] Elimina politica de un canal"""
-        channel = get_channel(interaction.guild, canal.id)
+        channel=self.bot.db.get_channel(canal)
+        
+        channel_type=channel[2]
 
-        if channel[1] is None:  # If has no type
-            remove_channel(interaction.guild, canal.id)
+        if channel_type is None:  # If has no type
+            self.bot.db.remove_channel(canal)
         else:
-            set_channel_policy(interaction.guild, canal.id, "all")
+            self.bot.db.update_channel_policy(canal,"all")
 
         await interaction.send(
             f"Eliminada la politica de {canal.mention}. Ahora se puede enviar todo tipo de mensajes."
@@ -139,10 +131,12 @@ class admin(commands.Cog):
                 )
             )
             return
-        if not exists_channel(interaction.guild, canal.id):
-            create_channel(interaction.guild, canal.id, politica, canal.name)
+        
+        
+        if not self.bot.db.exists_channel(canal):
+            self.bot.db.insert_channel(canal,politica)
         else:
-            set_channel_policy(interaction.guild, canal.id, politica)
+            self.bot.db.update_channel_policy(canal,politica)
         await interaction.send(
             "Canal {} configurado con politica {}".format(canal, politica)
         )
@@ -172,10 +166,11 @@ class admin(commands.Cog):
                 )
             )
             return
-        if not exists_channel(interaction.guild, canal.id):
-            create_channel(interaction.guild, canal.id, "all", canal.name, tipo)
+        
+        if not self.bot.db.exists_channel(canal):
+            self.bot.db.insert_channel(canal,"all",tipo)
         else:
-            set_channel_type(interaction.guild, canal.id, tipo)
+            self.bot.db.update_channel_type(canal,tipo)
 
         await interaction.send(
             "Canal {} configurado como {}".format(canal.mention, tipo)
@@ -203,14 +198,11 @@ class admin(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message: nextcord.Message):
-        if message.author.bot:
-            return
-        guild = message.guild
-        channel = get_channel(guild, message.channel.id)
+        channel=self.bot.db.get_channel(message.channel)
+        channel_policy = channel[3]
         if not channel:
             return
 
-        channel_policy = channel[2]
         if channel_policy == "all":
             return
 
@@ -318,10 +310,7 @@ class admin(commands.Cog):
                     f"La cuenta {cuenta} no existe, comprueba la cuenta y vuelve a intentarlo"
                 )
                 return
-
-        create_post(
-            interaction.guild, canal.id, visibilidad, servicio, cuenta, intervalo
-        )
+        self.bot.db.insert_post(interaction.channel,visibilidad,servicio,cuenta,intervalo)
         await interaction.send("Post creado")
 
         # Get tasks cog and create task
@@ -348,7 +337,7 @@ class admin(commands.Cog):
         task_id = int(str(interaction.guild.id) + str(post_id))
 
         # Remove from db
-        remove_post(interaction.guild, post_id)
+        self.bot.db.remove_post(interaction.channel,post_id)
 
         # Cancel the task
         self.bot.tasks[task_id].cancel()
@@ -362,19 +351,15 @@ class admin(commands.Cog):
     @post.subcommand(name="list")
     async def post_list(self, interaction: Interaction):
         "[Admin] Muestra los posts que se han añadido"
-        posts = get_posts(interaction.guild)
+        posts=self.bot.db.get_posts(interaction.guild)
         if not posts:
             await interaction.send("No hay posts para este servidor")
             return
 
         output = ""
         for post in posts:
-            channel_id = post[0]
-            visibility = post[1]
-            service = post[2]
-            account = post[3]
-            post_id = post[4]
-            interval = post[5]
+            post_id,guild_id, channel_id, visibility, service, account, interval = post
+            
             channel = await self.bot.fetch_channel(channel_id)
             output += f"-id={post_id}\n-canal={channel.mention}\n-visibilidad={visibility}\n-servicio={service}\n-cuenta={account} \n-intevalo={interval}m\n\n"
 
@@ -455,12 +440,11 @@ class admin(commands.Cog):
                     extra={"guild": interaction.guild.name},
                 )
                 return
-            if not exists_channel(interaction.guild, channel.id):
-                create_channel(
-                    interaction.guild, channel.id, "all", channel.name, channel_type
-                )
+            
+            if not self.bot.db.exists_channel(channel):
+                self.bot.db.insert_channel(channel,"all",channel_type)
             else:
-                set_channel_type(interaction.guild, channel.id, channel_type)
+                self.bot.db.update_channel_type(channel,channel_type)
 
             await interaction.channel.send(
                 "Canal {} añadido como {}".format(channel.mention, channel_type)
