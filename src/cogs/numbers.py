@@ -5,7 +5,6 @@ from core.bot import Bot
 import nextcord
 
 from core.data import get_server_path
-from core.database import get_channel_of_type
 
 JSON_CONTENT = {"number": 0, "last_user": None, "record": 0}
 NUMBERS_JSON = "numbers.json"
@@ -68,7 +67,8 @@ class numbers(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message: nextcord.Message):
-        if get_channel_of_type(message.guild, "numbers") != message.channel.id:
+       
+        if  self.bot.db.get_channel_of_type(message.guild, "numbers") != message.channel.id:
             return
         content = message.content
         number = self.get_number(message.guild)
