@@ -5,6 +5,7 @@ import nextcord.ext.application_checks
 import os
 
 from core.database import (
+    Database,
     check_record_in_database,
     create_record,
     exists_channel_of_type,
@@ -31,6 +32,7 @@ class Bot(commands.Bot):
         )
 
         self.token = token
+        self._db=Database()
         if os.getenv("TWITTER_ACCESS_TOKEN"):
             self._twitter = Twitter()
         if os.getenv("REDDIT_CLIENT_ID"):
@@ -44,6 +46,10 @@ class Bot(commands.Bot):
 
         self._tasks = {}
 
+    @property
+    def db(self) -> Database:
+        return self._db
+    
     @property
     def twitter(self) -> Twitter:
         return self._twitter
