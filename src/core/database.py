@@ -3,6 +3,7 @@ import logger
 import os
 import mysql.connector
 
+drop_tables = """DROP TABLE IF EXISTS users, roles, sentences, records, channels, posts;"""
 
 users_table = """ CREATE TABLE IF NOT EXISTS users (
                                     id int(18),
@@ -16,7 +17,8 @@ users_table = """ CREATE TABLE IF NOT EXISTS users (
                                 
                                 
 user_insert="""INSERT INTO users (id, guild, name, joined_date, birthday) VALUES (%s, %s, %s, %s, %s) ON DUPLICATE KEY UPDATE name=%s, joined_date=%s, birthday=%s;"""
-drop_tables = """DROP TABLE IF EXISTS users, roles, sentences, records, channels, posts;"""
+user_remove="""DELETE FROM users WHERE id=%s AND guild=%s;"""
+user_get="""SELECT * FROM users WHERE id=%s AND guild=%s;"""
 
 roles_table = """ CREATE TABLE IF NOT EXISTS roles (
                                     id int(18),
@@ -28,8 +30,8 @@ roles_table = """ CREATE TABLE IF NOT EXISTS roles (
                                 );"""
                                 
 role_insert="""INSERT INTO roles (id, guild, name, type) VALUES (%s, %s, %s, %s) ON DUPLICATE KEY UPDATE name=%s, type=%s;"""
-
-
+role_remove="""DELETE FROM roles WHERE id=%s AND guild=%s;"""
+role_get="""SELECT * FROM roles WHERE id=%s AND guild=%s;"""
 
 records_table = """ CREATE TABLE IF NOT EXISTS records (
                                     id int(18) AUTO_INCREMENT,
@@ -43,6 +45,8 @@ records_table = """ CREATE TABLE IF NOT EXISTS records (
                                 ); """
                                 
 record_insert="""INSERT INTO records (id, guild, type, account, record, date) VALUES (%s, %s, %s, %s, %s, %s) ON DUPLICATE KEY UPDATE record=%s, date=%s;"""
+record_remove="""DELETE FROM records WHERE id=%s AND guild=%s;"""
+record_get="""SELECT * FROM records WHERE id=%s AND guild=%s;"""
 
 channels_table = """ CREATE TABLE IF NOT EXISTS channels (
                                     id int(18),
@@ -55,6 +59,9 @@ channels_table = """ CREATE TABLE IF NOT EXISTS channels (
                                 ); """
                                 
 channel_insert="""INSERT INTO channels (id, guild, type, policy, name) VALUES (%s, %s, %s, %s, %s) ON DUPLICATE KEY UPDATE policy=%s, name=%s;"""
+channel_remove="""DELETE FROM channels WHERE id=%s AND guild=%s;"""
+channel_get="""SELECT * FROM channels WHERE id=%s AND guild=%s;"""
+
 posts_table = """ CREATE TABLE IF NOT EXISTS posts (
                                     id int(18) AUTO_INCREMENT,
                                     guild int(18) NOT NULL,
@@ -68,19 +75,10 @@ posts_table = """ CREATE TABLE IF NOT EXISTS posts (
                                 ); """
                                 
 post_insert="""INSERT INTO posts (id, guild, channel, visibility, service, account, frequency) VALUES (%s, %s, %s, %s, %s, %s, %s) ON DUPLICATE KEY UPDATE visibility=%s, service=%s, account=%s, frequency=%s;"""
-                                
-tables = [
-    users_table,
-    roles_table,
-    records_table,
-    channels_table,
-    posts_table,
-]
+post_remove="""DELETE FROM posts WHERE id=%s AND guild=%s;"""                          
+post_get="""SELECT * FROM posts WHERE id=%s AND guild=%s;"""
+
 log = logger.getLogger(__name__)
-
-
-
-        
 
 
 class Database:
@@ -107,7 +105,7 @@ class Database:
 
     def close(self):
         self.connection.close()
-
+        
 
 load_dotenv("../../dev.env")
 db=Database()
