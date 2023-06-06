@@ -1,16 +1,12 @@
 import asyncio
-import datetime
 import nextcord
-from nextcord.errors import Forbidden
 from nextcord.ext import commands
 import nextcord.ext.application_checks
 import os
 
 from core.database import (
-    check_entry_in_database,
     check_record_in_database,
     create_record,
-    create_user,
     exists_channel_of_type,
     get_channel_of_type,
     setup_database,
