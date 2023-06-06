@@ -132,7 +132,7 @@ class Bot(commands.Bot):
 
             log.info("Syncing application commands")
             await self.sync_application_commands(guild_id=self._local_guild)
-        except Exception as e:
+        except nextcord.errors.NotFound as e:
             log.error("Error syncing application commands: {}".format(e))
 
         # If commands sync not work uncomment this and run the bot

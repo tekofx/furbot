@@ -181,6 +181,11 @@ class tasks(commands.Cog):
                 embed = await self.bot.reddit.get_hot_pic_not_repeated(
                     guild, account, "reddit", visibility
                 )
+                
+            if service =="mastodon":
+                instance=account.split("@")[1]
+                account = account.split("@")[0]
+                embed=self.bot.mastodon.get_latest_image_not_repeated(guild, account, instance)
             if embed:
                 try:
                     await channel.send(embed=embed)

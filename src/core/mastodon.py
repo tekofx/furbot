@@ -34,6 +34,22 @@ class Mastodon:
             return False
         return True
     
+    def exists_account(self, username: str, instance: str) -> bool:
+        """Check if account exists
+
+        Args:
+            username (str): Username of account (without @)
+            instance (str): Instance where the account is hosted (without @)
+            
+        Returns:
+            bool: True if account exists, False if not
+        """
+        try:
+            self._get_user(username, instance)
+        except:
+            return False
+        return True
+    
 
     def _get_user(self, username: str, instance: str) -> User:
         """Gets user object from username and instance
@@ -49,11 +65,14 @@ class Mastodon:
         headers = {
             "Authorization": f"Bearer {self._token}",
         }
-        result = requests.get(
-            f"https://{self._app_instance}/api/v1/accounts/search",
-            headers=headers,
-            params={"q": f"{user}"},
-        ).json()[0]
+        try:
+            result = requests.get(
+                f"https://{self._app_instance}/api/v1/accounts/search",
+                headers=headers,
+                params={"q": f"{user}"},
+            ).json()[0]
+        except:
+            raise Exception("User not found")
         user_fields = []
         for field in result["fields"]:
             user_fields.append(UserField(field))

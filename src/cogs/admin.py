@@ -277,6 +277,11 @@ class admin(commands.Cog):
     @application_checks.has_permissions(administrator=True)
     async def post(self, interaction: Interaction):
         pass
+    
+    @nextcord.slash_command(name="mastodon")
+    async def mastodon(self, interaction: Interaction,usuario:str,instance:str):
+        embed=self.bot.mastodon.get_latest_image_not_repeated(interaction.guild,usuario,instance)
+        await interaction.send(embed=embed)
 
     @application_checks.has_permissions(administrator=True)
     @post.subcommand(name="add")
@@ -284,16 +289,16 @@ class admin(commands.Cog):
         self,
         interaction: Interaction,
         canal: nextcord.TextChannel,
-        intervalo: int,
         servicio: str = SlashOption(
             name="servicios",
             required=True,
-            choices={"Twitter": "twitter", "Reddit": "reddit"},
+            choices={"Twitter": "twitter", "Reddit": "reddit","Mastodon":"mastodon"},
         ),
         cuenta: str = SlashOption(name="cuenta", required=True),
         visibilidad: str = SlashOption(
             name="visibilidad", required=True, choices={"SFW": "sfw", "NSFW": "nsfw"}
         ),
+        intervalo: int=5,
     ):
         """[Admin] Permite añadir una cuenta de twitter/subreddit a un canal.
         De esta forma cada hora se publicará el último post de la cuenta en el canal. Si se añaden varias
@@ -303,7 +308,7 @@ class admin(commands.Cog):
             canal: canal al que enviar
             visibilidad: Si/No. Si se quiere que se cojan los posts NSFW o no
             intervalo: Minutos entre un post y otro. Debe ser mayor a los 5 mins
-            cuenta: Cuenta/subreddit
+            cuenta: Cuenta de twitter, subreddit de Reddit o usuario@instancia de Mastodon
         """
 
         if visibilidad == "nsfw" and not canal.nsfw:
@@ -333,6 +338,16 @@ class admin(commands.Cog):
         if servicio == "twitter":
             var = self.bot.twitter.exists_account(cuenta)
 
+            if not var:
+                await interaction.send(
+                    f"La cuenta {cuenta} no existe, comprueba la cuenta y vuelve a intentarlo"
+                )
+                return
+            
+        if servicio =="mastodon":
+            instance=cuenta.split("@")[1]
+            usuario=cuenta.split("@")[0]
+            var=self.bot.mastodon.exists_account(usuario,instance)
             if not var:
                 await interaction.send(
                     f"La cuenta {cuenta} no existe, comprueba la cuenta y vuelve a intentarlo"
