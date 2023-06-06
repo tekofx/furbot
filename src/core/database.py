@@ -75,9 +75,11 @@ posts_table = """ CREATE TABLE IF NOT EXISTS posts (
                                     CONSTRAINT PK_posts PRIMARY KEY (id, guild)
                                 ); """
                                 
-post_insert="""INSERT INTO posts (id, guild, channel, visibility, service, account, frequency) VALUES (%s, %s, %s, %s, %s, %s, %s) ON DUPLICATE KEY UPDATE visibility=%s, service=%s, account=%s, frequency=%s;"""
+post_insert="""INSERT INTO posts (guild, channel, visibility, service, account, frequency) VALUES (%s, %s, %s, %s, %s, %s, %s) ON DUPLICATE KEY UPDATE visibility=%s, service=%s, account=%s, frequency=%s;"""
 post_remove="""DELETE FROM posts WHERE id=%s AND guild=%s;"""                          
 post_get="""SELECT * FROM posts WHERE id=%s AND guild=%s;"""
+posts_get_from_guild="""SELECT * FROM posts WHERE guild=%s;"""
+
 
 log = logger.getLogger(__name__)
 
@@ -110,8 +112,61 @@ class Database:
     def close(self):
         self.connection.close()
         
+    def insert_user(self, user:nextcord.Member):
+        self.execute_query(user_insert,(user.id,user.guild.id,user.name,user.joined_at,user.created_at,user.name,user.joined_at,user.created_at))
     
+    def remove_user(self, user:nextcord.Member):
+        self.execute_query(user_remove,(user.id,user.guild.id))
+    
+    def get_user(self, user:nextcord.Member):
+        return self.fetch_query(user_get,(user.id,user.guild.id))
+    
+    def insert_role(self, role:nextcord.Role):
+        self.execute_query(role_insert,(role.id,role.guild.id,role.name,role.type,role.name,role.type))
+        
+    def remove_role(self, role:nextcord.Role):
+        self.execute_query(role_remove,(role.id,role.guild.id))
+        
+    def get_role(self, role:nextcord.Role):
+        return self.fetch_query(role_get,(role.id,role.guild.id))
 
+    def insert_record(self, record:list):
+        # TODO: Change list by record model
+        """Inserts a record
+
+        Args:
+            record (list): containing guild, type, account, record, date
+        """        
+        self.execute_query(record_insert,record+record[2:])
+        
+    def remove_record(self, record_id:int, guild_id:int):
+        self.execute_query(record_remove,(record_id,guild_id))
+    
+    def get_record(self, record_id:int, guild_id:int):
+        self.fetch_query(record_get,(record_id,guild_id))
+        
+    def insert_channel(self, channel:nextcord.TextChannel,type:str,policy:str):
+        self.execute_query(channel_insert,(channel.id,channel.guild.id,type,policy,channel.name,policy,channel.name))
+    
+    def remove_channel(self, channel:nextcord.TextChannel):
+        self.execute_query(channel_remove,(channel.id,channel.guild.id))
+    
+    def get_channel(self, channel:nextcord.TextChannel):
+        return self.fetch_query(channel_get,(channel.id,channel.guild.id))
+    
+    def insert_post(self, channel:nextcord.TextChannel, visibility:str, service:str, account:str, frequency:int):
+        self.execute_query(post_insert,(channel.guild.id,channel.id,visibility,service,account,frequency,visibility,service,account,frequency))
+    
+    def remove_post(self, channel:nextcord.TextChannel,post_id:int):
+        self.execute_query(post_remove,(post_id,channel.guild.id))
+        
+    def get_post(self, channel:nextcord.TextChannel,post_id:int):
+        return self.fetch_query(post_get,(post_id,channel.guild.id))
+    
+    def get_posts_from_guild(self, guild:nextcord.Guild):
+        return self.fetch_query(posts_get_from_guild,(guild.id,))
+        
+    
 load_dotenv("../../dev.env")
 db=Database()
 db.execute_query(drop_tables)
