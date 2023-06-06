@@ -15,6 +15,17 @@ class Utils(commands.Cog):
     async def ping(self, interaction: Interaction):
         """Comprobar si el bot está online"""
         await interaction.send("Pim pam trucu trucu")
+        
+        
+    @nextcord.slash_command(name="votacion")
+    async def votacion(
+        self,
+        interaction: Interaction,
+    ):
+        """Crea una votacion
+
+        """
+        await interaction.response.send_modal(Modal())
 
     @nextcord.slash_command(name="rae")
     async def rae(self, interaction: Interaction, palabra: str):

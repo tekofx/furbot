@@ -57,16 +57,7 @@ class admin(commands.Cog):
     def __init__(self, bot: Bot) -> None:
         self.bot = bot
 
-    @nextcord.slash_command(name="votacion")
-    @application_checks.has_permissions(administrator=True)
-    async def votacion(
-        self,
-        interaction: Interaction,
-    ):
-        """Crea una votacion
-
-        """
-        await interaction.response.send_modal(Modal())
+    
 
     @nextcord.slash_command(name="canales")
     @application_checks.has_permissions(administrator=True)
