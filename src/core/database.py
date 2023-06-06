@@ -2,7 +2,6 @@ import datetime
 import random
 import sqlite3
 import os
-from typing import List
 from core import logger
 import nextcord
 from core.data import get_server_path
@@ -22,12 +21,7 @@ roles_table = """ CREATE TABLE IF NOT EXISTS roles (
                                     type text NOT NULL
                                 );"""
 
-sentences_table = """ CREATE TABLE IF NOT EXISTS sentences (
-                                    id integer PRIMARY KEY AUTOINCREMENT,
-                                    type text NOT NULL ,
-                                    sentence text NOT NULL, 
-                                    UNIQUE (type, sentence)
-                                ); """
+
 
 records_table = """ CREATE TABLE IF NOT EXISTS records (
                                     id integer PRIMARY KEY AUTOINCREMENT,
@@ -56,7 +50,6 @@ posts_table = """ CREATE TABLE IF NOT EXISTS posts (
 tables = [
     users_table,
     roles_table,
-    sentences_table,
     records_table,
     channels_table,
     posts_table,
@@ -325,39 +318,6 @@ def remove_role(guild: nextcord.guild, role_id: int) -> None:
         database_connection.commit()
         database_connection.close()
 
-
-def create_sentence(guild: nextcord.guild, sentence_data: list) -> None:
-    """Creates a sentence in the sentences table
-    Args:
-        guild (nextcord.Guild) : Guild to access its database
-        sentence (list): info of sentence. Containing [type, sentence]
-    """
-    database_connection = create_connection(guild)
-
-    sql = """ INSERT INTO sentences(type,sentence)
-              VALUES(?,?) """
-
-    cur = database_connection.cursor()
-    try:
-        cur.execute(sql, sentence_data)
-        log.info(
-            "sentence {sentence} with id {id} was added to the database".format(
-                sentence=sentence_data[1], id=sentence_data[0]
-            ),
-            extra={"guild": guild.name},
-        )
-    except Exception as error:
-        log.error(
-            "Error: Could not create sentence {id} {name}: {error}".format(
-                id=sentence_data[0], name=sentence_data[1], error=error
-            ),
-            extra={"guild": guild.name},
-        )
-        database_connection.close()
-        raise error
-    else:
-        database_connection.commit()
-        database_connection.close()
 
 
 def create_record(
@@ -865,40 +825,6 @@ def get_joined_dates(guild: nextcord.Guild) -> list:
         database_connection.close()
         return output
 
-
-def get_random_sentence(guild: nextcord.guild, sentence_type: str) -> str:
-    """Gets a random sentence
-
-    Args:
-        guild (nextcord.Guild) : Guild to access its database
-        type (str): type of sentence
-
-    Returns:
-        str: random sentence
-    """
-    database_connection = create_connection(guild)
-
-    sql = """ SELECT sentence
-        FROM sentences
-        WHERE type=?
-        """
-    cur = database_connection.cursor()
-    sentence_type = [
-        sentence_type,
-    ]
-    try:
-        cur.execute(sql, sentence_type)
-        info = cur.fetchall()
-    except Exception as error:
-        log.error(
-            "Error: could not query sentences: {}".format(error),
-            extra={"guild": guild.name},
-        )
-        database_connection.close()
-    else:
-        database_connection.close()
-        output = random.choice(info)
-        return output[0]
 
 
 def get_channel(guild: nextcord.guild, channel_id: int) -> int:
