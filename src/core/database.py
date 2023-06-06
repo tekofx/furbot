@@ -1,4 +1,5 @@
 from dotenv import load_dotenv
+import nextcord
 import logger
 import os
 import mysql.connector
@@ -92,12 +93,15 @@ class Database:
         self.cursor = self.connection.cursor()
 
     def execute_query(self, query: str,data:str=None):
-        if data:
-            self.cursor.execute(query,data)
-        else:
-        
-            self.cursor.execute(query)
-        self.connection.commit()
+        try:
+            if data:
+                self.cursor.execute(query,data)
+            else:
+            
+                self.cursor.execute(query)
+            self.connection.commit()
+        except Exception as error:
+            log.error(f"Error execution query: '{error}'")
 
     def fetch_query(self, query):
         self.cursor.execute(query)
@@ -106,6 +110,7 @@ class Database:
     def close(self):
         self.connection.close()
         
+    
 
 load_dotenv("../../dev.env")
 db=Database()
