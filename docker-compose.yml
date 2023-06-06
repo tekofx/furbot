@@ -13,6 +13,7 @@ services:
     restart: unless-stopped
     env_file: .env
     environment:
+      TZ: "Europe/Madrid"
       MYSQL_DATABASE: "db"
       # So you don't have to use root, but you can if you like
       MYSQL_USER: ${DB_USER}
