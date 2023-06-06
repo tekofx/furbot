@@ -5,17 +5,7 @@ import nextcord
 from nextcord.ext import commands, tasks
 from datetime import datetime, timedelta
 import random
-from core.database import (
-    check_entry_in_database,
-    check_record_in_database,
-    clean_records_no_account,
-    create_record,
-    create_user,
-    exists_channel_of_type,
-    get_posts,
-    get_users_with_joined_date_today,
-    get_birthdays,
-)
+
 from core.bot import Bot
 
 
@@ -35,15 +25,16 @@ class tasks(commands.Cog):
         self.sync_commands.start()
         # Get posts from database
         for guild in self.bot.guilds:
-            posts = get_posts(guild)
+            posts=self.bot.db.get_posts(guild)
             if posts:
                 for post in posts:
-                    channel_id = post[0]
-                    visibility = post[1]
-                    service = post[2]
-                    account = post[3]
-                    post_id = post[4]
-                    interval = post[5]
+                    post_id = post[0]
+                    guild_id = post[1]
+                    channel_id = post[3]
+                    visibility = post[4]
+                    service = post[5]
+                    account = post[6]
+                    interval = post[7]
                     task_id = int(str(guild.id) + str(post_id))
                     task = self.bot.loop.create_task(
                         self.post_task(
@@ -78,7 +69,8 @@ class tasks(commands.Cog):
 
         if msg:
             for guild in self.bot.guilds:
-                if not exists_channel_of_type(guild, "general"):
+                
+                if not self.bot.db.exists_channel_of_type(guild, "general"):
                     continue
 
                 await self.bot.channel_send(guild, "general", msg)
@@ -88,16 +80,17 @@ class tasks(commands.Cog):
         r = requests.get("https://www.gamerpower.com/api/giveaways?type=game")
 
         for guild in self.bot.guilds:
-            if not exists_channel_of_type(guild, "games"):
+            if not self.bot.db.exists_channel_of_type(guild, "games"):
                 continue
 
             # Remove games records that are not fetched by the api
             ids = [str(i["id"]) for i in r.json()]
-            clean_records_no_account(guild, "game", ids)
+            self.bot.db.clean_records(guild, "game", ids)
 
             for x in r.json():
-                if not check_record_in_database(guild, x["id"]):
-                    create_record(guild, "game", x["id"])
+                
+                if not self.bot.db.record_exists(guild,x["id"]):
+                    self.bot.db.insert_record(guild, "game", x["id"])
                     title = x["title"]
                     decription = x["description"]
                     url = x["open_giveaway_url"]
@@ -203,12 +196,11 @@ class tasks(commands.Cog):
         async for guild in self.bot.fetch_guilds():
             members = await guild.fetch_members().flatten()
             for member in members:
-                entry_in_database = check_entry_in_database(guild, "users", member.id)
+                entry_in_database=self.bot.db.exists_user(member)
                 if not entry_in_database and not member.bot:
                     # Add to database
                     try:
-                        joined_date = datetime.strftime(member.joined_at, "%Y-%m-%d")
-                        create_user(guild, [member.id, member.name, joined_date])
+                        self.bot.db.insert_user(member)
                     except Exception as error:
                         log.error(
                             "Error creating user on join: {}".format(error),
@@ -225,11 +217,12 @@ class tasks(commands.Cog):
         now = datetime(now.year, now.month, now.day)
 
         for guild in self.bot.guilds:
-
-            if not exists_channel_of_type(guild, "general"):
+            
+            
+            if not self.bot.db.exists_channel_of_type(guild, "general"):
                 continue
 
-            members = get_users_with_joined_date_today(guild)
+            members = self.bot.db.get_users_with_joined_day_today(guild)
 
             for member in members:
                 member_id = member[0]
@@ -258,14 +251,14 @@ class tasks(commands.Cog):
             return
 
         for guild in self.bot.guilds:
-
-            if not exists_channel_of_type(guild, "general"):
+            
+            
+            if not self.bot.db.exists_channel_of_type(guild, "general"):
                 continue
 
             members = get_birthdays(guild)
             for member in members:
-                member_id = member[0]
-                birthday = member[1]
+                
 
                 if birthday.day == now.day and birthday.month == now.month:
 
