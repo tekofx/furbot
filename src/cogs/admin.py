@@ -13,7 +13,7 @@ from core.database import (
     set_channel_policy,
     set_channel_type,
 )
-
+from ui.Modal import Modal
 from asyncio import sleep
 from core.bot import Bot
 from core import logger
@@ -62,33 +62,11 @@ class admin(commands.Cog):
     async def votacion(
         self,
         interaction: Interaction,
-        titulo: str,
-        descripcion: str,
-        opciones: str,
     ):
         """Crea una votacion
 
-        Args:
-            titulo (str): de la votacion
-            descripcion (str): texto descriptivo sobre lo que se va a votar
-            opciones (str): opciones de la votacion. Separado por comas.
-
-        Ej:
-            fur votacion "Votacion seria" "Votad alguna opcion" "Enviar un meme" "Enviar un sticker"
         """
-        msg = await interaction.send("Votacion")
-        await msg.delete()
-        embed = nextcord.Embed(title=titulo, description=descripcion)
-        opciones = opciones.split(",")
-        for opcion, emoji in zip(opciones, emojis):
-            embed.add_field(name=opcion, value=emoji, inline=True)
-
-        msg = await interaction.channel.send(embed=embed)
-        for emoji, op in zip(emojis, opciones):
-            try:
-                await msg.add_reaction(emoji)
-            except Exception as error:
-                log.error(error)
+        await interaction.response.send_modal(Modal())
 
     @nextcord.slash_command(name="canales")
     @application_checks.has_permissions(administrator=True)
@@ -278,11 +256,7 @@ class admin(commands.Cog):
     async def post(self, interaction: Interaction):
         pass
     
-    @nextcord.slash_command(name="mastodon")
-    async def mastodon(self, interaction: Interaction,usuario:str,instance:str):
-        embed=self.bot.mastodon.get_latest_image_not_repeated(interaction.guild,usuario,instance)
-        await interaction.send(embed=embed)
-
+   
     @application_checks.has_permissions(administrator=True)
     @post.subcommand(name="add")
     async def post_add(
