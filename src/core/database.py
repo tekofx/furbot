@@ -67,6 +67,8 @@ channel_set_policy="""UPDATE channels SET policy=%s WHERE id=%s AND guild=%s;"""
 channel_set_type="""UPDATE channels SET type=%s WHERE id=%s AND guild=%s;"""
 channel_exists="""SELECT * FROM channels WHERE id=%s AND guild=%s;"""
 channel_insert_without_type="""INSERT INTO channels (id, guild, policy, name) VALUES (%s, %s, %s, %s) ON DUPLICATE KEY UPDATE policy=%s, name=%s;"""
+channel_get_of_type="""SELECT * FROM channels WHERE guild=%s AND type=%s;"""
+
 
 posts_table = """ CREATE TABLE IF NOT EXISTS posts (
                                     id int(18) AUTO_INCREMENT,
@@ -80,7 +82,7 @@ posts_table = """ CREATE TABLE IF NOT EXISTS posts (
                                     CONSTRAINT PK_posts PRIMARY KEY (id, guild)
                                 ); """
                                 
-post_insert="""INSERT INTO posts (guild, channel, visibility, service, account, frequency) VALUES (%s, %s, %s, %s, %s, %s, %s) ON DUPLICATE KEY UPDATE visibility=%s, service=%s, account=%s, frequency=%s;"""
+post_insert="""INSERT INTO posts (guild, channel, visibility, service, account, frequency) VALUES (%s, %s, %s, %s, %s, %s) ON DUPLICATE KEY UPDATE visibility=%s, service=%s, account=%s, frequency=%s;"""
 post_remove="""DELETE FROM posts WHERE id=%s AND guild=%s;"""                          
 post_get="""SELECT * FROM posts WHERE id=%s AND guild=%s;"""
 posts_get_from_guild="""SELECT * FROM posts WHERE guild=%s;"""
@@ -100,16 +102,13 @@ class Database:
         self.cursor = self.connection.cursor()
 
     def execute_query(self, query: str,data:str=None):
-        try:
-            if data:
-                self.cursor.execute(query,data)
-            else:
-            
-                self.cursor.execute(query)
-            self.connection.commit()
-        except Exception as error:
-            log.error(f"Error execution query: '{error}'")
-
+        if data:
+            self.cursor.execute(query,data)
+        else:
+        
+            self.cursor.execute(query)
+        self.connection.commit()
+        
     def fetch_query(self, query):
         self.cursor.execute(query)
         return self.cursor.fetchall()
@@ -159,6 +158,8 @@ class Database:
     def get_channel(self, channel:nextcord.TextChannel ):
         return self.fetch_query(channel_get,(channel.id,channel.guild.id))
     
+    def get_channel_of_type(self,guild:nextcord.Guild, type:str):
+        return self.fetch_query(channel_get_of_type,(guild.id,type))
    
     def update_channel_policy(self, channel:nextcord.TextChannel,policy:str):
         self.execute_query(channel_set_policy,(policy,channel.id,channel.guild.id))
@@ -185,7 +186,8 @@ class Database:
         return self.fetch_query(channels_get_from_guild,(guild.id,))
         
     
-""" load_dotenv("../../dev.env")
+""" load_dotenv("./dev.env")
+print(os.getenv("DB_USER"))
 db=Database()
 db.execute_query(drop_tables)
 
@@ -200,5 +202,5 @@ db.execute_query(posts_table)
 db.execute_query(user_insert,(1,1,"test","2020-01-01","2020-01-01","test","2020-01-01","2020-01-01"))
 db.execute_query(role_insert,(1,1,"test","test","test","test"))
 db.execute_query(record_insert,(1,1,"test","test","test","2020-01-01","test","2020-01-01"))
-db.execute_query(post_insert,(1,1,1,"sfw","test","test",1,"sfw","test","test",1))
+db.execute_query(post_insert,(1,1,"sfw","test","test",1,"sfw","test","test",1))
 db.execute_query(channel_insert,(1,1,"test","test","test","test","test")) """
