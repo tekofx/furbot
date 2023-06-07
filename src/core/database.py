@@ -8,8 +8,8 @@ import mysql.connector
 drop_tables = """DROP TABLE IF EXISTS users, roles, sentences, records, channels, posts;"""
 
 users_table = """ CREATE TABLE IF NOT EXISTS users (
-                                    id int(18),
-                                    guild int(18) NOT NULL,
+                                    id varchar(18),
+                                    guild varchar(18) NOT NULL,
                                     name varchar(20) NOT NULL,
                                     joined_date datetime,
                                     birthday date,
@@ -27,8 +27,8 @@ users_get_from_guild="""SELECT * FROM users WHERE guild=%s;"""
 user_set_birthday="""UPDATE users SET birthday=%s WHERE id=%s AND guild=%s;"""
 
 roles_table = """ CREATE TABLE IF NOT EXISTS roles (
-                                    id int(18),
-                                    guild int(18) NOT NULL,
+                                    id varchar(18),
+                                    guild varchar(18) NOT NULL,
                                     name varchar(20) NOT NULL,
                                     type varchar(20),
                                     
@@ -40,8 +40,8 @@ role_remove="""DELETE FROM roles WHERE id=%s AND guild=%s;"""
 role_get="""SELECT * FROM roles WHERE id=%s AND guild=%s;"""
 
 records_table = """ CREATE TABLE IF NOT EXISTS records (
-                                    id int(18) AUTO_INCREMENT,
-                                    guild int(18) ,
+                                    id varchar(18) AUTO_INCREMENT,
+                                    guild varchar(18) ,
                                     type varchar(20) NOT NULL,
                                     account varchar(20) NOT NULL,
                                     record varchar(20) NOT NULL,
@@ -59,8 +59,8 @@ record_exists="""SELECT * FROM records WHERE id=%s AND guild=%s;"""
 
 
 channels_table = """ CREATE TABLE IF NOT EXISTS channels (
-                                    id int(18),
-                                    guild int(18),
+                                    id varchar(18),
+                                    guild varchar(18),
                                     type varchar(20),
                                     policy varchar(20) NOT NULL,
                                     name varchar(20) NOT NULL,
@@ -80,9 +80,9 @@ channel_get_of_type="""SELECT * FROM channels WHERE guild=%s AND type=%s;"""
 channel_exists_of_type="""SELECT * FROM channels WHERE guild=%s AND type=%s;"""
 
 posts_table = """ CREATE TABLE IF NOT EXISTS posts (
-                                    id int(18) AUTO_INCREMENT,
-                                    guild int(18) NOT NULL,
-                                    channel int(18) NOT NULL,
+                                    id varchar(18) AUTO_INCREMENT,
+                                    guild varchar(18) NOT NULL,
+                                    channel varchar(18) NOT NULL,
                                     visibility ENUM('sfw','nsfw') NOT NULL, 
                                     service varchar(20) NOT NULL,
                                     account varchar(40) NOT NULL,
@@ -109,8 +109,17 @@ class Database:
             database="db"
         )
         self.cursor = self.connection.cursor()
+        
+    def initialize(self):
+        # Create tables
+        self.execute_query(users_table)
+        self.execute_query(roles_table)
+        self.execute_query(records_table)
+        self.execute_query(channels_table)
+        self.execute_query(posts_table)
+        log.info("Initialized database")
 
-    def execute_query(self, query: str,data:str=None):
+    def execute_query(self, query: str,data:list=None):
         if data:
             self.cursor.execute(query,data)
         else:
@@ -118,14 +127,16 @@ class Database:
             self.cursor.execute(query)
         self.connection.commit()
         
-    def fetch_query(self, query):
-        self.cursor.execute(query)
+    def fetch_query(self, query:str,data:list):
+        self.cursor.execute(query,data)
         return self.cursor.fetchall()
 
     def close(self):
         self.connection.close()
         
     def insert_user(self, user:nextcord.Member):
+        print(user.id)
+        print(len(str(user.id)))
         self.execute_query(user_insert,(user.id,user.guild.id,user.name,user.joined_at,None,user.name,user.joined_at,None))
     
     def set_user_birthday(self, user:nextcord.Member, birthday:datetime.date):
