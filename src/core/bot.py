@@ -26,6 +26,7 @@ class Bot(commands.Bot):
 
         self.token = token
         self._db=Database()
+        self._db.initialize()
         if os.getenv("TWITTER_ACCESS_TOKEN"):
             self._twitter = Twitter(self._db)
         if os.getenv("REDDIT_CLIENT_ID"):
@@ -292,7 +293,8 @@ class Bot(commands.Bot):
         """
 
         # Get general_channel id
-        general_id=self.db.get_channel_of_type(guild, channel_type)[0]
+        general=self.db.get_channel_of_type(guild, channel_type)
+        general_id = general[0]
 
         if general_id != 0:
             try:

@@ -8,7 +8,7 @@ import mysql.connector
 drop_tables = """DROP TABLE IF EXISTS users, roles, sentences, records, channels, posts;"""
 
 users_table = """ CREATE TABLE IF NOT EXISTS users (
-                                    id varchar(18),
+                                    id varchar(20),
                                     guild varchar(18) NOT NULL,
                                     name varchar(20) NOT NULL,
                                     joined_date datetime,
@@ -27,7 +27,7 @@ users_get_from_guild="""SELECT * FROM users WHERE guild=%s;"""
 user_set_birthday="""UPDATE users SET birthday=%s WHERE id=%s AND guild=%s;"""
 
 roles_table = """ CREATE TABLE IF NOT EXISTS roles (
-                                    id varchar(18),
+                                    id varchar(20),
                                     guild varchar(18) NOT NULL,
                                     name varchar(20) NOT NULL,
                                     type varchar(20),
@@ -43,23 +43,23 @@ records_table = """ CREATE TABLE IF NOT EXISTS records (
                                     id int(18) AUTO_INCREMENT,
                                     guild varchar(18) ,
                                     type varchar(20) NOT NULL,
-                                    account varchar(20) NOT NULL,
-                                    record varchar(20) NOT NULL,
+                                    account varchar(20) ,
+                                    record varchar(300) NOT NULL,
                                     date datetime NOT NULL,
                                     
                                     CONSTRAINT PK_records PRIMARY KEY (id, guild)
                                 ); """
                                 
-record_insert="""INSERT INTO records (id, guild, type, account, record, date) VALUES (%s, %s, %s, %s, %s, %s) ON DUPLICATE KEY UPDATE record=%s, date=%s;"""
+record_insert="""INSERT INTO records ( guild, type, account, record, date) VALUES ( %s, %s, %s, %s, %s);"""
 
 record_remove="""DELETE FROM records WHERE id=%s AND guild=%s;"""
 record_get="""SELECT * FROM records WHERE id=%s AND guild=%s;"""
 records_get_of_type="""SELECT * FROM records WHERE guild=%s AND type=%s;"""
-record_exists="""SELECT * FROM records WHERE id=%s AND guild=%s;"""
+record_exists="""SELECT * FROM records WHERE record=%s AND guild=%s;"""
 
 
 channels_table = """ CREATE TABLE IF NOT EXISTS channels (
-                                    id varchar(18),
+                                    id varchar(20),
                                     guild varchar(18),
                                     type varchar(20),
                                     name varchar(20) NOT NULL,
@@ -67,7 +67,7 @@ channels_table = """ CREATE TABLE IF NOT EXISTS channels (
                                     CONSTRAINT PK_channels PRIMARY KEY (id, guild)
                                 ); """
                                 
-channel_insert="""INSERT INTO channels (id, guild, type, name) VALUES (%s, %s, %s, %s, %s) ON DUPLICATE KEY UPDATE name=%s;"""
+channel_insert="""INSERT INTO channels (id, guild, type, name) VALUES (%s, %s, %s, %s) ON DUPLICATE KEY UPDATE name=%s;"""
 channel_remove="""DELETE FROM channels WHERE id=%s AND guild=%s;"""
 channel_get="""SELECT * FROM channels WHERE id=%s AND guild=%s;"""
 channels_get_from_guild="""SELECT * FROM channels WHERE guild=%s;"""
@@ -165,7 +165,7 @@ class Database:
         """Inserts a record
 
         """        
-        self.execute_query(record_insert,(record_type,account,record,guild.id,record_type,account,record,guild.id))
+        self.execute_query(record_insert,(guild.id,record_type,account,record,datetime.datetime.now()))
         
     def remove_record(self, record_id:int, guild:nextcord.Guild):
         self.execute_query(record_remove,(record_id,guild.id))
@@ -176,8 +176,12 @@ class Database:
     def get_records_of_type(self, guild_id:int, record_type:str):
         return self.fetch_query(records_get_of_type,(guild_id,record_type))
     
-    def record_exists(self,  guild:nextcord.Guild,record_id:int):
-        return self.fetch_query(record_exists,(record_id,guild.id))
+    def record_exists(self,  guild:nextcord.Guild,record:str):
+        var =self.fetch_query(record_exists,(record,guild.id))
+        if len(var) == 0:
+            return False
+        
+        return True
         
     def clean_records(self, guild:nextcord.Guild,record_type,posts:list):
         """Removes records that are no longer fetched from twitter/reddit/api/etc
@@ -211,7 +215,11 @@ class Database:
         return self.fetch_query(channel_get,(channel.id,channel.guild.id))[0]
     
     def get_channel_of_type(self,guild:nextcord.Guild, type:str):
-        return self.fetch_query(channel_get_of_type,(guild.id,type))
+        var = self.fetch_query(channel_get_of_type,(guild.id,type))
+        if len(var)==0:
+            log.debug(f"Channel of type {type} not found")
+            return None
+        return var[0]
    
     def update_channel_type(self, channel:nextcord.TextChannel,type:str):
         self.execute_query(channel_set_type,(type,channel.id,channel.guild.id))

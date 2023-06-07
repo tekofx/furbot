@@ -33,8 +33,6 @@ class admin(commands.Cog):
     def __init__(self, bot: Bot) -> None:
         self.bot = bot
 
-    
-
     @nextcord.slash_command(name="canales")
     @application_checks.has_permissions(administrator=True)
     async def canales(self, interaction: Interaction):
@@ -43,6 +41,8 @@ class admin(commands.Cog):
     @canales.subcommand(name="mostrar")
     @application_checks.has_permissions(administrator=True)
     async def show_channels(self, interaction: Interaction):
+        """[Admin] Muestra los canales configurados del servidor
+        """        
         channels = self.bot.db.get_channels(interaction.guild)
         channels = list(channels)
         
@@ -79,7 +79,7 @@ class admin(commands.Cog):
 
 
     @application_checks.has_permissions(administrator=True)
-    @channel_set.subcommand(name="type")
+    @channel_set.subcommand(name="tipo")
     async def channel_set_type(
         self,
         interaction: Interaction,
@@ -104,7 +104,7 @@ class admin(commands.Cog):
             return
         
         if not self.bot.db.exists_channel(canal):
-            self.bot.db.insert_channel(canal,"all",tipo)
+            self.bot.db.insert_channel(canal,tipo)
         else:
             self.bot.db.update_channel_type(canal,tipo)
 
@@ -114,13 +114,11 @@ class admin(commands.Cog):
         return
 
     @application_checks.has_permissions(administrator=True)
-    @channel_set.subcommand(name="all")
-    async def channel_set_all(self, interaction: Interaction) -> None:
-
-        """[Admin] Configurar los canales predefinidos del bot.
-
+    @canales.subcommand(name="configurar")
+    async def channels_set_all(self, interaction: Interaction) -> None:
+        """[Admin] Configurar todos los canales predefinidos del bot.
         Permite establecer canales que sirvan para una función específica. Por ejemplo el canal lobby da la bienvenida
-        a los miembros nuevos
+        a los miembros nuevos. No se puede usar el mismo canal para dos funciones distintas.
         """
 
         await interaction.send(
@@ -340,7 +338,7 @@ class admin(commands.Cog):
                 return
             
             if not self.bot.db.exists_channel(channel):
-                self.bot.db.insert_channel(channel,"all",channel_type)
+                self.bot.db.insert_channel(channel,channel_type)
             else:
                 self.bot.db.update_channel_type(channel,channel_type)
 
