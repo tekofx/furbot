@@ -10,6 +10,7 @@ services:
 
   db:
     image: mysql:5.7
+    container_name: furbot_db
     restart: unless-stopped
     env_file: .env
     environment:
