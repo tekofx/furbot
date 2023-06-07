@@ -4,14 +4,7 @@ from nextcord.ext import commands
 import nextcord.ext.application_checks
 import os
 
-from core.database import (
-    Database,
-    check_record_in_database,
-    create_record,
-    exists_channel_of_type,
-    get_channel_of_type,
-    setup_database,
-)
+from core.database import Database
 from core.reddit import Reddit
 from core.twitter import Twitter
 from core.mastodon import Mastodon
@@ -97,11 +90,11 @@ class Bot(commands.Bot):
                 var = "\n".join(i[1:])
                 embed.add_field(name=i[0], value=var, inline=False)
         for guild in self.guilds:
-            if not exists_channel_of_type(guild, "noticias"):
+            
+            if not self.db.exists_channel_of_type(guild, "noticias"):
                 continue
-
-            if not check_record_in_database(guild, r[0]["url"]):
-                create_record(guild, "github", r[0]["url"])
+            if not self.db.record_exists(guild,r[0]["url"]):
+                self.db.insert_record(guild,"github",r[0]["url"])
 
                 await self.channel_send(guild, "noticias", "a", embed)
 
@@ -114,9 +107,6 @@ class Bot(commands.Bot):
             data.setup_folders()
             data.setup_files()
             del data
-
-            # Setup database
-            setup_database(guild)
 
         # Set activity
         activity = nextcord.Game(get_activity())
@@ -302,7 +292,7 @@ class Bot(commands.Bot):
         """
 
         # Get general_channel id
-        general_id = get_channel_of_type(guild, channel_type)
+        general_id=self.db.get_channel_of_type(guild, channel_type)[0]
 
         if general_id != 0:
             try:

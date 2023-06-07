@@ -1,7 +1,7 @@
 import datetime
 from dotenv import load_dotenv
 import nextcord
-import logger
+from core import logger
 import os
 import mysql.connector
 
