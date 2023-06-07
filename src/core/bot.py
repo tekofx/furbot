@@ -27,11 +27,11 @@ class Bot(commands.Bot):
         self.token = token
         self._db=Database()
         if os.getenv("TWITTER_ACCESS_TOKEN"):
-            self._twitter = Twitter()
+            self._twitter = Twitter(self._db)
         if os.getenv("REDDIT_CLIENT_ID"):
-            self._reddit = Reddit()
+            self._reddit = Reddit(self._db)
         if os.getenv("MASTODON_TOKEN"):
-            self._mastodon = Mastodon()
+            self._mastodon = Mastodon(self._db)
 
         self._local_guild = int(
             os.getenv("LOCAL_GUILD")
