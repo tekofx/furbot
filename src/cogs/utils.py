@@ -3,9 +3,8 @@ from nextcord import Interaction
 from nextcord.ext import commands
 from pyrae import dle
 from core.bot import Bot
-from core.database import set_birthday, get_birthday
 import datetime
-
+from ui.Modal import Modal
 
 class Utils(commands.Cog):
     def __init__(self, bot: Bot) -> None:
@@ -58,13 +57,14 @@ class Utils(commands.Cog):
         """
 
         birth_date = datetime.date(año, mes, dia)
-        set_birthday(interaction.guild, interaction.user, birth_date)
+        self.bot.db.set_user_birthday(interaction.message.author, birth_date)
         await interaction.send("Cumpleaños guardado en la base de datos")
 
     @birthday.subcommand(name="get")
     async def birthday_get(self, interaction: Interaction, usuario: nextcord.Member):
 
-        cumple = get_birthday(interaction.guild, usuario)
+        user=self.bot.db.get_user(usuario)
+        cumple=user[4]
         if not cumple:
             await interaction.send(
                 f"No existe el cumpleaños de {usuario.display_name} en la base de datos"

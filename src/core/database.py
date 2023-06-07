@@ -1,3 +1,4 @@
+import datetime
 from dotenv import load_dotenv
 import nextcord
 import logger
@@ -23,6 +24,7 @@ user_get="""SELECT * FROM users WHERE id=%s AND guild=%s;"""
 user_exists="""SELECT * FROM users WHERE id=%s AND guild=%s;"""
 users_get_with_joined_date_today="""SELECT * FROM users WHERE guild=%s AND joined_date LIKE %s;"""
 users_get_from_guild="""SELECT * FROM users WHERE guild=%s;"""
+user_set_birthday="""UPDATE users SET birthday=%s WHERE id=%s AND guild=%s;"""
 
 roles_table = """ CREATE TABLE IF NOT EXISTS roles (
                                     id int(18),
@@ -124,7 +126,10 @@ class Database:
         self.connection.close()
         
     def insert_user(self, user:nextcord.Member):
-        self.execute_query(user_insert,(user.id,user.guild.id,user.name,user.joined_at,user.created_at,user.name,user.joined_at,user.created_at))
+        self.execute_query(user_insert,(user.id,user.guild.id,user.name,user.joined_at,None,user.name,user.joined_at,None))
+    
+    def set_user_birthday(self, user:nextcord.Member, birthday:datetime.date):
+        self.execute_query(user_set_birthday,(birthday,user.id,user.guild.id))
     
     def remove_user(self, user:nextcord.Member):
         self.execute_query(user_remove,(user.id,user.guild.id))
