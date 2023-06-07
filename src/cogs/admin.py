@@ -26,19 +26,6 @@ PREDEFINED_CHANNELS = dict(
 )
 
 
-CHANNEL_POLICIES_OPTIONS = {
-    "Solo imágenes": "imagenes",
-    "Solo enlaces": "links",
-    "Videos, imágenes y audios": "arte",
-}
-
-CHANNEL_POLICIES = {
-    "imagenes": "Canal para solo enviar imágenes. Se borrarán todos los mensajes que no sean imágenes.",
-    "links": "Canal para solo enlaces. Se borrarán todos los mensajes que no sean enlaces.",
-    "arte": "Canal para subir arte. Pueden ser videos/imagenes/audios",
-}
-
-
 emojis = ["🟥", "🟧", "🟨", "🟩", "🟦", "🟪", "🟫", "⬜"]
 
 
@@ -56,39 +43,20 @@ class admin(commands.Cog):
     @canales.subcommand(name="mostrar")
     @application_checks.has_permissions(administrator=True)
     async def show_channels(self, interaction: Interaction):
-        channels = self.bot.db.get_channels(interaction.guild.id)
+        channels = self.bot.db.get_channels(interaction.guild)
         channels = list(channels)
+        
+        if channels==[]:
+            return await interaction.send("No hay canales configurados")
 
-        output = "Canal: tipo | politica\n"
+        output = "Canal: tipo\n"
         for channel in channels:
             channel_id = channel[0]
             channel_type = channel[2]
-            channel_policy = channel[3]
             x = await self.bot.fetch_channel(channel_id)
-            output += "- {}: {} | {}\n".format(x.mention, channel_type, channel_policy)
+            output += f"- {x.mention}: {channel_type} | \n"
         await interaction.send(output)
         pass
-
-    @application_checks.has_permissions(administrator=True)
-    @canales.subcommand(
-        name="rmpolicy",
-    )
-    async def canales_rmchannelpolicy(
-        self, interaction: Interaction, canal: nextcord.TextChannel
-    ):
-        """[Admin] Elimina politica de un canal"""
-        channel=self.bot.db.get_channel(canal)
-        
-        channel_type=channel[2]
-
-        if channel_type is None:  # If has no type
-            self.bot.db.remove_channel(canal)
-        else:
-            self.bot.db.update_channel_policy(canal,"all")
-
-        await interaction.send(
-            f"Eliminada la politica de {canal.mention}. Ahora se puede enviar todo tipo de mensajes."
-        )
 
     @application_checks.has_permissions(administrator=True)
     @canales.subcommand(name="list")
@@ -103,44 +71,12 @@ class admin(commands.Cog):
             output += "{} - {}\n".format(x, y)
         await interaction.send(output)
 
-    @application_checks.has_permissions(administrator=True)
-    @channels_list.subcommand(name="politicas")
-    async def channle_policies(self, interaction: Interaction):
-        output = ""
-        for x, y in CHANNEL_POLICIES.items():
-            output += "{} - {}\n".format(x, y)
-        await interaction.send(output)
 
     @application_checks.has_permissions(administrator=True)
     @canales.subcommand(name="set")
     async def channel_set(self, interaction: Interaction):
         pass
 
-    @application_checks.has_permissions(administrator=True)
-    @channel_set.subcommand(name="policy")
-    async def channel_set_policy(
-        self,
-        interaction: Interaction,
-        canal: nextcord.TextChannel,
-        politica: str = SlashOption(name="politica", choices=CHANNEL_POLICIES_OPTIONS),
-    ):
-        if not politica in self.get_channel_of_type_policies():
-            await interaction.send(
-                "Canal no valido, la politica debe ser una de las siguientes: `{}`".format(
-                    ", ".join(self.get_channel_of_type_policies())
-                )
-            )
-            return
-        
-        
-        if not self.bot.db.exists_channel(canal):
-            self.bot.db.insert_channel(canal,politica)
-        else:
-            self.bot.db.update_channel_policy(canal,politica)
-        await interaction.send(
-            "Canal {} configurado con politica {}".format(canal, politica)
-        )
-        return
 
     @application_checks.has_permissions(administrator=True)
     @channel_set.subcommand(name="type")
@@ -195,44 +131,6 @@ class admin(commands.Cog):
             await self.setup_channel(interaction, x, y)
 
         await interaction.channel.send("Configuración finalizada")
-
-    @commands.Cog.listener()
-    async def on_message(self, message: nextcord.Message):
-        channel=self.bot.db.get_channel(message.channel)
-        channel_policy = channel[3]
-        if not channel:
-            return
-
-        if channel_policy == "all":
-            return
-
-        if channel_policy == "links" and "https://" in message.content:
-            return
-
-        if channel_policy == "imagenes" and message.attachments:
-            if "image" in message.attachments[0].content_type:
-                return
-
-        if channel_policy == "arte":
-            if message.attachments and (
-                "image" in message.attachments[0].content_type
-                or "video" in message.attachments[0].content_type
-            ):
-                await message.add_reaction("⭐")
-                """ thread = "Publicación de " + message.author.name
-                await message.create_thread(name=thread) """
-                return
-            if "https://" in message.content:
-                await message.add_reaction("⭐")
-                """thread = "Publicación de " + message.author.name
-                await message.create_thread(name=thread)"""
-                return
-
-        await message.delete()
-        msg = await message.channel.send(
-            f"En este canal solo se pueden enviar {channel_policy}. Puedes abrir un hilo si quieres escribir texto sobre algún mensaje."
-        )
-        await msg.delete(delay=5)
 
     @nextcord.slash_command(name="post")
     @application_checks.has_permissions(administrator=True)
@@ -462,17 +360,7 @@ class admin(commands.Cog):
 
         return output
 
-    def get_channel_of_type_policies(self) -> List[str]:
-        """Gets the channel_policies from CHANNEL
-
-        Returns:
-            List[str]: contains the channel_policies
-        """
-        output = []
-        for x in CHANNEL_POLICIES.keys():
-            output.append(x)
-
-        return output
+   
 
 
 def setup(bot: commands.Bot):

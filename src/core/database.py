@@ -40,7 +40,7 @@ role_remove="""DELETE FROM roles WHERE id=%s AND guild=%s;"""
 role_get="""SELECT * FROM roles WHERE id=%s AND guild=%s;"""
 
 records_table = """ CREATE TABLE IF NOT EXISTS records (
-                                    id varchar(18) AUTO_INCREMENT,
+                                    id int(18) AUTO_INCREMENT,
                                     guild varchar(18) ,
                                     type varchar(20) NOT NULL,
                                     account varchar(20) NOT NULL,
@@ -62,25 +62,22 @@ channels_table = """ CREATE TABLE IF NOT EXISTS channels (
                                     id varchar(18),
                                     guild varchar(18),
                                     type varchar(20),
-                                    policy varchar(20) NOT NULL,
                                     name varchar(20) NOT NULL,
                                     
                                     CONSTRAINT PK_channels PRIMARY KEY (id, guild)
                                 ); """
                                 
-channel_insert="""INSERT INTO channels (id, guild, type, policy, name) VALUES (%s, %s, %s, %s, %s) ON DUPLICATE KEY UPDATE policy=%s, name=%s;"""
+channel_insert="""INSERT INTO channels (id, guild, type, name) VALUES (%s, %s, %s, %s, %s) ON DUPLICATE KEY UPDATE name=%s;"""
 channel_remove="""DELETE FROM channels WHERE id=%s AND guild=%s;"""
 channel_get="""SELECT * FROM channels WHERE id=%s AND guild=%s;"""
 channels_get_from_guild="""SELECT * FROM channels WHERE guild=%s;"""
-channel_set_policy="""UPDATE channels SET policy=%s WHERE id=%s AND guild=%s;"""
 channel_set_type="""UPDATE channels SET type=%s WHERE id=%s AND guild=%s;"""
 channel_exists="""SELECT * FROM channels WHERE id=%s AND guild=%s;"""
-channel_insert_without_type="""INSERT INTO channels (id, guild, policy, name) VALUES (%s, %s, %s, %s) ON DUPLICATE KEY UPDATE policy=%s, name=%s;"""
 channel_get_of_type="""SELECT * FROM channels WHERE guild=%s AND type=%s;"""
 channel_exists_of_type="""SELECT * FROM channels WHERE guild=%s AND type=%s;"""
 
 posts_table = """ CREATE TABLE IF NOT EXISTS posts (
-                                    id varchar(18) AUTO_INCREMENT,
+                                    id int(18) AUTO_INCREMENT,
                                     guild varchar(18) NOT NULL,
                                     channel varchar(18) NOT NULL,
                                     visibility ENUM('sfw','nsfw') NOT NULL, 
@@ -135,8 +132,6 @@ class Database:
         self.connection.close()
         
     def insert_user(self, user:nextcord.Member):
-        print(user.id)
-        print(len(str(user.id)))
         self.execute_query(user_insert,(user.id,user.guild.id,user.name,user.joined_at,None,user.name,user.joined_at,None))
     
     def set_user_birthday(self, user:nextcord.Member, birthday:datetime.date):
@@ -202,21 +197,22 @@ class Database:
                 self.remove_record(record_id,guild)
                 log.debug(f"Removed {record_id} of account {record_account}")
         
-    def insert_channel(self, channel:nextcord.TextChannel,policy:str,type:str=None):
-        self.execute_query(channel_insert,(channel.id,channel.guild.id,type,policy,channel.name,policy,channel.name))
+    def insert_channel(self, channel:nextcord.TextChannel,type:str=None):
+        self.execute_query(channel_insert,(channel.id,channel.guild.id,type,channel.name,channel.name))
     
     def remove_channel(self, channel:nextcord.TextChannel):
         self.execute_query(channel_remove,(channel.id,channel.guild.id))
     
     def get_channel(self, channel:nextcord.TextChannel ):
-        return self.fetch_query(channel_get,(channel.id,channel.guild.id))
+        var = self.fetch_query(channel_get,(channel.id,channel.guild.id))
+        if len(var)==0:
+            log.debug(f"Channel {channel.id} not found")
+            return None
+        return self.fetch_query(channel_get,(channel.id,channel.guild.id))[0]
     
     def get_channel_of_type(self,guild:nextcord.Guild, type:str):
         return self.fetch_query(channel_get_of_type,(guild.id,type))
    
-    def update_channel_policy(self, channel:nextcord.TextChannel,policy:str):
-        self.execute_query(channel_set_policy,(policy,channel.id,channel.guild.id))
-    
     def update_channel_type(self, channel:nextcord.TextChannel,type:str):
         self.execute_query(channel_set_type,(type,channel.id,channel.guild.id))
     
@@ -239,6 +235,8 @@ class Database:
         return self.fetch_query(posts_get_from_guild,(guild.id,))
     
     def get_channels(self, guild:nextcord.Guild):
+        var=self.fetch_query(channels_get_from_guild,(guild.id,))
+        log.info(var)
         return self.fetch_query(channels_get_from_guild,(guild.id,))
         
     
