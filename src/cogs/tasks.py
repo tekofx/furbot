@@ -29,12 +29,11 @@ class tasks(commands.Cog):
             if posts:
                 for post in posts:
                     post_id = post[0]
-                    guild_id = post[1]
-                    channel_id = post[3]
-                    visibility = post[4]
-                    service = post[5]
-                    account = post[6]
-                    interval = post[7]
+                    channel_id = post[2]
+                    visibility = post[3]
+                    service = post[4]
+                    account = post[5]
+                    interval = post[6]
                     task_id = int(str(guild.id) + str(post_id))
                     task = self.bot.loop.create_task(
                         self.post_task(
@@ -256,10 +255,10 @@ class tasks(commands.Cog):
             if not self.bot.db.exists_channel_of_type(guild, "general"):
                 continue
 
-            members = get_birthdays(guild)
+            members = self.bot.db.get_users(guild)
             for member in members:
-                
-
+                member_id = member[0]
+                birthday=datetime.strptime(member[4], "%Y-%m-%d")
                 if birthday.day == now.day and birthday.month == now.month:
 
                     member = await guild.fetch_member(member_id)
