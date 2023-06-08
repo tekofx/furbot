@@ -239,9 +239,7 @@ class Database:
     
     def exists_channel_of_type(self, guild:nextcord.Guild, type:str):
         var=self.fetch_query(channel_exists_of_type,(guild.id,type))
-        print(var)
         if len(var)==0:
-            print("No channel of type")
             return False
         
         return True

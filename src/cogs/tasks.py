@@ -52,7 +52,7 @@ class Tasks(commands.Cog):
     @tasks.loop(hours=1)
     async def sync_commands(self):
         log.info("Syncing commands")
-        await self.bot.sync_application_commands()
+        await self.bot.sync_application_commands(self.bot._local_guild)
 
     @tasks.loop(hours=1)
     async def estaciones(self):
@@ -178,7 +178,6 @@ class Tasks(commands.Cog):
                 )
                 
             if service =="mastodon":
-                print(account)
                 instance=account.split("@")[1]
                 account = account.split("@")[0]
                 embed=self.bot.mastodon.get_latest_image_not_repeated(guild, account, instance)
@@ -261,7 +260,10 @@ class Tasks(commands.Cog):
             members = self.bot.db.get_users(guild)
             for member in members:
                 member_id = member[0]
-                birthday=datetime.strptime(member[4], "%Y-%m-%d")
+                birthday=member[4]
+                if birthday==None:
+                    continue
+                
                 if birthday.day == now.day and birthday.month == now.month:
 
                     member = await guild.fetch_member(member_id)
