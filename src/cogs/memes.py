@@ -33,11 +33,14 @@ class memes(commands.Cog):
         Args:
             thread (nextcord.Thread): thread created
         """
-        memes_forum_id=self.bot.db.get_channel_of_type(thread.guild, "memes")
+        memes_forum=self.bot.db.get_channel_of_type(thread.guild, "memes")
+        if memes_forum is None:
+            return
+        memes_forum_id=int(memes_forum[0])
         if thread.parent_id != memes_forum_id:
             return
 
-        message = await thread.history(limit=1).flatten()
+        message = await thread.history().flatten()
         message = message[0]
 
         if not message.attachments:
