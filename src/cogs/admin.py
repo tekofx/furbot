@@ -13,15 +13,15 @@ from nextcord import Interaction, SlashOption
 log = logger.getLogger(__name__)
 PREDEFINED_CHANNELS = dict(
     {
-        "general": "Canal para enviar mensajes generales",
-        "audit": "Canal para que los administradores vean mensajes del estado y las acciones que realizo.",
-        "lobby": "Canal para mandar mensajes de bienvenida",
-        "noticias": "Canal para publicar noticias de nuevas versiones",
-        "games": "Para mandar juegos que estén gratis",
-        "wordle": "Canal para jugar a wordle",
-        "numbers": "Canal jugar a contar numeros",
-        "ordure": "Canal para enviar cosas bizarras",
-        "memes": "Canal para enviar memes del server",
+        "General: Canal para enviar mensajes generales":"general",
+        "Audit: Canal para que los administradores vean mensajes del estado y las acciones que realizo.":"audit",
+        "Lobby: Canal para mandar mensajes de bienvenida":"lobby",
+        "Noticias: Canal para publicar noticias de nuevas versiones":"noticias",
+        "Games: Para mandar juegos que estén gratis":"games",
+        "Wordle: Canal para jugar a wordle":"wordle",
+        "Numbers: Canal jugar a contar numeros":"numbers",
+        "Ordure: Canal para enviar cosas bizarras":"ordure",
+        "Memes: Canal para enviar memes del server": "memes",
     },
 )
 
@@ -84,7 +84,7 @@ class admin(commands.Cog):
         self,
         interaction: Interaction,
         canal: nextcord.TextChannel | nextcord.ForumChannel,
-        tipo: str = SlashOption(name="tipo", choices=PREDEFINED_CHANNELS.keys()),
+        tipo: str = SlashOption(name="tipo", choices=PREDEFINED_CHANNELS),
     ):
         """[Admin] Configura un canal predefinido del bot.
 
@@ -209,11 +209,16 @@ class admin(commands.Cog):
                     f"La cuenta {cuenta} no existe, comprueba la cuenta y vuelve a intentarlo"
                 )
                 return
-        self.bot.db.insert_post(interaction.channel,visibilidad,servicio,cuenta,intervalo)
+            
+        if self.bot.db.exists_post(canal,visibilidad,servicio,cuenta):
+            await interaction.send("El post ya existe")
+            return
+        
+        post_id=self.bot.db.insert_post(canal,visibilidad,servicio,cuenta,intervalo)
         await interaction.send("Post creado")
 
         # Get tasks cog and create task
-        tasks = self.bot.cogs.get("tasks")
+        tasks = self.bot.cogs.get("Tasks")
 
         task = self.bot.loop.create_task(
             tasks.post_task(
@@ -222,8 +227,10 @@ class admin(commands.Cog):
         )
 
         # Add task to tasks dict
-        task_id = int(str(interaction.guild.id) + str(canal.id))
-        self.bot.tasks[task_id] = task
+        self.bot.tasks[post_id] = task
+        print("b")
+        for x in self.bot.tasks:
+            print(x,self.bot.tasks[x])
 
     @application_checks.has_permissions(administrator=True)
     @post.subcommand(name="rm")
@@ -233,16 +240,18 @@ class admin(commands.Cog):
         Args:
             post_id: id del post a eliminar
         """
-        task_id = int(str(interaction.guild.id) + str(post_id))
 
         # Remove from db
         self.bot.db.remove_post(interaction.channel,post_id)
 
         # Cancel the task
-        self.bot.tasks[task_id].cancel()
+        self.bot.tasks[post_id].cancel()
 
         # Remove from tasks dict
-        del self.bot.tasks[task_id]
+        del self.bot.tasks[post_id]
+        
+        for x in self.bot.tasks:
+            print(x,self.bot.tasks[x])
 
         await interaction.send("Post eliminado")
 
@@ -356,7 +365,7 @@ class admin(commands.Cog):
             List[str]: contains the channel_types
         """
         output = []
-        for x in PREDEFINED_CHANNELS.keys():
+        for x in PREDEFINED_CHANNELS.values():
             output.append(x)
 
         return output

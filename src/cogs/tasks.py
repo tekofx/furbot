@@ -35,14 +35,13 @@ class Tasks(commands.Cog):
                     service = post[4]
                     account = post[5]
                     interval = post[6]
-                    task_id = int(str(guild.id) + str(post_id))
                     task = self.bot.loop.create_task(
                         self.post_task(
                             guild, channel_id, visibility, service, account, interval
                         ),
-                        name=task_id,
+                        name=post_id,
                     )
-                    self.bot.tasks[task_id] = task
+                    self.bot.tasks[post_id] = task
                     log.info(
                         f"Created post task of account {post[2]}",
                         extra={"guild": guild.name},

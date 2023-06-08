@@ -85,13 +85,15 @@ posts_table = """ CREATE TABLE IF NOT EXISTS posts (
                                     account varchar(40) NOT NULL,
                                     frequency int(6) NOT NULL,
                                     
-                                    CONSTRAINT PK_posts PRIMARY KEY (id, guild)
+                                    CONSTRAINT PK_posts PRIMARY KEY (id, guild),
+                                    CONSTRAINT UNI_posts UNIQUE (guild, channel, service, account)
                                 ); """
                                 
 post_insert="""INSERT INTO posts (guild, channel, visibility, service, account, frequency) VALUES (%s, %s, %s, %s, %s, %s) ON DUPLICATE KEY UPDATE visibility=%s, service=%s, account=%s, frequency=%s;"""
 post_remove="""DELETE FROM posts WHERE id=%s AND guild=%s;"""                          
 post_get="""SELECT * FROM posts WHERE id=%s AND guild=%s;"""
 posts_get_from_guild="""SELECT * FROM posts WHERE guild=%s;"""
+post_exists_with_data="""SELECT * FROM posts WHERE guild=%s AND channel=%s AND service=%s AND account=%s;"""
 
 
 log = logger.getLogger(__name__)
@@ -105,7 +107,7 @@ class Database:
             password=os.getenv("DB_PASSWORD"),
             database="db"
         )
-        self.cursor = self.connection.cursor()
+        self.cursor = self.connection.cursor(buffered=True)
         
     def initialize(self):
         # Create tables
@@ -224,10 +226,10 @@ class Database:
             return None
         return self.fetch_query(channel_get,(channel.id,channel.guild.id))[0]
     
-    def get_channel_of_type(self,guild:nextcord.Guild, type:str):
-        var = self.fetch_query(channel_get_of_type,(guild.id,type))
+    def get_channel_of_type(self,guild:nextcord.Guild, channel_type:str):
+        var = self.fetch_query(channel_get_of_type,(guild.id,channel_type))
         if len(var)==0:
-            log.debug(f"Channel of type {type} not found")
+            log.debug(f"Channel of type {channel_type} not found")
             return None
         return var[0]
    
@@ -244,8 +246,23 @@ class Database:
         
         return True
     
-    def insert_post(self, channel:nextcord.TextChannel, visibility:str, service:str, account:str, frequency:int):
+    def insert_post(self, channel:nextcord.TextChannel, visibility:str, service:str, account:str, frequency:int)->int:
+        """Inserts a post
+
+        Args:
+            channel (nextcord.TextChannel): channel to insert the post
+            visibility (str): sfw/nsfw
+            service (str): reddit/twitter/mastodon
+            account (str): account to fetch
+            frequency (int): frequency of the post
+
+        Returns:
+            int: id of the post
+        """        
         self.execute_query(post_insert,(channel.guild.id,channel.id,visibility,service,account,frequency,visibility,service,account,frequency))
+        post_id=self.cursor.lastrowid
+        return post_id
+        
     
     def remove_post(self, channel:nextcord.TextChannel,post_id:int):
         self.execute_query(post_remove,(post_id,channel.guild.id))
@@ -255,6 +272,12 @@ class Database:
     
     def get_posts(self, guild:nextcord.Guild):
         return self.fetch_query(posts_get_from_guild,(guild.id,))
+    
+    def exists_post(self, channel:nextcord.TextChannel,service:str, account:str):
+        var = self.fetch_query(post_exists_with_data,(channel.guild.id,channel.id,service,account))
+        if len(var)==0:
+            return False
+        return True
     
     def get_channels(self, guild:nextcord.Guild):
         var=self.fetch_query(channels_get_from_guild,(guild.id,))
