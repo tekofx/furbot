@@ -143,7 +143,8 @@ class admin(commands.Cog):
         interaction: Interaction,
         canal: nextcord.TextChannel,
         servicio: str = SlashOption(
-            name="servicios",
+            name="servicio",
+            description="Red social de la cuenta",
             required=True,
             choices={"Twitter": "twitter", "Reddit": "reddit","Mastodon":"mastodon"},
         ),
@@ -198,6 +199,8 @@ class admin(commands.Cog):
                 return
             
         if servicio =="mastodon":
+            if not "@" in cuenta:
+                return await interaction.send("La cuenta debe ser usuario@instancia")
             instance=cuenta.split("@")[1]
             usuario=cuenta.split("@")[0]
             var=self.bot.mastodon.exists_account(usuario,instance)
