@@ -76,7 +76,7 @@ class Twitter:
                 tweet_url = tweet.entities["media"][0]["media_url"]
                 
                 if not self.db.record_exists(guild, tweet_url):
-                    self.db.clean_records(guild, record_type, [username])
+                    self.db.insert_record(guild, record_type, tweet_url,username)
                     num += 1
                     output.append(tweet_url)
 
