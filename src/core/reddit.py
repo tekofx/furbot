@@ -100,13 +100,13 @@ class Reddit:
         for post in posts:
             
             if not self.db.record_exists(guild, post.url):
-                self.db.insert_record(guild, record_type, sub_reddit, post.url)
+                self.db.insert_record(guild, record_type, post.url,sub_reddit)
                 output = post
                 break
 
         # Remove posts from db if they are not fetched
         posts_urls = [x.url for x in posts]
-        self.db.clean_records(guild, record_type, sub_reddit, posts_urls)
+        self.db.clean_records(guild, record_type, posts_urls)
         if output is None:
             return None
 

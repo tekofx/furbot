@@ -163,7 +163,7 @@ class Mastodon:
 
         # Remove statuses from db if they are not fetched
         media_attachments = [
-            status.media_attachments[0] if status.has_media_attachment() else ""
+            x.media_attachments[0] if x.has_media_attachment() else ""
             for x in statuses
         ]
         self.db.clean_records(guild,instance,media_attachments)

@@ -26,6 +26,7 @@ users_get_with_joined_date_today="""SELECT * FROM users WHERE guild=%s AND joine
 users_get_from_guild="""SELECT * FROM users WHERE guild=%s;"""
 user_set_birthday="""UPDATE users SET birthday=%s WHERE id=%s AND guild=%s;"""
 
+
 roles_table = """ CREATE TABLE IF NOT EXISTS roles (
                                     id varchar(20),
                                     guild varchar(18) NOT NULL,
@@ -196,8 +197,9 @@ class Database:
         for record in records:
             record_id=record[0]
             record_account=record[3]
+            record_record=record[4]
             
-            if record_id not in posts:
+            if record_record not in posts:
                 self.remove_record(record_id,guild)
                 log.debug(f"Removed {record_id} of account {record_account}")
         

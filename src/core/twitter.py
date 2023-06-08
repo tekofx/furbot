@@ -121,11 +121,11 @@ class Twitter:
                 tweet_url = tweet.entities["media"][0]["media_url"]
                 
                 if not self.db.record_exists(guild, tweet_url):
-                    self.db.create_record(guild, record_type, tweet_url, username)
+                    self.db.insert_record(guild, record_type, tweet_url, username)
 
                     output = tweet
                     break
-
+        
         if output is None:
             return None
 
