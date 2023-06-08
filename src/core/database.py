@@ -22,7 +22,6 @@ user_insert="""INSERT INTO users (id, guild, name, joined_date, birthday) VALUES
 user_remove="""DELETE FROM users WHERE id=%s AND guild=%s;"""
 user_get="""SELECT * FROM users WHERE id=%s AND guild=%s;"""
 user_exists="""SELECT * FROM users WHERE id=%s AND guild=%s;"""
-users_get_with_joined_date_today="""SELECT * FROM users WHERE guild=%s AND joined_date LIKE %s;"""
 users_get_from_guild="""SELECT * FROM users WHERE guild=%s;"""
 user_set_birthday="""UPDATE users SET birthday=%s WHERE id=%s AND guild=%s;"""
 
@@ -146,8 +145,17 @@ class Database:
     
     def get_users(self, guild:nextcord.Guild):
         return self.fetch_query(users_get_from_guild,(guild.id,))
+    
     def get_users_with_joined_day_today(self, guild:nextcord.Guild):
-        return self.fetch_query(users_get_with_joined_date_today,(guild.id,))
+        users= self.fetch_query(users_get_from_guild,(guild.id,))
+        now=datetime.datetime.now()
+        output=[]
+        for user in users:
+            joined_date=user[3]
+            if joined_date.day == now.day and joined_date.month == now.month :
+                output.append(user)
+        
+        return output
     
     def exists_user(self, user:nextcord.Member):
         return self.fetch_query(user_exists,(user.id,user.guild.id))
@@ -230,7 +238,13 @@ class Database:
         return self.fetch_query(channel_exists,(channel.id,channel.guild.id))
     
     def exists_channel_of_type(self, guild:nextcord.Guild, type:str):
-        return self.fetch_query(channel_exists_of_type,(guild.id,type))
+        var=self.fetch_query(channel_exists_of_type,(guild.id,type))
+        print(var)
+        if len(var)==0:
+            print("No channel of type")
+            return False
+        
+        return True
     
     def insert_post(self, channel:nextcord.TextChannel, visibility:str, service:str, account:str, frequency:int):
         self.execute_query(post_insert,(channel.guild.id,channel.id,visibility,service,account,frequency,visibility,service,account,frequency))

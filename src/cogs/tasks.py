@@ -12,10 +12,10 @@ from core.bot import Bot
 log = logger.getLogger(__name__)
 
 
-class tasks(commands.Cog):
+class Tasks(commands.Cog):
     def __init__(self, bot: Bot):
         self.bot = bot
-
+        
         # Start tasks
         self.update_users.start()
         self.free_games.start()
@@ -23,6 +23,7 @@ class tasks(commands.Cog):
         self.estaciones.start()
         self.birthday.start()
         self.sync_commands.start()
+        
         # Get posts from database
         for guild in self.bot.guilds:
             posts=self.bot.db.get_posts(guild)
@@ -46,9 +47,11 @@ class tasks(commands.Cog):
                         f"Created post task of account {post[2]}",
                         extra={"guild": guild.name},
                     )
+        
 
     @tasks.loop(hours=1)
     async def sync_commands(self):
+        log.info("Syncing commands")
         await self.bot.sync_application_commands()
 
     @tasks.loop(hours=1)
@@ -175,6 +178,7 @@ class tasks(commands.Cog):
                 )
                 
             if service =="mastodon":
+                print(account)
                 instance=account.split("@")[1]
                 account = account.split("@")[0]
                 embed=self.bot.mastodon.get_latest_image_not_repeated(guild, account, instance)
@@ -206,9 +210,9 @@ class tasks(commands.Cog):
                             extra={"guild": guild.name},
                         )
 
-    @tasks.loop(hours=1)
+    @tasks.loop(minutes=1)
     async def joined_date(self):
-        """Checks if today is somebody's birthday"""
+        """Checks if today someone joined the server and posts a message in general"""
 
         now = datetime.now()
         if now.hour != 10:
@@ -217,18 +221,17 @@ class tasks(commands.Cog):
 
         for guild in self.bot.guilds:
             
-            
             if not self.bot.db.exists_channel_of_type(guild, "general"):
                 continue
 
             members = self.bot.db.get_users_with_joined_day_today(guild)
 
             for member in members:
-                member_id = member[0]
-                joined_date = member[1]
+                member_id = int(member[0])
+                joined_date = member[3]
 
                 member = await guild.fetch_member(member_id)
-                years = now.year - int(joined_date.split("-")[0])
+                years = now.year - int(joined_date.year)
 
                 if years == 0:
                     return
@@ -269,8 +272,9 @@ class tasks(commands.Cog):
                         f"Hoy es el cumple de {member.mention}, Felicidades!",
                     )
 
+    #@joined_date.before_loop
     @free_games.before_loop
-    @joined_date.before_loop
+    @sync_commands.before_loop
     async def wait_until_oclock(self):
         """Waits some time to execute tasks"""
 
@@ -290,4 +294,4 @@ class tasks(commands.Cog):
 
 
 def setup(bot: commands.Bot):
-    bot.add_cog(tasks(bot))
+    bot.add_cog(Tasks(bot))
