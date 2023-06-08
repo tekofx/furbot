@@ -57,7 +57,7 @@ class Utils(commands.Cog):
         """
 
         birth_date = datetime.date(año, mes, dia)
-        self.bot.db.set_user_birthday(interaction.message.author, birth_date)
+        self.bot.db.set_user_birthday(interaction.user, birth_date)
         await interaction.send("Cumpleaños guardado en la base de datos")
 
     @birthday.subcommand(name="get")
