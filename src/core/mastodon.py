@@ -1,11 +1,13 @@
 from typing import List
-from dotenv import load_dotenv
 import nextcord
 import requests
 import os
 from nextcord import Embed, Colour
 from model.mastodon import User, UserField, Status, RebloggedStatus
 from core.database import Database
+from core import logger
+
+log = logger.getLogger(__name__)
 
 class Mastodon:
     def __init__(self,db:Database) -> None:
@@ -18,6 +20,7 @@ class Mastodon:
         self._token = os.getenv("MASTODON_TOKEN")
         self._app_instance = os.getenv("MASTODON_APP_INSTANCE")
         self.db=Database()
+        log.info("Enbladed Mastodon")
 
     def exists_instance(self, instance: str) -> bool:
         """Check if instance exists

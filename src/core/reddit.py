@@ -21,6 +21,7 @@ class Reddit:
             check_for_async=False,
         )
         self.db = db
+        log.info("Enabled Reddit")
 
     async def exists_subreddit(self, name: str) -> bool:
         """Checks if a subreddit exists

@@ -20,6 +20,7 @@ class Twitter:
         self.auth.set_access_token(access_token, access_token_secret)
         self.api = tw.API(self.auth, wait_on_rate_limit=True)
         self.db = db
+        log.info("Enabled Twitter")
 
     def exists_account(self, username: str) -> bool:
         try:
