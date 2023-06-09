@@ -143,7 +143,7 @@ class Database:
         self.execute_query(user_remove,(user.id,user.guild.id))
     
     def get_user(self, user:nextcord.Member):
-        return self.fetch_query(user_get,(user.id,user.guild.id))
+        return self.fetch_query(user_get,(user.id,user.guild.id))[0]
     
     def get_users(self, guild:nextcord.Guild):
         return self.fetch_query(users_get_from_guild,(guild.id,))
