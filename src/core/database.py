@@ -280,8 +280,6 @@ class Database:
         return True
     
     def get_channels(self, guild:nextcord.Guild):
-        var=self.fetch_query(channels_get_from_guild,(guild.id,))
-        log.info(var)
         return self.fetch_query(channels_get_from_guild,(guild.id,))
         
     
