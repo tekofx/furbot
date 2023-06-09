@@ -33,6 +33,7 @@ class admin(commands.Cog):
     def __init__(self, bot: Bot) -> None:
         self.bot = bot
 
+    ############################# Canales #####################################
     @nextcord.slash_command(name="canales")
     @application_checks.has_permissions(administrator=True)
     async def canales(self, interaction: Interaction):
@@ -57,28 +58,37 @@ class admin(commands.Cog):
             output += f"- {x.mention}: {channel_type}\n"
         await interaction.send(output)
 
-    @application_checks.has_permissions(administrator=True)
-    @canales.subcommand(name="list")
-    async def channels_list(self, interaction: Interaction):
-        pass
 
-    @channels_list.subcommand(name="tipos")
+
+    
+
     @application_checks.has_permissions(administrator=True)
-    async def channel_types(self, interaction: Interaction):
-        output = ""
+    @canales.subcommand(name="configurar")
+    async def channels_set_all(self, interaction: Interaction) -> None:
+        """[Admin] Configurar todos los canales predefinidos del bot.
+        Permite establecer canales que sirvan para una función específica. Por ejemplo el canal lobby da la bienvenida
+        a los miembros nuevos. No se puede usar el mismo canal para dos funciones distintas.
+        """
+
+        await interaction.send(
+            "Empezando configuración. Se le pedirá establecer varios canales. Si no quiere establecer un canal, escriba `skip`"
+        )
+        await sleep(2)
         for x, y in PREDEFINED_CHANNELS.items():
-            output += "{} - {}\n".format(x, y)
-        await interaction.send(output)
+            await self.setup_channel(interaction, y, x)
 
-
+        await interaction.channel.send("Configuración finalizada")
+        
+        
+    ############################# Canal #####################################
+    
+    @nextcord.slash_command(name="canal")
     @application_checks.has_permissions(administrator=True)
-    @canales.subcommand(name="set")
-    async def channel_set(self, interaction: Interaction):
+    async def canal(self, interaction: Interaction):
         pass
-
-
+    
     @application_checks.has_permissions(administrator=True)
-    @channel_set.subcommand(name="tipo")
+    @canal.subcommand(name="establecer_tipo")
     async def channel_set_type(
         self,
         interaction: Interaction,
@@ -112,23 +122,9 @@ class admin(commands.Cog):
         )
         return
 
-    @application_checks.has_permissions(administrator=True)
-    @canales.subcommand(name="configurar")
-    async def channels_set_all(self, interaction: Interaction) -> None:
-        """[Admin] Configurar todos los canales predefinidos del bot.
-        Permite establecer canales que sirvan para una función específica. Por ejemplo el canal lobby da la bienvenida
-        a los miembros nuevos. No se puede usar el mismo canal para dos funciones distintas.
-        """
-
-        await interaction.send(
-            "Empezando configuración. Se le pedirá establecer varios canales. Si no quiere establecer un canal, escriba `skip`"
-        )
-        await sleep(2)
-        for x, y in PREDEFINED_CHANNELS.items():
-            await self.setup_channel(interaction, y, x)
-
-        await interaction.channel.send("Configuración finalizada")
-
+    
+    ############################# Post #####################################
+    
     @nextcord.slash_command(name="post")
     @application_checks.has_permissions(administrator=True)
     async def post(self, interaction: Interaction):
@@ -136,7 +132,7 @@ class admin(commands.Cog):
     
    
     @application_checks.has_permissions(administrator=True)
-    @post.subcommand(name="add")
+    @post.subcommand(name="añadir")
     async def post_add(
         self,
         interaction: Interaction,
@@ -224,9 +220,12 @@ class admin(commands.Cog):
                 interaction.guild, canal.id, visibilidad, servicio, cuenta, intervalo
             )
         )
+        
+        # Add task to tasks dict
+        self.bot.tasks[post_id] = task
 
     @application_checks.has_permissions(administrator=True)
-    @post.subcommand(name="rm")
+    @post.subcommand(name="eliminar")
     async def post_rm(self, interaction: Interaction, post_id: int):
         """[Admin] Permite eliminar una cuenta de twitter/subreddit de un canal.
 
@@ -246,7 +245,7 @@ class admin(commands.Cog):
         await interaction.send("Post eliminado")
 
     @application_checks.has_permissions(administrator=True)
-    @post.subcommand(name="list")
+    @post.subcommand(name="lista")
     async def post_list(self, interaction: Interaction):
         "[Admin] Muestra los posts que se han añadido"
         posts=self.bot.db.get_posts(interaction.guild)
@@ -262,8 +261,10 @@ class admin(commands.Cog):
             output += f"-id={post_id}\n-canal={channel.mention}\n-visibilidad={visibility}\n-servicio={service}\n-cuenta={account} \n-intevalo={interval}m\n\n"
 
         await interaction.send(output)
+        
+    ############################## BORRAR ##############################
 
-    @nextcord.slash_command(name="clear")
+    @nextcord.slash_command(name="borrar")
     @application_checks.has_permissions(administrator=True)
     async def clear(self, interaction: Interaction, num: int):
         """[Admin] Elimina mensajes de un canal
