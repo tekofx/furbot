@@ -54,9 +54,8 @@ class admin(commands.Cog):
             channel_id = channel[0]
             channel_type = channel[2]
             x = await self.bot.fetch_channel(channel_id)
-            output += f"- {x.mention}: {channel_type} | \n"
+            output += f"- {x.mention}: {channel_type}\n"
         await interaction.send(output)
-        pass
 
     @application_checks.has_permissions(administrator=True)
     @canales.subcommand(name="list")
@@ -126,7 +125,7 @@ class admin(commands.Cog):
         )
         await sleep(2)
         for x, y in PREDEFINED_CHANNELS.items():
-            await self.setup_channel(interaction, x, y)
+            await self.setup_channel(interaction, y, x)
 
         await interaction.channel.send("Configuración finalizada")
 
@@ -210,8 +209,8 @@ class admin(commands.Cog):
                 )
                 return
             
-        if self.bot.db.exists_post(canal,visibilidad,servicio,cuenta):
-            await interaction.send("El post ya existe")
+        if self.bot.db.exists_post(canal,servicio,cuenta):
+            await interaction.send("El post ya existe, escoge otra cuenta o canal")
             return
         
         post_id=self.bot.db.insert_post(canal,visibilidad,servicio,cuenta,intervalo)
@@ -225,12 +224,6 @@ class admin(commands.Cog):
                 interaction.guild, canal.id, visibilidad, servicio, cuenta, intervalo
             )
         )
-
-        # Add task to tasks dict
-        self.bot.tasks[post_id] = task
-        print("b")
-        for x in self.bot.tasks:
-            print(x,self.bot.tasks[x])
 
     @application_checks.has_permissions(administrator=True)
     @post.subcommand(name="rm")
@@ -250,9 +243,6 @@ class admin(commands.Cog):
         # Remove from tasks dict
         del self.bot.tasks[post_id]
         
-        for x in self.bot.tasks:
-            print(x,self.bot.tasks[x])
-
         await interaction.send("Post eliminado")
 
     @application_checks.has_permissions(administrator=True)
