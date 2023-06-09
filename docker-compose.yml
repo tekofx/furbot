@@ -12,12 +12,9 @@ services:
     image: lscr.io/linuxserver/mariadb:latest
     container_name: furbot_db
     restart: unless-stopped
+    env_file: .env
     environment:
       TZ: "Europe/Madrid"
-      MYSQL_DATABASE: "database"
-      MYSQL_USER: "user"
-      MYSQL_ROOT_PASSWORD: "root_password"
-      MYSQL_PASSWORD: "password"
     ports:
       # <Port exposed> : <MySQL Port running inside container>
       - 3306:3306
