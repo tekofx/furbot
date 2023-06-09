@@ -9,3 +9,4 @@ tweepy
 nextcord==2.4.2
 unidecode
 beautifulsoup4
+mysql-connector-python
