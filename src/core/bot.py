@@ -4,13 +4,7 @@ from nextcord.ext import commands
 import nextcord.ext.application_checks
 import os
 
-from core.database import (
-    check_record_in_database,
-    create_record,
-    exists_channel_of_type,
-    get_channel_of_type,
-    setup_database,
-)
+from core.database import Database
 from core.reddit import Reddit
 from core.twitter import Twitter
 from core.mastodon import Mastodon
@@ -31,12 +25,14 @@ class Bot(commands.Bot):
         )
 
         self.token = token
+        self._db=Database()
+        self._db.initialize()
         if os.getenv("TWITTER_ACCESS_TOKEN"):
-            self._twitter = Twitter()
+            self._twitter = Twitter(self._db)
         if os.getenv("REDDIT_CLIENT_ID"):
-            self._reddit = Reddit()
+            self._reddit = Reddit(self._db)
         if os.getenv("MASTODON_TOKEN"):
-            self._mastodon = Mastodon()
+            self._mastodon = Mastodon(self._db)
 
         self._local_guild = int(
             os.getenv("LOCAL_GUILD")
@@ -44,6 +40,10 @@ class Bot(commands.Bot):
 
         self._tasks = {}
 
+    @property
+    def db(self) -> Database:
+        return self._db
+    
     @property
     def twitter(self) -> Twitter:
         return self._twitter
@@ -91,11 +91,11 @@ class Bot(commands.Bot):
                 var = "\n".join(i[1:])
                 embed.add_field(name=i[0], value=var, inline=False)
         for guild in self.guilds:
-            if not exists_channel_of_type(guild, "noticias"):
+            
+            if not self.db.exists_channel_of_type(guild, "noticias"):
                 continue
-
-            if not check_record_in_database(guild, r[0]["url"]):
-                create_record(guild, "github", r[0]["url"])
+            if not self.db.record_exists(guild,r[0]["url"]):
+                self.db.insert_record(guild,"github",r[0]["url"])
 
                 await self.channel_send(guild, "noticias", "a", embed)
 
@@ -108,9 +108,6 @@ class Bot(commands.Bot):
             data.setup_folders()
             data.setup_files()
             del data
-
-            # Setup database
-            setup_database(guild)
 
         # Set activity
         activity = nextcord.Game(get_activity())
@@ -128,12 +125,13 @@ class Bot(commands.Bot):
 
             log.info("Syncing application commands")
             await self.sync_application_commands(guild_id=self._local_guild)
+            # If commands sync not work uncomment this and run the bot
+            """ self.add_all_application_commands()
+            await self.sync_all_application_commands() """
         except nextcord.errors.NotFound as e:
             log.error("Error syncing application commands: {}".format(e))
 
-        # If commands sync not work uncomment this and run the bot
-        """ self.add_all_application_commands()
-        await self.sync_all_application_commands() """
+        
 
         # Send new version message if there's one
         await self.new_github_release()
@@ -296,7 +294,8 @@ class Bot(commands.Bot):
         """
 
         # Get general_channel id
-        general_id = get_channel_of_type(guild, channel_type)
+        general=self.db.get_channel_of_type(guild, channel_type)
+        general_id = general[0]
 
         if general_id != 0:
             try:

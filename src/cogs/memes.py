@@ -17,7 +17,7 @@ from core.bot import Bot
 from core.data import get_server_path, meme_resources_path
 from core import logger
 from nextcord import Interaction, SlashOption
-from core.database import get_channel_of_type
+
 
 log = logger.getLogger(__name__)
 
@@ -33,9 +33,15 @@ class memes(commands.Cog):
         Args:
             thread (nextcord.Thread): thread created
         """
-        memes_forum_id = get_channel_of_type(thread.guild, "memes")
+        memes_forum=self.bot.db.get_channel_of_type(thread.guild, "memes")
+        if memes_forum is None:
+            return
+        memes_forum_id=int(memes_forum[0])
         if thread.parent_id != memes_forum_id:
             return
+        
+        # Wait 1 second
+        await asyncio.sleep(1)
 
         message = await thread.history(limit=1).flatten()
         message = message[0]

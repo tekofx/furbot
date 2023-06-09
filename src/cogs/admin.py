@@ -1,18 +1,7 @@
 from typing import List
 from nextcord.ext import commands
 import nextcord
-from core.database import (
-    create_channel,
-    create_post,
-    exists_channel,
-    get_channel,
-    get_channels,
-    get_posts,
-    remove_channel,
-    remove_post,
-    set_channel_policy,
-    set_channel_type,
-)
+
 from ui.Modal import Modal
 from asyncio import sleep
 from core.bot import Bot
@@ -24,30 +13,17 @@ from nextcord import Interaction, SlashOption
 log = logger.getLogger(__name__)
 PREDEFINED_CHANNELS = dict(
     {
-        "general": "Canal para enviar mensajes generales",
-        "audit": "Canal para que los administradores vean mensajes del estado y las acciones que realizo.",
-        "lobby": "Canal para mandar mensajes de bienvenida",
-        "noticias": "Canal para publicar noticias de nuevas versiones",
-        "games": "Para mandar juegos que estén gratis",
-        "wordle": "Canal para jugar a wordle",
-        "numbers": "Canal jugar a contar numeros",
-        "ordure": "Canal para enviar cosas bizarras",
-        "memes": "Canal para enviar memes del server",
+        "General: Canal para enviar mensajes generales":"general",
+        "Audit: Canal para que los administradores vean mensajes del estado y las acciones que realizo.":"audit",
+        "Lobby: Canal para mandar mensajes de bienvenida":"lobby",
+        "Noticias: Canal para publicar noticias de nuevas versiones":"noticias",
+        "Games: Para mandar juegos que estén gratis":"games",
+        "Wordle: Canal para jugar a wordle":"wordle",
+        "Numbers: Canal jugar a contar numeros":"numbers",
+        "Ordure: Canal para enviar cosas bizarras":"ordure",
+        "Memes: Canal para enviar memes del server": "memes",
     },
 )
-
-
-CHANNEL_POLICIES_OPTIONS = {
-    "Solo imágenes": "imagenes",
-    "Solo enlaces": "links",
-    "Videos, imágenes y audios": "arte",
-}
-
-CHANNEL_POLICIES = {
-    "imagenes": "Canal para solo enviar imágenes. Se borrarán todos los mensajes que no sean imágenes.",
-    "links": "Canal para solo enlaces. Se borrarán todos los mensajes que no sean enlaces.",
-    "arte": "Canal para subir arte. Pueden ser videos/imagenes/audios",
-}
 
 
 emojis = ["🟥", "🟧", "🟨", "🟩", "🟦", "🟪", "🟫", "⬜"]
@@ -57,8 +33,6 @@ class admin(commands.Cog):
     def __init__(self, bot: Bot) -> None:
         self.bot = bot
 
-    
-
     @nextcord.slash_command(name="canales")
     @application_checks.has_permissions(administrator=True)
     async def canales(self, interaction: Interaction):
@@ -67,36 +41,21 @@ class admin(commands.Cog):
     @canales.subcommand(name="mostrar")
     @application_checks.has_permissions(administrator=True)
     async def show_channels(self, interaction: Interaction):
-        channels = get_channels(interaction.guild)
+        """[Admin] Muestra los canales configurados del servidor
+        """        
+        channels = self.bot.db.get_channels(interaction.guild)
         channels = list(channels)
+        
+        if channels==[]:
+            return await interaction.send("No hay canales configurados")
 
-        output = "Canal: tipo | politica\n"
+        output = "Canal: tipo\n"
         for channel in channels:
-            x = await self.bot.fetch_channel(channel[0])
-            channel_type = channel[1]
-            channel_policy = channel[2]
-            output += "- {}: {} | {}\n".format(x.mention, channel_type, channel_policy)
+            channel_id = channel[0]
+            channel_type = channel[2]
+            x = await self.bot.fetch_channel(channel_id)
+            output += f"- {x.mention}: {channel_type}\n"
         await interaction.send(output)
-        pass
-
-    @application_checks.has_permissions(administrator=True)
-    @canales.subcommand(
-        name="rmpolicy",
-    )
-    async def canales_rmchannelpolicy(
-        self, interaction: Interaction, canal: nextcord.TextChannel
-    ):
-        """[Admin] Elimina politica de un canal"""
-        channel = get_channel(interaction.guild, canal.id)
-
-        if channel[1] is None:  # If has no type
-            remove_channel(interaction.guild, canal.id)
-        else:
-            set_channel_policy(interaction.guild, canal.id, "all")
-
-        await interaction.send(
-            f"Eliminada la politica de {canal.mention}. Ahora se puede enviar todo tipo de mensajes."
-        )
 
     @application_checks.has_permissions(administrator=True)
     @canales.subcommand(name="list")
@@ -111,50 +70,20 @@ class admin(commands.Cog):
             output += "{} - {}\n".format(x, y)
         await interaction.send(output)
 
-    @application_checks.has_permissions(administrator=True)
-    @channels_list.subcommand(name="politicas")
-    async def channle_policies(self, interaction: Interaction):
-        output = ""
-        for x, y in CHANNEL_POLICIES.items():
-            output += "{} - {}\n".format(x, y)
-        await interaction.send(output)
 
     @application_checks.has_permissions(administrator=True)
     @canales.subcommand(name="set")
     async def channel_set(self, interaction: Interaction):
         pass
 
-    @application_checks.has_permissions(administrator=True)
-    @channel_set.subcommand(name="policy")
-    async def channel_set_policy(
-        self,
-        interaction: Interaction,
-        canal: nextcord.TextChannel,
-        politica: str = SlashOption(name="politica", choices=CHANNEL_POLICIES_OPTIONS),
-    ):
-        if not politica in self.get_channel_of_type_policies():
-            await interaction.send(
-                "Canal no valido, la politica debe ser una de las siguientes: `{}`".format(
-                    ", ".join(self.get_channel_of_type_policies())
-                )
-            )
-            return
-        if not exists_channel(interaction.guild, canal.id):
-            create_channel(interaction.guild, canal.id, politica, canal.name)
-        else:
-            set_channel_policy(interaction.guild, canal.id, politica)
-        await interaction.send(
-            "Canal {} configurado con politica {}".format(canal, politica)
-        )
-        return
 
     @application_checks.has_permissions(administrator=True)
-    @channel_set.subcommand(name="type")
+    @channel_set.subcommand(name="tipo")
     async def channel_set_type(
         self,
         interaction: Interaction,
         canal: nextcord.TextChannel | nextcord.ForumChannel,
-        tipo: str = SlashOption(name="tipo", choices=PREDEFINED_CHANNELS.keys()),
+        tipo: str = SlashOption(name="tipo", choices=PREDEFINED_CHANNELS),
     ):
         """[Admin] Configura un canal predefinido del bot.
 
@@ -172,10 +101,11 @@ class admin(commands.Cog):
                 )
             )
             return
-        if not exists_channel(interaction.guild, canal.id):
-            create_channel(interaction.guild, canal.id, "all", canal.name, tipo)
+        
+        if not self.bot.db.exists_channel(canal):
+            self.bot.db.insert_channel(canal,tipo)
         else:
-            set_channel_type(interaction.guild, canal.id, tipo)
+            self.bot.db.update_channel_type(canal,tipo)
 
         await interaction.send(
             "Canal {} configurado como {}".format(canal.mention, tipo)
@@ -183,13 +113,11 @@ class admin(commands.Cog):
         return
 
     @application_checks.has_permissions(administrator=True)
-    @channel_set.subcommand(name="all")
-    async def channel_set_all(self, interaction: Interaction) -> None:
-
-        """[Admin] Configurar los canales predefinidos del bot.
-
+    @canales.subcommand(name="configurar")
+    async def channels_set_all(self, interaction: Interaction) -> None:
+        """[Admin] Configurar todos los canales predefinidos del bot.
         Permite establecer canales que sirvan para una función específica. Por ejemplo el canal lobby da la bienvenida
-        a los miembros nuevos
+        a los miembros nuevos. No se puede usar el mismo canal para dos funciones distintas.
         """
 
         await interaction.send(
@@ -197,50 +125,9 @@ class admin(commands.Cog):
         )
         await sleep(2)
         for x, y in PREDEFINED_CHANNELS.items():
-            await self.setup_channel(interaction, x, y)
+            await self.setup_channel(interaction, y, x)
 
         await interaction.channel.send("Configuración finalizada")
-
-    @commands.Cog.listener()
-    async def on_message(self, message: nextcord.Message):
-        if message.author.bot:
-            return
-        guild = message.guild
-        channel = get_channel(guild, message.channel.id)
-        if not channel:
-            return
-
-        channel_policy = channel[2]
-        if channel_policy == "all":
-            return
-
-        if channel_policy == "links" and "https://" in message.content:
-            return
-
-        if channel_policy == "imagenes" and message.attachments:
-            if "image" in message.attachments[0].content_type:
-                return
-
-        if channel_policy == "arte":
-            if message.attachments and (
-                "image" in message.attachments[0].content_type
-                or "video" in message.attachments[0].content_type
-            ):
-                await message.add_reaction("⭐")
-                """ thread = "Publicación de " + message.author.name
-                await message.create_thread(name=thread) """
-                return
-            if "https://" in message.content:
-                await message.add_reaction("⭐")
-                """thread = "Publicación de " + message.author.name
-                await message.create_thread(name=thread)"""
-                return
-
-        await message.delete()
-        msg = await message.channel.send(
-            f"En este canal solo se pueden enviar {channel_policy}. Puedes abrir un hilo si quieres escribir texto sobre algún mensaje."
-        )
-        await msg.delete(delay=5)
 
     @nextcord.slash_command(name="post")
     @application_checks.has_permissions(administrator=True)
@@ -255,7 +142,8 @@ class admin(commands.Cog):
         interaction: Interaction,
         canal: nextcord.TextChannel,
         servicio: str = SlashOption(
-            name="servicios",
+            name="servicio",
+            description="Red social de la cuenta",
             required=True,
             choices={"Twitter": "twitter", "Reddit": "reddit","Mastodon":"mastodon"},
         ),
@@ -310,6 +198,8 @@ class admin(commands.Cog):
                 return
             
         if servicio =="mastodon":
+            if not "@" in cuenta:
+                return await interaction.send("La cuenta debe ser usuario@instancia")
             instance=cuenta.split("@")[1]
             usuario=cuenta.split("@")[0]
             var=self.bot.mastodon.exists_account(usuario,instance)
@@ -318,24 +208,22 @@ class admin(commands.Cog):
                     f"La cuenta {cuenta} no existe, comprueba la cuenta y vuelve a intentarlo"
                 )
                 return
-
-        create_post(
-            interaction.guild, canal.id, visibilidad, servicio, cuenta, intervalo
-        )
+            
+        if self.bot.db.exists_post(canal,servicio,cuenta):
+            await interaction.send("El post ya existe, escoge otra cuenta o canal")
+            return
+        
+        post_id=self.bot.db.insert_post(canal,visibilidad,servicio,cuenta,intervalo)
         await interaction.send("Post creado")
 
         # Get tasks cog and create task
-        tasks = self.bot.cogs.get("tasks")
+        tasks = self.bot.cogs.get("Tasks")
 
         task = self.bot.loop.create_task(
             tasks.post_task(
                 interaction.guild, canal.id, visibilidad, servicio, cuenta, intervalo
             )
         )
-
-        # Add task to tasks dict
-        task_id = int(str(interaction.guild.id) + str(canal.id))
-        self.bot.tasks[task_id] = task
 
     @application_checks.has_permissions(administrator=True)
     @post.subcommand(name="rm")
@@ -345,36 +233,31 @@ class admin(commands.Cog):
         Args:
             post_id: id del post a eliminar
         """
-        task_id = int(str(interaction.guild.id) + str(post_id))
 
         # Remove from db
-        remove_post(interaction.guild, post_id)
+        self.bot.db.remove_post(interaction.channel,post_id)
 
         # Cancel the task
-        self.bot.tasks[task_id].cancel()
+        self.bot.tasks[post_id].cancel()
 
         # Remove from tasks dict
-        del self.bot.tasks[task_id]
-
+        del self.bot.tasks[post_id]
+        
         await interaction.send("Post eliminado")
 
     @application_checks.has_permissions(administrator=True)
     @post.subcommand(name="list")
     async def post_list(self, interaction: Interaction):
         "[Admin] Muestra los posts que se han añadido"
-        posts = get_posts(interaction.guild)
+        posts=self.bot.db.get_posts(interaction.guild)
         if not posts:
             await interaction.send("No hay posts para este servidor")
             return
 
         output = ""
         for post in posts:
-            channel_id = post[0]
-            visibility = post[1]
-            service = post[2]
-            account = post[3]
-            post_id = post[4]
-            interval = post[5]
+            post_id,guild_id, channel_id, visibility, service, account, interval = post
+            
             channel = await self.bot.fetch_channel(channel_id)
             output += f"-id={post_id}\n-canal={channel.mention}\n-visibilidad={visibility}\n-servicio={service}\n-cuenta={account} \n-intevalo={interval}m\n\n"
 
@@ -455,12 +338,11 @@ class admin(commands.Cog):
                     extra={"guild": interaction.guild.name},
                 )
                 return
-            if not exists_channel(interaction.guild, channel.id):
-                create_channel(
-                    interaction.guild, channel.id, "all", channel.name, channel_type
-                )
+            
+            if not self.bot.db.exists_channel(channel):
+                self.bot.db.insert_channel(channel,channel_type)
             else:
-                set_channel_type(interaction.guild, channel.id, channel_type)
+                self.bot.db.update_channel_type(channel,channel_type)
 
             await interaction.channel.send(
                 "Canal {} añadido como {}".format(channel.mention, channel_type)
@@ -473,22 +355,12 @@ class admin(commands.Cog):
             List[str]: contains the channel_types
         """
         output = []
-        for x in PREDEFINED_CHANNELS.keys():
+        for x in PREDEFINED_CHANNELS.values():
             output.append(x)
 
         return output
 
-    def get_channel_of_type_policies(self) -> List[str]:
-        """Gets the channel_policies from CHANNEL
-
-        Returns:
-            List[str]: contains the channel_policies
-        """
-        output = []
-        for x in CHANNEL_POLICIES.keys():
-            output.append(x)
-
-        return output
+   
 
 
 def setup(bot: commands.Bot):

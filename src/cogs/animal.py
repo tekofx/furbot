@@ -36,7 +36,7 @@ class animal(commands.Cog):
         Args:
             num (int, optional): numero de fotos
         """
-        await self.send_animal_pics_twitter(interaction, "ArcticHourly", num)
+        await self.send_animal_pics_twitter(interaction, "DailyArcticFox", num)
 
     @nextcord.slash_command(name="wolf")
     async def wolf(self, interaction: Interaction, num: int = None):

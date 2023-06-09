@@ -1,20 +1,16 @@
 from core import logger
 import nextcord
-from core.database import (
-    check_record_in_database,
-    clean_records,
-    create_record,
-)
 import os
 import asyncpraw
 from nextcord import Embed
 from nextcord.colour import Colour
-
+from nextcord.ext import commands
+from core.database import Database
 log = logger.getLogger(__name__)
 
 
 class Reddit:
-    def __init__(self) -> None:
+    def __init__(self,db:Database) -> None:
         self.client_id = os.getenv("REDDIT_CLIENT_ID")
         self.client_secret = os.getenv("REDDIT_CLIENT_SECRET")
         self.user_agent = os.getenv("REDDIT_USER_AGENT")
@@ -24,6 +20,7 @@ class Reddit:
             user_agent=self.user_agent,
             check_for_async=False,
         )
+        self.db = db
 
     async def exists_subreddit(self, name: str) -> bool:
         """Checks if a subreddit exists
@@ -101,14 +98,15 @@ class Reddit:
                 posts.append(post)
 
         for post in posts:
-            if not check_record_in_database(guild, post.url):
-                create_record(guild, record_type, post.url, sub_reddit)
+            
+            if not self.db.record_exists(guild, post.url):
+                self.db.insert_record(guild, record_type, post.url,sub_reddit)
                 output = post
                 break
 
         # Remove posts from db if they are not fetched
         posts_urls = [x.url for x in posts]
-        clean_records(guild, record_type, sub_reddit, posts_urls)
+        self.db.clean_records(guild, record_type, posts_urls)
         if output is None:
             return None
 
