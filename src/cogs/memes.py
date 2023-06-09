@@ -39,8 +39,11 @@ class memes(commands.Cog):
         memes_forum_id=int(memes_forum[0])
         if thread.parent_id != memes_forum_id:
             return
+        
+        # Wait 1 second
+        await asyncio.sleep(1)
 
-        message = await thread.history().flatten()
+        message = await thread.history(limit=1).flatten()
         message = message[0]
 
         if not message.attachments:
