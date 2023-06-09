@@ -196,6 +196,8 @@ class Tasks(commands.Cog):
         """Updates the users database"""
         async for guild in self.bot.fetch_guilds():
             members = await guild.fetch_members().flatten()
+            
+            # Add new users
             for member in members:
                 entry_in_database=self.bot.db.exists_user(member)
                 if not entry_in_database and not member.bot:
@@ -204,10 +206,10 @@ class Tasks(commands.Cog):
                         self.bot.db.insert_user(member)
                     except Exception as error:
                         log.error(
-                            "Error creating user on join: {}".format(error),
+                            "Error creating user: {}".format(error),
                             extra={"guild": guild.name},
                         )
-
+                        
     @tasks.loop(minutes=1)
     async def joined_date(self):
         """Checks if today someone joined the server and posts a message in general"""
