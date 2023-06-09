@@ -101,11 +101,12 @@ log = logger.getLogger(__name__)
 
 class Database:
     def __init__(self):
+        print(os.getenv("MYSQL_USER"),os.getenv("MYSQL_PASSWORD"),os.getenv("MYSQL_DATABASE"))
         self.connection = mysql.connector.connect(
             host="localhost",
-            user=os.getenv("DB_USER"),
-            password=os.getenv("DB_PASSWORD"),
-            database="db"
+            user=os.getenv("MYSQL_USER"),
+            password=os.getenv("MYSQL_PASSWORD"),
+            database=os.getenv("MYSQL_DATABASE")
         )
         self.cursor = self.connection.cursor(buffered=True)
         
