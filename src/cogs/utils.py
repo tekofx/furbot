@@ -39,11 +39,11 @@ class Utils(commands.Cog):
         else:
             await msg.edit(content=output)
 
-    @nextcord.slash_command(name="birthday")
+    @nextcord.slash_command(name="cumple")
     async def birthday(self, interaction: Interaction):
         pass
 
-    @birthday.subcommand(name="add")
+    @birthday.subcommand(name="añadir")
     async def birthday_add(
         self, interaction: Interaction, dia: int, mes: int, año: int
     ):
@@ -60,7 +60,7 @@ class Utils(commands.Cog):
         self.bot.db.set_user_birthday(interaction.user, birth_date)
         await interaction.send("Cumpleaños guardado en la base de datos")
 
-    @birthday.subcommand(name="get")
+    @birthday.subcommand(name="ver")
     async def birthday_get(self, interaction: Interaction, usuario: nextcord.Member):
 
         user=self.bot.db.get_user(usuario)

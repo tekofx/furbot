@@ -10,7 +10,7 @@ class fun(commands.Cog):
     def __init__(self, bot: Bot) -> None:
         self.bot = bot
 
-    @nextcord.slash_command(name="penis")
+    @nextcord.slash_command(name="pene")
     async def penis(self, interaction: Interaction, usuario: nextcord.Member = None):
         """Buna tula"""
         num = random.randint(1, 15)
@@ -26,7 +26,7 @@ class fun(commands.Cog):
         output += "D"
         await interaction.send(output.format(usuario))
 
-    @nextcord.slash_command(name="communist")
+    @nextcord.slash_command(name="comunista")
     async def communist(
         self, interaction: Interaction, usuario: nextcord.Member = None
     ):
@@ -58,7 +58,7 @@ class fun(commands.Cog):
 
         await interaction.send(output.format(usuario, num))
 
-    @nextcord.slash_command(name="capitalist")
+    @nextcord.slash_command(name="capitalista")
     async def capitalist(
         self, interaction: Interaction, usuario: nextcord.Member = None
     ):
@@ -88,12 +88,12 @@ class fun(commands.Cog):
 
         await interaction.send(output.format(usuario, num))
 
-    @nextcord.slash_command(name="str8")
+    @nextcord.slash_command(name="hetero")
     async def straight(self, interaction: Interaction, usuario: nextcord.Member = None):
         """Super str8 el ultimo"""
         num = random.randint(0, 100)
 
-        output = "{} es {}% gay"
+        output = "{} es {}% hetero"
 
         if usuario is None:
             usuario = interaction.user.mention

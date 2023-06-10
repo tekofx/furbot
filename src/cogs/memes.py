@@ -169,7 +169,7 @@ class memes(commands.Cog):
     async def meme(self, interaction: Interaction):
         pass
 
-    @meme.subcommand(name="count")
+    @meme.subcommand(name="contar")
     async def meme_list(self, interaction: Interaction, usuario: str = None):
         """Cuenta el numero de memes de un usuario o en total
 
@@ -184,7 +184,7 @@ class memes(commands.Cog):
 
         await interaction.send(f"Hay guardados {len(output)} memes")
 
-    @meme.subcommand(name="send")
+    @meme.subcommand(name="enviar")
     async def meme_send(
         self,
         interaction: Interaction,

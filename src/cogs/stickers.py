@@ -24,7 +24,7 @@ class stickers(commands.Cog):
     async def sticker(self, interaction: Interaction):
         pass
 
-    @sticker.subcommand(name="add")
+    @sticker.subcommand(name="añadir")
     async def sticker_add(
         self, interaction: Interaction, nombre: str, image: nextcord.Attachment
     ):
@@ -60,7 +60,7 @@ class stickers(commands.Cog):
             os.remove(stickers_path + sticker_fileName)
         await interaction.send("Sticker " + nombre + " añadido")
 
-    @sticker.subcommand(name="list")
+    @sticker.subcommand(name="lista")
     async def sticker_list(self, interaction: Interaction):
         """Lista los stickers añadidos"""
         stickers_path = get_server_path(interaction.guild) + stickers_subpath
@@ -71,7 +71,7 @@ class stickers(commands.Cog):
         output = ", ".join(output)
         await interaction.send(output)
 
-    @sticker.subcommand(name="use")
+    @sticker.subcommand(name="usar")
     async def sticker_use(
         self,
         interaction: Interaction,
