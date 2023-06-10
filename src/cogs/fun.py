@@ -12,7 +12,7 @@ class fun(commands.Cog):
 
     @nextcord.slash_command(name="pene")
     async def penis(self, interaction: Interaction, usuario: nextcord.Member = None):
-        """Buna tula"""
+        """Muestra tu tamaño de tula o el de otro"""
         num = random.randint(1, 15)
         output = "El pene de {}\n"
         if usuario is None:
@@ -30,7 +30,7 @@ class fun(commands.Cog):
     async def communist(
         self, interaction: Interaction, usuario: nextcord.Member = None
     ):
-        """Serás un comunista bolivariano que apoya al Coletas?"""
+        """Comprueba si eres comunista"""
         num = random.randint(0, 100)
 
         output = "{} es {}% comunista"
@@ -62,7 +62,7 @@ class fun(commands.Cog):
     async def capitalist(
         self, interaction: Interaction, usuario: nextcord.Member = None
     ):
-        """Serás capitalista y te convertirás en el nuevo lobo de Wall Street?"""
+        """Eres capitalista?"""
         num = random.randint(0, 100)
 
         output = "{} es {}% capitalista"
@@ -76,7 +76,7 @@ class fun(commands.Cog):
 
     @nextcord.slash_command(name="gay")
     async def gay(self, interaction: Interaction, usuario: nextcord.Member = None):
-        """Maricon el ultimo"""
+        """Eri gei?"""
         num = random.randint(0, 100)
 
         output = "{} es {}% gay"
@@ -90,7 +90,7 @@ class fun(commands.Cog):
 
     @nextcord.slash_command(name="hetero")
     async def straight(self, interaction: Interaction, usuario: nextcord.Member = None):
-        """Super str8 el ultimo"""
+        """Hetero"""
         num = random.randint(0, 100)
 
         output = "{} es {}% hetero"

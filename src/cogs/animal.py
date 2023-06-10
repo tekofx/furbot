@@ -30,7 +30,11 @@ class Animal(commands.Cog):
 
     @animal.subcommand(name="zorro")
     async def fox(self, interaction: Interaction, num: int = None):
-        """Fotos de zorros hermosos"""
+        """Fotos de zorros hermosos
+        
+        Args:
+            num: numero de fotos
+        """
         await self.send_animal_pics_twitter(interaction, "hourlyFox", num)
 
     @animal.subcommand(name="zoro_artico")
@@ -38,7 +42,7 @@ class Animal(commands.Cog):
         """Fotos de zorros articos
 
         Args:
-            num (int, optional): numero de fotos
+            num: numero de fotos
         """
         await self.send_animal_pics_twitter(interaction, "DailyArcticFox", num)
 
@@ -47,7 +51,7 @@ class Animal(commands.Cog):
         """Fotos de lobetes
 
         Args:
-            num (int, optional): numero de fotos
+            num: numero de fotos
         """
         await self.send_animal_pics_twitter(interaction, "hourlywolvesbot", num)
 
@@ -56,7 +60,7 @@ class Animal(commands.Cog):
         """Fotos de pajaros
 
         Args:
-            num (int, optional): numero de fotos
+            num: numero de fotos
         """
         await self.send_animal_pics_twitter(interaction, "kerrybv1", num)
 
@@ -65,7 +69,7 @@ class Animal(commands.Cog):
         """Fotos de palomas
 
         Args:
-            num (int, optional): numero de fotos
+            num: numero de fotos
         """
         await self.send_animal_pics_twitter(interaction, "a_london_pigeon", num)
 
@@ -74,7 +78,7 @@ class Animal(commands.Cog):
         """Fotos de lagartitos
 
         Args:
-            num (int, optional): numero de fotos
+            num: numero de fotos
         """
         await self.send_animal_pics_twitter(interaction, "HourlyLizards", num)
 
@@ -83,7 +87,7 @@ class Animal(commands.Cog):
         """Fotos de gatitos
 
         Args:
-            num (int, optional): numero de fotos
+            num: numero de fotos
         """
         await self.send_animal_pics_twitter(interaction, "HourlyCats", num)
 

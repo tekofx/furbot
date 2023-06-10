@@ -58,10 +58,6 @@ class admin(commands.Cog):
             output += f"- {x.mention}: {channel_type}\n"
         await interaction.send(output)
 
-
-
-    
-
     @application_checks.has_permissions(administrator=True)
     @canales.subcommand(name="configurar")
     async def channels_set_all(self, interaction: Interaction) -> None:
@@ -149,15 +145,16 @@ class admin(commands.Cog):
         ),
         intervalo: int=5,
     ):
-        """[Admin] Permite añadir una cuenta de twitter/subreddit a un canal.
+        """[Admin] Permite añadir una cuenta de twitter/subreddit/mastodon a un canal.
         De esta forma cada hora se publicará el último post de la cuenta en el canal. Si se añaden varias
         cuentas a la vez, se utilizará una cuenta aleatoria de las añadidas.
 
         Args:
             canal: canal al que enviar
+            servicio: Red social. Twitter/Reddit/Mastodon
+            cuenta: Cuenta de twitter, subreddit de Reddit o usuario@instancia de Mastodon
             visibilidad: Si/No. Si se quiere que se cojan los posts NSFW o no
             intervalo: Minutos entre un post y otro. Debe ser mayor a los 5 mins
-            cuenta: Cuenta de twitter, subreddit de Reddit o usuario@instancia de Mastodon
         """
 
         if visibilidad == "nsfw" and not canal.nsfw:
@@ -227,7 +224,7 @@ class admin(commands.Cog):
     @application_checks.has_permissions(administrator=True)
     @post.subcommand(name="eliminar")
     async def post_rm(self, interaction: Interaction, post_id: int):
-        """[Admin] Permite eliminar una cuenta de twitter/subreddit de un canal.
+        """[Admin] Permite eliminar un post 
 
         Args:
             post_id: id del post a eliminar
@@ -247,7 +244,7 @@ class admin(commands.Cog):
     @application_checks.has_permissions(administrator=True)
     @post.subcommand(name="lista")
     async def post_list(self, interaction: Interaction):
-        "[Admin] Muestra los posts que se han añadido"
+        """[Admin] Muestra los posts que se han añadido"""
         posts=self.bot.db.get_posts(interaction.guild)
         if not posts:
             await interaction.send("No hay posts para este servidor")
@@ -269,8 +266,8 @@ class admin(commands.Cog):
     async def clear(self, interaction: Interaction, num: int):
         """[Admin] Elimina mensajes de un canal
 
-        Uso:
-            fur clear <num_mensajes>
+        Args:
+            num: Número de mensajes que borrar
         """
 
         messages_to_delete = []

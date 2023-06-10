@@ -174,7 +174,7 @@ class memes(commands.Cog):
         """Cuenta el numero de memes de un usuario o en total
 
         Args:
-            interaction (Interaction): Interaction
+            usuario (str): Usuario de los memes que contar
         """
         memes_path = get_server_path(interaction.guild) + "/memes/"
         output = []
@@ -193,7 +193,7 @@ class memes(commands.Cog):
         """Envia un meme
 
         Args:
-            name (str, optional): Nombre del meme. Defaults to None.
+            name (str): Nombre del meme.
         """
 
         # If all memes have been sent, delete history
@@ -236,7 +236,7 @@ class memes(commands.Cog):
 
     @nextcord.slash_command(name="patada")
     async def patada(self, interaction: Interaction, usuario: nextcord.Member = None):
-        """Te vas a comer mi pie"""
+        """Dale una patada a otro usuario"""
 
         # Create meme
         avatar_info = [
