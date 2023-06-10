@@ -1,26 +1,30 @@
-from typing import Any, Coroutine, Optional
+from typing import Any, Coroutine
 import nextcord
 from nextcord.interactions import Interaction
-from nextcord.utils import MISSING
+emojis = ["🟥", "🟧", "🟨", "🟩", "🟦", "🟪", "🟫", "⬜"]
 class Modal(nextcord.ui.Modal):
-    def __init__(self, ) -> None:
+    def __init__(self, num_options:int) -> None:
         super().__init__("Votacion")
         
+        self.num_options=num_options
+        
         self.titulo="Votacion"
-        
-        self.opcion1=nextcord.ui.TextInput(label="Opcion 1",placeholder="Escribe la opcion 1",required=True)
-        self.opcion2=nextcord.ui.TextInput(label="Opcion 2",placeholder="Escribe la opcion 2", required=True)
-        self.opcion3=nextcord.ui.TextInput(label="Opcion 3",placeholder="Escribe la opcion 3",required=False)
-        self.opcion4=nextcord.ui.TextInput(label="Opcion 4",placeholder="Escribe la opcion 4",required=False)
-        
-        self.add_item(self.opcion1)
-        self.add_item(self.opcion2)
-        self.add_item(self.opcion3)
-        self.add_item(self.opcion4)
+        self.options=[]
+        for x in range(0,num_options):
+            option=nextcord.ui.TextInput(label=f"Opcion {x}",placeholder=f"Escribe la opcion {x}",required=True)
+            self.options.append(option)
+            self.add_item(option)
         
         
     async def callback(self, interaction: Interaction) -> Coroutine[Any, Any, None]:
         embed=nextcord.Embed(title=self.titulo)
-        embed.add_field(name="Opción 1",value=self.opcion1.value)      
-        return await interaction.response.send_message(embed=embed,ephemeral=True)
+        for x in self.options:
+            i=self.options.index(x)
+            embed.add_field(name=f"Opción {emojis[i]}",value=x.value)      
+            
+        msg=await interaction.response.send_message(embed=embed)
+        msg=await msg.fetch()
+        for x in self.options:
+            i=self.options.index(x)
+            await msg.add_reaction(emojis[i])
         
