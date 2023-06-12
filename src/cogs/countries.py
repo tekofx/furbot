@@ -18,7 +18,7 @@ class countries(commands.Cog):
         """Información sobre un país
 
         Args:
-            nombre : nombre del pais
+            nombre: nombre del pais
         """
         url = "https://restcountries.com/v3.1/name/{}".format(nombre.lower())
 

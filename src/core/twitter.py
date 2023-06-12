@@ -1,25 +1,17 @@
 from html import entities
 from core import logger
-
 import tweepy as tw
 import os
-from core.database import (
-    check_record_in_database,
-    clean_records,
-    create_record,
-    get_records_of_type,
-    remove_record,
-)
 import nextcord
 from nextcord import Embed
 from nextcord.colour import Colour
-
+from core.database import Database
 
 log = logger.getLogger(__name__)
 
 
 class Twitter:
-    def __init__(self):
+    def __init__(self,db:Database) -> None:
         consumer_key = os.getenv("TWITTER_CONSUMER_KEY")
         consumer_secret = os.getenv("TWITTER_CONSUMER_SECRET")
         access_token = os.getenv("TWITTER_ACCESS_TOKEN")
@@ -27,6 +19,8 @@ class Twitter:
         self.auth = tw.OAuthHandler(consumer_key, consumer_secret)
         self.auth.set_access_token(access_token, access_token_secret)
         self.api = tw.API(self.auth, wait_on_rate_limit=True)
+        self.db = db
+        log.info("Enabled Twitter")
 
     def exists_account(self, username: str) -> bool:
         try:
@@ -81,8 +75,9 @@ class Twitter:
 
             if "media" in tweet.entities:
                 tweet_url = tweet.entities["media"][0]["media_url"]
-                if not check_record_in_database(guild, tweet_url):
-                    create_record(guild, record_type, tweet_url, username)
+                
+                if not self.db.record_exists(guild, tweet_url):
+                    self.db.insert_record(guild, record_type, tweet_url,username)
                     num += 1
                     output.append(tweet_url)
 
@@ -94,7 +89,7 @@ class Twitter:
             tweet.entities["media"][0]["media_url"] if "media" in tweet.entities else ""
             for tweet in tweets
         ]
-        clean_records(guild, "animal", username, tweets_urls)
+        self.db.clean_records(guild, "animal", tweets_urls)
 
         return output
 
@@ -125,12 +120,13 @@ class Twitter:
 
             if "media" in tweet.entities:
                 tweet_url = tweet.entities["media"][0]["media_url"]
-                if not check_record_in_database(guild, tweet_url):
-                    create_record(guild, record_type, tweet_url, username)
+                
+                if not self.db.record_exists(guild, tweet_url):
+                    self.db.insert_record(guild, record_type, tweet_url, username)
 
                     output = tweet
                     break
-
+        
         if output is None:
             return None
 
@@ -139,7 +135,7 @@ class Twitter:
             tweet.entities["media"][0]["media_url"] if "media" in tweet.entities else ""
             for tweet in tweets
         ]
-        clean_records(guild, record_type, username, tweets_urls)
+        self.db.clean_records(guild, record_type, tweets_urls)
 
         embed = self.create_embed(output)
 

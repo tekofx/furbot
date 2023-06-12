@@ -160,7 +160,7 @@ class trivia(commands.Cog):
 
     @nextcord.slash_command(name="pregunta")
     async def pregunta(self, interaction: Interaction):
-        """Pregunta al azar"""
+        """El bot te envia una pregunta de trivial aleatoria y tienes que acertarla"""
         await interaction.send("Responde a las siguientes preguntas:")
 
         def check(reaction: nextcord.Reaction, user: nextcord.Member) -> bool:

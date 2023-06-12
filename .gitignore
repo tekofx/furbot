@@ -4,3 +4,7 @@ env/
 data/resources/*.txt
 data/resources/config.yaml
 .vscode/settings.json
+.env
+dev.env
+
+data/db

@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v6.0.0] - 2023-06-12
+
+Cambios importantes.
+
+### Modificado
+
+- Se ha cambiado el motor de la base de datos a uno más eficiente
+- Renombrados comandos para ser más entendibles
+- Modificadas descripciones para ser más entendibles
+
 ## [v5.4.0] - 2023-03-13
 
 Debido al aumento de ataques de spam y la inutilidad de discord para detectar el spam, se ha añadido al bot la opción de detectar el spam, aislar indefinidamente al usuario y borrar los mensajes de spam.

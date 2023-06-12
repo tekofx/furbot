@@ -24,20 +24,20 @@ class stickers(commands.Cog):
     async def sticker(self, interaction: Interaction):
         pass
 
-    @sticker.subcommand(name="add")
+    @sticker.subcommand(name="añadir")
     async def sticker_add(
-        self, interaction: Interaction, nombre: str, image: nextcord.Attachment
+        self, interaction: Interaction, nombre: str, imagen: nextcord.Attachment
     ):
         """Añade un sticker al bot
 
         Args:
             nombre (str): nombre del sticker
-            image (nextcord.Attachment): foto que añadir como sticker
+            imagen (nextcord.Attachment): foto que añadir como sticker
         """
         stickers_path = get_server_path(interaction.guild) + stickers_subpath
 
         # Checks if a picture is correct
-        sticker_extension = image.filename.split(".")[-1]
+        sticker_extension = imagen.filename.split(".")[-1]
         if check_sticker(interaction.guild, nombre, sticker_extension) == 0:
             await interaction.send(
                 "Error: Ya existe un sticker con el nombre {}".format(nombre)
@@ -49,7 +49,7 @@ class stickers(commands.Cog):
         else:
             sticker_fileName = nombre + ".png"
 
-        stickerUrl = image.url
+        stickerUrl = imagen.url
 
         r = requests.get(stickerUrl, allow_redirects=True)
         open(stickers_path + sticker_fileName, "wb").write(r.content)
@@ -60,7 +60,7 @@ class stickers(commands.Cog):
             os.remove(stickers_path + sticker_fileName)
         await interaction.send("Sticker " + nombre + " añadido")
 
-    @sticker.subcommand(name="list")
+    @sticker.subcommand(name="lista")
     async def sticker_list(self, interaction: Interaction):
         """Lista los stickers añadidos"""
         stickers_path = get_server_path(interaction.guild) + stickers_subpath
@@ -71,13 +71,17 @@ class stickers(commands.Cog):
         output = ", ".join(output)
         await interaction.send(output)
 
-    @sticker.subcommand(name="use")
+    @sticker.subcommand(name="usar")
     async def sticker_use(
         self,
         interaction: Interaction,
         sticker: str,
     ):
-        """Usar un sticker"""
+        """Usar un sticker
+        
+        Arg:
+            sticker (str): Sticker que usar
+        """
         stickers_path = get_server_path(interaction.guild) + stickers_subpath
 
         if Path(stickers_path + sticker + ".png").is_file():

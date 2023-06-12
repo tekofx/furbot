@@ -1,26 +1,13 @@
-import datetime
+import asyncio
 import nextcord
-from nextcord.errors import Forbidden
 from nextcord.ext import commands
 import nextcord.ext.application_checks
 import os
 
-from core.database import (
-    check_entry_in_database,
-    check_record_in_database,
-    create_record,
-    create_user,
-    exists_channel_of_type,
-    get_channel_of_type,
-    setup_database,
-    get_latest_messages,
-    create_message,
-    count_content_message,
-    get_messages_with_same_content,
-    delete_message,
-)
+from core.database import Database
 from core.reddit import Reddit
 from core.twitter import Twitter
+from core.mastodon import Mastodon
 import requests
 from core.data import Data, get_activity, get_config
 from core import logger
@@ -38,12 +25,25 @@ class Bot(commands.Bot):
         )
 
         self.token = token
-        self._twitter = Twitter()
-        self._reddit = Reddit()
+        self._db=Database()
+        self._db.initialize()
+        if os.getenv("TWITTER_ACCESS_TOKEN"):
+            self._twitter = Twitter(self._db)
+        if os.getenv("REDDIT_CLIENT_ID"):
+            self._reddit = Reddit(self._db)
+        if os.getenv("MASTODON_TOKEN"):
+            self._mastodon = Mastodon(self._db)
+
         self._local_guild = int(
             os.getenv("LOCAL_GUILD")
         )  # Guild to fetch commands at startup
 
+        self._tasks = {}
+
+    @property
+    def db(self) -> Database:
+        return self._db
+    
     @property
     def twitter(self) -> Twitter:
         return self._twitter
@@ -51,6 +51,19 @@ class Bot(commands.Bot):
     @property
     def reddit(self) -> Reddit:
         return self._reddit
+
+    @property
+    def mastodon(self) -> Mastodon:
+        return self._mastodon
+
+    @property
+    def tasks(self) -> dict[int, asyncio.Task]:
+        """Dict of tasks containing the task_id as key and the task as value
+
+        Returns:
+            dict[int, asyncio.Task]: Dict of tasks
+        """
+        return self._tasks
 
     async def new_github_release(self):
         "Checks if there is a new release on github and sends a message to the channel"
@@ -78,11 +91,11 @@ class Bot(commands.Bot):
                 var = "\n".join(i[1:])
                 embed.add_field(name=i[0], value=var, inline=False)
         for guild in self.guilds:
-            if not exists_channel_of_type(guild, "noticias"):
+            
+            if not self.db.exists_channel_of_type(guild, "noticias"):
                 continue
-
-            if not check_record_in_database(guild, r[0]["url"]):
-                create_record(guild, "github", r[0]["url"])
+            if not self.db.record_exists(guild,r[0]["url"]):
+                self.db.insert_record(guild,"github",r[0]["url"])
 
                 await self.channel_send(guild, "noticias", "a", embed)
 
@@ -96,9 +109,6 @@ class Bot(commands.Bot):
             data.setup_files()
             del data
 
-            # Setup database
-            setup_database(guild)
-
         # Set activity
         activity = nextcord.Game(get_activity())
         await self.change_presence(activity=activity, status=nextcord.Status.online)
@@ -111,13 +121,16 @@ class Bot(commands.Bot):
                 self.load_extension("cogs." + c[:-3])
                 log.info("Loaded {}".format(c))
 
-        log.info("Syncing application commands")
-        await self.sync_application_commands(guild_id=self._local_guild)
+        try:
 
-        # If commands sync not work uncomment this and run the bot
-        """ self.add_all_application_commands()
-        await self.sync_all_application_commands() """
-        log.info("Application commands synced")
+            log.info("Syncing application commands")
+            await self.sync_application_commands(guild_id=self._local_guild)
+            # If commands sync not work uncomment this and run the bot
+            #await self.sync_all_application_commands()
+        except nextcord.errors.NotFound as e:
+            log.error("Error syncing application commands: {}".format(e))
+
+        
 
         # Send new version message if there's one
         await self.new_github_release()
@@ -168,61 +181,6 @@ class Bot(commands.Bot):
         Args:
             message ([nextcord.Message]): Message to check
         """
-
-        # Save message in database
-        create_message(message)
-        # Test message content is in database, from the same user in other channel
-        count = count_content_message(message)
-
-        if count > 5:
-            # Time out the user
-            try:
-                await message.author.timeout(timeout=None, reason="Spam")
-                
-            except Exception as e:
-                log.error(
-                    f"Error al aislar al usuario {message.author.display_name}: {e}"
-                )
-                await self.channel_send(
-                    message.guild,
-                    "audit",
-                    f"No he podido aislar al usuario {message.author.mention}. Puede que me falten permisos para ello.",
-                )
-            finally:
-                await self.channel_send(
-                    message.guild,
-                    "audit",
-                    f"Se ha aislado de forma indefinida al usuario {message.author.mention}",
-                )
-
-            # Delete messages with spam
-            spam_messages = get_messages_with_same_content(message)
-            deleted_messages = 0
-            for x in spam_messages:
-
-                # Delete from discord guild
-                channel = await self.fetch_channel(x[0])
-                try:
-                    spam_message = await channel.fetch_message(x[1])
-                    await spam_message.delete()
-                except:
-                    pass
-
-                # delete from database
-                delete_message(x[1], message.guild)
-                deleted_messages += 1
-
-            await self.channel_send(
-                message.guild,
-                "audit",
-                f"Se han eliminado {deleted_messages} mensajes de spam",
-            )
-
-            await self.channel_send(
-                message.guild,
-                "lobby",
-                f"Se ha detectado spam por parte del usuario {message.author.mention}. Es posible que su cuenta haya sido hackeada, no hagais click en ningun enlace que os mande.",
-            )
 
         if not message.author.bot:
 
@@ -335,20 +293,21 @@ class Bot(commands.Bot):
         """
 
         # Get general_channel id
-        general_id = get_channel_of_type(guild, channel_type)
+        general=self.db.get_channel_of_type(guild, channel_type)
+        general_id = general[0]
 
         if general_id != 0:
             try:
                 # Fetch general_channel
                 general_channel = await self.fetch_channel(general_id)
-            except Forbidden as error:
+            except Exception as error:
                 log.error(
                     "Error getting {} channel from server {}: {}".format(
                         channel_type, guild, error
                     ),
                     extra={"guild": guild.name},
                 )
-                raise Forbidden
+                raise error
 
             # Send message
             if embed:

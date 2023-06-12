@@ -3,9 +3,8 @@ from nextcord import Interaction
 from nextcord.ext import commands
 from pyrae import dle
 from core.bot import Bot
-from core.database import set_birthday, get_birthday
 import datetime
-
+from ui.Modal import Modal
 
 class Utils(commands.Cog):
     def __init__(self, bot: Bot) -> None:
@@ -15,6 +14,21 @@ class Utils(commands.Cog):
     async def ping(self, interaction: Interaction):
         """Comprobar si el bot está online"""
         await interaction.send("Pim pam trucu trucu")
+        
+        
+    @nextcord.slash_command(name="votacion")
+    async def votacion(
+        self,
+        interaction: Interaction,
+        opciones:int
+    ):
+        """Crea una votacion
+        
+        Args:
+            opciones: Número de opciones entre las que votar
+
+        """
+        await interaction.response.send_modal(Modal(opciones))
 
     @nextcord.slash_command(name="rae")
     async def rae(self, interaction: Interaction, palabra: str):
@@ -29,11 +43,11 @@ class Utils(commands.Cog):
         else:
             await msg.edit(content=output)
 
-    @nextcord.slash_command(name="birthday")
+    @nextcord.slash_command(name="cumple")
     async def birthday(self, interaction: Interaction):
         pass
 
-    @birthday.subcommand(name="add")
+    @birthday.subcommand(name="añadir")
     async def birthday_add(
         self, interaction: Interaction, dia: int, mes: int, año: int
     ):
@@ -47,13 +61,19 @@ class Utils(commands.Cog):
         """
 
         birth_date = datetime.date(año, mes, dia)
-        set_birthday(interaction.guild, interaction.user, birth_date)
+        self.bot.db.set_user_birthday(interaction.user, birth_date)
         await interaction.send("Cumpleaños guardado en la base de datos")
 
-    @birthday.subcommand(name="get")
+    @birthday.subcommand(name="ver")
     async def birthday_get(self, interaction: Interaction, usuario: nextcord.Member):
+        """Mira el cumpleaños de un usuario
 
-        cumple = get_birthday(interaction.guild, usuario)
+        Args:
+            usuario (nextcord.Member): Usuario del que ver el cumpleaños
+        """
+
+        user=self.bot.db.get_user(usuario)
+        cumple=user[4]
         if not cumple:
             await interaction.send(
                 f"No existe el cumpleaños de {usuario.display_name} en la base de datos"

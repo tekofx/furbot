@@ -8,7 +8,7 @@ import os
 log = logger.getLogger(__name__)
 
 
-class animal(commands.Cog):
+class Animal(commands.Cog):
     def __init__(self, bot: Bot) -> None:
         self.bot = bot
 
@@ -23,66 +23,74 @@ class animal(commands.Cog):
         )
         for tweet in tweet_images_urls:
             await interaction.send(tweet)
+            
+    @nextcord.slash_command(name="animal")
+    async def animal(self, interaction: Interaction):
+        pass
 
-    @nextcord.slash_command(name="fox")
+    @animal.subcommand(name="zorro")
     async def fox(self, interaction: Interaction, num: int = None):
-        """Fotos de zorros hermosos"""
+        """Fotos de zorros hermosos
+        
+        Args:
+            num: numero de fotos
+        """
         await self.send_animal_pics_twitter(interaction, "hourlyFox", num)
 
-    @nextcord.slash_command(name="arctic_fox")
+    @animal.subcommand(name="zoro_artico")
     async def arctic_fox(self, interaction: Interaction, num: int = None):
         """Fotos de zorros articos
 
         Args:
-            num (int, optional): numero de fotos
+            num: numero de fotos
         """
-        await self.send_animal_pics_twitter(interaction, "ArcticHourly", num)
+        await self.send_animal_pics_twitter(interaction, "DailyArcticFox", num)
 
-    @nextcord.slash_command(name="wolf")
+    @animal.subcommand(name="lobo")
     async def wolf(self, interaction: Interaction, num: int = None):
         """Fotos de lobetes
 
         Args:
-            num (int, optional): numero de fotos
+            num: numero de fotos
         """
         await self.send_animal_pics_twitter(interaction, "hourlywolvesbot", num)
 
-    @nextcord.slash_command(name="bird")
+    @animal.subcommand(name="pajaro")
     async def bird(self, interaction: Interaction, num: int = None):
         """Fotos de pajaros
 
         Args:
-            num (int, optional): numero de fotos
+            num: numero de fotos
         """
         await self.send_animal_pics_twitter(interaction, "kerrybv1", num)
 
-    @nextcord.slash_command(name="pigeon")
+    @animal.subcommand(name="paloma")
     async def pigeon(self, interaction: Interaction, num: int = None):
         """Fotos de palomas
 
         Args:
-            num (int, optional): numero de fotos
+            num: numero de fotos
         """
         await self.send_animal_pics_twitter(interaction, "a_london_pigeon", num)
 
-    @nextcord.slash_command(name="lizard")
+    @animal.subcommand(name="lagarto")
     async def lizard(self, interaction: Interaction, num: int = None):
         """Fotos de lagartitos
 
         Args:
-            num (int, optional): numero de fotos
+            num: numero de fotos
         """
         await self.send_animal_pics_twitter(interaction, "HourlyLizards", num)
 
-    @nextcord.slash_command(name="cat")
+    @animal.subcommand(name="gato")
     async def cat(self, interaction: Interaction, num: int = None):
         """Fotos de gatitos
 
         Args:
-            num (int, optional): numero de fotos
+            num: numero de fotos
         """
         await self.send_animal_pics_twitter(interaction, "HourlyCats", num)
 
 
 def setup(bot: commands.Bot):
-    bot.add_cog(animal(bot))
+    bot.add_cog(Animal(bot))

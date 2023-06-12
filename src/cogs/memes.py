@@ -17,7 +17,7 @@ from core.bot import Bot
 from core.data import get_server_path, meme_resources_path
 from core import logger
 from nextcord import Interaction, SlashOption
-from core.database import get_channel_of_type
+
 
 log = logger.getLogger(__name__)
 
@@ -33,9 +33,15 @@ class memes(commands.Cog):
         Args:
             thread (nextcord.Thread): thread created
         """
-        memes_forum_id = get_channel_of_type(thread.guild, "memes")
+        memes_forum=self.bot.db.get_channel_of_type(thread.guild, "memes")
+        if memes_forum is None:
+            return
+        memes_forum_id=int(memes_forum[0])
         if thread.parent_id != memes_forum_id:
             return
+        
+        # Wait 1 second
+        await asyncio.sleep(1)
 
         message = await thread.history(limit=1).flatten()
         message = message[0]
@@ -163,12 +169,12 @@ class memes(commands.Cog):
     async def meme(self, interaction: Interaction):
         pass
 
-    @meme.subcommand(name="count")
+    @meme.subcommand(name="contar")
     async def meme_list(self, interaction: Interaction, usuario: str = None):
         """Cuenta el numero de memes de un usuario o en total
 
         Args:
-            interaction (Interaction): Interaction
+            usuario (str): Usuario de los memes que contar
         """
         memes_path = get_server_path(interaction.guild) + "/memes/"
         output = []
@@ -178,7 +184,7 @@ class memes(commands.Cog):
 
         await interaction.send(f"Hay guardados {len(output)} memes")
 
-    @meme.subcommand(name="send")
+    @meme.subcommand(name="enviar")
     async def meme_send(
         self,
         interaction: Interaction,
@@ -187,7 +193,7 @@ class memes(commands.Cog):
         """Envia un meme
 
         Args:
-            name (str, optional): Nombre del meme. Defaults to None.
+            name (str): Nombre del meme.
         """
 
         # If all memes have been sent, delete history
@@ -230,7 +236,7 @@ class memes(commands.Cog):
 
     @nextcord.slash_command(name="patada")
     async def patada(self, interaction: Interaction, usuario: nextcord.Member = None):
-        """Te vas a comer mi pie"""
+        """Dale una patada a otro usuario"""
 
         # Create meme
         avatar_info = [
