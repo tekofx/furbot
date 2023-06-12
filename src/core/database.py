@@ -102,7 +102,7 @@ log = logger.getLogger(__name__)
 class Database:
     def __init__(self):
         self.connection = mysql.connector.connect(
-            host="localhost",
+            host="db",
             user=os.getenv("MYSQL_USER"),
             password=os.getenv("MYSQL_PASSWORD"),
             database=os.getenv("MYSQL_DATABASE")
