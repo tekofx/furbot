@@ -22,6 +22,7 @@ class Bot(commands.Bot):
         intents.message_content = True
         super().__init__(
             intents=intents,
+            
         )
 
         self.token = token
@@ -294,6 +295,9 @@ class Bot(commands.Bot):
 
         # Get general_channel id
         general=self.db.get_channel_of_type(guild, channel_type)
+        if general==None:
+            return
+        print(general)
         general_id = general[0]
 
         if general_id != 0:
