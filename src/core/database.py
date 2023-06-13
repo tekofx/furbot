@@ -279,7 +279,7 @@ class Database:
             int: id of the post
         """        
         self.execute_query(post_insert,(channel.guild.id,channel.id,visibility,service,account,frequency,visibility,service,account,frequency))
-        con,cur=self.get_connection()
+        con,cur=self.connect()
         post_id=cur.lastrowid
         return post_id
         
