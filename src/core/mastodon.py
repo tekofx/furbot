@@ -19,8 +19,8 @@ class Mastodon:
         """
         self._token = os.getenv("MASTODON_TOKEN")
         self._app_instance = os.getenv("MASTODON_APP_INSTANCE")
-        self.db=Database()
-        log.info("Enbladed Mastodon")
+        self.db=db
+        log.info("Enabled Mastodon")
 
     def exists_instance(self, instance: str) -> bool:
         """Check if instance exists

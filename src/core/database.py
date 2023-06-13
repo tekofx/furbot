@@ -1,9 +1,12 @@
 import datetime
+from typing import List, Tuple
 from dotenv import load_dotenv
 import nextcord
 from core import logger
 import os
 import mysql.connector
+from mysql.connector.connection import MySQLConnection
+from mysql.connector.cursor import MySQLCursor
 
 drop_tables = """DROP TABLE IF EXISTS users, roles, sentences, records, channels, posts;"""
 
@@ -101,13 +104,25 @@ log = logger.getLogger(__name__)
 
 class Database:
     def __init__(self):
-        self.connection = mysql.connector.connect(
-            host="db",
+
+        connection=mysql.connector.connect(
+            host="localhost",
+
             user=os.getenv("MYSQL_USER"),
             password=os.getenv("MYSQL_PASSWORD"),
             database=os.getenv("MYSQL_DATABASE")
         )
-        self.cursor = self.connection.cursor(buffered=True)
+        connection.cursor(buffered=True)
+        
+    def connect(self)-> Tuple[MySQLConnection, MySQLCursor]:
+        connection = mysql.connector.connect(
+            host="localhost",
+            user=os.getenv("MYSQL_USER"),
+            password=os.getenv("MYSQL_PASSWORD"),
+            database=os.getenv("MYSQL_DATABASE")
+        )
+        return connection,connection.cursor(buffered=True)
+        
         
     def initialize(self):
         # Create tables
@@ -119,17 +134,21 @@ class Database:
         log.info("Initialized database")
 
     def execute_query(self, query: str,data:list=None):
+        con,cur=self.connect()
         if data:
-            self.cursor.execute(query,data)
+            cur.execute(query,data)
         else:
         
-            self.cursor.execute(query)
-        self.connection.commit()
+            cur.execute(query)
+        con.commit()
+        con.close()
         
     def fetch_query(self, query:str,data:list):
-        self.cursor.execute(query,data)
-        return self.cursor.fetchall()
-
+        con,cur=self.connect()
+        cur.execute(query,data)
+        var=cur.fetchall()
+        con.close()
+        return var
     def close(self):
         self.connection.close()
         

@@ -4,10 +4,11 @@ from core import logger
 import nextcord
 from nextcord import Interaction
 import os
-
+from nextcord import Interaction, SlashOption
 log = logger.getLogger(__name__)
 
 
+animals={"Zorro":"hourlyFox", "Zorro Ártico":"DailyArcticFox", "Lobo":"hourlywolvesbot", "Pájaro":"kerrybv1", "Paloma":"a_london_pigeon", "Lagarto":"HourlyLizards", "Gato":"HourlyCats"}
 class Animal(commands.Cog):
     def __init__(self, bot: Bot) -> None:
         self.bot = bot
@@ -25,71 +26,17 @@ class Animal(commands.Cog):
             await interaction.send(tweet)
             
     @nextcord.slash_command(name="animal")
-    async def animal(self, interaction: Interaction):
-        pass
-
-    @animal.subcommand(name="zorro")
-    async def fox(self, interaction: Interaction, num: int = None):
-        """Fotos de zorros hermosos
-        
-        Args:
-            num: numero de fotos
-        """
-        await self.send_animal_pics_twitter(interaction, "hourlyFox", num)
-
-    @animal.subcommand(name="zoro_artico")
-    async def arctic_fox(self, interaction: Interaction, num: int = None):
-        """Fotos de zorros articos
+    async def animal(self, interaction: Interaction, animal: str = SlashOption(
+            name="animal", required=True, choices=animals
+        ),num:int=None):
+        """Fotos de animales
 
         Args:
-            num: numero de fotos
+            animal (str): Animal a buscar
+            num (int, optional): Numero de fotos.
         """
-        await self.send_animal_pics_twitter(interaction, "DailyArcticFox", num)
+        await self.send_animal_pics_twitter(interaction, animal, num)
 
-    @animal.subcommand(name="lobo")
-    async def wolf(self, interaction: Interaction, num: int = None):
-        """Fotos de lobetes
-
-        Args:
-            num: numero de fotos
-        """
-        await self.send_animal_pics_twitter(interaction, "hourlywolvesbot", num)
-
-    @animal.subcommand(name="pajaro")
-    async def bird(self, interaction: Interaction, num: int = None):
-        """Fotos de pajaros
-
-        Args:
-            num: numero de fotos
-        """
-        await self.send_animal_pics_twitter(interaction, "kerrybv1", num)
-
-    @animal.subcommand(name="paloma")
-    async def pigeon(self, interaction: Interaction, num: int = None):
-        """Fotos de palomas
-
-        Args:
-            num: numero de fotos
-        """
-        await self.send_animal_pics_twitter(interaction, "a_london_pigeon", num)
-
-    @animal.subcommand(name="lagarto")
-    async def lizard(self, interaction: Interaction, num: int = None):
-        """Fotos de lagartitos
-
-        Args:
-            num: numero de fotos
-        """
-        await self.send_animal_pics_twitter(interaction, "HourlyLizards", num)
-
-    @animal.subcommand(name="gato")
-    async def cat(self, interaction: Interaction, num: int = None):
-        """Fotos de gatitos
-
-        Args:
-            num: numero de fotos
-        """
-        await self.send_animal_pics_twitter(interaction, "HourlyCats", num)
 
 
 def setup(bot: commands.Bot):
