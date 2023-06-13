@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v6.0.2] - 2023-06-13
+
+Modificada implementacion de la base de datos y otras mejoras
+
+### Modificado
+
+- Los comandos de animales se han sustiuido por un unico comando /animal
+
+## [v6.0.1] - 2023-06-12
+
+Arreglado error en la conexión con la base de datos
+
 ## [v6.0.0] - 2023-06-12
 
 Cambios importantes.
