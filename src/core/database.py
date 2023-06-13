@@ -106,7 +106,7 @@ class Database:
     def __init__(self):
 
         connection=mysql.connector.connect(
-            host="localhost",
+            host="db",
 
             user=os.getenv("MYSQL_USER"),
             password=os.getenv("MYSQL_PASSWORD"),
@@ -116,7 +116,7 @@ class Database:
         
     def connect(self)-> Tuple[MySQLConnection, MySQLCursor]:
         connection = mysql.connector.connect(
-            host="localhost",
+            host="db",
             user=os.getenv("MYSQL_USER"),
             password=os.getenv("MYSQL_PASSWORD"),
             database=os.getenv("MYSQL_DATABASE")
@@ -279,7 +279,8 @@ class Database:
             int: id of the post
         """        
         self.execute_query(post_insert,(channel.guild.id,channel.id,visibility,service,account,frequency,visibility,service,account,frequency))
-        post_id=self.cursor.lastrowid
+        con,cur=self.connect()
+        post_id=cur.lastrowid
         return post_id
         
     
