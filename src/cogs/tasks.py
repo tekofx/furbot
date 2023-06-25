@@ -210,7 +210,7 @@ class Tasks(commands.Cog):
                             extra={"guild": guild.name},
                         )
                         
-    @tasks.loop(minutes=1)
+    @tasks.loop(hours=1)
     async def joined_date(self):
         """Checks if today someone joined the server and posts a message in general"""
 
