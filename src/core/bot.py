@@ -3,7 +3,7 @@ import nextcord
 from nextcord.ext import commands
 import nextcord.ext.application_checks
 import os
-
+from core.e621_e926 import e621, e926
 from core.database import Database
 from core.reddit import Reddit
 from core.twitter import Twitter
@@ -28,12 +28,19 @@ class Bot(commands.Bot):
         self.token = token
         self._db=Database()
         self._db.initialize()
+        
         if os.getenv("TWITTER_ACCESS_TOKEN"):
             self._twitter = Twitter(self._db)
         if os.getenv("REDDIT_CLIENT_ID"):
             self._reddit = Reddit(self._db)
         if os.getenv("MASTODON_TOKEN"):
             self._mastodon = Mastodon(self._db)
+            
+        self._e621 = e621(self._db)
+        self._e926 = e926(self._db)
+        
+            
+            
 
         self._local_guild = int(
             os.getenv("LOCAL_GUILD")
@@ -56,6 +63,14 @@ class Bot(commands.Bot):
     @property
     def mastodon(self) -> Mastodon:
         return self._mastodon
+    
+    @property
+    def e621(self) -> e621:
+        return self._e621
+    
+    @property
+    def e926(self) -> e926:
+        return self._e926
 
     @property
     def tasks(self) -> dict[int, asyncio.Task]:
@@ -163,10 +178,12 @@ class Bot(commands.Bot):
                 await message.channel.send("EwE!")
             if message.content.lower() == "awa":
                 await message.channel.send("AwA!")
-            if "fur " in message.content.lower():
-                await message.channel.send(
-                    "Ahora no funciono por medio del comando `fur` prueba a utilizar `/`"
-                )
+
+            # TODO: Remove
+            """ if "e621" in message.content.lower():
+                tags="fox wolf"
+                post=self.e621.get_post_not_repeated(message.guild,tags.split(" "))
+                await message.channel.send(post.file.url) """
 
         await self.process_commands(message)
 
