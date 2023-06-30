@@ -1,7 +1,8 @@
-
+import nextcord
 from typing import List
 import requests
 from datetime import datetime
+from core.database import Database
 
 class Tags:
     def __init__(self, general:list[str], species:list[str], character:list[str], artist:list[str], invalid:list[str], lore:list[str], meta:list[str]) -> None:
@@ -41,10 +42,12 @@ class Post:
 
 
 class E621_E926:
-    def __init__(self) -> None:
+    def __init__(self, db:Database, url:str) -> None:
+        self.url=url
+        self.db=db
         pass
     
-    def get_posts(self, tags: List[str], limit: int = 1) -> List[Post]:
+    def get_posts(self, tags: List[str],page:int=1, limit: int = 100 ) -> List[Post]:
         """Get posts from e621.net
 
         Args:
@@ -54,9 +57,8 @@ class E621_E926:
         Returns:
             list: List of posts
         """
-        url = "https://e621.net/posts.json"
-        params = {"tags": tags, "limit": limit}
-        result = requests.get(url, params=params, headers={"User-Agent": "Discord Bot"}).json()
+        params = {"tags": tags, "limit": limit, "page": page}
+        result = requests.get(self.url, params=params, headers={"User-Agent": "Discord Bot"}).json()
         output = []
         for x in result["posts"]:
             tags=Tags(x["tags"]["general"],x["tags"]["species"],x["tags"]["character"],x["tags"]["artist"],x["tags"]["invalid"],x["tags"]["lore"],x["tags"]["meta"])
@@ -64,9 +66,40 @@ class E621_E926:
             post=Post(x["id"],datetime.strptime(x["created_at"],"%Y-%m-%dT%H:%M:%S.%f%z"),file,tags,x["description"])
             output.append(post)
         return output
+    
+    def get_post_not_repeated(self, guild:nextcord.Guild, tags: List[str]) -> Post:
+        """Get a post from e621.net that is not repeated in the database
+
+        Args:
+            guild (nextcord.Guild): Guild to get the channel
+            tags (str): Tags to search
+
+        Returns:
+            Post: Post from e621.net
+        """
+        posts=self.get_posts(tags)
+        while True:
         
+            for post in posts:
+                if  not  self.db.record_exists(guild, post.id):
+                    self.db.insert_record(guild, "e621", post.id)
+                    return post
+                
+            # If all posts are repeated, get the next posts after the last one
+            posts=self.get_posts(tags,page="a"+str(posts[-1].id))
+    
 
+class e621(E621_E926):
+    def __init__(self,db:Database) -> None:
+        super().__init__(db,"https://e621.net/posts.json")
+        
+        
+class e926(E621_E926):
+    def __init__(self,db:Database) -> None:
+        super().__init__(db,"https://e926.net/posts.json")
+    
+    
 
-e631 = E621_E926()
+""" e631 =e621()
 posts=e631.get_posts(["fox"],limit=10)
-print(posts)
+print(posts) """
