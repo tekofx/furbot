@@ -16,7 +16,6 @@ PREDEFINED_CHANNELS = dict(
         "General: Canal para enviar mensajes generales":"general",
         "Audit: Canal para que los administradores vean mensajes del estado y las acciones que realizo.":"audit",
         "Lobby: Canal para mandar mensajes de bienvenida":"lobby",
-        "Noticias: Canal para publicar noticias de nuevas versiones":"noticias",
         "Games: Para mandar juegos que estén gratis":"games",
         "Wordle: Canal para jugar a wordle":"wordle",
         "Numbers: Canal jugar a contar numeros":"numbers",

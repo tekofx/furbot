@@ -66,39 +66,6 @@ class Bot(commands.Bot):
         """
         return self._tasks
 
-    async def new_github_release(self):
-        "Checks if there is a new release on github and sends a message to the channel"
-        r = requests.request(
-            "GET", "https://api.github.com/repos/tekofx/furbot/releases"
-        )
-        r = r.json()
-        version = r[0]["tag_name"]
-        release_changelog = r[0]["body"]
-        url = r[0]["html_url"]
-        embed = nextcord.Embed(title="Nueva versión " + version, description=url)
-        embed.set_thumbnail(
-            url="https://raw.githubusercontent.com/tekofx/furbot/main/assets/furbot_logo.png"
-        )
-
-        release_changelog = release_changelog.replace("\r", "")
-
-        release_changelog = release_changelog.split("#")
-
-        embed.description = release_changelog.pop(0)
-
-        for i in release_changelog:
-            if i != "":
-                i = i.splitlines()
-                var = "\n".join(i[1:])
-                embed.add_field(name=i[0], value=var, inline=False)
-        for guild in self.guilds:
-            
-            if not self.db.exists_channel_of_type(guild, "noticias"):
-                continue
-            if not self.db.record_exists(guild,r[0]["url"]):
-                self.db.insert_record(guild,"github",r[0]["url"])
-
-                await self.channel_send(guild, "noticias", "a", embed)
 
     async def on_ready(self):
         """Performs an action when the bot is ready"""
@@ -132,9 +99,6 @@ class Bot(commands.Bot):
             log.error("Error syncing application commands: {}".format(e))
 
         
-
-        # Send new version message if there's one
-        await self.new_github_release()
 
         log.info("Furbot fully started as {}".format(self.user))
 
