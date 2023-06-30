@@ -16,6 +16,12 @@ class Utils(commands.Cog):
         await interaction.send("Pim pam trucu trucu")
         
         
+    @nextcord.slash_command(name="avatar")
+    async def avatar(self, interaction: Interaction, usuario: nextcord.Member):
+        """Muestra el avatar de un usuario"""
+        await interaction.send(usuario.avatar_url)
+        
+        
     @nextcord.slash_command(name="votacion")
     async def votacion(
         self,
@@ -82,6 +88,8 @@ class Utils(commands.Cog):
         await interaction.send(
             f"El cumpleaños de {usuario.display_name} es el {cumple.day}-{cumple.month}-{cumple.year}"
         )
+        
+    
 
 
 def setup(bot: commands.Bot):
