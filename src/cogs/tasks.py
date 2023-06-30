@@ -177,9 +177,18 @@ class Tasks(commands.Cog):
                 )
                 
             if service =="mastodon":
-                instance=account.split("@")[1]
-                account = account.split("@")[0]
-                embed=self.bot.mastodon.get_latest_image_not_repeated(guild, account, instance)
+                try:
+                    temp=account.split("@")
+                    print(account)
+                    instance=temp[1]
+                    print(instance)
+                    account = temp[0]
+                    print(account)
+                    embed=self.bot.mastodon.get_latest_image_not_repeated(guild, account, instance)
+                except Exception as error:
+                    log.error(f"Error getting mastodon post: {error}", extra={"guild": guild.name})
+                    log.error(f"Temp: {temp}, instance: {instance}, account: {account}", extra={"guild": guild.name})
+            
             if embed:
                 try:
                     await channel.send(embed=embed)
