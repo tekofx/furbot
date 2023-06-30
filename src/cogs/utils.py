@@ -15,6 +15,17 @@ class Utils(commands.Cog):
         """Comprobar si el bot está online"""
         await interaction.send("Pim pam trucu trucu")
         
+    @nextcord.slash_command(name="e621")
+    async def e621(self, interaction:Interaction, tags:str):
+        if not interaction.channel.is_nsfw():
+            await interaction.send("Este comando solo se puede usar en canales NSFW")
+            return
+        """ posts=self.bot.e621.get_posts(tags.split(" "),limit=10)
+        await interaction.send(posts[0].file.url) """
+        post=self.bot.e621.get_post_not_repeated(interaction.guild,tags.split(" "))
+        await interaction.send(post.file.url)
+        #TODO: Add button to send the rest of the posts
+        
         
     @nextcord.slash_command(name="avatar")
     async def avatar(self, interaction: Interaction, usuario: nextcord.Member):
