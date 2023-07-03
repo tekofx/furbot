@@ -48,7 +48,7 @@ class E621_E926:
         self.db=db
         pass
     
-    def get_posts(self, tags: List[str],page:int=1, limit: int = 100 ) -> List[Post]:
+    def get_posts(self, tags: str,page:int=1, limit: int = 100 ) -> List[Post]:
         """Get posts from e621.net
 
         Args:
@@ -61,6 +61,8 @@ class E621_E926:
         params = {"tags": tags, "limit": limit, "page": page}
         result = requests.get(self.api_url, params=params, headers={"User-Agent": "Discord Bot"}).json()
         output = []
+        if len(result["posts"])==0:
+            return None
         for x in result["posts"]:
             tags=Tags(x["tags"]["general"],x["tags"]["species"],x["tags"]["character"],x["tags"]["artist"],x["tags"]["invalid"],x["tags"]["lore"],x["tags"]["meta"])
             file=File(x["file"]["ext"],x["file"]["url"])
@@ -68,7 +70,7 @@ class E621_E926:
             output.append(post)
         return output
     
-    def get_post_not_repeated(self, guild:nextcord.Guild, tags: List[str]) -> Post:
+    def get_post_not_repeated(self, guild:nextcord.Guild, tags: str) -> Post:
         """Get a post from e621.net that is not repeated in the database
 
         Args:
@@ -79,6 +81,8 @@ class E621_E926:
             Post: Post from e621.net
         """
         posts=self.get_posts(tags)
+        if posts==None:
+            return None
         while True:
         
             for post in posts:
