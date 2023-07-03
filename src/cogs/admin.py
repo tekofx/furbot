@@ -136,7 +136,7 @@ class admin(commands.Cog):
             name="servicio",
             description="Red social de la cuenta",
             required=True,
-            choices={"Twitter": "twitter", "Reddit": "reddit","Mastodon":"mastodon"},
+            choices={"Twitter": "twitter", "Reddit": "reddit","Mastodon":"mastodon","E621":"e621", "E926":"e926"},
         ),
         cuenta: str = SlashOption(name="cuenta", required=True),
         visibilidad: str = SlashOption(
@@ -170,6 +170,10 @@ class admin(commands.Cog):
 
         if intervalo < 5:
             await interaction.send("El intervalo debe ser mayor que 5 minutos.")
+            return
+        
+        if servicio == "e621" and canal.nsfw==False:
+            await interaction.send("No se puede usar e621 en un canal SFW")
             return
 
         if servicio == "reddit":

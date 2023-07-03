@@ -3,7 +3,7 @@ from typing import List
 import requests
 from datetime import datetime
 from core.database import Database
-
+from nextcord import Embed
 class Tags:
     def __init__(self, general:list[str], species:list[str], character:list[str], artist:list[str], invalid:list[str], lore:list[str], meta:list[str]) -> None:
         self.general=general
@@ -44,6 +44,7 @@ class Post:
 class E621_E926:
     def __init__(self, db:Database, url:str) -> None:
         self.url=url
+        self.api_url=f"{url}/posts.json"
         self.db=db
         pass
     
@@ -58,7 +59,7 @@ class E621_E926:
             list: List of posts
         """
         params = {"tags": tags, "limit": limit, "page": page}
-        result = requests.get(self.url, params=params, headers={"User-Agent": "Discord Bot"}).json()
+        result = requests.get(self.api_url, params=params, headers={"User-Agent": "Discord Bot"}).json()
         output = []
         for x in result["posts"]:
             tags=Tags(x["tags"]["general"],x["tags"]["species"],x["tags"]["character"],x["tags"]["artist"],x["tags"]["invalid"],x["tags"]["lore"],x["tags"]["meta"])
@@ -87,16 +88,16 @@ class E621_E926:
                 
             # If all posts are repeated, get the next posts after the last one
             posts=self.get_posts(tags,page="a"+str(posts[-1].id))
-    
+            
 
 class e621(E621_E926):
     def __init__(self,db:Database) -> None:
-        super().__init__(db,"https://e621.net/posts.json")
+        super().__init__(db,"https://e621.net")
         
         
 class e926(E621_E926):
     def __init__(self,db:Database) -> None:
-        super().__init__(db,"https://e926.net/posts.json")
+        super().__init__(db,"https://e926.net")
     
     
 
