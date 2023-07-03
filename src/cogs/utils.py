@@ -16,7 +16,7 @@ class Utils(commands.Cog):
         """Comprobar si el bot está online"""
         await interaction.send("Pim pam trucu trucu")
         
-    @nextcord.slash_command(name="e621")
+    @nextcord.slash_command(name="e621",guild_ids=[922913000590024724])
     async def e621(self, interaction:Interaction, tags:str):
         """Envia una imagen de e621 con los tags especificados.
 
@@ -29,7 +29,10 @@ class Utils(commands.Cog):
         await self.send_e621_post(interaction,tags)
         
     async def send_e621_post(self,interaction:Interaction,tags:str):
-        post=self.bot.e621.get_post_not_repeated(interaction.guild,tags.split(" "))
+        post=self.bot.e621.get_post_not_repeated(interaction.guild,tags)
+        if post is None:
+            await interaction.send("No se ha encontrado nada con esa/s tags. Comprueba que las tags existen")
+            return
         button=Button()
         await interaction.send(post.file.url,view=button)
         await button.wait()
@@ -50,7 +53,10 @@ class Utils(commands.Cog):
     
             
     async def send_e926_post(self,interaction:Interaction,tags:str):
-        post=self.bot.e926.get_post_not_repeated(interaction.guild,tags.split(" "))
+        post=self.bot.e926.get_post_not_repeated(interaction.guild,tags)
+        if post is None:
+            await interaction.send("No se ha encontrado nada con esa/s tags. Comprueba que las tags existen")
+            return
         button=Button()
         await interaction.send(post.file.url,view=button)
         await button.wait()
