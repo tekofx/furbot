@@ -106,7 +106,7 @@ class Database:
     def __init__(self):
 
         connection=mysql.connector.connect(
-            host="db",
+            host=os.getenv("MYSQL_HOST"),
 
             user=os.getenv("MYSQL_USER"),
             password=os.getenv("MYSQL_PASSWORD"),
@@ -116,7 +116,7 @@ class Database:
         
     def connect(self)-> Tuple[MySQLConnection, MySQLCursor]:
         connection = mysql.connector.connect(
-            host="db",
+            host=os.getenv("MYSQL_HOST"),
             user=os.getenv("MYSQL_USER"),
             password=os.getenv("MYSQL_PASSWORD"),
             database=os.getenv("MYSQL_DATABASE")

@@ -165,29 +165,46 @@ class Tasks(commands.Cog):
         # Loop execution
         while True:
             next_task = datetime.now() + timedelta(seconds=interval * 60)
+            
+            if service=="e621":
+                post = self.bot.e621.get_post_not_repeated(guild, account).file.url
+                
+            if service == "e926":
+                post = self.bot.e926.get_post_not_repeated(guild, account).file.url
 
             if service == "twitter":
-                embed = self.bot.twitter.get_latest_image_not_repeated(
+                post = self.bot.twitter.get_latest_image_not_repeated(
                     guild, account, "twitter"
                 )
 
             if service == "reddit":
-                embed = await self.bot.reddit.get_hot_pic_not_repeated(
+                post = await self.bot.reddit.get_hot_pic_not_repeated(
                     guild, account, "reddit", visibility
                 )
                 
             if service =="mastodon":
-                instance=account.split("@")[1]
-                account = account.split("@")[0]
-                embed=self.bot.mastodon.get_latest_image_not_repeated(guild, account, instance)
-            if embed:
                 try:
-                    await channel.send(embed=embed)
+                    temp=account.split("@")
+                    print(account)
+                    instance=temp[1]
+                    print(instance)
+                    account = temp[0]
+                    print(account)
+                    post=self.bot.mastodon.get_latest_image_not_repeated(guild, account, instance)
                 except Exception as error:
-                    log.error(
-                        f"Task of account {account}({service}): {error}",
-                        extra={"guild": guild.name},
-                    )
+                    log.error(f"Error getting mastodon post: {error}", extra={"guild": guild.name})
+                    log.error(f"Temp: {temp}, instance: {instance}, account: {account}", extra={"guild": guild.name})
+            
+            try:
+                if type(post)==nextcord.Embed:
+                    await channel.send(embed=post)
+                else:
+                    await channel.send(post)
+            except Exception as error:
+                log.error(
+                    f"Task of account {account}({service}): {error}",
+                    extra={"guild": guild.name},
+                )
             new_interval = next_task - datetime.now()
             await asyncio.sleep(new_interval.seconds)
 

@@ -3,7 +3,7 @@ import nextcord
 from nextcord.ext import commands
 import nextcord.ext.application_checks
 import os
-
+from core.e621_e926 import e621, e926
 from core.database import Database
 from core.reddit import Reddit
 from core.twitter import Twitter
@@ -28,12 +28,19 @@ class Bot(commands.Bot):
         self.token = token
         self._db=Database()
         self._db.initialize()
+        
         if os.getenv("TWITTER_ACCESS_TOKEN"):
             self._twitter = Twitter(self._db)
         if os.getenv("REDDIT_CLIENT_ID"):
             self._reddit = Reddit(self._db)
         if os.getenv("MASTODON_TOKEN"):
             self._mastodon = Mastodon(self._db)
+            
+        self._e621 = e621(self._db)
+        self._e926 = e926(self._db)
+        
+            
+            
 
         self._local_guild = int(
             os.getenv("LOCAL_GUILD")
@@ -56,6 +63,14 @@ class Bot(commands.Bot):
     @property
     def mastodon(self) -> Mastodon:
         return self._mastodon
+    
+    @property
+    def e621(self) -> e621:
+        return self._e621
+    
+    @property
+    def e926(self) -> e926:
+        return self._e926
 
     @property
     def tasks(self) -> dict[int, asyncio.Task]:
@@ -66,39 +81,6 @@ class Bot(commands.Bot):
         """
         return self._tasks
 
-    async def new_github_release(self):
-        "Checks if there is a new release on github and sends a message to the channel"
-        r = requests.request(
-            "GET", "https://api.github.com/repos/tekofx/furbot/releases"
-        )
-        r = r.json()
-        version = r[0]["tag_name"]
-        release_changelog = r[0]["body"]
-        url = r[0]["html_url"]
-        embed = nextcord.Embed(title="Nueva versión " + version, description=url)
-        embed.set_thumbnail(
-            url="https://raw.githubusercontent.com/tekofx/furbot/main/assets/furbot_logo.png"
-        )
-
-        release_changelog = release_changelog.replace("\r", "")
-
-        release_changelog = release_changelog.split("#")
-
-        embed.description = release_changelog.pop(0)
-
-        for i in release_changelog:
-            if i != "":
-                i = i.splitlines()
-                var = "\n".join(i[1:])
-                embed.add_field(name=i[0], value=var, inline=False)
-        for guild in self.guilds:
-            
-            if not self.db.exists_channel_of_type(guild, "noticias"):
-                continue
-            if not self.db.record_exists(guild,r[0]["url"]):
-                self.db.insert_record(guild,"github",r[0]["url"])
-
-                await self.channel_send(guild, "noticias", "a", embed)
 
     async def on_ready(self):
         """Performs an action when the bot is ready"""
@@ -132,9 +114,6 @@ class Bot(commands.Bot):
             log.error("Error syncing application commands: {}".format(e))
 
         
-
-        # Send new version message if there's one
-        await self.new_github_release()
 
         log.info("Furbot fully started as {}".format(self.user))
 
@@ -199,10 +178,12 @@ class Bot(commands.Bot):
                 await message.channel.send("EwE!")
             if message.content.lower() == "awa":
                 await message.channel.send("AwA!")
-            if "fur " in message.content.lower():
-                await message.channel.send(
-                    "Ahora no funciono por medio del comando `fur` prueba a utilizar `/`"
-                )
+
+            # TODO: Remove
+            """ if "e621" in message.content.lower():
+                tags="fox wolf"
+                post=self.e621.get_post_not_repeated(message.guild,tags.split(" "))
+                await message.channel.send(post.file.url) """
 
         await self.process_commands(message)
 
