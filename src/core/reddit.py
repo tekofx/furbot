@@ -76,7 +76,7 @@ class Reddit:
         sub_reddit: str,
         record_type: str,
         nsfw: bool,
-    ) -> list:
+    ) -> nextcord.Embed:
         """Gets a list of subreddit pics
 
         Args:
