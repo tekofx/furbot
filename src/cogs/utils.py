@@ -16,7 +16,7 @@ class Utils(commands.Cog):
         """Comprobar si el bot está online"""
         await interaction.send("Pim pam trucu trucu")
         
-    @nextcord.slash_command(name="e621",guild_ids=[922913000590024724])
+    @nextcord.slash_command(name="e621")
     async def e621(self, interaction:Interaction, tags:str):
         """Envia una imagen de e621 con los tags especificados.
 
