@@ -28,15 +28,6 @@ class Utils(commands.Cog):
             return
         await self.send_e621_post(interaction,tags)
         
-    @nextcord.slash_command(name="e926")
-    async def e926(self, interaction:Interaction, tags:str):
-        """Envia una imagen de e926 con los tags especificados.
-
-        Args:
-            tags (str): Tags de la imagen. Deben estar separados por espacios
-        """
-        await self.send_e926_post(interaction,tags)
-        
     async def send_e621_post(self,interaction:Interaction,tags:str):
         post=self.bot.e621.get_post_not_repeated(interaction.guild,tags.split(" "))
         button=Button()
@@ -45,7 +36,18 @@ class Utils(commands.Cog):
         if button.value is None:
             return
         if button.value:
+            
             await self.send_e621_post(interaction,tags)
+        
+    @nextcord.slash_command(name="e926")
+    async def e926(self, interaction:Interaction, tags:str):
+        """Envia una imagen de e926 con los tags especificados.
+
+        Args:
+            tags (str): Tags de la imagen. Deben estar separados por espacios
+        """
+        await self.send_e926_post(interaction,tags)
+    
             
     async def send_e926_post(self,interaction:Interaction,tags:str):
         post=self.bot.e926.get_post_not_repeated(interaction.guild,tags.split(" "))
