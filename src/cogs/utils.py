@@ -5,6 +5,7 @@ from pyrae import dle
 from core.bot import Bot
 import datetime
 from ui.Modal import Modal
+from ui.Button import Button
 
 class Utils(commands.Cog):
     def __init__(self, bot: Bot) -> None:
@@ -17,14 +18,44 @@ class Utils(commands.Cog):
         
     @nextcord.slash_command(name="e621")
     async def e621(self, interaction:Interaction, tags:str):
+        """Envia una imagen de e621 con los tags especificados.
+
+        Args:
+            tags (str): Tags de la imagen. Deben estar separados por espacios
+        """
         if not interaction.channel.is_nsfw():
             await interaction.send("Este comando solo se puede usar en canales NSFW")
             return
-        """ posts=self.bot.e621.get_posts(tags.split(" "),limit=10)
-        await interaction.send(posts[0].file.url) """
+        await self.send_e621_post(interaction,tags)
+        
+    @nextcord.slash_command(name="e926")
+    async def e926(self, interaction:Interaction, tags:str):
+        """Envia una imagen de e926 con los tags especificados.
+
+        Args:
+            tags (str): Tags de la imagen. Deben estar separados por espacios
+        """
+        await self.send_e926_post(interaction,tags)
+        
+    async def send_e621_post(self,interaction:Interaction,tags:str):
         post=self.bot.e621.get_post_not_repeated(interaction.guild,tags.split(" "))
-        await interaction.send(post.file.url)
-        #TODO: Add button to send the rest of the posts
+        button=Button()
+        await interaction.send(post.file.url,view=button)
+        await button.wait()
+        if button.value is None:
+            return
+        if button.value:
+            await self.send_e621_post(interaction,tags)
+            
+    async def send_e926_post(self,interaction:Interaction,tags:str):
+        post=self.bot.e926.get_post_not_repeated(interaction.guild,tags.split(" "))
+        button=Button()
+        await interaction.send(post.file.url,view=button)
+        await button.wait()
+        if button.value is None:
+            return
+        if button.value:
+            await self.send_e926_post(interaction,tags)
         
         
     @nextcord.slash_command(name="avatar")
