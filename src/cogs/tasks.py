@@ -168,11 +168,11 @@ class Tasks(commands.Cog):
             
             if service=="e621":
                 post=self.bot.e621.get_post_not_repeated(guild, account)
-                post = post.tags+"\n"+post.file.url
+                post = f"{post.tags}\n{post.file.url}"
                 
             if service == "e926":
                 post = self.bot.e926.get_post_not_repeated(guild, account)
-                post = post.tags+"\n"+post.file.url
+                post = f"{post.tags}\n{post.file.url}"
 
             if service == "twitter":
                 post = self.bot.twitter.get_latest_image_not_repeated(
