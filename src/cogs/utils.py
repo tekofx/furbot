@@ -34,7 +34,8 @@ class Utils(commands.Cog):
             await interaction.send("No se ha encontrado nada con esa/s tags. Comprueba que las tags existen")
             return
         button=Button()
-        await interaction.send(post.file.url,view=button)
+        output=f"{post.tags}\n{post.file.url}"
+        await interaction.send(output,view=button)
         await button.wait()
         if button.value is None:
             return
@@ -58,7 +59,8 @@ class Utils(commands.Cog):
             await interaction.send("No se ha encontrado nada con esa/s tags. Comprueba que las tags existen")
             return
         button=Button()
-        await interaction.send(post.file.url,view=button)
+        output=f"{post.tags}\n{post.file.url}"
+        await interaction.send(output,view=button)
         await button.wait()
         if button.value is None:
             return

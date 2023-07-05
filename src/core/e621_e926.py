@@ -16,7 +16,8 @@ class Tags:
         
         
     def __repr__(self) -> str:
-        return f"Tags(general={self.general}, species={self.species}, character={self.character}, artist={self.artist}, invalid={self.invalid}, lore={self.lore}, meta={self.meta})"
+        output=" ".join(self.general)+" "+" ".join(self.species)+" "+" ".join(self.character)+" "+" ".join(self.artist)+" "+" ".join(self.invalid)+" "+" ".join(self.lore)+" "+" ".join(self.meta)
+        return output
 
 class File:
     def __init__(self, extension:str,url:str) -> None:
