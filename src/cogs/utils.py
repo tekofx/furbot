@@ -16,7 +16,7 @@ class Utils(commands.Cog):
         """Comprobar si el bot está online"""
         await interaction.send("Pim pam trucu trucu")
         
-    @nextcord.slash_command(name="e621",guild_ids=[922913000590024724])
+    @nextcord.slash_command(name="e621")
     async def e621(self, interaction:Interaction, tags:str):
         """Envia una imagen de e621 con los tags especificados.
 
@@ -34,7 +34,8 @@ class Utils(commands.Cog):
             await interaction.send("No se ha encontrado nada con esa/s tags. Comprueba que las tags existen")
             return
         button=Button()
-        await interaction.send(post.file.url,view=button)
+        output=f"{post.tags}\n{post.file.url}"
+        await interaction.send(output,view=button)
         await button.wait()
         if button.value is None:
             return
@@ -58,7 +59,8 @@ class Utils(commands.Cog):
             await interaction.send("No se ha encontrado nada con esa/s tags. Comprueba que las tags existen")
             return
         button=Button()
-        await interaction.send(post.file.url,view=button)
+        output=f"{post.tags}\n{post.file.url}"
+        await interaction.send(output,view=button)
         await button.wait()
         if button.value is None:
             return
