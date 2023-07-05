@@ -10,6 +10,15 @@ from ui.Button import Button
 class Utils(commands.Cog):
     def __init__(self, bot: Bot) -> None:
         self.bot = bot
+    
+    @nextcord.slash_command(name="avatar")
+    async def avatar(self, interaction:Interaction, usuario:nextcord.Member):
+        """Obtiene el avatar de un usuario
+
+        Args:
+            usuario (nextcord.Member): Usuario del que enviar el avatar
+        """        
+        await interaction.send(usuario.avatar.url)
 
     @nextcord.slash_command(name="ping")
     async def ping(self, interaction: Interaction):
