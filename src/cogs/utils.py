@@ -18,7 +18,7 @@ class Utils(commands.Cog):
         Args:
             usuario (nextcord.Member): Usuario del que enviar el avatar
         """        
-        await interaction.send(usuario.avatar.url)
+        await interaction.send(usuario.display_avatar.url)
 
     @nextcord.slash_command(name="ping")
     async def ping(self, interaction: Interaction):
