@@ -4,9 +4,8 @@ from nextcord.ext import commands
 from pyrae import dle
 from core.bot import Bot
 import datetime
-from ui.Modal import Modal
 from ui.Button import Button
-
+emojis = ["🟥", "🟧", "🟨", "🟩", "🟦", "🟪", "🟫", "⬜"]
 class Utils(commands.Cog):
     def __init__(self, bot: Bot) -> None:
         self.bot = bot
@@ -83,19 +82,32 @@ class Utils(commands.Cog):
         await interaction.send(usuario.avatar_url)
         
         
-    @nextcord.slash_command(name="votacion")
+    @nextcord.slash_command(name="votacion",guild_ids=[788479325787258961])
     async def votacion(
         self,
         interaction: Interaction,
-        num_opciones:int
+        titulo:str,
+        descripcion:str,
+        opciones: str
     ):
         """Crea una votacion
-        
-        Args:
-            num_opciones: Número de opciones entre las que votar
 
-        """
-        await interaction.response.send_modal(Modal(num_opciones))
+        Args:
+            titulo (str): Titulo de la votación
+            descripcion (str): Descripción de la votación
+            opciones (str): Lista de opciones a votar. Separar por comas.
+        """        
+        embed=nextcord.Embed(title=titulo,description=descripcion)
+        opciones=opciones.split(",")
+        for x in opciones:
+            i=opciones.index(x)
+            embed.add_field(name=f"Opción {emojis[i]}",value=x)      
+            
+        msg=await interaction.response.send_message(embed=embed)
+        msg=await msg.fetch()
+        for x in opciones:
+            i=opciones.index(x)
+            await msg.add_reaction(emojis[i])
 
     @nextcord.slash_command(name="rae")
     async def rae(self, interaction: Interaction, palabra: str):
