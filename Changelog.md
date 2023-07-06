@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+## [v6.1.4] - 2023-07-06
+- Arreglado error en comando avatar
+- Añadidas opciones titulo y descripcion en comando votacion
 
 ## [v6.1.3] - 2023-07-05
 Añadido comando avatar
