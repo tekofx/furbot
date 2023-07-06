@@ -82,7 +82,7 @@ class Utils(commands.Cog):
         await interaction.send(usuario.avatar_url)
         
         
-    @nextcord.slash_command(name="votacion",guild_ids=[788479325787258961])
+    @nextcord.slash_command(name="votacion")
     async def votacion(
         self,
         interaction: Interaction,
