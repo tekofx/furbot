@@ -18,7 +18,7 @@ class Utils(commands.Cog):
         Args:
             usuario (nextcord.Member): Usuario del que enviar el avatar
         """        
-        await interaction.send(usuario.avatar.url)
+        await interaction.send(usuario.display_avatar.url)
 
     @nextcord.slash_command(name="ping")
     async def ping(self, interaction: Interaction):
@@ -87,15 +87,15 @@ class Utils(commands.Cog):
     async def votacion(
         self,
         interaction: Interaction,
-        opciones:int
+        num_opciones:int
     ):
         """Crea una votacion
         
         Args:
-            opciones: Número de opciones entre las que votar
+            num_opciones: Número de opciones entre las que votar
 
         """
-        await interaction.response.send_modal(Modal(opciones))
+        await interaction.response.send_modal(Modal(num_opciones))
 
     @nextcord.slash_command(name="rae")
     async def rae(self, interaction: Interaction, palabra: str):
