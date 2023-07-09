@@ -79,7 +79,7 @@ class Utils(commands.Cog):
     @nextcord.slash_command(name="avatar")
     async def avatar(self, interaction: Interaction, usuario: nextcord.Member):
         """Muestra el avatar de un usuario"""
-        await interaction.send(usuario.avatar_url)
+        await interaction.send(usuario.display_avatar.url)
         
         
     @nextcord.slash_command(name="votacion")
