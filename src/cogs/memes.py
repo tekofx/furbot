@@ -165,7 +165,7 @@ class memes(commands.Cog):
         finally:
             return True
 
-    @nextcord.slash_command(name="meme" , guild_ids=[788479325787258961])
+    @nextcord.slash_command(name="meme")
     async def meme(self, interaction: Interaction):
         pass
 
