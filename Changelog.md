@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [v6.1.8] - 2023-07-09
 - Arreglado error al obtener el avatar de un usuario en los comandos meme
+- Downgrade de la version de pillow
 
 ## [v6.1.7] - 2023-07-09
 - Arreglado error comando avatar
