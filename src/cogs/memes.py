@@ -165,7 +165,7 @@ class memes(commands.Cog):
         finally:
             return True
 
-    @nextcord.slash_command(name="meme")
+    @nextcord.slash_command(name="meme" , guild_ids=[788479325787258961])
     async def meme(self, interaction: Interaction):
         pass
 
@@ -224,7 +224,7 @@ class memes(commands.Cog):
 
         avatar_info = [
             {
-                "url": get_user(interaction, usuario).avatar.url,
+                "url": get_user(interaction, usuario).display_avatar.url,
                 "size": 300,
                 "x": 410,
                 "y": 180,
@@ -241,13 +241,13 @@ class memes(commands.Cog):
         # Create meme
         avatar_info = [
             {
-                "url": get_user(interaction, usuario).avatar.url,
+                "url": get_user(interaction, usuario).display_avatar.url,
                 "size": 110,
                 "x": 198,
                 "y": 229,
             },
             {
-                "url": get_user(interaction, usuario).avatar.url,
+                "url": get_user(interaction, usuario).display_avatar.url,
                 "size": 85,
                 "x": 348,
                 "y": 915,
@@ -293,7 +293,7 @@ class memes(commands.Cog):
         txtPic = Image.new("RGBA", (620, 500))
         pic = Image.open(meme_resources_path + "quote.png").convert("RGBA")
         avatar = (
-            Image.open(io.BytesIO(requests.get(userName.avatar.url).content))
+            Image.open(io.BytesIO(requests.get(userName.display_avatar.url).content))
             .convert("L")
             .resize((avatarSize, avatarSize))
         )
@@ -371,7 +371,7 @@ class memes(commands.Cog):
 
         avatar_info = [
             {
-                "url": get_user(interaction, usuario).avatar.url,
+                "url": get_user(interaction, usuario).display_avatar.url,
                 "size": 236,
                 "x": 63,
                 "y": 25,
@@ -387,13 +387,13 @@ class memes(commands.Cog):
 
         avatar_info = [
             {
-                "url": get_user(interaction, usuario).avatar.url,
+                "url": get_user(interaction, usuario).display_avatar.url,
                 "size": 65,
                 "x": 162,
                 "y": 19,
             },
             {
-                "url": interaction.user.avatar.url,
+                "url": interaction.user.display_avatar.url,
                 "size": 65,
                 "x": 469,
                 "y": 130,
@@ -409,7 +409,7 @@ class memes(commands.Cog):
 
         avatar_info = [
             {
-                "url": get_user(interaction, usuario).avatar.url,
+                "url": get_user(interaction, usuario).display_avatar.url,
                 "size": 387,
                 "x": 210,
                 "y": 75,
@@ -424,7 +424,7 @@ class memes(commands.Cog):
 
         avatar_info = [
             {
-                "url": interaction.user.avatar.url,
+                "url": interaction.user.display_avatar.url,
                 "size": 54,
                 "x": 172,
                 "y": 182,
@@ -440,7 +440,7 @@ class memes(commands.Cog):
 
         avatar_info = [
             {
-                "url": get_user(interaction, usuario).avatar.url,
+                "url": get_user(interaction, usuario).display_avatar.url,
                 "size": 167,
                 "x": 218,
                 "y": 137,
@@ -456,7 +456,7 @@ class memes(commands.Cog):
 
         avatar_info = [
             {
-                "url": get_user(interaction, usuario).avatar.url,
+                "url": get_user(interaction, usuario).display_avatar.url,
                 "size": 108,
                 "x": 256,
                 "y": 112,
@@ -472,7 +472,7 @@ class memes(commands.Cog):
 
         avatar_info = [
             {
-                "url": interaction.user.avatar.url,
+                "url": interaction.user.display_avatar.url,
                 "size": 125,
                 "x": 278,
                 "y": 67,
@@ -502,7 +502,7 @@ class memes(commands.Cog):
 
         avatar_info = [
             {
-                "url": get_user(interaction, usuario).avatar.url,
+                "url": get_user(interaction, usuario).display_avatar.url,
                 "size": 130,
                 "x": 210,
                 "y": 570,
@@ -535,13 +535,13 @@ class memes(commands.Cog):
 
         avatar_info = [
             {
-                "url": interaction.user.avatar.url,
+                "url": interaction.user.display_avatar.url,
                 "size": 62,
                 "x": 240,
                 "y": 79,
             },
             {
-                "url": usuario.avatar.url,
+                "url": usuario.display_avatar.url,
                 "size": 55,
                 "x": 137,
                 "y": 177,
@@ -557,13 +557,13 @@ class memes(commands.Cog):
 
         avatar_info = [
             {
-                "url": interaction.user.avatar.url,
+                "url": interaction.user.display_avatar.url,
                 "size": 212,
                 "x": 422,
                 "y": 148,
             },
             {
-                "url": usuario.avatar.url,
+                "url": usuario.display_avatar.url,
                 "size": 133,
                 "x": 110,
                 "y": 275,
@@ -579,7 +579,7 @@ class memes(commands.Cog):
 
         avatar_info = [
             {
-                "url": get_user(interaction, usuario).avatar.url,
+                "url": get_user(interaction, usuario).display_avatar.url,
                 "size": 160,
                 "x": 120,
                 "y": 88,
@@ -595,7 +595,7 @@ class memes(commands.Cog):
 
         avatar_info = [
             {
-                "url": interaction.user.avatar.url,
+                "url": interaction.user.display_avatar.url,
                 "size": 78,
                 "x": 315,
                 "y": 80,
@@ -613,7 +613,7 @@ class memes(commands.Cog):
 
         avatar_info = [
             {
-                "url": get_user(interaction, usuario).avatar.url,
+                "url": get_user(interaction, usuario).display_avatar.url,
                 "size": 88,
                 "x": 188,
                 "y": 45,
@@ -636,25 +636,25 @@ class memes(commands.Cog):
 
         avatar_info = [
             {
-                "url": interaction.user.avatar.url,
+                "url": interaction.user.display_avatar.url,
                 "size": 205,
                 "x": 171,
                 "y": 0,
             },
             {
-                "url": interaction.user.avatar.url,
+                "url": interaction.user.display_avatar.url,
                 "size": 205,
                 "x": 170,
                 "y": 616,
             },
             {
-                "url": usuario.avatar.url,
+                "url": usuario.display_avatar.url,
                 "size": 205,
                 "x": 603,
                 "y": 10,
             },
             {
-                "url": usuario.avatar.url,
+                "url": usuario.display_avatar.url,
                 "size": 120,
                 "x": 766,
                 "y": 741,
@@ -749,19 +749,19 @@ class memes(commands.Cog):
 
         avatar_info = [
             {
-                "url": usuario1.avatar.url,
+                "url": usuario1.display_avatar.url,
                 "size": 265,
                 "x": 683,
                 "y": 473,
             },
             {
-                "url": usuario2.avatar.url,
+                "url": usuario2.display_avatar.url,
                 "size": 230,
                 "x": 420,
                 "y": 630,
             },
             {
-                "url": usuario3.avatar.url,
+                "url": usuario3.display_avatar.url,
                 "size": 170,
                 "x": 650,
                 "y": 870,
