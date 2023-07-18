@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v6.2.0] - 2023-07-18
+- Aumentado tamaño de las tags que se pueden añadir a un post de e621/e926
+- Modificados comandos de post
+
 ## [v6.1.8] - 2023-07-09
 - Arreglado error al obtener el avatar de un usuario en los comandos meme
 - Downgrade de la version de pillow

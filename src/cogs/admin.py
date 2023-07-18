@@ -120,10 +120,11 @@ class admin(commands.Cog):
     
     ############################# Post #####################################
     
-    @nextcord.slash_command(name="post")
+    @nextcord.slash_command(name="post",guild_ids=[788479325787258961])
     @application_checks.has_permissions(administrator=True)
     async def post(self, interaction: Interaction):
         pass
+    
     
    
     @application_checks.has_permissions(administrator=True)
@@ -142,7 +143,7 @@ class admin(commands.Cog):
         visibilidad: str = SlashOption(
             name="visibilidad", required=True, choices={"SFW": "sfw", "NSFW": "nsfw"}
         ),
-        intervalo: int=5,
+        intervalo: int = SlashOption(required=False,min_value=5)
     ):
         """[Admin] Permite añadir una cuenta de twitter/subreddit/mastodon a un canal.
         De esta forma cada hora se publicará el último post de la cuenta en el canal. Si se añaden varias
@@ -166,10 +167,6 @@ class admin(commands.Cog):
             await interaction.send(
                 "No tengo permisos para enviar mensajes en este canal."
             )
-            return
-
-        if intervalo < 5:
-            await interaction.send("El intervalo debe ser mayor que 5 minutos.")
             return
         
         if servicio == "e621" and canal.nsfw==False:
@@ -223,6 +220,206 @@ class admin(commands.Cog):
         
         # Add task to tasks dict
         self.bot.tasks[post_id] = task
+    
+    def check_fields(self,interaction:Interaction,canal:nextcord.TextChannel,servicio:str, cuenta:str,visibilidad: str = SlashOption(
+            name="visibilidad", required=True, choices={"SFW": "sfw", "NSFW": "nsfw"})):
+        
+        if visibilidad == "nsfw" and not canal.nsfw:
+            raise ValueError("El canal no es NSFW, utiliza otro canal o cambia los permisos.")
+
+        if not canal.permissions_for(interaction.guild.me).send_messages:
+            raise ValueError("No tengo permisos para enviar mensajes en este canal.")
+        if self.bot.db.exists_post(canal,servicio,cuenta):
+            raise ValueError("El post ya existe, escoge otra cuenta o canal")
+        
+    def create_task(self, interaction:Interaction, canal:nextcord.TextChannel,servicio:str,cuenta:str,visibilidad: str = SlashOption(
+            name="visibilidad", required=True, choices={"SFW": "sfw", "NSFW": "nsfw"}), intervalo: int = SlashOption(required=False,min_value=5)):
+        post_id=self.bot.db.insert_post(canal,visibilidad,servicio,cuenta,intervalo)
+
+        # Get tasks cog and create task
+        tasks = self.bot.cogs.get("Tasks")
+
+        task = self.bot.loop.create_task(
+            tasks.post_task(
+                interaction.guild, canal.id, visibilidad, servicio, cuenta, intervalo
+            )
+        )
+        
+        # Add task to tasks dict
+        self.bot.tasks[post_id] = task
+        
+    @application_checks.has_permissions(administrator=True)
+    @post.subcommand(name="twitter")
+    async def post_add_twitter(self,interaction: Interaction,
+        canal: nextcord.TextChannel,
+        cuenta: str = SlashOption(name="cuenta", required=True),
+        visibilidad: str = SlashOption(
+            name="visibilidad", required=True, choices={"SFW": "sfw", "NSFW": "nsfw"}
+        ),
+        intervalo: int=5):
+        """[Admin] Programa un post de twitter
+        De esta forma cada hora se publicará el último post de la cuenta en el canal. Si se añaden varias
+        cuentas a la vez, se utilizará una cuenta aleatoria de las añadidas.
+
+        Args:
+            canal: canal al que enviar
+            cuenta: Cuenta de twitter
+            visibilidad: Si/No. Si se quiere que se cojan los posts NSFW o no
+            intervalo: Minutos entre un post y otro. Debe ser mayor a los 5 mins
+        """
+        
+        try:
+            self.check_fields(interaction,canal,"twitter",cuenta,visibilidad)
+        except ValueError as error:
+            await interaction.send(error.args[0])
+            return
+            
+            
+        var = self.bot.twitter.exists_account(cuenta)
+
+        if not var:
+            await interaction.send(
+                f"La cuenta {cuenta} no existe, comprueba la cuenta y vuelve a intentarlo"
+            )
+            return
+        
+        self.create_task(interaction,canal,"twitter",cuenta,visibilidad,intervalo)
+        await interaction.send("Post creado")
+        
+    @application_checks.has_permissions(administrator=True)
+    @post.subcommand(name="mastodon")
+    async def post_add_mastodon(self,interaction: Interaction,
+        canal: nextcord.TextChannel,
+        usuario: str = SlashOption(name="usuario", required=True),
+        instancia:str = SlashOption(name="instancia", required=True),
+        visibilidad: str = SlashOption(
+            name="visibilidad", required=True, choices={"SFW": "sfw", "NSFW": "nsfw"}
+        ),
+        intervalo: int=5):
+        """[Admin] Programa un post de mastodon
+        De esta forma cada hora se publicará el último post de la cuenta en el canal. Si se añaden varias
+        cuentas a la vez, se utilizará una cuenta aleatoria de las añadidas.
+
+        Args:
+            canal: canal al que enviar
+            usuario: Cuenta de mastodon
+            visibilidad: Si/No. Si se quiere que se cojan los posts NSFW o no
+            intervalo: Minutos entre un post y otro. Debe ser mayor a los 5 mins
+        """
+        
+        cuenta=usuario+"@"+instancia
+        
+        try:
+            self.check_fields(interaction,canal,"mastodon",cuenta,visibilidad)
+        except ValueError as error:
+            await interaction.send(error.args[0])
+            return
+        
+        
+        var=self.bot.mastodon.exists_account(usuario,instancia)
+        if not var:
+            await interaction.send(
+                f"La cuenta {cuenta} no existe, comprueba la cuenta y vuelve a intentarlo"
+            )
+            return
+        
+        self.create_task(interaction,canal,"mastodon",cuenta,visibilidad,intervalo)
+        await interaction.send("Post creado")
+        
+    @application_checks.has_permissions(administrator=True)
+    @post.subcommand(name="reddit")
+    async def post_add_reddit(self,interaction: Interaction,
+        canal: nextcord.TextChannel,
+        subreddit: str = SlashOption(name="subreddit", required=True),
+        visibilidad: str = SlashOption(
+            name="visibilidad", required=True, choices={"SFW": "sfw", "NSFW": "nsfw"}
+        ),
+        intervalo: int=5):
+        """[Admin] Programa un post de reddit
+        De esta forma cada hora se publicará el último post de la cuenta en el canal. Si se añaden varias
+        cuentas a la vez, se utilizará una cuenta aleatoria de las añadidas.
+
+        Args:
+            canal: canal al que enviar
+            subreddit: Subreddit de reddit
+            visibilidad: Si/No. Si se quiere que se cojan los posts NSFW o no
+            intervalo: Minutos entre un post y otro. Debe ser mayor a los 5 mins
+        """
+        try:
+            self.check_fields(interaction,canal,"reddit",subreddit,visibilidad)
+        except ValueError as error:
+            await interaction.send(error.args[0])
+            return
+        
+        
+        exists = await self.bot.reddit.exists_subreddit(subreddit)
+        if not exists:
+            await interaction.send(
+                f"El subreddit {subreddit} no existe, comprueba el subreddit y vuelve a intentarlo"
+            )
+            return
+        
+        self.create_task(interaction,canal,"twitter",subreddit,visibilidad,intervalo)
+        await interaction.send("Post creado")
+        
+    @application_checks.has_permissions(administrator=True)
+    @post.subcommand(name="e621")
+    async def post_add_e621(self,interaction: Interaction,
+        canal: nextcord.TextChannel,
+        tags: str = SlashOption(name="tags", required=True),
+        intervalo: int=5):
+        """[Admin] Programa un post de e621
+        De esta forma cada hora se publicará el último post de la cuenta en el canal. Si se añaden varias
+        cuentas a la vez, se utilizará una cuenta aleatoria de las añadidas.
+
+        Args:
+            canal: canal al que enviar
+            tags: Tags que buscar de e621. Separar las tags con comas. Para evitar posts con un tag concreto usar -tag
+            visibilidad: Si/No. Si se quiere que se cojan los posts NSFW o no
+            intervalo: Minutos entre un post y otro. Debe ser mayor a los 5 mins
+        """
+        
+        try:
+            self.check_fields(interaction,canal,"e621",tags,"nsfw")
+        except ValueError as error:
+            await interaction.send(error.args[0])
+            return
+        
+        if canal.nsfw==False:
+            await interaction.send("No se puede usar e621 en un canal SFW")
+            return
+        
+        
+        self.create_task(interaction,canal,"e621",tags,"nsfw",intervalo)
+        await interaction.send("Post creado")
+        
+    @application_checks.has_permissions(administrator=True)
+    @post.subcommand(name="e926")
+    async def post_add_e926(self,interaction: Interaction,
+        canal: nextcord.TextChannel,
+        tags: str = SlashOption(name="tags", required=True),
+        intervalo: int=5):
+        """[Admin] Programa un post de e926
+        De esta forma cada hora se publicará el último post de la cuenta en el canal. Si se añaden varias
+        cuentas a la vez, se utilizará una cuenta aleatoria de las añadidas.
+
+        Args:
+            canal: canal al que enviar
+            tags: Tags que buscar de e926. Separar las tags con comas. Para evitar posts con un tag concreto usar -tag
+            visibilidad: Si/No. Si se quiere que se cojan los posts NSFW o no
+            intervalo: Minutos entre un post y otro. Debe ser mayor a los 5 mins
+        """
+        
+        try:
+            self.check_fields(interaction,canal,"e926",tags,"sfw")
+        except ValueError as error:
+            await interaction.send(error.args[0])
+            return
+        
+        
+        self.create_task(interaction,canal,"e926",tags,"sfw",intervalo)
+        await interaction.send("Post creado")
+            
 
     @application_checks.has_permissions(administrator=True)
     @post.subcommand(name="eliminar")
