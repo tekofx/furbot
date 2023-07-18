@@ -85,7 +85,7 @@ posts_table = """ CREATE TABLE IF NOT EXISTS posts (
                                     channel varchar(18) NOT NULL,
                                     visibility ENUM('sfw','nsfw') NOT NULL, 
                                     service varchar(20) NOT NULL,
-                                    account varchar(40) NOT NULL,
+                                    account varchar(200) NOT NULL,
                                     frequency int(6) NOT NULL,
                                     
                                     CONSTRAINT PK_posts PRIMARY KEY (id, guild),
