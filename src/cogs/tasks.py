@@ -22,7 +22,6 @@ class Tasks(commands.Cog):
         self.joined_date.start()
         self.estaciones.start()
         self.birthday.start()
-        self.sync_commands.start()
         
         # Get posts from database
         for guild in self.bot.guilds:
@@ -48,10 +47,6 @@ class Tasks(commands.Cog):
                     )
         
 
-    @tasks.loop(hours=2)
-    async def sync_commands(self):
-        log.info("Syncing commands")
-        await self.bot.sync_application_commands(self.bot._local_guild)
 
     @tasks.loop(hours=1)
     async def estaciones(self):
@@ -157,7 +152,7 @@ class Tasks(commands.Cog):
             )
             return
 
-        log.info(f"Started task {account}", extra={"guild": guild.name})
+        log.info(f"Started task {service} {account}", extra={"guild": guild.name})
 
         # Wait until oclock to run post
         await self.wait_until_oclock()
@@ -296,7 +291,6 @@ class Tasks(commands.Cog):
 
     #@joined_date.before_loop
     @free_games.before_loop
-    @sync_commands.before_loop
     async def wait_until_oclock(self):
         """Waits some time to execute tasks"""
 

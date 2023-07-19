@@ -1,15 +1,132 @@
+import io
 import nextcord
 from nextcord import Interaction
 from nextcord.ext import commands
 from pyrae import dle
 from core.bot import Bot
 import datetime
+from geopy.geocoders import Nominatim
 from ui.Button import Button
+import requests
+from staticmap import StaticMap, IconMarker
+import random
+
 emojis = ["🟥", "🟧", "🟨", "🟩", "🟦", "🟪", "🟫", "⬜"]
+data_path = "data/"
+weather_icons = data_path + "resources/weather_icons/"
+
+weathercodes = {
+    0: {'text': 'Cielo despejado', 'icon': f'{weather_icons}sunny.png','emoji':'☀️'},
+    1: {'text': 'Principalmente despejado', 'icon': f'{weather_icons}partly-cloudy.png','emoji':'🌤️'},
+    2: {'text': 'Parcialmente nublado', 'icon': f'{weather_icons}partly-cloudy.png','emoji':'⛅'},
+    3: {'text': 'Nublado', 'icon': f'{weather_icons}cloudy.png','emoji':'☁️'},
+    45: {'text': 'Niebla', 'icon': f'{weather_icons}fog.png','emoji':'🌫️'},
+    48: {'text': 'Escarcha depositada por la niebla', 'icon': f'{weather_icons}frost.png','emoji':'🌫️'},
+    51: {'text': 'Llovizna: Intensidad ligera', 'icon': f'{weather_icons}light-rain.png','emoji':'🌧️'},
+    53: {'text': 'Llovizna: Intensidad moderada', 'icon': f'{weather_icons}heavy-rain.png','emoji':'🌧️'},
+    55: {'text': 'Llovizna: Intensidad densa', 'icon': f'{weather_icons}heavy-rain.png','emoji':'🌧️'},
+    56: {'text': 'Llovizna helada: Intensidad ligera', 'icon': f'{weather_icons}light-rain.png','emoji':'🌧️'},
+    57: {'text': 'Llovizna helada: Intensidad densa', 'icon': f'{weather_icons}heavy-rain.png','emoji':'🌧️'},
+    61: {'text': 'Lluvia: Intensidad ligera', 'icon': f'{weather_icons}light-rain.png','emoji':'🌧️'},
+    63: {'text':'Lluvia: Intensidad moderada','icon':f'{weather_icons}heavy-rain.png','emoji':'🌧️'},
+    65 :{'text':'Lluvia: Intensidad fuerte','icon':f'{weather_icons}heavy-rain.png','emoji':'🌧️'},
+    66 :{'text':'Lluvia helada: Intensidad ligera','icon':f'{weather_icons}light-rain.png','emoji':'🌧️'},
+    67 :{'text':'Lluvia helada: Intensidad fuerte','icon':f'{weather_icons}heavy-rain.png','emoji':'🌧️'},
+    71 :{'text':'Nieve ligera','icon':f'{weather_icons}light-snow.png','emoji':'🌨️'},
+    73 :{'text':'Nieve moderada','icon':f'{weather_icons}snow.png','emoji':'🌨️'},
+    75 :{'text':'Nieve fuerte','icon':f'{weather_icons}snow.png','emoji':'🌨️'},
+    77 :{'text':'Granizo','icon':f'{weather_icons}hail.png','emoji':'🌨️'},
+    80 :{'text':'Chubascos de lluvia ligeros','icon':f'{weather_icons}light-rain.png','emoji':'🌧️'},
+    81 :{'text':'Chubascos de lluvia moderados','icon':f'{weather_icons}heavy-rain.png','emoji':'🌧️'},
+    82 :{'text':'Chubascos de lluvia violentos','icon':f'{weather_icons}heavy-rain.png','emoji':'🌧️'},
+    85 :{'text':'Chubascos de nieve ligeros','icon':f'{weather_icons}light-snow.png','emoji':'🌨️'}, 
+    86 :{'text':'Chubascos de nieve fuertes','icon':f'{weather_icons}snow.png','emoji':'🌨️'}, 
+    95 :{'text':'Tormenta eléctrica con lluvia','icon':f'{weather_icons}storm.png','emoji':'⛈️'}, 
+    96 :{'text':'Tormenta eléctrica con granizo','icon':f'{weather_icons}storm.png','emoji':'⛈️'}, 
+    99 :{'text':'Tormenta eléctrica con polvo','icon':f'{weather_icons}storm.png','emoji':'⛈️'},
+}
+
+
+def weather_api_get(latitude: float, longitude: float)->dict:
+    params={
+            "latitude":latitude,
+            "longitude":longitude,
+            "daily":"weathercode,apparent_temperature_max,apparent_temperature_min",
+            "timezone":"Europe/London",
+            "forecast_days":"1",
+            "models":"ecmwf_ifs04"
+        }
+    var=requests.get("https://api.open-meteo.com/v1/forecast",params=params).json()
+    daily=var["daily"]
+    weather_code=daily["weathercode"][0]
+    
+    return{
+        "forecast":weathercodes[weather_code]["text"],
+        "min":daily["apparent_temperature_min"][0],
+        "max":daily["apparent_temperature_max"][0],
+        "forecast_icon":weathercodes[weather_code]["icon"],
+        "emoji":weathercodes[weather_code]["emoji"] 
+    }
+    
+def generate_weather_map(latitude: float, longitude: float)->io.BytesIO:
+    points=[
+        [latitude,longitude],
+        [latitude+random.uniform(0.3,0.8),longitude+random.uniform(0.3,0.8)],
+        [latitude+random.uniform(0.3,0.8),longitude-random.uniform(0.3,0.8)],
+        [latitude-random.uniform(0.3,0.8),longitude+random.uniform(0.3,0.8)],
+        [latitude-random.uniform(0.3,0.8),longitude-random.uniform(0.3,0.8)]
+    ]
+    
+    m = StaticMap(600, 600)
+    
+    for point in points:
+        weather=weather_api_get(point[0],point[1])
+        forecast_icon=weather["forecast_icon"]
+        
+        marker = IconMarker((point[1], point[0]),forecast_icon,48,48)
+        m.add_marker(marker)
+    image = m.render(zoom=8)
+    
+    bytes_io = io.BytesIO()
+    image.save(bytes_io, "PNG")
+    bytes_io.seek(0)
+    return bytes_io
+
+
 class Utils(commands.Cog):
     def __init__(self, bot: Bot) -> None:
         self.bot = bot
-    
+        
+        
+    @nextcord.slash_command(name="tiempo")
+    async def tiempo(self,interaction:Interaction, ubicacion:str):
+        """Obten el pronostico del tiempo para hoy
+
+        Args:
+            ubicacion (str): Ubicación de la que obtener el pronostico
+        """        
+        
+        # Get latitude and longitude
+        geolocator = Nominatim(user_agent="furbot")
+        location = geolocator.geocode(ubicacion)
+        latitude=location.latitude
+        longitude=location.longitude
+        
+        # Get weather
+        weather=weather_api_get(latitude,longitude)
+        
+        # Get weather map
+        weather_map=generate_weather_map(latitude,longitude)
+        file=nextcord.File(weather_map, "output.png")
+        
+        embed=nextcord.Embed(
+            title=f"{ubicacion.capitalize()} - {datetime.datetime.now().strftime('%d-%m-%Y')}",
+            description=f"{weather['emoji']} {weather['forecast']} | {weather['max']}ºC/{weather['min']}ºC"
+        )
+        embed.set_image(url="attachment://output.png")
+        await interaction.send(embed=embed,file=file)    
+        
+        
     @nextcord.slash_command(name="avatar")
     async def avatar(self, interaction:Interaction, usuario:nextcord.Member):
         """Obtiene el avatar de un usuario
@@ -167,3 +284,21 @@ class Utils(commands.Cog):
 
 def setup(bot: commands.Bot):
     bot.add_cog(Utils(bot))
+
+
+def get_weather(place:str):
+    geolocator = Nominatim(user_agent="furbot")
+    location = geolocator.geocode(place)
+
+    params={
+        "latitude":location.latitude,
+        "longitude":location.longitude,
+        "daily":"apparent_temperature_max,apparent_temperature_min",
+        "timezone":"Europe/London",
+        "forecast_days":"1",
+        "models":"ecmwf_ifs04"
+    }
+    var=requests.get("https://api.open-meteo.com/v1/forecast",params=params).json()
+    daily=var["daily"]
+    aparent_max_temp=daily["apparent_temperature_max"][0]
+    aparent_min_temp=daily["apparent_temperature_min"][0]
