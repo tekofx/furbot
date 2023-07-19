@@ -292,7 +292,6 @@ class Tasks(commands.Cog):
 
     #@joined_date.before_loop
     @free_games.before_loop
-    @sync_commands.before_loop
     async def wait_until_oclock(self):
         """Waits some time to execute tasks"""
 
