@@ -11,3 +11,4 @@ unidecode
 beautifulsoup4
 mysql-connector-python
 geopy
+staticmap
