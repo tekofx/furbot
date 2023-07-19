@@ -48,10 +48,6 @@ class Tasks(commands.Cog):
                     )
         
 
-    @tasks.loop(hours=2)
-    async def sync_commands(self):
-        log.info("Syncing commands")
-        await self.bot.sync_application_commands(self.bot._local_guild)
 
     @tasks.loop(hours=1)
     async def estaciones(self):
