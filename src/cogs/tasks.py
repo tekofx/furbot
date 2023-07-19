@@ -22,7 +22,6 @@ class Tasks(commands.Cog):
         self.joined_date.start()
         self.estaciones.start()
         self.birthday.start()
-        self.sync_commands.start()
         
         # Get posts from database
         for guild in self.bot.guilds:
