@@ -98,7 +98,7 @@ class Utils(commands.Cog):
         self.bot = bot
         
         
-    @nextcord.slash_command(name="tiempo", guild_ids=[788479325787258961])
+    @nextcord.slash_command(name="tiempo")
     async def tiempo(self,interaction:Interaction, ubicacion:str):
         """Obten el pronostico del tiempo para hoy
 
@@ -119,7 +119,10 @@ class Utils(commands.Cog):
         weather_map=generate_weather_map(latitude,longitude)
         file=nextcord.File(weather_map, "output.png")
         
-        embed=nextcord.Embed(title=f"{ubicacion.capitalize()}",description=f"{weather['emoji']} {weather['forecast']} | {weather['max']}ºC/{weather['min']}ºC")
+        embed=nextcord.Embed(
+            title=f"{ubicacion.capitalize()} - {datetime.datetime.now().strftime('%d-%m-%Y')}",
+            description=f"{weather['emoji']} {weather['forecast']} | {weather['max']}ºC/{weather['min']}ºC"
+        )
         embed.set_image(url="attachment://output.png")
         await interaction.send(embed=embed,file=file)    
         
