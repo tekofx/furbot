@@ -107,9 +107,8 @@ class Bot(commands.Bot):
         try:
 
             log.info("Syncing application commands")
-            await self.sync_application_commands(guild_id=self._local_guild)
-            # If commands sync not work uncomment this and run the bot
-            #await self.sync_all_application_commands()
+            #await self.sync_application_commands()
+            await self.sync_all_application_commands()
         except nextcord.errors.NotFound as e:
             log.error("Error syncing application commands: {}".format(e))
 
