@@ -40,6 +40,24 @@ class Post:
             self.pool_url=f"{service}/pools/{pool}"
         self.url=f"{service}/posts/{self.id}"
         
+    def embed(self) -> Embed:
+        color=nextcord.Colour.from_rgb(21,47,86)
+        embed=nextcord.Embed(title=self.id,url=self.url,color=color)
+        print(self.tags)
+        if len(self.tags.general)>0:
+            embed.add_field(name="General tags",value=" ".join(self.tags.general),inline=False)
+        if len(self.tags.species)>0:
+            embed.add_field(name="Species tags",value=" ".join(self.tags.species),inline=False)
+        if len(self.tags.character)>0:
+            embed.add_field(name="Character tags",value=" ".join(self.tags.character),inline=False)
+        if len(self.tags.artist)>0:
+            embed.add_field(name="Artist tags",value=" ".join(self.tags.artist),inline=False)
+            
+        if self.pool_id:
+            embed.add_field(name="Pool",value=f"[{self.pool_id}]({self.pool_url})",inline=False)
+        embed.set_image(url=self.file.url)
+        return embed
+        
         
     def __repr__(self) -> str:
         return f"Post(id={self.id}, created_at={self.created_at}, file={self.file}, tags={self.tags}, description={self.description}, pool={self.pool_id})"

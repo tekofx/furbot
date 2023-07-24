@@ -157,13 +157,16 @@ class Utils(commands.Cog):
         await self.send_e621_post(interaction,tags)
         
     async def send_e621_post(self,interaction:Interaction,tags:str):
-        post=self.bot.e621.get_post_not_repeated(interaction.guild,tags)
+        
+        post=self.bot.e621.get_post_not_repeated(interaction.guild, tags)
         if post is None:
             await interaction.send("No se ha encontrado nada con esa/s tags. Comprueba que las tags existen")
             return
+        embed=post.embed()
+        
+       
         button=Button()
-        output=f"{post.tags}\n{post.file.url}"
-        await interaction.send(output,view=button)
+        await interaction.send(embed=embed,view=button)
         await button.wait()
         if button.value is None:
             return
@@ -186,9 +189,10 @@ class Utils(commands.Cog):
         if post is None:
             await interaction.send("No se ha encontrado nada con esa/s tags. Comprueba que las tags existen")
             return
+        
+        embed=post.embed()
         button=Button()
-        output=f"{post.tags}\n{post.file.url}"
-        await interaction.send(output,view=button)
+        await interaction.send(embed=embed,view=button)
         await button.wait()
         if button.value is None:
             return
