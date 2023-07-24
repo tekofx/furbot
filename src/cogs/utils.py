@@ -1,3 +1,4 @@
+import asyncio
 import io
 import nextcord
 from nextcord import Interaction
@@ -98,13 +99,15 @@ class Utils(commands.Cog):
         self.bot = bot
         
         
-    @nextcord.slash_command(name="tiempo")
+    @nextcord.slash_command(name="tiempo",guild_ids=[788479325787258961])
     async def tiempo(self,interaction:Interaction, ubicacion:str):
         """Obten el pronostico del tiempo para hoy
 
         Args:
             ubicacion (str): Ubicación de la que obtener el pronostico
         """        
+        
+        await interaction.response.defer()
         
         # Get latitude and longitude
         geolocator = Nominatim(user_agent="furbot")
@@ -124,7 +127,7 @@ class Utils(commands.Cog):
             description=f"{weather['emoji']} {weather['forecast']} | {weather['max']}ºC/{weather['min']}ºC"
         )
         embed.set_image(url="attachment://output.png")
-        await interaction.send(embed=embed,file=file)    
+        await interaction.followup.send(embed=embed,file=file)    
         
         
     @nextcord.slash_command(name="avatar")
