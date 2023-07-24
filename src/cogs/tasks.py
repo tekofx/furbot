@@ -162,12 +162,23 @@ class Tasks(commands.Cog):
             next_task = datetime.now() + timedelta(seconds=interval * 60)
             
             if service=="e621":
-                post=self.bot.e621.get_post_not_repeated(guild, account)
-                post = f"{post.tags}\n{post.file.url}"
+                post_e621=self.bot.e621.get_post_not_repeated(guild, account)
+                color=nextcord.Colour.from_rgb(21,47,86)
+                post=nextcord.Embed(title=post_e621.id,url=post_e621.url,color=color)
+                post.add_field(name="Tags",value=post_e621.tags,inline=False)
+                if post_e621.pool_id:
+                    post.add_field(name="Pool",value=f"[{post_e621.pool_id}]({post_e621.pool_url})",inline=False)
+                post.set_image(url=post_e621.file.url)
+                
                 
             if service == "e926":
-                post = self.bot.e926.get_post_not_repeated(guild, account)
-                post = f"{post.tags}\n{post.file.url}"
+                post_e926=self.bot.e926.get_post_not_repeated(guild, account)
+                color=nextcord.Colour.from_rgb(21,47,86)
+                post=nextcord.Embed(title=post_e926.id,url=post_e926.url,color=color)
+                post.add_field(name="Tags",value=post_e926.tags,inline=False)
+                if post_e926.pool_id:
+                    post.add_field(name="Pool",value=f"[{post_e926.pool_id}]({post_e926.pool_url})",inline=False)
+                post.set_image(url=post_e926.file.url)
 
             if service == "twitter":
                 post = self.bot.twitter.get_latest_image_not_repeated(
@@ -182,11 +193,8 @@ class Tasks(commands.Cog):
             if service =="mastodon":
                 try:
                     temp=account.split("@")
-                    print(account)
                     instance=temp[1]
-                    print(instance)
                     account = temp[0]
-                    print(account)
                     post=self.bot.mastodon.get_latest_image_not_repeated(guild, account, instance)
                 except Exception as error:
                     log.error(f"Error getting mastodon post: {error}", extra={"guild": guild.name})
