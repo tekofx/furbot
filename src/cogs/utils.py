@@ -1,3 +1,4 @@
+import asyncio
 import io
 import nextcord
 from nextcord import Interaction
@@ -106,6 +107,8 @@ class Utils(commands.Cog):
             ubicacion (str): Ubicación de la que obtener el pronostico
         """        
         
+        await interaction.response.defer()
+        
         # Get latitude and longitude
         geolocator = Nominatim(user_agent="furbot")
         location = geolocator.geocode(ubicacion)
@@ -124,7 +127,7 @@ class Utils(commands.Cog):
             description=f"{weather['emoji']} {weather['forecast']} | {weather['max']}ºC/{weather['min']}ºC"
         )
         embed.set_image(url="attachment://output.png")
-        await interaction.send(embed=embed,file=file)    
+        await interaction.followup.send(embed=embed,file=file)    
         
         
     @nextcord.slash_command(name="avatar")
@@ -154,13 +157,16 @@ class Utils(commands.Cog):
         await self.send_e621_post(interaction,tags)
         
     async def send_e621_post(self,interaction:Interaction,tags:str):
-        post=self.bot.e621.get_post_not_repeated(interaction.guild,tags)
+        
+        post=self.bot.e621.get_post_not_repeated(interaction.guild, tags)
         if post is None:
             await interaction.send("No se ha encontrado nada con esa/s tags. Comprueba que las tags existen")
             return
+        embed=post.embed()
+        
+       
         button=Button()
-        output=f"{post.tags}\n{post.file.url}"
-        await interaction.send(output,view=button)
+        await interaction.send(embed=embed,view=button)
         await button.wait()
         if button.value is None:
             return
@@ -183,9 +189,10 @@ class Utils(commands.Cog):
         if post is None:
             await interaction.send("No se ha encontrado nada con esa/s tags. Comprueba que las tags existen")
             return
+        
+        embed=post.embed()
         button=Button()
-        output=f"{post.tags}\n{post.file.url}"
-        await interaction.send(output,view=button)
+        await interaction.send(embed=embed,view=button)
         await button.wait()
         if button.value is None:
             return

@@ -120,7 +120,7 @@ class admin(commands.Cog):
     
     ############################# Post #####################################
     
-    @nextcord.slash_command(name="post",guild_ids=[788479325787258961])
+    @nextcord.slash_command(name="post")
     @application_checks.has_permissions(administrator=True)
     async def post(self, interaction: Interaction):
         pass

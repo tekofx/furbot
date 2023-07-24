@@ -27,18 +27,40 @@ class File:
     def __repr__(self) -> str:
         return f"File(extension={self.extension}, url={self.url})"
         
-
+ 
 class Post:
-    def __init__(self, id:int, created_at:datetime,file:File,tags:Tags, description:str) -> None:
+    def __init__(self, id:int, service:str,created_at:datetime,file:File,tags:Tags, description:str,pool:id=None) -> None:
         self.id=id
         self.created_at=created_at
         self.file=file
         self.tags=tags
         self.description=description
+        self.pool_id=pool
+        if pool!=None:
+            self.pool_url=f"{service}/pools/{pool}"
+        self.url=f"{service}/posts/{self.id}"
+        
+    def embed(self) -> Embed:
+        color=nextcord.Colour.from_rgb(21,47,86)
+        embed=nextcord.Embed(title=self.id,url=self.url,color=color)
+        print(self.tags)
+        if len(self.tags.general)>0:
+            embed.add_field(name="General tags",value=" ".join(self.tags.general),inline=False)
+        if len(self.tags.species)>0:
+            embed.add_field(name="Species tags",value=" ".join(self.tags.species),inline=False)
+        if len(self.tags.character)>0:
+            embed.add_field(name="Character tags",value=" ".join(self.tags.character),inline=False)
+        if len(self.tags.artist)>0:
+            embed.add_field(name="Artist tags",value=" ".join(self.tags.artist),inline=False)
+            
+        if self.pool_id:
+            embed.add_field(name="Pool",value=f"[{self.pool_id}]({self.pool_url})",inline=False)
+        embed.set_image(url=self.file.url)
+        return embed
         
         
     def __repr__(self) -> str:
-        return f"Post(id={self.id}, created_at={self.created_at}, file={self.file}, tags={self.tags}, description={self.description})"
+        return f"Post(id={self.id}, created_at={self.created_at}, file={self.file}, tags={self.tags}, description={self.description}, pool={self.pool_id})"
     
 
 
@@ -67,7 +89,10 @@ class E621_E926:
         for x in result["posts"]:
             tags=Tags(x["tags"]["general"],x["tags"]["species"],x["tags"]["character"],x["tags"]["artist"],x["tags"]["invalid"],x["tags"]["lore"],x["tags"]["meta"])
             file=File(x["file"]["ext"],x["file"]["url"])
-            post=Post(x["id"],datetime.strptime(x["created_at"],"%Y-%m-%dT%H:%M:%S.%f%z"),file,tags,x["description"])
+            pool=None
+            if len(x["pools"])>0:
+                pool=x["pools"][0]
+            post=Post(x["id"],self.url,datetime.strptime(x["created_at"],"%Y-%m-%dT%H:%M:%S.%f%z"),file,tags,x["description"],pool)
             output.append(post)
         return output
     
