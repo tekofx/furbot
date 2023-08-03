@@ -11,6 +11,7 @@ from core.mastodon import Mastodon
 import requests
 from core.data import Data, get_activity, get_config
 from core import logger
+from ui.NotifyError import ErrorModal
 
 log = logger.getLogger(__name__)
 
@@ -107,7 +108,9 @@ class Bot(commands.Bot):
         try:
 
             log.info("Syncing application commands")
-            #await self.sync_application_commands()
+           
+           # await self.sync_application_commands()
+        
             await self.sync_all_application_commands()
         except nextcord.errors.NotFound as e:
             log.error("Error syncing application commands: {}".format(e))
@@ -178,12 +181,6 @@ class Bot(commands.Bot):
             if message.content.lower() == "awa":
                 await message.channel.send("AwA!")
 
-            # TODO: Remove
-            """ if "e621" in message.content.lower():
-                tags="fox wolf"
-                post=self.e621.get_post_not_repeated(message.guild,tags.split(" "))
-                await message.channel.send(post.file.url) """
-
         await self.process_commands(message)
 
     def format_options(self, interaction: nextcord.Interaction) -> str:
@@ -250,8 +247,8 @@ class Bot(commands.Bot):
             extra={"guild": interaction.guild.name},
         )
 
-        await interaction.channel.send(
-            "Error: comprueba si has usado el comando correctamente. Es posible que se trate de un error interno"
+        await interaction.response.send_message(
+            "Error: Se ha producido un error al procesar el comando. Si crees que se trata de un error interno, contacta con el desarrollador",view=ErrorModal(self)
         )
 
     async def channel_send(
